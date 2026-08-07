@@ -1,0 +1,670 @@
+{
+  "root": ".",
+  "paper": "paper/main.tex",
+  "pdf": "paper/main.pdf",
+  "score": 100,
+  "raw_additive_score": 100,
+  "score_caps": [],
+  "redteam_penalties": [],
+  "max_score": 100,
+  "band": "award-target-ready",
+  "char_count": 18115,
+  "body_char_count": 18053,
+  "appendix_char_count": 62,
+  "appendix_ratio": 0.0034,
+  "abstract_len": 546,
+  "pdf_pages": 28,
+  "figure_count": 30,
+  "high_quality_figure_count": 30,
+  "figure_categories": [
+    "data_profile",
+    "relationship_or_mechanism",
+    "prediction_diagnostic",
+    "classification",
+    "optimization_decision",
+    "sensitivity_robustness",
+    "grouping"
+  ],
+  "figure_label_quality": {
+    "has_manifest": true,
+    "count": 10,
+    "chinese_labeled_count": 10,
+    "ok": true
+  },
+  "math_features": {
+    "display_count": 31,
+    "inline_count": 126,
+    "count": 157,
+    "numbered_count": 60,
+    "has_objective": true,
+    "has_constraints": true,
+    "has_decision_variables": true,
+    "has_algorithm": true
+  },
+  "detected_tasks": [
+    "classification",
+    "evaluation",
+    "grouping",
+    "optimization",
+    "prediction",
+    "simulation"
+  ],
+  "keyword_detected_tasks": [
+    "classification",
+    "evaluation",
+    "grouping",
+    "optimization",
+    "prediction",
+    "simulation"
+  ],
+  "keyword_only_tasks": [],
+  "keyword_task_risk": false,
+  "declared_task_count": 6,
+  "subquestion_count": 4,
+  "task_checks": {
+    "prediction": true,
+    "classification": true,
+    "optimization": true,
+    "evaluation": true,
+    "grouping": true,
+    "simulation": true
+  },
+  "risk_gate_status": {
+    "problem_structure": {
+      "exists": true,
+      "subquestion_count": 4,
+      "complete": true,
+      "has_tasks": true,
+      "has_placeholders": false,
+      "ok": true
+    },
+    "route_candidates": {
+      "exists": true,
+      "route_count": 12,
+      "per_subquestion": {
+        "1": 3,
+        "2": 3,
+        "3": 3,
+        "4": 3
+      },
+      "min_routes_per_subquestion": 3,
+      "complete": true,
+      "has_placeholders": false,
+      "ok": true
+    },
+    "route_selection": {
+      "exists": true,
+      "json_exists": true,
+      "selection_count": 4,
+      "has_roles": true,
+      "has_json_roles": true,
+      "has_placeholders": false,
+      "ok": true
+    },
+    "innovation_plan": {
+      "exists": true,
+      "has_allowed_source": true,
+      "has_algorithm_hype": false,
+      "has_placeholders": false,
+      "ok": true
+    },
+    "figure_plan": {
+      "plan_exists": true,
+      "manifest_exists": true,
+      "planned_figures": 10,
+      "body_figure_refs": 10,
+      "generated_figure_count": 10,
+      "complete": true,
+      "has_placeholders": false,
+      "ok": true
+    },
+    "claim_evidence": {
+      "exists": true,
+      "row_count": 9,
+      "has_artifacts": true,
+      "has_status": true,
+      "complete": true,
+      "independent_evidence_count": 9,
+      "has_placeholders": false,
+      "ok": true
+    },
+    "redteam_review": {
+      "exists": true,
+      "has_content": true,
+      "has_issues_or_clear": true,
+      "has_placeholders": false,
+      "ok": true
+    },
+    "verification_report": {
+      "ok": true
+    }
+  },
+  "artifact_contract_gate": {
+    "exists": true,
+    "ok": true,
+    "status": "ready",
+    "failed_checks": [],
+    "warning_checks": []
+  },
+  "variable_audit": {
+    "exists": true,
+    "present_classes": [
+      "pre_decision",
+      "post_decision",
+      "target",
+      "proxy"
+    ],
+    "has_action": true,
+    "has_todo": false,
+    "leaked_flag": false,
+    "ok": true
+  },
+  "claim_evidence_ready": true,
+  "verification_report_ready": true,
+  "reference_quality": {
+    "bibitems": 9,
+    "cites": 4,
+    "body_cites": 4,
+    "roles": [
+      "domain",
+      "method",
+      "data",
+      "software"
+    ],
+    "weak_only": false,
+    "missing_body_cites": false,
+    "ok": true
+  },
+  "numeric_precision": {
+    "too_precise_count": 0,
+    "number_count": 700,
+    "ok": true
+  },
+  "table_count": 17,
+  "missing_sections": [],
+  "body_process_hits": [],
+  "hard_process_hits": [],
+  "abstract_hard_hits": [],
+  "abstract_meta_hits": [],
+  "manual_style_count": 0,
+  "model_name_hits": [
+    "随机森林",
+    "梯度提升",
+    "逻辑回归",
+    "OLS",
+    "Bootstrap",
+    "ROC",
+    "AUC",
+    "混淆矩阵"
+  ],
+  "model_stacking_risk": false,
+  "model_credibility": {
+    "risks": [],
+    "severe": [],
+    "unmet_constraints": []
+  },
+  "automation_sentences": [],
+  "latex_log_errors": [],
+  "latex_log_warnings": [],
+  "risk_items": [],
+  "fixes": [],
+  "items": [
+    {
+      "name": "problem decomposition artifact",
+      "ok": true,
+      "earned": 3,
+      "points": 3,
+      "fix": "Create references/problem_decomposition.md with targets, variables, outputs, constraints, candidates, validation, visuals, and risks for every subquestion."
+    },
+    {
+      "name": "raw attachment/data files",
+      "ok": true,
+      "earned": 2,
+      "points": 2,
+      "fix": "Put official problem statement and attachments in data/raw, or mark missing official files as blockers."
+    },
+    {
+      "name": "source/provenance record",
+      "ok": true,
+      "earned": 2,
+      "points": 2,
+      "fix": "Record data/problem/source provenance in references/sources.md."
+    },
+    {
+      "name": "variable availability audit",
+      "ok": true,
+      "earned": 3,
+      "points": 3,
+      "fix": "Create references/variable_audit.md or reports/variable_audit.json with availability classes, leakage risks, and split design."
+    },
+    {
+      "name": "model selection record",
+      "ok": true,
+      "earned": 2,
+      "points": 2,
+      "fix": "Create references/model_selection.md with task type, baseline, candidates, selected model, rejection reasons, and validation."
+    },
+    {
+      "name": "data dictionary",
+      "ok": true,
+      "earned": 2,
+      "points": 2,
+      "fix": "Create references/data_dictionary.md with field meanings, units, types, missing/outlier handling, and sources."
+    },
+    {
+      "name": "body has no process traces",
+      "ok": true,
+      "earned": 4,
+      "points": 4,
+      "fix": "Remove tool names, code paths, workflow/benchmark/gap/scorer language, and generation-process wording from the paper body and abstract."
+    },
+    {
+      "name": "required body sections",
+      "ok": true,
+      "earned": 4,
+      "points": 4,
+      "missing": [],
+      "fix": "Add missing formal contest-paper sections."
+    },
+    {
+      "name": "no Q&A or review filler",
+      "ok": true,
+      "earned": 2,
+      "points": 2,
+      "fix": "Remove Q&A appendices, manual-review prose, user/scorer/revision meta text, file-path instructions, and filler."
+    },
+    {
+      "name": "formulas, objectives, constraints",
+      "ok": true,
+      "earned": 5,
+      "points": 5,
+      "fix": "Add numbered formulas, objective/loss functions, constraints, and model equations in the body."
+    },
+    {
+      "name": "subquestion coverage",
+      "ok": true,
+      "earned": 4,
+      "points": 4,
+      "fix": "Make every subquestion explicit and provide a model, result, validation, and conclusion."
+    },
+    {
+      "name": "baseline/model comparison",
+      "ok": true,
+      "earned": 4,
+      "points": 4,
+      "fix": "Compare simple baselines with selected models, or justify why no baseline is meaningful."
+    },
+    {
+      "name": "assumptions symbols algorithm",
+      "ok": true,
+      "earned": 3,
+      "points": 3,
+      "fix": "Add problem-specific assumptions, a symbol table with units, and algorithm steps."
+    },
+    {
+      "name": "task-specific model checks",
+      "ok": true,
+      "earned": 2,
+      "points": 2,
+      "fix": "Satisfy task-specific checks for prediction, classification, optimization, evaluation, grouping, time-series, simulation, mechanism, graph, or queueing tasks."
+    },
+    {
+      "name": "leakage audit passes",
+      "ok": true,
+      "earned": 4,
+      "points": 4,
+      "fix": "Classify variable availability and remove or restrict post-decision/target-proxy variables."
+    },
+    {
+      "name": "validation metrics",
+      "ok": true,
+      "earned": 4,
+      "points": 4,
+      "fix": "Add task-appropriate validation metrics with numbers."
+    },
+    {
+      "name": "sensitivity analysis",
+      "ok": true,
+      "earned": 3,
+      "points": 3,
+      "fix": "Add numerical sensitivity analysis for important parameters, weights, data perturbations, or grouping boundaries."
+    },
+    {
+      "name": "robustness or uncertainty",
+      "ok": true,
+      "earned": 3,
+      "points": 3,
+      "fix": "Add robustness, uncertainty, confidence interval, bootstrap, Monte Carlo, or extreme-scenario evidence."
+    },
+    {
+      "name": "split design matches data structure",
+      "ok": true,
+      "earned": 2,
+      "points": 2,
+      "fix": "Use grouped, temporal, or spatial validation when data contain repeated entities, time, regions, devices, teams, or routes."
+    },
+    {
+      "name": "single run entry",
+      "ok": true,
+      "earned": 2,
+      "points": 2,
+      "fix": "Create src/run_all.py or an equivalent documented single entry point."
+    },
+    {
+      "name": "summary metrics json",
+      "ok": true,
+      "earned": 2,
+      "points": 2,
+      "fix": "Write reports/summary.json with key model metrics and final results."
+    },
+    {
+      "name": "processed outputs",
+      "ok": true,
+      "earned": 2,
+      "points": 2,
+      "fix": "Generate processed data, tables, figures, or metrics from scripts."
+    },
+    {
+      "name": "support materials package",
+      "ok": true,
+      "earned": 3,
+      "points": 3,
+      "fix": "Create support README, data-processing instructions, model-running instructions, quality report, and self-check report."
+    },
+    {
+      "name": "AI-use record if used",
+      "ok": true,
+      "earned": 1,
+      "points": 1,
+      "fix": "Create support/ai_usage.md if AI or LLM assistance was used."
+    },
+    {
+      "name": "appendix reproduction only",
+      "ok": true,
+      "earned": 2,
+      "points": 2,
+      "fix": "Keep reproduction commands in appendix/support materials, not the body."
+    },
+    {
+      "name": "figure count",
+      "ok": true,
+      "earned": 2,
+      "points": 2,
+      "fix": "Generate at least 8 decision-relevant figures for a full multi-question project."
+    },
+    {
+      "name": "figure resolution/vector quality",
+      "ok": true,
+      "earned": 2,
+      "points": 2,
+      "fix": "Regenerate low-resolution figures at >=1000x600 px or as vector PDF/SVG."
+    },
+    {
+      "name": "table count",
+      "ok": true,
+      "earned": 2,
+      "points": 2,
+      "fix": "Generate at least 6 result, validation, or robustness tables."
+    },
+    {
+      "name": "figure diversity",
+      "ok": true,
+      "earned": 2,
+      "points": 2,
+      "fix": "Include diverse figure roles: data profile, diagnostic, decision/evaluation/grouping/network, and sensitivity/robustness as relevant."
+    },
+    {
+      "name": "Chinese figure labels/captions",
+      "ok": true,
+      "earned": 2,
+      "points": 2,
+      "fix": "Use Chinese titles, captions, axes, legends, and units; provide a figure manifest when possible."
+    },
+    {
+      "name": "captions and text references",
+      "ok": true,
+      "earned": 2,
+      "points": 2,
+      "fix": "Caption and discuss figures/tables near their interpretation."
+    },
+    {
+      "name": "paper source depth",
+      "ok": true,
+      "earned": 3,
+      "points": 3,
+      "fix": "Expand the main body to at least 14000 CJK/word characters and total paper to 18000+ with real modeling detail."
+    },
+    {
+      "name": "abstract density",
+      "ok": true,
+      "earned": 2,
+      "points": 2,
+      "fix": "Write a 450-900 Chinese-character abstract with methods, key numerical results, and validation for each subquestion."
+    },
+    {
+      "name": "compiled PDF and page range",
+      "ok": true,
+      "earned": 3,
+      "points": 3,
+      "fix": "Compile a PDF with 18-28 pages, with body dense and appendix supportive."
+    },
+    {
+      "name": "LaTeX log clean enough",
+      "ok": true,
+      "earned": 2,
+      "points": 2,
+      "fix": "Fix LaTeX compile errors, overfull boxes, undefined references/citations, and layout warnings."
+    },
+    {
+      "name": "reference quality",
+      "ok": true,
+      "earned": 3,
+      "points": 3,
+      "fix": "Use references for current domain, methods, data/statistical standards, and software/algorithms; do not rely only on templates or public excellent papers."
+    },
+    {
+      "name": "result scope and sanity",
+      "ok": true,
+      "earned": 2,
+      "points": 2,
+      "fix": "State applicability, limitations, boundary/extreme checks, and common-sense sanity checks."
+    },
+    {
+      "name": "numeric precision",
+      "ok": true,
+      "earned": 1,
+      "points": 1,
+      "fix": "Avoid fake precision with excessive decimal places in recommendations, scores, or boundaries."
+    },
+    {
+      "name": "no TODO placeholders",
+      "ok": true,
+      "earned": 2,
+      "points": 2,
+      "fix": "Remove TODO/placeholders from paper and core references/support artifacts before final delivery."
+    }
+  ],
+  "figure_details": [
+    {
+      "path": "figures/data_profile_distribution.pdf",
+      "width": null,
+      "height": null,
+      "ok": true
+    },
+    {
+      "path": "figures/data_profile_distribution.png",
+      "width": 4311,
+      "height": 3081,
+      "ok": true
+    },
+    {
+      "path": "figures/data_profile_distribution.svg",
+      "width": null,
+      "height": null,
+      "ok": true
+    },
+    {
+      "path": "figures/grouping_decision_boundary.pdf",
+      "width": null,
+      "height": null,
+      "ok": true
+    },
+    {
+      "path": "figures/grouping_decision_boundary.png",
+      "width": 4311,
+      "height": 1762,
+      "ok": true
+    },
+    {
+      "path": "figures/grouping_decision_boundary.svg",
+      "width": null,
+      "height": null,
+      "ok": true
+    },
+    {
+      "path": "figures/q1_relationships.pdf",
+      "width": null,
+      "height": null,
+      "ok": true
+    },
+    {
+      "path": "figures/q1_relationships.png",
+      "width": 4311,
+      "height": 2001,
+      "ok": true
+    },
+    {
+      "path": "figures/q1_relationships.svg",
+      "width": null,
+      "height": null,
+      "ok": true
+    },
+    {
+      "path": "figures/q1_residual_diagnostic.pdf",
+      "width": null,
+      "height": null,
+      "ok": true
+    },
+    {
+      "path": "figures/q1_residual_diagnostic.png",
+      "width": 4311,
+      "height": 1882,
+      "ok": true
+    },
+    {
+      "path": "figures/q1_residual_diagnostic.svg",
+      "width": null,
+      "height": null,
+      "ok": true
+    },
+    {
+      "path": "figures/q2_q3_error_sensitivity.pdf",
+      "width": null,
+      "height": null,
+      "ok": true
+    },
+    {
+      "path": "figures/q2_q3_error_sensitivity.png",
+      "width": 4309,
+      "height": 1702,
+      "ok": true
+    },
+    {
+      "path": "figures/q2_q3_error_sensitivity.svg",
+      "width": null,
+      "height": null,
+      "ok": true
+    },
+    {
+      "path": "figures/q2_q3_reach_probability.pdf",
+      "width": null,
+      "height": null,
+      "ok": true
+    },
+    {
+      "path": "figures/q2_q3_reach_probability.png",
+      "width": 4311,
+      "height": 1974,
+      "ok": true
+    },
+    {
+      "path": "figures/q2_q3_reach_probability.svg",
+      "width": null,
+      "height": null,
+      "ok": true
+    },
+    {
+      "path": "figures/q4_calibration_threshold.pdf",
+      "width": null,
+      "height": null,
+      "ok": true
+    },
+    {
+      "path": "figures/q4_calibration_threshold.png",
+      "width": 3943,
+      "height": 1942,
+      "ok": true
+    },
+    {
+      "path": "figures/q4_calibration_threshold.svg",
+      "width": null,
+      "height": null,
+      "ok": true
+    },
+    {
+      "path": "figures/q4_confusion_coefficients.pdf",
+      "width": null,
+      "height": null,
+      "ok": true
+    },
+    {
+      "path": "figures/q4_confusion_coefficients.png",
+      "width": 4311,
+      "height": 2001,
+      "ok": true
+    },
+    {
+      "path": "figures/q4_confusion_coefficients.svg",
+      "width": null,
+      "height": null,
+      "ok": true
+    },
+    {
+      "path": "figures/q4_grouped_bootstrap_uncertainty.pdf",
+      "width": null,
+      "height": null,
+      "ok": true
+    },
+    {
+      "path": "figures/q4_grouped_bootstrap_uncertainty.png",
+      "width": 4311,
+      "height": 1881,
+      "ok": true
+    },
+    {
+      "path": "figures/q4_grouped_bootstrap_uncertainty.svg",
+      "width": null,
+      "height": null,
+      "ok": true
+    },
+    {
+      "path": "figures/q4_roc_pr.pdf",
+      "width": null,
+      "height": null,
+      "ok": true
+    },
+    {
+      "path": "figures/q4_roc_pr.png",
+      "width": 3985,
+      "height": 1942,
+      "ok": true
+    },
+    {
+      "path": "figures/q4_roc_pr.svg",
+      "width": null,
+      "height": null,
+      "ok": true
+    }
+  ],
+  "mode": "final"
+}

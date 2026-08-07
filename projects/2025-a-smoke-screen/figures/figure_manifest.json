@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "generated_by": "src/generate_figures.py",
+  "figures": [
+    {
+      "id": "F1",
+      "claim_id": "C-Q1-INTERVAL",
+      "subquestion": "Q1",
+      "files": [
+        "figures/q1_occlusion_intervals.png",
+        "figures/q1_occlusion_intervals.pdf",
+        "figures/q1_occlusion_intervals.svg"
+      ],
+      "data_source": "validation/q1_q2_independent.json",
+      "axes": "任务时刻 (s) / 判据",
+      "paper_location": "问题一结果与口径讨论"
+    },
+    {
+      "id": "F2",
+      "claim_id": "C-CRITERION-SENSITIVITY",
+      "subquestion": "Q1-Q5",
+      "files": [
+        "figures/criterion_sensitivity.png",
+        "figures/criterion_sensitivity.pdf",
+        "figures/criterion_sensitivity.svg"
+      ],
+      "data_source": "validation/q1_q2_independent.json; validation/q3_q5_independent.json",
+      "axes": "问题 / 有效遮蔽时长 (s)",
+      "paper_location": "模型检验与口径敏感性"
+    },
+    {
+      "id": "F3",
+      "claim_id": "C-Q5-COVERAGE",
+      "subquestion": "Q5",
+      "files": [
+        "figures/q5_coverage_gantt.png",
+        "figures/q5_coverage_gantt.pdf",
+        "figures/q5_coverage_gantt.svg"
+      ],
+      "data_source": "validation/q3_q5_independent.json",
+      "axes": "任务时刻 (s) / 烟幕弹",
+      "paper_location": "问题五结果"
+    },
+    {
+      "id": "F4",
+      "claim_id": "C-Q5-ROBUSTNESS",
+      "subquestion": "Q5",
+      "files": [
+        "figures/q5_per_missile_robustness.png",
+        "figures/q5_per_missile_robustness.pdf",
+        "figures/q5_per_missile_robustness.svg"
+      ],
+      "data_source": "validation/q3_q5_independent.json",
+      "axes": "导弹 / 有效遮蔽并集 (s)",
+      "paper_location": "问题五保守审计"
+    },
+    {
+      "id": "F5",
+      "claim_id": "C-Q5-STRATEGY",
+      "subquestion": "Q5",
+      "files": [
+        "figures/q5_xy_strategy.png",
+        "figures/q5_xy_strategy.pdf",
+        "figures/q5_xy_strategy.svg"
+      ],
+      "data_source": "validation/q3_q5_independent.json",
+      "axes": "x 坐标 (m) / y 坐标 (m)",
+      "paper_location": "问题五策略解释"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "selections": [
+    {
+      "subquestion_id": "Q1",
+      "pre_run_choice": "Q1-R2 random-intercept mixed model",
+      "post_run_revision": "保留二次孕周项；交互项虽不显著仍作为结构检验报告",
+      "final_main_route": "Q1-R2",
+      "baseline_route": "Q1-R1",
+      "auxiliary_routes": ["Q1-R3"],
+      "rejected_routes": [{"route_id": "Q1-R1", "reason": "不能分解孕妇层方差"}, {"route_id": "Q1-R3", "reason": "不便回答显著性与ICC"}],
+      "evidence_used": ["模型收敛", "ICC=0.7318", "GroupKFold MAE=0.0270"],
+      "route_change_reason": "无主路线变更，只根据实算结果降低组外预测表述强度",
+      "unresolved_risks": ["组外R2略负", "残差尾部偏离正态"],
+      "validation_metrics": ["MAE", "R2", "ICC", "残差诊断"]
+    },
+    {
+      "subquestion_id": "Q2",
+      "pre_run_choice": "Q2-R2 interval-censored lognormal AFT",
+      "post_run_revision": "用动态规划生成4个连续BMI区间并施加每组至少35人约束",
+      "final_main_route": "Q2-R2",
+      "baseline_route": "Q2-R1",
+      "auxiliary_routes": ["Q2-R3"],
+      "rejected_routes": [{"route_id": "Q2-R1", "reason": "忽略218个左删失样本"}, {"route_id": "Q2-R3", "reason": "不能自然表达首次达标删失"}],
+      "evidence_used": ["AFT优化成功", "四组达标概率均不低于0.90", "删失构成完整"],
+      "route_change_reason": "无主路线变更，分组数按题意固定为4",
+      "unresolved_risks": ["对数正态分布假设", "高BMI尾部样本较少"],
+      "validation_metrics": ["AIC", "组内覆盖率", "最小组样本量"]
+    },
+    {
+      "subquestion_id": "Q3",
+      "pre_run_choice": "Q3-R1 multivariable interval-censored AFT",
+      "post_run_revision": "多因素AIC高于BMI模型，因此降级为风险修正而非性能更优模型",
+      "final_main_route": "Q3-R1",
+      "baseline_route": "Q2-R2",
+      "auxiliary_routes": ["Q3-R2", "Q3-R3"],
+      "rejected_routes": [{"route_id": "Q3-R2", "reason": "缺少严格删失似然且可能非单调"}, {"route_id": "Q3-R3", "reason": "左删失权重难准确确定"}],
+      "evidence_used": ["AIC=364.38 vs 358.57", "阈值敏感性最大17天", "时点约束均满足"],
+      "route_change_reason": "根据AIC证据降低复杂模型结论强度",
+      "unresolved_risks": ["近似Hessian不稳定", "协变量样本外校准缺失"],
+      "validation_metrics": ["AIC", "覆盖率", "阈值敏感性"]
+    },
+    {
+      "subquestion_id": "Q4",
+      "pre_run_choice": "Q4-R2 grouped logistic regression",
+      "post_run_revision": "保留0.5阈值并新增孕妇分组Bootstrap置信区间",
+      "final_main_route": "Q4-R2",
+      "baseline_route": "Q4-R1",
+      "auxiliary_routes": ["Q4-R3"],
+      "rejected_routes": [{"route_id": "Q4-R1", "reason": "召回率仅0.060"}, {"route_id": "Q4-R3", "reason": "PR-AUC和召回率低于逻辑回归"}],
+      "evidence_used": ["ROC-AUC=0.826", "PR-AUC=0.479", "召回率=0.746", "Bootstrap 95%CI"],
+      "route_change_reason": "无主路线变更，新增不确定性量化",
+      "unresolved_risks": ["异常样本仅67条", "附件标签机制未知", "临床外推不可用"],
+      "validation_metrics": ["ROC-AUC", "PR-AUC", "召回率", "特异度", "F1", "Bootstrap置信区间"]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "variables": [
+    {"variable_name": "孕妇代码", "role": "group identifier", "availability": "pre_decision", "source": "official attachment", "allowed_use": "validation_only", "leakage_risk": "同一孕妇跨折会泄漏重复测量信息", "reason": "用于随机效应与分组交叉验证，不作为数值预测变量"},
+    {"variable_name": "孕周", "role": "time covariate", "availability": "pre_decision", "source": "official attachment", "allowed_use": "main_model", "leakage_risk": "无直接目标泄漏", "reason": "解释浓度变化并定义检测时点"},
+    {"variable_name": "BMI", "role": "primary predictor", "availability": "pre_decision", "source": "official attachment", "allowed_use": "main_model", "leakage_risk": "重复记录间变化很小", "reason": "题目指定的主要分组变量"},
+    {"variable_name": "年龄与身高", "role": "demographic predictors", "availability": "pre_decision", "source": "official attachment", "allowed_use": "main_model", "leakage_risk": "无直接目标泄漏", "reason": "用于问题三风险修正"},
+    {"variable_name": "受孕方式与孕产次数", "role": "history predictors", "availability": "pre_decision", "source": "official attachment", "allowed_use": "main_model", "leakage_risk": "文本编码需规范化", "reason": "用于问题三风险修正"},
+    {"variable_name": "Y染色体浓度", "role": "response and event source", "availability": "target", "source": "official attachment", "allowed_use": "forbidden_as_predictor", "leakage_risk": "若进入时点模型会把检测结果泄漏给检测前决策", "reason": "只作为问题一响应和问题二三达标事件"},
+    {"variable_name": "Z13/Z18/Z21/ZX", "role": "female classification predictors", "availability": "during_decision", "source": "official attachment", "allowed_use": "main_model", "leakage_risk": "只允许用于问题四检测后判定", "reason": "题目要求综合染色体Z值判定女胎异常"},
+    {"variable_name": "GC含量与读段比例", "role": "sequencing quality predictors", "availability": "during_decision", "source": "official attachment", "allowed_use": "main_model", "leakage_risk": "不能用于问题二三预检测时点决策", "reason": "用于问题一质量控制和问题四异常分类"},
+    {"variable_name": "染色体的非整倍体", "role": "classification target", "availability": "target", "source": "official attachment", "allowed_use": "forbidden_as_predictor", "leakage_risk": "直接目标字段", "reason": "非空编码为问题四异常标签"},
+    {"variable_name": "胎儿是否健康", "role": "post-outcome proxy", "availability": "target_proxy", "source": "official attachment", "allowed_use": "validation_only", "leakage_risk": "出生后信息会造成目标替换和事后泄漏", "reason": "只做描述，不作为问题四目标或预测变量"}
+  ],
+  "validation_rules": [
+    "pre_decision variables only for timing claims",
+    "exclude target and target_proxy fields from predictors",
+    "all resampling grouped by 孕妇代码"
+  ],
+  "manual_confirmation_required": false
+}

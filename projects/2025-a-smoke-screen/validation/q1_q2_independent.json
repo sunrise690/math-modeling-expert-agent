@@ -1,0 +1,521 @@
+{
+  "constants": {
+    "fy1_initial_m": [
+      17800.0,
+      0.0,
+      1800.0
+    ],
+    "missile_impact_time_s": 66.99917080747261,
+    "missile_initial_m": [
+      20000.0,
+      0.0,
+      2000.0
+    ],
+    "missile_velocity_mps": [
+      -298.51115706299674,
+      -0.0,
+      -29.851115706299673
+    ],
+    "smoke_lifetime_s": 20.0,
+    "smoke_radius_m": 10.0,
+    "smoke_sink_speed_mps": 3.0,
+    "target_bottom_center_m": [
+      0.0,
+      200.0,
+      0.0
+    ],
+    "target_height_m": 10.0,
+    "target_radius_m": 7.0
+  },
+  "metadata": {
+    "full_target_method": "continuous shadow-cone containment on top and bottom rim circles",
+    "geometry_engine_available": true,
+    "gravity_values_mps2": [
+      9.8,
+      9.81
+    ],
+    "official_source": "source/A题.pdf",
+    "random_seed": 20250808,
+    "root_method": "uniform bracketing followed by scipy.optimize.brentq",
+    "title": "2025 CUMCM A Q1-Q2 independent validation",
+    "units": {
+      "position": "m",
+      "speed": "m/s",
+      "time": "s"
+    }
+  },
+  "q1": {
+    "g_9.80": {
+      "centerline": {
+        "boundary_residual_max_m": 4.227729277772596e-13,
+        "constraint_violations": {
+          "explosion_after_impact_s": 0.0,
+          "explosion_below_ground_m": 0.0,
+          "heading_norm_error": 0.0,
+          "max": 0.0,
+          "negative_fuse_delay_s": 0.0,
+          "negative_release_time_s": 0.0,
+          "speed_above_140_mps": 0.0,
+          "speed_below_70_mps": 0.0
+        },
+        "duration_s": 1.435082101963717,
+        "intervals_s": [
+          [
+            8.013006056737998,
+            9.448088158701715
+          ]
+        ]
+      },
+      "full_cylinder": {
+        "boundary_residual_max_m": 2.2112089936854318e-11,
+        "constraint_violations": {
+          "explosion_after_impact_s": 0.0,
+          "explosion_below_ground_m": 0.0,
+          "heading_norm_error": 0.0,
+          "max": 0.0,
+          "negative_fuse_delay_s": 0.0,
+          "negative_release_time_s": 0.0,
+          "speed_above_140_mps": 0.0,
+          "speed_below_70_mps": 0.0
+        },
+        "duration_s": 1.3916426682699736,
+        "intervals_s": [
+          [
+            8.056445490431651,
+            9.448088158701625
+          ]
+        ]
+      },
+      "gravity_mps2": 9.8,
+      "strategy": {
+        "explosion_position_m": [
+          17188.0,
+          7.494838410781801e-14,
+          1736.496
+        ],
+        "explosion_time_s": 5.1,
+        "fuse_delay_s": 3.6,
+        "heading_deg": 180.0,
+        "heading_rad": 3.141592653589793,
+        "heading_unit": [
+          -1.0,
+          1.2246467991473532e-16,
+          0.0
+        ],
+        "release_position_m": [
+          17620.0,
+          2.2043642384652358e-14,
+          1800.0
+        ],
+        "release_time_s": 1.5,
+        "speed_mps": 120.0
+      }
+    },
+    "g_9.81": {
+      "centerline": {
+        "boundary_residual_max_m": 6.643574579356937e-13,
+        "constraint_violations": {
+          "explosion_after_impact_s": 0.0,
+          "explosion_below_ground_m": 0.0,
+          "heading_norm_error": 0.0,
+          "max": 0.0,
+          "negative_fuse_delay_s": 0.0,
+          "negative_release_time_s": 0.0,
+          "speed_above_140_mps": 0.0,
+          "speed_below_70_mps": 0.0
+        },
+        "duration_s": 1.4489163789862634,
+        "intervals_s": [
+          [
+            7.999305324521842,
+            9.448221703508105
+          ]
+        ]
+      },
+      "full_cylinder": {
+        "boundary_residual_max_m": 2.0108359422010835e-11,
+        "constraint_violations": {
+          "explosion_after_impact_s": 0.0,
+          "explosion_below_ground_m": 0.0,
+          "heading_norm_error": 0.0,
+          "max": 0.0,
+          "negative_fuse_delay_s": 0.0,
+          "negative_release_time_s": 0.0,
+          "speed_above_140_mps": 0.0,
+          "speed_below_70_mps": 0.0
+        },
+        "duration_s": 1.4050342137960818,
+        "intervals_s": [
+          [
+            8.043187489711945,
+            9.448221703508027
+          ]
+        ]
+      },
+      "gravity_mps2": 9.81,
+      "strategy": {
+        "explosion_position_m": [
+          17188.0,
+          7.494838410781801e-14,
+          1736.4312
+        ],
+        "explosion_time_s": 5.1,
+        "fuse_delay_s": 3.6,
+        "heading_deg": 180.0,
+        "heading_rad": 3.141592653589793,
+        "heading_unit": [
+          -1.0,
+          1.2246467991473532e-16,
+          0.0
+        ],
+        "release_position_m": [
+          17620.0,
+          2.2043642384652358e-14,
+          1800.0
+        ],
+        "release_time_s": 1.5,
+        "speed_mps": 120.0
+      }
+    }
+  },
+  "q2": {
+    "centerline": {
+      "boundary_residual_max_m": 6.217248937900877e-14,
+      "constraint_violations": {
+        "explosion_after_impact_s": 0.0,
+        "explosion_below_ground_m": 0.0,
+        "heading_norm_error": 0.0,
+        "max": 0.0,
+        "negative_fuse_delay_s": 0.0,
+        "negative_release_time_s": 0.0,
+        "speed_above_140_mps": 0.0,
+        "speed_below_70_mps": 0.0
+      },
+      "duration_s": 4.832501802462596,
+      "global_search": {
+        "coarse_duration_s": 4.832499301166886,
+        "coarse_margin_max_m": 9.874707053237692,
+        "decoded_strategy": {
+          "explosion_position_m": [
+            17899.11058693673,
+            12.018495460965676,
+            1797.5082002056354
+          ],
+          "explosion_time_s": 0.7131353960821585,
+          "fuse_delay_s": 0.7131132941395102,
+          "heading_deg": 6.914127581390344,
+          "heading_rad": 0.12067429119821371,
+          "heading_unit": [
+            0.9927276892728318,
+            0.12038162214816613,
+            0.0
+          ],
+          "release_position_m": [
+            17800.003071697913,
+            0.00037248480282471704,
+            1800.0
+          ],
+          "release_time_s": 2.2101942648289352e-05,
+          "speed_mps": 139.99673902043168
+        },
+        "function_evaluations": 6105,
+        "iterations": 124,
+        "message": "Optimization terminated successfully.",
+        "objective": -4.832595900204302,
+        "seed": 20250808,
+        "success": true,
+        "variables_theta_speed_te_fuse_fraction": [
+          0.12067429119821371,
+          139.99673902043168,
+          0.7131353960821585,
+          0.9999690073683487
+        ]
+      },
+      "gravity_sensitivity": {
+        "reoptimized_at_g_9.81": {
+          "boundary_residual_max_m": 2.184918912462308e-13,
+          "constraint_violations": {
+            "explosion_after_impact_s": 0.0,
+            "explosion_below_ground_m": 0.0,
+            "heading_norm_error": 1.1102230246251565e-16,
+            "max": 1.1102230246251565e-16,
+            "negative_fuse_delay_s": 0.0,
+            "negative_release_time_s": 0.0,
+            "speed_above_140_mps": 0.0,
+            "speed_below_70_mps": 0.0
+          },
+          "duration_s": 4.8325127533438526,
+          "intervals_s": [
+            [
+              0.7131250750129214,
+              5.5456378283567735
+            ]
+          ],
+          "strategy": {
+            "explosion_position_m": [
+              17899.111796977388,
+              12.01583135206777,
+              1797.5055751373447
+            ],
+            "explosion_time_s": 0.7131250750118394,
+            "fuse_delay_s": 0.7131250750118394,
+            "heading_deg": 6.9125261971167,
+            "heading_rad": 0.12064634177004896,
+            "heading_unit": [
+              0.9927310534825872,
+              0.12035387592991195,
+              0.0
+            ],
+            "release_position_m": [
+              17800.0,
+              0.0,
+              1800.0
+            ],
+            "release_time_s": 0.0,
+            "speed_mps": 140.0
+          }
+        },
+        "same_strategy_at_g_9.81": {
+          "boundary_residual_max_m": 0.0017905719551034593,
+          "constraint_violations": {
+            "explosion_after_impact_s": 0.0,
+            "explosion_below_ground_m": 0.0,
+            "heading_norm_error": 0.0,
+            "max": 0.0,
+            "negative_fuse_delay_s": 0.0,
+            "negative_release_time_s": 0.0,
+            "speed_above_140_mps": 0.0,
+            "speed_below_70_mps": 0.0
+          },
+          "duration_s": 4.832090765132991,
+          "intervals_s": [
+            [
+              0.7132458203709657,
+              5.545336585503956
+            ]
+          ]
+        }
+      },
+      "intervals_s": [
+        [
+          0.7132458203716284,
+          5.545747622834224
+        ]
+      ],
+      "strategy": {
+        "explosion_position_m": [
+          17899.128885663657,
+          12.015331560317993,
+          1797.5072739586444
+        ],
+        "explosion_time_s": 0.7132458203709657,
+        "fuse_delay_s": 0.7132458203709657,
+        "heading_deg": 6.911061390174927,
+        "heading_rad": 0.12062077606600896,
+        "heading_unit": [
+          0.9927341300897319,
+          0.1203284960222781,
+          0.0
+        ],
+        "release_position_m": [
+          17800.0,
+          0.0,
+          1800.0
+        ],
+        "release_time_s": 0.0,
+        "speed_mps": 140.0
+      }
+    },
+    "comparison": {
+      "centerline_minus_full_cylinder_s": 0.24443826268436464,
+      "engineering_loss_from_tau_0_s": 1.960688642554942e-07
+    },
+    "dense_azimuth_crosscheck": [
+      {
+        "absolute_cosine_difference": 7.771561172376096e-16,
+        "dense_min_cosine": 0.999984564325684,
+        "exact_min_cosine": 0.9999845643256833,
+        "time_s": 0.9327237279251244
+      },
+      {
+        "absolute_cosine_difference": 1.5654144647214707e-14,
+        "dense_min_cosine": 0.9997230281858774,
+        "exact_min_cosine": 0.9997230281858618,
+        "time_s": 5.520787267703355
+      }
+    ],
+    "full_cylinder_tau_0.02_engineering": {
+      "boundary_residual_max_m": 1.7053025658242404e-12,
+      "constraint_violations": {
+        "explosion_after_impact_s": 0.0,
+        "explosion_below_ground_m": 0.0,
+        "heading_norm_error": 0.0,
+        "max": 0.0,
+        "negative_fuse_delay_s": 0.0,
+        "negative_release_time_s": 0.0,
+        "speed_above_140_mps": 0.0,
+        "speed_below_70_mps": 0.0
+      },
+      "duration_s": 4.588063343709367,
+      "gravity_sensitivity": {
+        "same_strategy_at_g_9.81": {
+          "boundary_residual_max_m": 1.3847123696564267e-06,
+          "constraint_violations": {
+            "explosion_after_impact_s": 0.0,
+            "explosion_below_ground_m": 0.0,
+            "heading_norm_error": 0.0,
+            "max": 0.0,
+            "negative_fuse_delay_s": 0.0,
+            "negative_release_time_s": 0.0,
+            "speed_above_140_mps": 0.0,
+            "speed_below_70_mps": 0.0
+          },
+          "duration_s": 4.588063011290775,
+          "intervals_s": [
+            [
+              0.9325838181009791,
+              5.5206468293917546
+            ]
+          ]
+        }
+      },
+      "interpretation": "engineering plan with strictly positive 0.02 s fuse",
+      "intervals_s": [
+        [
+          0.9325838181009791,
+          5.520647161810346
+        ]
+      ],
+      "polished_exit_time_s": 5.5206471618099515,
+      "strategy": {
+        "explosion_position_m": [
+          17930.043702913812,
+          11.619029952047093,
+          1799.99804
+        ],
+        "explosion_time_s": 0.9325838181009791,
+        "fuse_delay_s": 0.02,
+        "heading_deg": 5.105655530903691,
+        "heading_rad": 0.08911049948692851,
+        "heading_unit": [
+          0.9960322860126435,
+          0.08899261329137094,
+          0.0
+        ],
+        "release_position_m": [
+          17927.254812512976,
+          11.369850634831252,
+          1800.0
+        ],
+        "release_time_s": 0.9125838181009791,
+        "speed_mps": 140.0
+      }
+    },
+    "full_cylinder_tau_0_boundary": {
+      "boundary_residual_max_m": 6.892264536872972e-13,
+      "constraint_violations": {
+        "explosion_after_impact_s": 0.0,
+        "explosion_below_ground_m": 0.0,
+        "heading_norm_error": 0.0,
+        "max": 0.0,
+        "negative_fuse_delay_s": 0.0,
+        "negative_release_time_s": 0.0,
+        "speed_above_140_mps": 0.0,
+        "speed_below_70_mps": 0.0
+      },
+      "duration_s": 4.588063539778231,
+      "global_search": {
+        "coarse_duration_s": 4.588081466215524,
+        "coarse_margin_max_m": 9.380357015986476,
+        "decoded_strategy": {
+          "explosion_position_m": [
+            17928.693998078066,
+            11.665553547905663,
+            1799.8725292801287
+          ],
+          "explosion_time_s": 0.9230787104552958,
+          "fuse_delay_s": 0.16128990243284388,
+          "heading_deg": 5.179459299885043,
+          "heading_rad": 0.09039861825603435,
+          "heading_unit": [
+            0.9959168266556991,
+            0.09027554698832917,
+            0.0
+          ],
+          "release_position_m": [
+            17906.207245693247,
+            9.627226835074449,
+            1800.0
+          ],
+          "release_time_s": 0.7617888080224519,
+          "speed_mps": 139.98983070388834
+        },
+        "function_evaluations": 6589,
+        "iterations": 132,
+        "message": "Optimization terminated successfully.",
+        "objective": -4.5889198865547165,
+        "seed": 20250808,
+        "success": true,
+        "variables_theta_speed_te_fuse_fraction": [
+          0.09039861825603432,
+          139.98983070388834,
+          0.9230787104552958,
+          0.1747303893004854
+        ]
+      },
+      "gravity_sensitivity": {
+        "same_strategy_at_g_9.81": {
+          "boundary_residual_max_m": 6.892264536872972e-13,
+          "constraint_violations": {
+            "explosion_after_impact_s": 0.0,
+            "explosion_below_ground_m": 0.0,
+            "heading_norm_error": 0.0,
+            "max": 0.0,
+            "negative_fuse_delay_s": 0.0,
+            "negative_release_time_s": 0.0,
+            "speed_above_140_mps": 0.0,
+            "speed_below_70_mps": 0.0
+          },
+          "duration_s": 4.588063539778231,
+          "intervals_s": [
+            [
+              0.9327237279251244,
+              5.520787267703355
+            ]
+          ]
+        }
+      },
+      "interpretation": "closed feasible set tau >= 0; exact boundary optimum",
+      "intervals_s": [
+        [
+          0.9327237279251244,
+          5.520787267703355
+        ]
+      ],
+      "polished_exit_time_s": 5.520787267704164,
+      "strategy": {
+        "explosion_position_m": [
+          17930.063423448068,
+          11.618412654288672,
+          1800.0
+        ],
+        "explosion_time_s": 0.9327237279251244,
+        "fuse_delay_s": 0.0,
+        "heading_deg": 5.10461570930628,
+        "heading_rad": 0.08909235117642034,
+        "heading_unit": [
+          0.9960339009141952,
+          0.08897453697351386,
+          0.0
+        ],
+        "release_position_m": [
+          17930.063423448068,
+          11.618412654288672,
+          1800.0
+        ],
+        "release_time_s": 0.9327237279251244,
+        "speed_mps": 140.0
+      }
+    }
+  }
+}

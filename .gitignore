@@ -1,0 +1,31 @@
+.env
+.agent-data/
+__pycache__/
+*.pyc
+*.log
+**/__pycache__/
+**/workflow_events.jsonl
+
+# Official contest statement/templates and source manifests are local inputs;
+# publish code and derived results instead of redistributing sources or paths.
+projects/*/source/*.pdf
+projects/*/source/*.xlsx
+projects/*/source/problem.txt
+projects/*/source/MANIFEST.sha256
+
+# Raw contest archives and row-level datasets stay local. Projects may publish
+# source code, aggregate tables, figures and reports, but never participant or
+# medical records.
+projects/*/*.zip
+projects/*/raw/
+projects/*/data/raw/
+projects/*/data/processed/
+projects/*/validation/*_render/
+projects/*/validation/lo_profile*/
+
+# LaTeX build cache; keep the source and final PDF.
+*.aux
+*.out
+*.toc
+*.xdv
+*.synctex.gz

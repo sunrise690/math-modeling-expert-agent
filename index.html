@@ -1,0 +1,2567 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>数模 Agent</title>
+    <style>
+      :root {
+        --sand: #e8dcc7;
+        --oat: #d4b895;
+        --sage: #8b9d83;
+        --clay: #b08b6e;
+        --terracotta: #c66b3d;
+        --moss: #606c38;
+        --moss-soft: rgba(96, 108, 56, 0.16);
+        --moss-line: rgba(96, 108, 56, 0.26);
+        --sand-glass: rgba(232, 220, 199, 0.74);
+        --radius: 24px;
+        --serif: Fraunces, "Libre Caslon Text", Georgia, serif;
+        --sans: Epilogue, Greycliff, "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+        --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        min-width: 320px;
+        background: var(--sand);
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        color: var(--moss);
+        background:
+          radial-gradient(circle at 12% 8%, rgba(139, 157, 131, 0.42), transparent 28rem),
+          radial-gradient(circle at 88% 12%, rgba(198, 107, 61, 0.2), transparent 26rem),
+          linear-gradient(140deg, var(--sand), var(--oat));
+        font-family: var(--sans);
+        font-size: 15px;
+        line-height: 1.55;
+        letter-spacing: 0;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.022;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.8'/%3E%3C/svg%3E");
+        mix-blend-mode: multiply;
+      }
+
+      button,
+      input,
+      textarea,
+      select {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .icon {
+        width: 18px;
+        height: 18px;
+        flex: 0 0 auto;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+      }
+
+      .app {
+        position: relative;
+        width: min(1220px, calc(100% - 36px));
+        min-height: calc(100vh - 36px);
+        margin: 18px auto;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        border: 1px solid var(--moss-line);
+        border-radius: 32px;
+        overflow: hidden;
+        background: var(--sand-glass);
+        backdrop-filter: blur(18px);
+      }
+
+      .topbar {
+        min-height: 76px;
+        padding: 18px 22px;
+        border-bottom: 1px solid var(--moss-line);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 18px;
+        display: grid;
+        place-items: center;
+        color: var(--sand);
+        background: var(--moss);
+      }
+
+      .brand-text strong {
+        display: block;
+        font-family: var(--serif);
+        font-size: 22px;
+        line-height: 1.05;
+      }
+
+      .brand-text span {
+        display: block;
+        color: rgba(96, 108, 56, 0.72);
+        font-size: 12px;
+      }
+
+      .top-actions {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .settings-trigger {
+        min-height: 38px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border: 1px solid var(--moss-line);
+        border-radius: 999px;
+        background: rgba(232, 220, 199, 0.66);
+        color: var(--moss);
+        font-size: 13px;
+        font-weight: 800;
+        transition: background 300ms ease, border-color 300ms ease, transform 300ms ease;
+      }
+
+      .settings-trigger:hover {
+        transform: translateY(-1px);
+        border-color: var(--moss);
+        background: var(--sand);
+      }
+
+      .pill {
+        min-height: 36px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border: 1px solid var(--moss-line);
+        border-radius: 999px;
+        background: rgba(232, 220, 199, 0.56);
+        color: var(--moss);
+        font-size: 13px;
+        white-space: nowrap;
+      }
+
+      .pill-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--terracotta);
+      }
+
+      .pill-dot.ready {
+        background: var(--moss);
+      }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 390px;
+        min-height: 0;
+      }
+
+      .main {
+        padding: 34px;
+        display: grid;
+        gap: 24px;
+        align-content: start;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 24px;
+        align-items: end;
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 680px;
+        font-family: var(--serif);
+        font-size: 46px;
+        line-height: 1.06;
+        letter-spacing: 0;
+        font-weight: 700;
+      }
+
+      .hero p {
+        max-width: 700px;
+        margin: 14px 0 0;
+        color: rgba(96, 108, 56, 0.76);
+        font-size: 16px;
+      }
+
+      .hero-badge {
+        width: 142px;
+        min-height: 116px;
+        padding: 16px;
+        border-radius: 28px;
+        background: var(--sage);
+        color: var(--sand);
+        display: grid;
+        align-content: space-between;
+      }
+
+      .hero-badge strong {
+        font-family: var(--serif);
+        font-size: 34px;
+        line-height: 1;
+      }
+
+      .hero-badge span {
+        font-size: 13px;
+      }
+
+      .agent-card {
+        border-radius: 30px;
+        background: rgba(232, 220, 199, 0.72);
+        border: 1px solid var(--moss-line);
+        overflow: hidden;
+      }
+
+      .mode-strip {
+        padding: 12px;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .mode-button {
+        min-height: 86px;
+        padding: 13px;
+        border: 1px solid transparent;
+        border-radius: 20px;
+        background: rgba(232, 220, 199, 0.46);
+        color: var(--moss);
+        text-align: left;
+        display: grid;
+        align-content: space-between;
+        gap: 8px;
+        transition:
+          background 320ms ease,
+          border-color 320ms ease,
+          transform 320ms ease;
+      }
+
+      .mode-button:hover {
+        transform: translateY(-1px);
+        border-color: var(--moss-line);
+        background: rgba(212, 184, 149, 0.34);
+      }
+
+      .mode-button[aria-pressed="true"] {
+        background: var(--moss);
+        border-color: var(--moss);
+        color: var(--sand);
+      }
+
+      .mode-button strong {
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      .mode-button span {
+        font-family: var(--mono);
+        font-size: 11px;
+        overflow-wrap: anywhere;
+      }
+
+      .composer {
+        padding: 0 18px 20px;
+        display: grid;
+        gap: 16px;
+      }
+
+      .field {
+        display: grid;
+        gap: 8px;
+      }
+
+      label,
+      .field-label {
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--moss);
+      }
+
+      .quick-panel,
+      .control-block {
+        display: grid;
+        gap: 9px;
+      }
+
+      .quick-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .counter {
+        color: rgba(96, 108, 56, 0.62);
+        font-family: var(--mono);
+        font-size: 12px;
+      }
+
+      .chip-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .chip {
+        min-height: 34px;
+        padding: 7px 11px;
+        border: 1px solid var(--moss-line);
+        border-radius: 999px;
+        background: rgba(232, 220, 199, 0.58);
+        color: var(--moss);
+        font-size: 13px;
+        font-weight: 800;
+        transition:
+          background 300ms ease,
+          border-color 300ms ease,
+          transform 300ms ease;
+      }
+
+      .chip:hover {
+        transform: translateY(-1px);
+        border-color: var(--moss);
+      }
+
+      .chip[aria-pressed="true"] {
+        border-color: var(--moss);
+        background: var(--moss);
+        color: var(--sand);
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 250px;
+        resize: vertical;
+        border: 1px solid var(--moss-line);
+        border-radius: 24px;
+        padding: 18px;
+        outline: none;
+        color: var(--moss);
+        background: rgba(232, 220, 199, 0.8);
+        transition:
+          border-color 320ms ease,
+          background 320ms ease;
+      }
+
+      textarea:focus,
+      select:focus {
+        border-color: var(--moss);
+        background: var(--sand);
+      }
+
+      textarea::placeholder {
+        color: rgba(96, 108, 56, 0.52);
+      }
+
+      textarea.drop-target {
+        border-color: var(--terracotta);
+        background: rgba(212, 184, 149, 0.38);
+      }
+
+      .attachment-row {
+        min-height: 40px;
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+      }
+
+      .icon-button {
+        width: 40px;
+        height: 40px;
+        flex: 0 0 40px;
+        display: inline-grid;
+        place-items: center;
+        border: 1px solid var(--moss-line);
+        border-radius: 14px;
+        color: var(--moss);
+        background: rgba(232, 220, 199, 0.62);
+        transition: border-color 240ms ease, background 240ms ease, transform 240ms ease;
+      }
+
+      .icon-button:hover {
+        border-color: var(--moss);
+        background: var(--sand);
+        transform: translateY(-1px);
+      }
+
+      .icon-button:disabled {
+        cursor: wait;
+        opacity: 0.52;
+        transform: none;
+      }
+
+      .upload-list {
+        min-width: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .upload-chip {
+        min-width: 0;
+        max-width: 260px;
+        min-height: 40px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 28px;
+        align-items: center;
+        border: 1px solid var(--moss-line);
+        border-radius: 14px;
+        background: rgba(139, 157, 131, 0.1);
+      }
+
+      .upload-copy {
+        min-width: 0;
+        padding: 6px 5px 6px 10px;
+      }
+
+      .upload-name,
+      .upload-meta {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .upload-name {
+        color: var(--moss);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .upload-meta {
+        margin-top: 1px;
+        color: rgba(96, 108, 56, 0.62);
+        font-family: var(--mono);
+        font-size: 10px;
+      }
+
+      .remove-upload {
+        width: 28px;
+        height: 28px;
+        display: grid;
+        place-items: center;
+        border: 0;
+        border-radius: 9px;
+        color: rgba(96, 108, 56, 0.7);
+        background: transparent;
+      }
+
+      .remove-upload:hover {
+        color: var(--terracotta);
+        background: rgba(198, 107, 61, 0.1);
+      }
+
+      .remove-upload .icon {
+        width: 15px;
+        height: 15px;
+      }
+
+      .options {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .option {
+        display: grid;
+        gap: 8px;
+      }
+
+      select {
+        width: 100%;
+        min-height: 44px;
+        border: 1px solid var(--moss-line);
+        border-radius: 18px;
+        padding: 9px 12px;
+        outline: none;
+        color: var(--moss);
+        background: rgba(232, 220, 199, 0.82);
+      }
+
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .button {
+        min-height: 46px;
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 10px 15px;
+        border: 1px solid var(--moss-line);
+        border-radius: 18px;
+        background: rgba(232, 220, 199, 0.74);
+        color: var(--moss);
+        font-weight: 800;
+        transition:
+          background 320ms ease,
+          transform 320ms ease,
+          border-color 320ms ease;
+      }
+
+      .button:hover {
+        transform: translateY(-1px);
+        border-color: var(--moss);
+      }
+
+      .button.primary {
+        border-color: var(--moss);
+        background: var(--moss);
+        color: var(--sand);
+      }
+
+      .button:disabled {
+        cursor: wait;
+        opacity: 0.58;
+        transform: none;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      .hint {
+        color: rgba(96, 108, 56, 0.72);
+        font-size: 13px;
+      }
+
+      .side {
+        border-left: 1px solid var(--moss-line);
+        background: rgba(212, 184, 149, 0.34);
+        padding: 24px;
+        display: grid;
+        gap: 18px;
+        align-content: start;
+      }
+
+      .panel {
+        border: 1px solid var(--moss-line);
+        border-radius: 26px;
+        background: rgba(232, 220, 199, 0.76);
+        overflow: hidden;
+      }
+
+      .panel-head {
+        min-height: 58px;
+        padding: 16px 18px;
+        border-bottom: 1px solid var(--moss-line);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .panel-head h2,
+      .panel-head h3 {
+        margin: 0;
+        font-family: var(--serif);
+        font-size: 19px;
+        line-height: 1.1;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        min-height: 30px;
+        padding: 5px 10px;
+        border-radius: 999px;
+        background: var(--oat);
+        color: var(--moss);
+        font-family: var(--mono);
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      .prompt-box {
+        min-height: 300px;
+        margin: 0;
+        padding: 18px;
+        color: var(--moss);
+        font-family: var(--mono);
+        font-size: 13px;
+        line-height: 1.62;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+
+      .panel-actions {
+        padding: 15px 18px 18px;
+        border-top: 1px solid var(--moss-line);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .artifact-list {
+        padding: 0 18px 16px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .artifact-link {
+        min-height: 32px;
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 10px;
+        border: 1px solid var(--moss-line);
+        border-radius: 12px;
+        color: var(--moss);
+        background: rgba(232, 220, 199, 0.58);
+        font-family: var(--mono);
+        font-size: 11px;
+        text-decoration: none;
+      }
+
+      .mode-detail {
+        padding: 16px 18px 18px;
+        display: grid;
+        gap: 14px;
+      }
+
+      .detail-row {
+        display: grid;
+        gap: 6px;
+      }
+
+      .detail-row span:first-child {
+        color: rgba(96, 108, 56, 0.66);
+        font-size: 13px;
+      }
+
+      .detail-row span:last-child,
+      .detail-row code {
+        color: var(--moss);
+      }
+
+      code {
+        font-family: var(--mono);
+        font-size: 12px;
+        overflow-wrap: anywhere;
+      }
+
+      .toast {
+        min-height: 20px;
+        color: rgba(96, 108, 56, 0.68);
+        font-size: 13px;
+      }
+
+      .settings-dialog {
+        width: min(980px, calc(100vw - 28px));
+        max-width: none;
+        max-height: min(820px, calc(100vh - 28px));
+        margin: auto;
+        padding: 0;
+        border: 1px solid var(--moss-line);
+        border-radius: 28px;
+        color: var(--moss);
+        background: var(--sand);
+        box-shadow: 0 28px 80px rgba(96, 108, 56, 0.24);
+        overflow: hidden;
+      }
+
+      .settings-dialog::backdrop {
+        background: rgba(96, 108, 56, 0.46);
+        backdrop-filter: blur(9px);
+      }
+
+      .settings-dialog[open] {
+        animation: settings-in 320ms ease both;
+      }
+
+      @keyframes settings-in {
+        from {
+          opacity: 0;
+          transform: translateY(14px) scale(0.985);
+        }
+      }
+
+      .settings-form {
+        min-height: 560px;
+        max-height: min(820px, calc(100vh - 28px));
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr) auto;
+      }
+
+      .settings-head {
+        min-height: 84px;
+        padding: 20px 22px;
+        border-bottom: 1px solid var(--moss-line);
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 18px;
+        background: rgba(139, 157, 131, 0.09);
+      }
+
+      .settings-head h2 {
+        margin: 0;
+        font-family: var(--serif);
+        font-size: 28px;
+        line-height: 1.1;
+      }
+
+      .settings-head p {
+        max-width: 660px;
+        margin: 6px 0 0;
+        color: rgba(96, 108, 56, 0.72);
+        font-size: 13px;
+      }
+
+      .dialog-close {
+        width: 40px;
+        height: 40px;
+        flex: 0 0 auto;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--moss-line);
+        border-radius: 14px;
+        color: var(--moss);
+        background: rgba(232, 220, 199, 0.7);
+      }
+
+      .dialog-close:hover {
+        border-color: var(--moss);
+        background: var(--oat);
+      }
+
+      .settings-body {
+        min-height: 0;
+        display: grid;
+        grid-template-columns: 270px minmax(0, 1fr);
+        overflow: hidden;
+      }
+
+      .provider-rail {
+        min-height: 0;
+        padding: 18px;
+        border-right: 1px solid var(--moss-line);
+        display: grid;
+        align-content: start;
+        gap: 9px;
+        overflow-y: auto;
+        background: rgba(212, 184, 149, 0.24);
+      }
+
+      .provider-rail-label {
+        margin: 0 0 3px;
+        color: rgba(96, 108, 56, 0.68);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .provider-option {
+        width: 100%;
+        min-height: 66px;
+        padding: 11px 12px;
+        border: 1px solid transparent;
+        border-radius: 18px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 10px;
+        color: var(--moss);
+        background: rgba(232, 220, 199, 0.48);
+        text-align: left;
+        transition: background 300ms ease, border-color 300ms ease, transform 300ms ease;
+      }
+
+      .provider-option:hover {
+        transform: translateY(-1px);
+        border-color: var(--moss-line);
+        background: rgba(232, 220, 199, 0.86);
+      }
+
+      .provider-option[aria-checked="true"] {
+        border-color: var(--moss);
+        background: var(--moss);
+        color: var(--sand);
+      }
+
+      .provider-option strong,
+      .provider-option span {
+        display: block;
+      }
+
+      .provider-option strong {
+        font-size: 13px;
+      }
+
+      .provider-option span {
+        margin-top: 2px;
+        color: currentColor;
+        font-size: 11px;
+        opacity: 0.7;
+      }
+
+      .provider-choice-mark {
+        width: 12px;
+        height: 12px;
+        border: 1px solid currentColor;
+        border-radius: 999px;
+        opacity: 0.56;
+      }
+
+      .provider-option[aria-checked="true"] .provider-choice-mark {
+        border: 3px solid var(--sand);
+        background: var(--terracotta);
+        opacity: 1;
+      }
+
+      .provider-form-panel {
+        min-width: 0;
+        min-height: 0;
+        padding: 22px;
+        overflow-y: auto;
+      }
+
+      .provider-route {
+        margin-bottom: 18px;
+        padding: 14px 16px;
+        border: 1px solid var(--moss-line);
+        border-radius: 18px;
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 11px;
+        background: rgba(139, 157, 131, 0.1);
+      }
+
+      .provider-route[data-tone="error"] {
+        border-color: rgba(198, 107, 61, 0.58);
+        background: rgba(198, 107, 61, 0.09);
+      }
+
+      .config-lock-notice {
+        margin: -6px 0 18px;
+        padding: 14px 16px;
+        border: 1px solid rgba(198, 107, 61, 0.52);
+        border-radius: 18px;
+        background: rgba(198, 107, 61, 0.09);
+      }
+
+      .config-lock-notice strong,
+      .config-lock-notice span {
+        display: block;
+      }
+
+      .config-lock-notice strong {
+        color: var(--terracotta);
+        font-size: 13px;
+      }
+
+      .config-lock-notice span {
+        margin-top: 3px;
+        color: rgba(96, 108, 56, 0.76);
+        font-size: 12px;
+      }
+
+      .runtime-restart-note {
+        margin: 16px 0 0;
+        padding-top: 12px;
+        border-top: 1px solid var(--moss-line);
+      }
+
+      .provider-route[data-tone="busy"] .route-dot {
+        animation: route-pulse 900ms ease-in-out infinite alternate;
+      }
+
+      @keyframes route-pulse {
+        to { opacity: 0.28; }
+      }
+
+      .route-dot {
+        width: 10px;
+        height: 10px;
+        margin-top: 5px;
+        border-radius: 999px;
+        background: var(--sage);
+      }
+
+      .provider-route[data-tone="error"] .route-dot {
+        background: var(--terracotta);
+      }
+
+      .provider-route strong,
+      .provider-route span {
+        display: block;
+      }
+
+      .provider-route strong {
+        font-size: 13px;
+      }
+
+      .provider-route span {
+        margin-top: 2px;
+        color: rgba(96, 108, 56, 0.72);
+        font-size: 12px;
+      }
+
+      .codex-session {
+        margin-bottom: 18px;
+        padding: 16px;
+        border: 1px solid var(--moss-line);
+        border-radius: 20px;
+        display: grid;
+        gap: 10px;
+        background: rgba(212, 184, 149, 0.22);
+      }
+
+      .codex-session-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .codex-session h3 {
+        margin: 0;
+        font-family: var(--serif);
+        font-size: 18px;
+      }
+
+      .session-badge {
+        min-height: 28px;
+        padding: 4px 9px;
+        border-radius: 999px;
+        background: var(--oat);
+        font-family: var(--mono);
+        font-size: 11px;
+      }
+
+      .codex-session p {
+        margin: 0;
+        color: rgba(96, 108, 56, 0.74);
+        font-size: 12px;
+      }
+
+      .settings-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 15px;
+      }
+
+      .settings-field {
+        min-width: 0;
+        display: grid;
+        align-content: start;
+        gap: 7px;
+      }
+
+      .settings-field.wide {
+        grid-column: 1 / -1;
+      }
+
+      .settings-label-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .settings-field input,
+      .settings-field select {
+        width: 100%;
+        min-height: 46px;
+        border: 1px solid var(--moss-line);
+        border-radius: 16px;
+        padding: 10px 12px;
+        outline: none;
+        color: var(--moss);
+        background: rgba(232, 220, 199, 0.76);
+        transition: background 300ms ease, border-color 300ms ease;
+      }
+
+      .settings-field input:focus,
+      .settings-field select:focus {
+        border-color: var(--moss);
+        background: var(--sand);
+      }
+
+      .settings-field input::placeholder {
+        color: rgba(96, 108, 56, 0.48);
+      }
+
+      .settings-form[data-config-locked="true"] .provider-option:disabled,
+      .settings-form[data-config-locked="true"] .settings-field input:disabled,
+      .settings-form[data-config-locked="true"] .settings-field select:disabled,
+      .settings-form[data-config-locked="true"] .check-row input:disabled,
+      .settings-form[data-config-locked="true"] .button:disabled {
+        cursor: not-allowed;
+        opacity: 0.62;
+        transform: none;
+      }
+
+      .settings-note {
+        margin: 0;
+        color: rgba(96, 108, 56, 0.66);
+        font-size: 11px;
+      }
+
+      .check-row {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .check-row input {
+        width: 16px;
+        min-height: 16px;
+        height: 16px;
+        margin: 0;
+        accent-color: var(--moss);
+      }
+
+      .settings-foot {
+        min-height: 72px;
+        padding: 13px 18px;
+        border-top: 1px solid var(--moss-line);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        background: rgba(139, 157, 131, 0.08);
+      }
+
+      .settings-actions {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+
+      .settings-message {
+        min-height: 20px;
+        color: rgba(96, 108, 56, 0.74);
+        font-size: 12px;
+      }
+
+      @media (max-width: 1050px) {
+        .workspace {
+          grid-template-columns: 1fr;
+        }
+
+        .side {
+          border-left: 0;
+          border-top: 1px solid var(--moss-line);
+        }
+      }
+
+      @media (max-width: 760px) {
+        .app {
+          width: min(100% - 18px, 1220px);
+          min-height: calc(100vh - 18px);
+          margin: 9px auto;
+          border-radius: 24px;
+        }
+
+        .topbar {
+          align-items: flex-start;
+          flex-direction: column;
+          padding: 16px;
+        }
+
+        .top-actions {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .pill {
+          white-space: normal;
+        }
+
+        .main,
+        .side {
+          padding: 18px;
+        }
+
+        .hero {
+          grid-template-columns: 1fr;
+        }
+
+        h1 {
+          font-size: 34px;
+        }
+
+        .hero-badge {
+          width: 100%;
+          min-height: 88px;
+        }
+
+        .mode-strip,
+        .options {
+          grid-template-columns: 1fr;
+        }
+
+        .mode-button {
+          min-height: 74px;
+        }
+
+        textarea {
+          min-height: 230px;
+        }
+
+        .settings-dialog {
+          width: calc(100vw - 12px);
+          max-height: calc(100vh - 12px);
+          border-radius: 22px;
+        }
+
+        .settings-form {
+          max-height: calc(100vh - 12px);
+        }
+
+        .settings-head {
+          padding: 17px;
+        }
+
+        .settings-head h2 {
+          font-size: 24px;
+        }
+
+        .settings-body {
+          grid-template-columns: 1fr;
+          overflow-y: auto;
+        }
+
+        .provider-rail {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          border-right: 0;
+          border-bottom: 1px solid var(--moss-line);
+          overflow: visible;
+        }
+
+        .provider-rail-label {
+          grid-column: 1 / -1;
+        }
+
+        .provider-option {
+          min-height: 62px;
+        }
+
+        .provider-form-panel {
+          overflow: visible;
+          padding: 18px;
+        }
+
+        .settings-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .settings-field.wide {
+          grid-column: auto;
+        }
+
+        .settings-foot {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .settings-actions {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .settings-actions .button:last-child {
+          grid-column: 1 / -1;
+          justify-content: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M5 7h14"></path>
+              <path d="M5 12h9"></path>
+              <path d="M5 17h14"></path>
+            </svg>
+          </span>
+          <div class="brand-text">
+            <strong>数模 Agent</strong>
+            <span>solver / paper / cumcm / reviewer</span>
+          </div>
+        </div>
+        <div class="top-actions">
+          <span class="pill" id="backend-status"><span class="pill-dot" aria-hidden="true"></span>连接中</span>
+          <button class="settings-trigger" type="button" id="open-settings" aria-haspopup="dialog">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 7h10"></path><path d="M18 7h2"></path><circle cx="16" cy="7" r="2"></circle>
+              <path d="M4 17h2"></path><path d="M10 17h10"></path><circle cx="8" cy="17" r="2"></circle>
+            </svg>
+            模型设置
+          </button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <section class="main" aria-label="数模 Agent 输入">
+          <div class="hero">
+            <div>
+              <h1>数模 Agent</h1>
+              <p>粘贴，选择，生成。</p>
+            </div>
+            <div class="hero-badge" aria-label="当前可用能力">
+              <strong>4</strong>
+              <span>个入口</span>
+            </div>
+          </div>
+
+          <section class="agent-card">
+            <div class="mode-strip" role="group" aria-label="选择 agent 目标">
+              <button class="mode-button" type="button" data-mode="solver" aria-pressed="true">
+                <strong>建模</strong>
+                <span>math-modeling-solver</span>
+              </button>
+              <button class="mode-button" type="button" data-mode="cumcm" aria-pressed="false">
+                <strong>交付</strong>
+                <span>cumcm-modeling</span>
+              </button>
+              <button class="mode-button" type="button" data-mode="paper" aria-pressed="false">
+                <strong>论文</strong>
+                <span>math-modeling-paper</span>
+              </button>
+              <button class="mode-button" type="button" data-mode="reviewer" aria-pressed="false">
+                <strong>质检</strong>
+                <span>math-modeling-reviewer</span>
+              </button>
+            </div>
+
+            <div class="composer">
+              <div class="field">
+                <label for="task-input">内容</label>
+                <textarea id="task-input" placeholder="粘贴赛题、数据、方案或论文。"></textarea>
+                <div class="attachment-row">
+                  <input id="file-input" type="file" accept=".csv,.tsv,.xlsx,.json" multiple hidden>
+                  <button class="icon-button" type="button" id="attach" title="添加数据附件" aria-label="添加数据附件">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="m21.4 11.6-8.9 8.9a6 6 0 0 1-8.5-8.5l9.6-9.6a4 4 0 0 1 5.7 5.7l-9.6 9.6a2 2 0 0 1-2.8-2.8l8.9-8.9"></path></svg>
+                  </button>
+                  <div class="upload-list" id="upload-list" aria-live="polite"></div>
+                </div>
+              </div>
+
+              <div class="quick-panel">
+                <div class="quick-head">
+                  <span class="field-label">常用</span>
+                  <span class="counter" id="char-count">0 字</span>
+                </div>
+                <div class="chip-row" aria-label="常用任务">
+                  <button class="chip preset-chip" type="button" data-mode="solver" data-focus="拆题选模">拆题</button>
+                  <button class="chip preset-chip" type="button" data-mode="solver" data-focus="代码复现">代码</button>
+                  <button class="chip preset-chip" type="button" data-mode="paper" data-focus="论文表达">论文</button>
+                  <button class="chip preset-chip" type="button" data-mode="reviewer" data-focus="风险审查">审稿</button>
+                </div>
+              </div>
+
+              <div class="options">
+                <label class="option">
+                  <span class="field-label">语言</span>
+                  <select id="language">
+                    <option value="简体中文">简体中文</option>
+                    <option value="English">English</option>
+                  </select>
+                </label>
+                <label class="option">
+                  <span class="field-label">数据</span>
+                  <select id="data-state">
+                    <option value="无数据文件">无数据文件</option>
+                    <option value="有数据文件">有数据文件</option>
+                    <option value="只有字段">只有字段</option>
+                  </select>
+                </label>
+                <label class="option">
+                  <span class="field-label">重点</span>
+                  <select id="focus">
+                    <option value="拆题选模">拆题选模</option>
+                    <option value="代码复现">代码复现</option>
+                    <option value="论文表达">论文表达</option>
+                    <option value="风险审查">风险审查</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="control-block">
+                <span class="field-label">深度</span>
+                <div class="chip-row" role="group" aria-label="输出深度">
+                  <button class="chip depth-chip" type="button" data-depth="简要" aria-pressed="false">简</button>
+                  <button class="chip depth-chip" type="button" data-depth="标准" aria-pressed="true">标准</button>
+                  <button class="chip depth-chip" type="button" data-depth="详细" aria-pressed="false">详</button>
+                </div>
+              </div>
+
+              <div class="control-block">
+                <span class="field-label">附加</span>
+                <div class="chip-row" aria-label="附加要求">
+                  <button class="chip requirement-chip" type="button" data-requirement="公式推导" aria-pressed="false">公式</button>
+                  <button class="chip requirement-chip" type="button" data-requirement="代码实现" aria-pressed="false">代码</button>
+                  <button class="chip requirement-chip" type="button" data-requirement="图表方案" aria-pressed="false">图表</button>
+                  <button class="chip requirement-chip" type="button" data-requirement="风险检查" aria-pressed="false">风险</button>
+                </div>
+              </div>
+
+              <div class="actions">
+                <button class="button primary" type="button" id="generate">
+                  <svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+                  运行
+                </button>
+                <button class="button" type="button" id="stop" hidden>
+                  <svg class="icon" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1"></rect></svg>
+                  停止
+                </button>
+                <button class="button" type="button" id="clear">
+                  <svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path></svg>
+                  清空
+                </button>
+                <span class="hint" id="form-hint">待命。</span>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <aside class="side" aria-label="生成结果">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>结果</h2>
+              <span class="badge" id="target-badge">solver</span>
+            </div>
+            <pre class="prompt-box" id="prompt-output">等待任务。</pre>
+            <div class="artifact-list" id="artifact-list" hidden></div>
+            <div class="panel-actions">
+              <button class="button" type="button" id="copy">
+                <svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"></rect><rect x="2" y="2" width="13" height="13" rx="2"></rect></svg>
+                复制
+              </button>
+              <span class="toast" id="copy-state"></span>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h3>目标</h3>
+              <span class="badge" id="mode-label">建模</span>
+            </div>
+            <div class="mode-detail">
+              <div class="detail-row">
+                <span>对象</span>
+                <code id="mode-target">$math-modeling-solver</code>
+              </div>
+              <div class="detail-row">
+                <span>适合</span>
+                <span id="mode-use">赛题、模型、代码。</span>
+              </div>
+              <div class="detail-row">
+                <span>输出</span>
+                <span id="mode-output">拆题、选模、路线。</span>
+              </div>
+            </div>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <dialog class="settings-dialog" id="settings-dialog" aria-labelledby="settings-title">
+      <form class="settings-form" id="provider-form">
+        <header class="settings-head">
+          <div>
+            <h2 id="settings-title">模型与 API</h2>
+            <p>选择本次 Agent 使用的模型通道。Codex 模式使用 Codex Runtime 当前登录会话；其他通道使用各自保存的 API 配置。</p>
+          </div>
+          <button class="dialog-close" type="button" id="close-settings" aria-label="关闭模型设置">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12"></path><path d="m18 6-12 12"></path></svg>
+          </button>
+        </header>
+
+        <div class="settings-body">
+          <nav class="provider-rail" role="radiogroup" aria-label="模型提供商">
+            <p class="provider-rail-label">提供商</p>
+            <button class="provider-option" type="button" role="radio" data-provider="codex-cli" aria-checked="true">
+              <span><strong>Codex Runtime</strong><span>当前登录会话</span></span>
+              <i class="provider-choice-mark" aria-hidden="true"></i>
+            </button>
+            <button class="provider-option" type="button" role="radio" data-provider="openai-responses" aria-checked="false">
+              <span><strong>OpenAI API</strong><span>Responses API</span></span>
+              <i class="provider-choice-mark" aria-hidden="true"></i>
+            </button>
+            <button class="provider-option" type="button" role="radio" data-provider="deepseek" aria-checked="false">
+              <span><strong>DeepSeek</strong><span>独立 API 密钥</span></span>
+              <i class="provider-choice-mark" aria-hidden="true"></i>
+            </button>
+            <button class="provider-option" type="button" role="radio" data-provider="openai-compatible" aria-checked="false">
+              <span><strong>兼容接口</strong><span>OpenAI 格式</span></span>
+              <i class="provider-choice-mark" aria-hidden="true"></i>
+            </button>
+            <button class="provider-option" type="button" role="radio" data-provider="ollama" aria-checked="false">
+              <span><strong>Ollama</strong><span>本机模型服务</span></span>
+              <i class="provider-choice-mark" aria-hidden="true"></i>
+            </button>
+          </nav>
+
+          <section class="provider-form-panel" aria-label="提供商配置">
+            <div class="provider-route" id="provider-route" role="status" aria-live="polite">
+              <span class="route-dot" aria-hidden="true"></span>
+              <span>
+                <strong id="route-title">读取当前配置</strong>
+                <span id="route-detail">正在连接本地后端。</span>
+              </span>
+            </div>
+
+            <div class="config-lock-notice" id="config-lock-notice" role="status" aria-live="polite" hidden>
+              <strong>环境配置锁定 / 只读</strong>
+              <span>当前配置由环境变量或 .env 管理；页面仅展示实际生效配置，不能编辑、测试草稿或保存。</span>
+            </div>
+
+            <section class="codex-session" id="codex-session" data-providers="codex-cli">
+              <div class="codex-session-head">
+                <h3>Codex Runtime 会话</h3>
+                <span class="session-badge" id="codex-session-badge">检测中</span>
+              </div>
+              <p id="codex-session-detail">后端只调用本机 Codex CLI，不读取或导出登录令牌。</p>
+            </section>
+
+            <div class="settings-grid">
+              <label class="settings-field wide" for="provider-model">
+                <span class="settings-label-row"><span>模型</span><span class="settings-note" id="model-hint"></span></span>
+                <input id="provider-model" name="model" type="text" maxlength="120" autocomplete="off" spellcheck="false" list="provider-model-options" required />
+                <datalist id="provider-model-options"></datalist>
+              </label>
+
+              <label class="settings-field wide" for="provider-base-url" data-providers="openai-responses deepseek openai-compatible ollama" hidden>
+                <span>基础 URL</span>
+                <input id="provider-base-url" name="baseUrl" type="url" maxlength="500" autocomplete="url" spellcheck="false" />
+                <span class="settings-note" id="base-url-hint">填写 API 根地址，不包含 chat/completions 或 responses。</span>
+              </label>
+
+              <div class="settings-field wide" id="api-key-field" data-providers="openai-responses deepseek openai-compatible" hidden>
+                <label for="provider-api-key">API 密钥</label>
+                <input id="provider-api-key" name="apiKey" type="password" maxlength="500" autocomplete="new-password" spellcheck="false" />
+                <span class="settings-note" id="api-key-hint">密钥不会在界面中回显；留空保留已保存的密钥。</span>
+                <label class="check-row" for="clear-api-key">
+                  <input id="clear-api-key" name="clearApiKey" type="checkbox" />
+                  清除已保存的密钥
+                </label>
+              </div>
+
+              <label class="settings-field" for="reasoning-effort">
+                <span>推理强度</span>
+                <select id="reasoning-effort" name="reasoningEffort">
+                  <option value="none">无</option>
+                  <option value="low">低</option>
+                  <option value="medium">中</option>
+                  <option value="high">高</option>
+                  <option value="xhigh">很高</option>
+                  <option value="max">最高</option>
+                </select>
+              </label>
+
+              <label class="settings-field" for="text-verbosity" data-providers="codex-cli openai-responses">
+                <span>输出详细度</span>
+                <select id="text-verbosity" name="textVerbosity">
+                  <option value="low">简洁</option>
+                  <option value="medium">标准</option>
+                  <option value="high">详细</option>
+                </select>
+              </label>
+            </div>
+
+            <p class="settings-note runtime-restart-note">调度参数 AGENT_MAX_CONCURRENT_RUNS 与 AGENT_MAX_QUEUED_RUNS 只在后端启动时读取，修改后需重启服务。</p>
+          </section>
+        </div>
+
+        <footer class="settings-foot">
+          <span class="settings-message" id="settings-message" role="status" aria-live="polite"></span>
+          <div class="settings-actions">
+            <button class="button" type="button" id="test-provider">测试连接</button>
+            <button class="button" type="button" id="cancel-settings">取消</button>
+            <button class="button primary" type="submit" id="save-provider">保存并使用</button>
+          </div>
+        </footer>
+      </form>
+    </dialog>
+
+    <script>
+      const modes = {
+        solver: {
+          label: "建模",
+          badge: "solver",
+          target: "$math-modeling-solver",
+          use: "赛题、模型、代码。",
+          output: "拆题、选模、路线。",
+          instruction:
+            "请使用 $math-modeling-solver。先拆解子问题，再根据数学本质推荐模型；如需要代码，请给出可复现的 Python 或 MATLAB 实现路线。",
+        },
+        cumcm: {
+          label: "交付",
+          badge: "cumcm",
+          target: "$cumcm-modeling",
+          use: "整题、数据、论文。",
+          output: "路线、证据、成稿。",
+          instruction:
+            "请使用 $cumcm-modeling。按完整数学建模项目流程推进：解释问题、生成候选路线、选择主路线、构建证据、规划图表、撰写论文并进行风险检查。",
+        },
+        paper: {
+          label: "论文",
+          badge: "paper",
+          target: "$math-modeling-paper",
+          use: "结果、草稿、摘要。",
+          output: "结构、表达、润色。",
+          instruction:
+            "请使用 $math-modeling-paper。围绕数学建模竞赛论文写作展开，优先保证结构、证据、模型检验和表达规范。",
+        },
+        reviewer: {
+          label: "质检",
+          badge: "reviewer",
+          target: "math-modeling-reviewer",
+          use: "方案、论文、证据。",
+          output: "问题、风险、修复。",
+          instruction:
+            "请以 math-modeling-reviewer 的标准审查。优先指出子问题理解、模型匹配、证据链、变量泄漏、复现风险和论文过程痕迹中的具体问题。",
+        },
+      };
+
+      const providerPresets = {
+        "codex-cli": {
+          label: "Codex Runtime 当前登录会话",
+          model: "",
+          modelPlaceholder: "选择当前 Runtime 会话可用的 Codex 模型",
+          modelHint: "使用 Codex Runtime 当前登录会话",
+          baseUrl: "",
+          reasoningEffort: "medium",
+          textVerbosity: "medium",
+        },
+        "openai-responses": {
+          label: "OpenAI API",
+          model: "gpt-5.6-sol",
+          modelPlaceholder: "例如 gpt-5.6-sol",
+          modelHint: "Responses API",
+          baseUrl: "https://api.openai.com/v1",
+          reasoningEffort: "medium",
+          textVerbosity: "medium",
+        },
+        deepseek: {
+          label: "DeepSeek",
+          model: "deepseek-chat",
+          modelPlaceholder: "例如 deepseek-chat",
+          modelHint: "独立密钥与计费",
+          baseUrl: "https://api.deepseek.com",
+          reasoningEffort: "medium",
+          textVerbosity: "medium",
+        },
+        "openai-compatible": {
+          label: "OpenAI 兼容接口",
+          model: "",
+          modelPlaceholder: "填写接口支持的模型名称",
+          modelHint: "Chat Completions 兼容",
+          baseUrl: "",
+          reasoningEffort: "medium",
+          textVerbosity: "medium",
+        },
+        ollama: {
+          label: "Ollama",
+          model: "",
+          modelPlaceholder: "填写本机已安装的模型名称",
+          modelHint: "本机模型服务",
+          baseUrl: "http://127.0.0.1:11434/v1",
+          reasoningEffort: "medium",
+          textVerbosity: "medium",
+        },
+      };
+
+      const modeButtons = [...document.querySelectorAll(".mode-button")];
+      const presetButtons = [...document.querySelectorAll(".preset-chip")];
+      const depthButtons = [...document.querySelectorAll(".depth-chip")];
+      const requirementButtons = [...document.querySelectorAll(".requirement-chip")];
+      const taskInput = document.querySelector("#task-input");
+      const language = document.querySelector("#language");
+      const dataState = document.querySelector("#data-state");
+      const focus = document.querySelector("#focus");
+      const promptOutput = document.querySelector("#prompt-output");
+      const copyState = document.querySelector("#copy-state");
+      const formHint = document.querySelector("#form-hint");
+      const charCount = document.querySelector("#char-count");
+      const generateButton = document.querySelector("#generate");
+      const stopButton = document.querySelector("#stop");
+      const clearButton = document.querySelector("#clear");
+      const attachButton = document.querySelector("#attach");
+      const fileInput = document.querySelector("#file-input");
+      const uploadList = document.querySelector("#upload-list");
+      const backendStatus = document.querySelector("#backend-status");
+      const artifactList = document.querySelector("#artifact-list");
+      const settingsDialog = document.querySelector("#settings-dialog");
+      const providerForm = document.querySelector("#provider-form");
+      const providerOptions = [...document.querySelectorAll(".provider-option")];
+      const providerModel = document.querySelector("#provider-model");
+      const providerModelOptions = document.querySelector("#provider-model-options");
+      const providerBaseUrl = document.querySelector("#provider-base-url");
+      const providerApiKey = document.querySelector("#provider-api-key");
+      const clearApiKey = document.querySelector("#clear-api-key");
+      const reasoningEffort = document.querySelector("#reasoning-effort");
+      const textVerbosity = document.querySelector("#text-verbosity");
+      const settingsMessage = document.querySelector("#settings-message");
+      const testProviderButton = document.querySelector("#test-provider");
+      const saveProviderButton = document.querySelector("#save-provider");
+      const providerRoute = document.querySelector("#provider-route");
+      const configLockNotice = document.querySelector("#config-lock-notice");
+      const routeTitle = document.querySelector("#route-title");
+      const routeDetail = document.querySelector("#route-detail");
+      const codexSessionBadge = document.querySelector("#codex-session-badge");
+      const codexSessionDetail = document.querySelector("#codex-session-detail");
+      const modelHint = document.querySelector("#model-hint");
+      const apiKeyHint = document.querySelector("#api-key-hint");
+      let activeMode = "solver";
+      let outputDepth = "标准";
+      let activeRunId = "";
+      let activeSource = null;
+      let uploadedFiles = [];
+      let uploading = 0;
+      let isRunning = false;
+      let activeProvider = "codex-cli";
+      let savedProvider = "";
+      let providerDrafts = {};
+      let providerCredentials = {};
+      let providerModels = {};
+      let codexLogin = null;
+      let providerRequestBusy = false;
+      let providerConfigLocked = false;
+      let savedProviderConfigured = false;
+
+      function setMode(mode) {
+        activeMode = mode;
+        const detail = modes[mode];
+        modeButtons.forEach((button) => {
+          button.setAttribute("aria-pressed", String(button.dataset.mode === mode));
+        });
+        document.querySelector("#target-badge").textContent = detail.badge;
+        document.querySelector("#mode-label").textContent = detail.label;
+        document.querySelector("#mode-target").textContent = detail.target;
+        document.querySelector("#mode-use").textContent = detail.use;
+        document.querySelector("#mode-output").textContent = detail.output;
+      }
+
+      function setDepth(depth) {
+        outputDepth = depth;
+        depthButtons.forEach((button) => {
+          button.setAttribute("aria-pressed", String(button.dataset.depth === depth));
+        });
+      }
+
+      function getRequirements() {
+        return requirementButtons
+          .filter((button) => button.getAttribute("aria-pressed") === "true")
+          .map((button) => button.dataset.requirement);
+      }
+
+      function updateCount() {
+        charCount.textContent = `${taskInput.value.trim().length} 字`;
+      }
+
+      function formatBytes(size) {
+        if (size < 1024) return `${size} B`;
+        if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
+        return `${(size / 1024 / 1024).toFixed(1)} MB`;
+      }
+
+      function compactUpload(upload, inspection = null) {
+        return {
+          id: upload.id,
+          name: upload.name,
+          size: upload.size,
+          mimeType: upload.mimeType,
+          inspection: inspection
+            ? { rows: inspection.rows, columns: inspection.columns, selectedSheet: inspection.selectedSheet }
+            : null,
+        };
+      }
+
+      function persistUploads() {
+        localStorage.setItem("math-agent-uploads", JSON.stringify(uploadedFiles));
+      }
+
+      function renderUploads() {
+        uploadList.replaceChildren();
+        uploadedFiles.forEach((upload) => {
+          const chip = document.createElement("div");
+          chip.className = "upload-chip";
+          chip.title = upload.inspection?.columns?.length
+            ? upload.inspection.columns.join("、")
+            : upload.name;
+
+          const copy = document.createElement("div");
+          copy.className = "upload-copy";
+          const name = document.createElement("span");
+          name.className = "upload-name";
+          name.textContent = upload.name;
+          const meta = document.createElement("span");
+          meta.className = "upload-meta";
+          meta.textContent = upload.inspection
+            ? `${upload.inspection.rows} × ${upload.inspection.columns.length}`
+            : formatBytes(upload.size || 0);
+          copy.append(name, meta);
+
+          const remove = document.createElement("button");
+          remove.className = "remove-upload";
+          remove.type = "button";
+          remove.title = `移除 ${upload.name}`;
+          remove.setAttribute("aria-label", `移除 ${upload.name}`);
+          remove.innerHTML = '<svg class="icon" viewBox="0 0 24 24"><path d="m6 6 12 12"></path><path d="m18 6-12 12"></path></svg>';
+          remove.disabled = isRunning || uploading > 0;
+          remove.addEventListener("click", () => removeUpload(upload.id));
+          chip.append(copy, remove);
+          uploadList.appendChild(chip);
+        });
+      }
+
+      function updateControls() {
+        const busy = isRunning || uploading > 0;
+        generateButton.disabled = busy;
+        clearButton.disabled = busy;
+        attachButton.disabled = busy || uploadedFiles.length >= 10;
+        stopButton.hidden = !isRunning;
+        if (!isRunning) stopButton.disabled = false;
+        renderUploads();
+      }
+
+      async function uploadFiles(fileList) {
+        if (uploading > 0 || isRunning) {
+          formHint.textContent = "请等待当前操作完成。";
+          return;
+        }
+        const files = [...fileList].slice(0, Math.max(0, 10 - uploadedFiles.length));
+        if (!files.length) return;
+        const allowed = new Set(["csv", "tsv", "xlsx", "json"]);
+        for (const file of files) {
+          const extension = file.name.split(".").pop().toLowerCase();
+          if (!allowed.has(extension)) {
+            formHint.textContent = `${file.name} 格式不支持。`;
+            continue;
+          }
+          uploading += 1;
+          updateControls();
+          formHint.textContent = `读取 ${file.name}。`;
+          try {
+            const response = await fetch("/api/uploads", {
+              method: "POST",
+              headers: {
+                "Content-Type": file.type || "application/octet-stream",
+                "X-Filename": encodeURIComponent(file.name),
+              },
+              body: file,
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || "上传失败");
+            uploadedFiles.push(compactUpload(data.upload, data.inspection));
+            dataState.value = "有数据文件";
+            persistUploads();
+            formHint.textContent = "数据已读取。";
+          } catch (error) {
+            formHint.textContent = error.message || `${file.name} 上传失败。`;
+          } finally {
+            uploading -= 1;
+            updateControls();
+          }
+        }
+        fileInput.value = "";
+      }
+
+      async function removeUpload(uploadId) {
+        const upload = uploadedFiles.find((item) => item.id === uploadId);
+        uploadedFiles = uploadedFiles.filter((item) => item.id !== uploadId);
+        if (!uploadedFiles.length && dataState.value === "有数据文件") dataState.value = "无数据文件";
+        persistUploads();
+        updateControls();
+        formHint.textContent = upload ? `${upload.name} 已移除。` : "附件已移除。";
+        try {
+          await fetch(`/api/uploads/${uploadId}`, { method: "DELETE" });
+        } catch {}
+      }
+
+      async function restoreStagedUploads() {
+        let saved = [];
+        try {
+          saved = JSON.parse(localStorage.getItem("math-agent-uploads") || "[]");
+        } catch {}
+        const restored = [];
+        for (const item of Array.isArray(saved) ? saved.slice(0, 10) : []) {
+          try {
+            const response = await fetch(`/api/uploads/${item.id}`);
+            const data = await response.json();
+            if (response.ok) restored.push(compactUpload(data.upload, item.inspection));
+          } catch {}
+        }
+        uploadedFiles = restored;
+        if (uploadedFiles.length) dataState.value = "有数据文件";
+        persistUploads();
+        updateControls();
+      }
+
+      function collectPayload() {
+        const content = taskInput.value.trim();
+        if (!content && !uploadedFiles.length) {
+          formHint.textContent = "先输入内容或添加数据。";
+          taskInput.focus();
+          return null;
+        }
+
+        return {
+          mode: activeMode,
+          content,
+          language: language.value,
+          dataState: dataState.value,
+          focus: focus.value,
+          depth: outputDepth,
+          requirements: getRequirements(),
+          uploads: uploadedFiles.map((upload) => upload.id),
+        };
+      }
+
+      function setRunning(running) {
+        isRunning = running;
+        updateControls();
+      }
+
+      function finishRun(message) {
+        if (activeSource) activeSource.close();
+        activeSource = null;
+        activeRunId = "";
+        localStorage.removeItem("math-agent-active-run");
+        setRunning(false);
+        formHint.textContent = message;
+      }
+
+      function renderArtifacts(artifacts) {
+        if (!Array.isArray(artifacts) || !artifacts.length) return;
+        const known = new Set([...artifactList.querySelectorAll("a")].map((link) => link.href));
+        artifacts.forEach((artifact) => {
+          const url = new URL(artifact.url, window.location.href).href;
+          if (known.has(url)) return;
+          const link = document.createElement("a");
+          link.className = "artifact-link";
+          link.href = artifact.url;
+          link.target = "_blank";
+          link.rel = "noopener";
+          link.textContent = artifact.name;
+          artifactList.appendChild(link);
+          known.add(url);
+        });
+        artifactList.hidden = !artifactList.childElementCount;
+      }
+
+      async function loadArtifacts(runId) {
+        if (!runId) return;
+        try {
+          const response = await fetch(`/api/runs/${runId}/artifacts`);
+          const data = await response.json();
+          if (response.ok) renderArtifacts(data.artifacts);
+        } catch {}
+      }
+
+      function handleAgentEvent(event) {
+        const data = JSON.parse(event.data);
+        if (data.type === "RUN_STARTED") {
+          formHint.textContent = data.model ? `${data.model} 运行中。` : "运行中。";
+        } else if (data.type === "TEXT_MESSAGE_START") {
+          promptOutput.textContent = "";
+        } else if (data.type === "TEXT_MESSAGE_CONTENT") {
+          promptOutput.textContent += data.delta || "";
+        } else if (data.type === "TEXT_MESSAGE_REPLACE") {
+          promptOutput.textContent = data.text || "";
+        } else if (data.type === "TOOL_CALL_STARTED") {
+          formHint.textContent = `正在使用 ${data.name}。`;
+        } else if (data.type === "TOOL_CALL_FINISHED") {
+          renderArtifacts(data.artifacts);
+          formHint.textContent = data.ok ? `${data.name} 已完成。` : `${data.name} 失败。`;
+        } else if (data.type === "QUALITY_SCORED") {
+          const quality = data.quality || {};
+          formHint.textContent = Number.isFinite(quality.total)
+            ? `质量检查 ${quality.total}/${quality.threshold}。`
+            : "质量检查完成。";
+        } else if (data.type === "REVISION_STARTED") {
+          formHint.textContent = `质量 ${data.score}/${data.threshold}，正在自动修订。`;
+        } else if (data.type === "REVISION_FAILED" || data.type === "REVISION_DISCARDED") {
+          formHint.textContent = "已保留质量更高的版本。";
+        } else if (data.type === "RUN_FINISHED") {
+          loadArtifacts(data.runId);
+          const quality = data.quality || {};
+          finishRun(Number.isFinite(quality.total) ? `完成，质量 ${quality.total}/${quality.threshold}。` : "完成。");
+        } else if (data.type === "RUN_CANCELLED") {
+          finishRun("已停止。");
+        } else if (data.type === "RUN_ERROR") {
+          promptOutput.textContent = data.error || "运行失败。";
+          finishRun("运行失败。");
+        }
+      }
+
+      function connectRun(runId) {
+        const source = new EventSource(`/api/runs/${runId}/events`);
+        activeSource = source;
+        source.addEventListener("agent", handleAgentEvent);
+        source.onerror = () => {
+          if (activeRunId) formHint.textContent = "正在重连。";
+        };
+      }
+
+      async function runAgent() {
+        if (uploading > 0 || isRunning) return;
+        const payload = collectPayload();
+        if (!payload) return;
+
+        if (activeSource) activeSource.close();
+        setRunning(true);
+        promptOutput.textContent = "准备中…";
+        artifactList.replaceChildren();
+        artifactList.hidden = true;
+        formHint.textContent = "正在创建任务。";
+        copyState.textContent = "";
+
+        try {
+          const response = await fetch("/api/runs", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.error || "运行失败");
+          }
+          activeRunId = data.run.id;
+          localStorage.setItem("math-agent-active-run", activeRunId);
+          connectRun(activeRunId);
+        } catch (error) {
+          promptOutput.textContent = error.message || "无法连接后端。";
+          finishRun("运行失败。");
+        }
+      }
+
+      async function stopRun() {
+        if (!activeRunId) return;
+        stopButton.disabled = true;
+        formHint.textContent = "正在停止。";
+        try {
+          await fetch(`/api/runs/${activeRunId}/cancel`, { method: "POST" });
+        } finally {
+          stopButton.disabled = false;
+        }
+      }
+
+      function normalizeProvider(value, baseUrl = "") {
+        const provider = String(value || "").trim().toLowerCase();
+        if (["codex-cli", "codex-login"].includes(provider)) return "codex-cli";
+        if (["openai", "openai-responses", "responses", "codex"].includes(provider)) return "openai-responses";
+        if (provider === "deepseek") return "deepseek";
+        if (provider === "ollama" || /127\.0\.0\.1:11434|localhost:11434/.test(baseUrl)) return "ollama";
+        if (["openai-compatible", "compatible"].includes(provider)) return "openai-compatible";
+        return baseUrl ? "openai-compatible" : "codex-cli";
+      }
+
+      function getProviderDraft(provider) {
+        if (!providerDrafts[provider]) {
+          providerDrafts[provider] = { ...providerPresets[provider], apiKey: "", clearApiKey: false };
+        }
+        return providerDrafts[provider];
+      }
+
+      function captureProviderDraft() {
+        const draft = getProviderDraft(activeProvider);
+        draft.model = providerModel.value.trim();
+        draft.baseUrl = providerBaseUrl.value.trim();
+        draft.apiKey = providerApiKey.value;
+        draft.clearApiKey = clearApiKey.checked;
+        draft.reasoningEffort = reasoningEffort.value;
+        draft.textVerbosity = textVerbosity.value;
+      }
+
+      function setProviderRoute(title, detail, tone = "") {
+        routeTitle.textContent = title;
+        routeDetail.textContent = detail;
+        if (tone) providerRoute.dataset.tone = tone;
+        else providerRoute.removeAttribute("data-tone");
+      }
+
+      function applyProviderControlState() {
+        const disabled = providerRequestBusy || providerConfigLocked;
+        providerForm.dataset.configLocked = String(providerConfigLocked);
+        configLockNotice.hidden = !providerConfigLocked;
+        testProviderButton.disabled = disabled;
+        saveProviderButton.disabled = disabled;
+        providerOptions.forEach((option) => { option.disabled = disabled; });
+        providerModel.disabled = disabled;
+        providerBaseUrl.disabled = disabled;
+        providerApiKey.disabled = disabled || clearApiKey.checked;
+        clearApiKey.disabled = disabled;
+        reasoningEffort.disabled = disabled;
+        textVerbosity.disabled = disabled;
+      }
+
+      function safeProviderMessage(value) {
+        let message = String(value || "").slice(0, 500);
+        Object.values(providerDrafts).forEach((draft) => {
+          if (draft?.apiKey && draft.apiKey.length >= 4) message = message.split(draft.apiKey).join("••••");
+        });
+        return message;
+      }
+
+      function modelIdentifier(model) {
+        if (typeof model === "string") return model;
+        if (!model || typeof model !== "object") return "";
+        return String(model.id || model.model || model.slug || model.name || "").trim();
+      }
+
+      function renderModelOptions() {
+        providerModelOptions.replaceChildren();
+        const seen = new Set();
+        (providerModels[activeProvider] || []).forEach((model) => {
+          const value = modelIdentifier(model);
+          if (!value || seen.has(value)) return;
+          const option = document.createElement("option");
+          option.value = value;
+          providerModelOptions.appendChild(option);
+          seen.add(value);
+        });
+      }
+
+      function renderReasoningOptions(preferred = reasoningEffort.value || "medium") {
+        const labels = { none: "无", low: "低", medium: "中", high: "高", xhigh: "很高", max: "最高" };
+        const model = (providerModels[activeProvider] || []).find((item) => modelIdentifier(item) === providerModel.value.trim());
+        let supported = model && typeof model === "object" ? model.supportedReasoningEfforts : null;
+        if (Array.isArray(supported)) {
+          supported = supported
+            .map((item) => typeof item === "string" ? item : item?.reasoningEffort || item?.effort)
+            .filter((item) => labels[item]);
+        }
+        if (!Array.isArray(supported) || !supported.length) supported = Object.keys(labels);
+        const fallback = model && typeof model === "object"
+          ? model.defaultReasoningEffort || model.defaultEffort
+          : "medium";
+        reasoningEffort.replaceChildren();
+        supported.forEach((effort) => {
+          const option = document.createElement("option");
+          option.value = effort;
+          option.textContent = labels[effort];
+          reasoningEffort.appendChild(option);
+        });
+        reasoningEffort.value = supported.includes(preferred) ? preferred : supported.includes(fallback) ? fallback : supported[0];
+      }
+
+      function renderCodexLogin() {
+        const option = providerOptions.find((item) => item.dataset.provider === "codex-cli");
+        if (!codexLogin) {
+          codexSessionBadge.textContent = "状态未知";
+          codexSessionDetail.textContent = "测试连接后确认 Codex Runtime 当前登录会话。后端不会读取或导出登录令牌，也未验证它与 Codex 桌面应用账号相同。";
+          if (option) option.title = "尚未检测 Codex Runtime";
+          return;
+        }
+
+        const version = codexLogin.version ? `，版本 ${codexLogin.version}` : "";
+        if (codexLogin.available) {
+          codexSessionBadge.textContent = "可用";
+          codexSessionDetail.textContent = `将使用 Codex Runtime 当前登录会话${version}。后端不会读取或导出登录令牌；与 Codex 桌面应用是否为同一账号尚未验证。`;
+          if (option) option.title = "Codex Runtime 当前登录会话可用";
+        } else if (!codexLogin.installed) {
+          codexSessionBadge.textContent = "未安装";
+          codexSessionDetail.textContent = codexLogin.reason || "未检测到 Codex CLI，请先安装并登录。";
+          if (option) option.title = codexSessionDetail.textContent;
+        } else if (!codexLogin.invokable) {
+          codexSessionBadge.textContent = "不可调用";
+          codexSessionDetail.textContent = codexLogin.reason || "检测到桌面版组件，但后端无法调用；请安装可从终端运行的 Codex CLI。";
+          if (option) option.title = codexSessionDetail.textContent;
+        } else if (!codexLogin.authenticated) {
+          codexSessionBadge.textContent = "未登录";
+          codexSessionDetail.textContent = codexLogin.reason || "Codex CLI 尚未登录，请在终端完成登录。";
+          if (option) option.title = codexSessionDetail.textContent;
+        } else {
+          codexSessionBadge.textContent = "不可用";
+          codexSessionDetail.textContent = codexLogin.reason || "当前 Codex 会话暂不可用。";
+          if (option) option.title = codexSessionDetail.textContent;
+        }
+      }
+
+      function renderProviderRoute() {
+        const preset = providerPresets[activeProvider];
+        const draft = getProviderDraft(activeProvider);
+        if (activeProvider === "codex-cli") {
+          if (codexLogin?.available) {
+            setProviderRoute(
+              savedProvider === activeProvider ? "当前正在使用 Codex" : "Codex 会话可用",
+              `调用时使用 Codex Runtime 当前登录会话，模型 ${draft.model || "未填写"}。`,
+            );
+          } else if (codexLogin) {
+            setProviderRoute("Codex 当前不可用", codexLogin.reason || codexSessionDetail.textContent, "error");
+          } else {
+            setProviderRoute("等待检测 Codex", "可先填写模型，再测试本机登录会话。", "busy");
+          }
+          return;
+        }
+
+        const current = savedProvider === activeProvider && savedProviderConfigured;
+        const local = activeProvider === "ollama";
+        const credential = providerCredentials[activeProvider];
+        const detail = local
+          ? `将连接 ${draft.baseUrl || "未填写基础 URL"}。`
+          : credential
+            ? "已保存密钥；输入框留空不会覆盖。"
+            : activeProvider === "openai-compatible"
+              ? "如接口要求鉴权，请填写该接口自己的 API 密钥。"
+              : "保存或测试前需要填写该提供商的 API 密钥。";
+        setProviderRoute(current ? `当前正在使用 ${preset.label}` : `配置 ${preset.label}`, detail, "");
+      }
+
+      function showProvider(provider, capture = true) {
+        if (capture) captureProviderDraft();
+        activeProvider = normalizeProvider(provider);
+        const preset = providerPresets[activeProvider];
+        const draft = getProviderDraft(activeProvider);
+
+        providerOptions.forEach((option) => {
+          option.setAttribute("aria-checked", String(option.dataset.provider === activeProvider));
+        });
+        document.querySelectorAll("[data-providers]").forEach((element) => {
+          const providers = element.dataset.providers.split(/\s+/);
+          element.hidden = !providers.includes(activeProvider);
+        });
+
+        providerModel.value = draft.model || "";
+        providerModel.placeholder = preset.modelPlaceholder;
+        modelHint.textContent = preset.modelHint;
+        renderModelOptions();
+        providerBaseUrl.value = draft.baseUrl || "";
+        providerBaseUrl.required = activeProvider !== "codex-cli";
+        providerApiKey.value = draft.apiKey || "";
+        clearApiKey.checked = Boolean(draft.clearApiKey);
+        providerApiKey.disabled = clearApiKey.checked;
+        renderReasoningOptions(draft.reasoningEffort || "medium");
+        textVerbosity.value = draft.textVerbosity || "medium";
+
+        const hasCredential = Boolean(providerCredentials[activeProvider]);
+        if (activeProvider === "openai-compatible") {
+          apiKeyHint.textContent = hasCredential
+            ? "已保存密钥；留空保留。若接口无需鉴权，可清除密钥。"
+            : "密钥可选；仅在兼容接口要求鉴权时填写。";
+        } else {
+          apiKeyHint.textContent = hasCredential
+            ? "已保存密钥；留空保留，界面不会回显明文。"
+            : "密钥不会在界面中回显；保存后仅返回“已配置”状态。";
+        }
+        renderCodexLogin();
+        renderProviderRoute();
+        applyProviderControlState();
+        settingsMessage.textContent = "";
+      }
+
+      function hydrateProviderProfile(provider, profile = {}) {
+        if (!providerPresets[provider] || !profile || typeof profile !== "object") return;
+        const draft = getProviderDraft(provider);
+        if (typeof profile.model === "string") draft.model = profile.model;
+        if (typeof profile.baseUrl === "string") draft.baseUrl = profile.baseUrl;
+        if (typeof profile.reasoningEffort === "string") draft.reasoningEffort = profile.reasoningEffort;
+        if (typeof profile.textVerbosity === "string") draft.textVerbosity = profile.textVerbosity;
+        providerCredentials[provider] = Boolean(profile.apiKeyConfigured);
+        if (Array.isArray(profile.models)) providerModels[provider] = profile.models;
+      }
+
+      async function readJsonResponse(response) {
+        const text = await response.text();
+        if (!text) return {};
+        try {
+          return JSON.parse(text);
+        } catch {
+          return { error: text.slice(0, 240) };
+        }
+      }
+
+      function setProviderBusy(busy) {
+        providerRequestBusy = busy;
+        applyProviderControlState();
+      }
+
+      async function loadProviderConfiguration() {
+        setProviderBusy(true);
+        setProviderRoute("读取当前配置", "正在连接本地后端。", "busy");
+        try {
+          const response = await fetch("/api/config", { cache: "no-store" });
+          const payload = await readJsonResponse(response);
+          if (!response.ok) throw new Error(payload.error || "读取配置失败");
+          const data = payload.config && typeof payload.config === "object" ? payload.config : payload;
+          providerConfigLocked = Boolean(data.configLocked);
+          providerCredentials = {};
+          if (data.profiles && typeof data.profiles === "object") {
+            Object.entries(data.profiles).forEach(([name, profile]) => {
+              hydrateProviderProfile(normalizeProvider(name, profile?.baseUrl || ""), profile);
+            });
+          }
+          const currentProvider = normalizeProvider(data.activeProvider || data.provider, data.baseUrl || "");
+          hydrateProviderProfile(currentProvider, data);
+          savedProvider = currentProvider;
+          savedProviderConfigured = Boolean(data.configured);
+          codexLogin = data.codexLogin && typeof data.codexLogin === "object" ? data.codexLogin : null;
+          if (Array.isArray(data.models)) providerModels[currentProvider] = data.models;
+          if (Array.isArray(codexLogin?.models)) providerModels["codex-cli"] = codexLogin.models;
+          showProvider(currentProvider, false);
+          if (providerConfigLocked) settingsMessage.textContent = "环境配置已锁定；页面仅展示实际生效配置。";
+        } catch (error) {
+          setProviderRoute("无法读取配置", safeProviderMessage(error.message) || "本地后端未响应。", "error");
+          settingsMessage.textContent = "仍可填写配置，保存功能需要后端配置接口。";
+        } finally {
+          setProviderBusy(false);
+        }
+      }
+
+      function collectProviderPayload(forTest = false) {
+        captureProviderDraft();
+        const draft = getProviderDraft(activeProvider);
+        if (!draft.model && !(forTest && activeProvider === "codex-cli")) throw new Error("请填写模型名称。");
+        if (activeProvider !== "codex-cli" && !draft.baseUrl) throw new Error("请填写基础 URL。");
+        if (["openai-responses", "deepseek"].includes(activeProvider)
+            && !draft.apiKey && !providerCredentials[activeProvider] && !draft.clearApiKey) {
+          throw new Error("请填写该提供商的 API 密钥。");
+        }
+
+        const payload = {
+          provider: activeProvider,
+          reasoningEffort: draft.reasoningEffort,
+          textVerbosity: draft.textVerbosity,
+        };
+        if (draft.model) payload.model = draft.model;
+        if (activeProvider !== "codex-cli") payload.baseUrl = draft.baseUrl;
+        if (draft.apiKey && !draft.clearApiKey) payload.apiKey = draft.apiKey;
+        if (draft.clearApiKey) payload.clearApiKey = true;
+        return payload;
+      }
+
+      async function testProviderConnection() {
+        if (providerRequestBusy) return;
+        if (providerConfigLocked) {
+          settingsMessage.textContent = "环境配置已锁定，不能测试页面草稿。";
+          return;
+        }
+        let payload;
+        try {
+          payload = collectProviderPayload(true);
+        } catch (error) {
+          settingsMessage.textContent = safeProviderMessage(error.message);
+          return;
+        }
+
+        setProviderBusy(true);
+        settingsMessage.textContent = "正在测试连接…";
+        setProviderRoute("正在测试连接", `${providerPresets[activeProvider].label} 正在响应。`, "busy");
+        const controller = new AbortController();
+        const timer = window.setTimeout(() => controller.abort(), 30000);
+        try {
+          const response = await fetch("/api/config/test", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+            signal: controller.signal,
+          });
+          const data = await readJsonResponse(response);
+          const result = data.test && typeof data.test === "object" ? data.test : data;
+          if (!response.ok || result.ok === false) throw new Error(result.error || result.reason || "连接测试失败");
+          if (result.codexLogin) codexLogin = result.codexLogin;
+          if (Array.isArray(result.models)) providerModels[activeProvider] = result.models;
+          if (activeProvider === "codex-cli" && Array.isArray(result.codexLogin?.models)) {
+            providerModels[activeProvider] = result.codexLogin.models;
+          }
+          const defaultModel = result.defaultModel || result.codexLogin?.defaultModel;
+          if (!providerModel.value && defaultModel) {
+            providerModel.value = defaultModel;
+            getProviderDraft(activeProvider).model = defaultModel;
+          }
+          renderModelOptions();
+          renderReasoningOptions(reasoningEffort.value);
+          const latency = Number.isFinite(result.latencyMs) ? `，${result.latencyMs} ms` : "";
+          setProviderRoute("连接成功", `${providerPresets[activeProvider].label} 已响应${latency}。`);
+          settingsMessage.textContent = "测试通过；尚未保存的修改不会自动启用。";
+          renderCodexLogin();
+        } catch (error) {
+          const message = error.name === "AbortError"
+            ? "测试超时，请检查服务地址或网络。"
+            : safeProviderMessage(error.message) || "连接测试失败。";
+          setProviderRoute("连接失败", message, "error");
+          settingsMessage.textContent = message;
+        } finally {
+          window.clearTimeout(timer);
+          setProviderBusy(false);
+        }
+      }
+
+      async function saveProviderConfiguration(event) {
+        event.preventDefault();
+        if (providerRequestBusy) return;
+        if (providerConfigLocked) {
+          settingsMessage.textContent = "环境配置已锁定，不能从页面保存。";
+          return;
+        }
+        let payload;
+        try {
+          payload = collectProviderPayload();
+        } catch (error) {
+          settingsMessage.textContent = safeProviderMessage(error.message);
+          return;
+        }
+
+        setProviderBusy(true);
+        settingsMessage.textContent = "正在保存…";
+        try {
+          const response = await fetch("/api/config", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const data = await readJsonResponse(response);
+          if (!response.ok) throw new Error(data.error || data.reason || "保存失败");
+          const config = data.config && typeof data.config === "object" ? data.config : data;
+          savedProvider = activeProvider;
+          savedProviderConfigured = config.configured !== false;
+          if (payload.apiKey) providerCredentials[activeProvider] = true;
+          if (payload.clearApiKey) providerCredentials[activeProvider] = false;
+          if (config.codexLogin) codexLogin = config.codexLogin;
+          providerApiKey.value = "";
+          clearApiKey.checked = false;
+          const draft = getProviderDraft(activeProvider);
+          draft.apiKey = "";
+          draft.clearApiKey = false;
+          renderCodexLogin();
+          renderProviderRoute();
+          settingsMessage.textContent = "配置已保存并启用。";
+          await loadBackendStatus();
+        } catch (error) {
+          const message = safeProviderMessage(error.message) || "保存配置失败。";
+          setProviderRoute("保存失败", message, "error");
+          settingsMessage.textContent = message;
+        } finally {
+          setProviderBusy(false);
+        }
+      }
+
+      async function loadBackendStatus() {
+        try {
+          const response = await fetch("/api/config");
+          const data = await response.json();
+          const dot = backendStatus.querySelector(".pill-dot");
+          dot.classList.toggle("ready", data.configured);
+          backendStatus.lastChild.textContent = data.configured
+            ? ` ${data.model}`
+            : " 待配置";
+          backendStatus.title = data.configured ? data.provider : data.reason;
+        } catch {
+          backendStatus.lastChild.textContent = " 未连接";
+        }
+      }
+
+      function applyRunUploads(run) {
+        const records = run?.meta?.uploads;
+        if (!Array.isArray(records) || !records.length) return;
+        const inspections = new Map(uploadedFiles.map((item) => [item.id, item.inspection]));
+        uploadedFiles = records.map((item) => compactUpload(item, inspections.get(item.id)));
+        dataState.value = "有数据文件";
+        persistUploads();
+        updateControls();
+      }
+
+      async function resumeActiveRun() {
+        const runId = localStorage.getItem("math-agent-active-run");
+        if (!runId) return;
+        try {
+          const response = await fetch(`/api/runs/${runId}`);
+          const data = await response.json();
+          if (!response.ok) throw new Error();
+          const run = data.run;
+          applyRunUploads(run);
+          if (run.status === "queued" || run.status === "running") {
+            activeRunId = runId;
+            promptOutput.textContent = "";
+            setRunning(true);
+            formHint.textContent = "恢复任务。";
+            connectRun(runId);
+            return;
+          }
+          promptOutput.textContent = run.output || run.error || "任务已结束。";
+          loadArtifacts(runId);
+          const labels = { completed: "完成。", failed: "运行失败。", cancelled: "已停止。" };
+          formHint.textContent = labels[run.status] || "任务已结束。";
+        } catch {
+          localStorage.removeItem("math-agent-active-run");
+        }
+        localStorage.removeItem("math-agent-active-run");
+      }
+
+      async function copyPrompt() {
+        const text = promptOutput.textContent.trim();
+        if (!text || text === "等待任务。") {
+          copyState.textContent = "暂无指令。";
+          return;
+        }
+
+        try {
+          await navigator.clipboard.writeText(text);
+          copyState.textContent = "已复制";
+        } catch {
+          const range = document.createRange();
+          range.selectNodeContents(promptOutput);
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+          document.execCommand("copy");
+          selection.removeAllRanges();
+          copyState.textContent = "已复制";
+        }
+      }
+
+      document.querySelector("#open-settings").addEventListener("click", () => {
+        if (typeof settingsDialog.showModal === "function") settingsDialog.showModal();
+        else settingsDialog.setAttribute("open", "");
+        loadProviderConfiguration();
+      });
+      document.querySelector("#close-settings").addEventListener("click", () => settingsDialog.close());
+      document.querySelector("#cancel-settings").addEventListener("click", () => settingsDialog.close());
+      settingsDialog.addEventListener("click", (event) => {
+        if (event.target === settingsDialog) settingsDialog.close();
+      });
+      settingsDialog.addEventListener("close", () => {
+        providerApiKey.value = "";
+        Object.values(providerDrafts).forEach((draft) => {
+          draft.apiKey = "";
+          draft.clearApiKey = false;
+        });
+        clearApiKey.checked = false;
+        applyProviderControlState();
+        settingsMessage.textContent = "";
+      });
+      providerOptions.forEach((option, index) => {
+        option.addEventListener("click", () => showProvider(option.dataset.provider));
+        option.addEventListener("keydown", (event) => {
+          if (!["ArrowDown", "ArrowUp", "ArrowRight", "ArrowLeft"].includes(event.key)) return;
+          event.preventDefault();
+          const step = ["ArrowDown", "ArrowRight"].includes(event.key) ? 1 : -1;
+          const next = providerOptions[(index + step + providerOptions.length) % providerOptions.length];
+          next.focus();
+          next.click();
+        });
+      });
+      clearApiKey.addEventListener("change", () => {
+        if (providerConfigLocked) return;
+        providerApiKey.disabled = providerRequestBusy || clearApiKey.checked;
+        if (clearApiKey.checked) providerApiKey.value = "";
+      });
+      providerModel.addEventListener("input", () => renderReasoningOptions(reasoningEffort.value));
+      testProviderButton.addEventListener("click", testProviderConnection);
+      providerForm.addEventListener("submit", saveProviderConfiguration);
+
+      modeButtons.forEach((button) => {
+        button.addEventListener("click", () => setMode(button.dataset.mode));
+      });
+
+      presetButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          setMode(button.dataset.mode);
+          focus.value = button.dataset.focus;
+          formHint.textContent = `${button.textContent} 已选。`;
+        });
+      });
+
+      depthButtons.forEach((button) => {
+        button.addEventListener("click", () => setDepth(button.dataset.depth));
+      });
+
+      requirementButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const pressed = button.getAttribute("aria-pressed") === "true";
+          button.setAttribute("aria-pressed", String(!pressed));
+        });
+      });
+
+      taskInput.addEventListener("input", updateCount);
+      attachButton.addEventListener("click", () => fileInput.click());
+      fileInput.addEventListener("change", () => uploadFiles(fileInput.files));
+      ["dragenter", "dragover"].forEach((type) => {
+        taskInput.addEventListener(type, (event) => {
+          if (!event.dataTransfer?.types?.includes("Files")) return;
+          event.preventDefault();
+          taskInput.classList.add("drop-target");
+        });
+      });
+      ["dragleave", "drop"].forEach((type) => {
+        taskInput.addEventListener(type, (event) => {
+          taskInput.classList.remove("drop-target");
+          if (type === "drop" && event.dataTransfer?.files?.length) {
+            event.preventDefault();
+            uploadFiles(event.dataTransfer.files);
+          }
+        });
+      });
+      taskInput.addEventListener("paste", (event) => {
+        if (!event.clipboardData?.files?.length) return;
+        event.preventDefault();
+        uploadFiles(event.clipboardData.files);
+      });
+      document.addEventListener("keydown", (event) => {
+        if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+          event.preventDefault();
+          runAgent();
+        }
+      });
+
+      generateButton.addEventListener("click", runAgent);
+      stopButton.addEventListener("click", stopRun);
+      document.querySelector("#copy").addEventListener("click", copyPrompt);
+      clearButton.addEventListener("click", async () => {
+        const uploads = uploadedFiles;
+        uploadedFiles = [];
+        localStorage.removeItem("math-agent-uploads");
+        dataState.value = "无数据文件";
+        updateControls();
+        taskInput.value = "";
+        updateCount();
+        promptOutput.textContent = "等待任务。";
+        artifactList.replaceChildren();
+        artifactList.hidden = true;
+        copyState.textContent = "";
+        formHint.textContent = "待命。";
+        taskInput.focus();
+        await Promise.allSettled(uploads.map((upload) => fetch(`/api/uploads/${upload.id}`, { method: "DELETE" })));
+      });
+      loadBackendStatus();
+      restoreStagedUploads().then(resumeActiveRun);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,126 @@
+{
+  "schema_version": 2,
+  "source_files": [
+    "source/A题.pdf",
+    "source/problem.txt"
+  ],
+  "data_files": [
+    "source/result1.xlsx",
+    "source/result2.xlsx",
+    "source/result3.xlsx"
+  ],
+  "data_columns": {
+    "result1.xlsx": ["无人机运动方向", "无人机运动速度 (m/s)", "烟幕干扰弹编号", "投放点 xyz (m)", "起爆点 xyz (m)", "有效干扰时长 (s)"],
+    "result2.xlsx": ["无人机编号", "无人机运动方向", "无人机运动速度 (m/s)", "投放点 xyz (m)", "起爆点 xyz (m)", "有效干扰时长 (s)"],
+    "result3.xlsx": ["无人机编号", "无人机运动方向", "无人机运动速度 (m/s)", "烟幕干扰弹编号", "投放点 xyz (m)", "起爆点 xyz (m)", "有效干扰时长 (s)", "干扰的导弹编号"]
+  },
+  "sample_counts": {
+    "missiles": 3,
+    "uavs": 5,
+    "result1_rows": 3,
+    "result2_rows": 3,
+    "result3_max_rows": 15
+  },
+  "shared_facts": {
+    "coordinate_system": "假目标为原点，水平面为 xy 平面，z 轴竖直向上",
+    "true_target": "半径 7 m、高 10 m 的竖直圆柱，下底面圆心 (0,200,0)",
+    "missile_speed_mps": 300,
+    "missile_direction": "从各自初始点匀速直指原点",
+    "uav_speed_range_mps": [70, 140],
+    "uav_motion": "受领任务后可瞬时选定航向和速度，随后等高度匀速直线飞行",
+    "minimum_release_spacing_s": 1,
+    "cloud_radius_m": 10,
+    "cloud_lifetime_s": 20,
+    "cloud_descent_speed_mps": 3,
+    "bomb_motion": "脱离无人机后继承水平速度，受重力作用"
+  },
+  "subquestions": [
+    {
+      "subquestion_id": "Q1",
+      "id": "Q1",
+      "statement": "FY1 按给定航向、速度、投放时刻和引信延时投放 1 枚烟幕弹干扰 M1，计算有效遮蔽时长。",
+      "goal": "在无决策变量的给定方案下精确计算连续有效遮蔽时间。",
+      "explicit_inputs": ["M1/FY1 初始位置", "导弹速度 300 m/s", "FY1 速度 120 m/s 且朝原点", "投放时刻 1.5 s", "引信延时 3.6 s", "云团半径/寿命/下沉速度", "圆柱目标几何"],
+      "expected_outputs": ["中心视线口径遮蔽区间与时长", "完整圆柱口径遮蔽区间与时长", "边界残差与口径敏感性"],
+      "decision_variables": [],
+      "constraints": ["云团只在起爆后 20 s 内有效", "视线为导弹到目标的有限线段而非无限直线"],
+      "structural_features": ["three_dimensional_kinematics", "continuous_time_geometry"],
+      "task_types": ["simulation", "differential_equation", "geometric_kinematics", "deterministic_simulation"],
+      "possible_task_types": [],
+      "uncertainty_sources": ["题面未给重力加速度取值", "有效遮蔽是中心视线还是完整圆柱全遮蔽的解释差异", "连续时间数值求根误差"],
+      "evaluation_metrics": ["遮蔽区间并集长度 (s)", "边界函数残差 (m)", "网格加密稳定性"],
+      "risks": ["把无限直线误作有限视线线段", "只做粗时间采样", "把圆柱下底面圆心直接当整个目标"]
+    },
+    {
+      "subquestion_id": "Q2",
+      "id": "Q2",
+      "statement": "FY1 投放 1 枚烟幕弹干扰 M1，优化航向、速度、投放点和起爆点。",
+      "goal": "最大化单枚烟幕弹对 M1 的连续时间遮蔽并集长度。",
+      "explicit_inputs": ["Q1 的共享运动学与几何参数", "FY1 速度范围 70–140 m/s"],
+      "expected_outputs": ["航向角 (deg)", "速度 (m/s)", "投放时刻/点", "起爆时刻/点", "有效区间与时长", "可行性和边界残差"],
+      "decision_variables": ["航向角 theta", "速度 v", "投放时刻 tr", "引信延时 tau"],
+      "constraints": ["70<=v<=140", "tr>=0", "tau>=0", "起爆高度>=0", "起爆早于 M1 到达原点", "航向和速度选定后不变"],
+      "structural_features": ["nonconvex_continuous_optimization", "continuous_time_interval_objective", "boundary_solution"],
+      "task_types": ["optimization", "simulation", "nonlinear_optimization", "geometric_kinematics"],
+      "possible_task_types": ["robust_optimization"],
+      "uncertainty_sources": ["最小引信延时未规定", "重力加速度口径", "目标遮蔽判据口径", "全局优化随机性"],
+      "evaluation_metrics": ["遮蔽区间并集长度 (s)", "最大约束违反量", "多起点重复最优值差", "精确验根残差"],
+      "risks": ["tau=0 边界具有物理语义争议", "用离散时间目标造成伪最优", "只报告算法值而不核验硬约束"]
+    },
+    {
+      "subquestion_id": "Q3",
+      "id": "Q3",
+      "statement": "FY1 以固定航向和速度投放 3 枚烟幕弹干扰 M1，填写 result1.xlsx。",
+      "goal": "在同机固定航向/速度和相邻投放至少 1 s 的约束下最大化三枚烟幕弹有效区间的并集长度。",
+      "explicit_inputs": ["Q2 的共享运动学/几何参数", "同一无人机三枚弹", "相邻投放至少间隔 1 s", "result1.xlsx 字段"],
+      "expected_outputs": ["同一航向角与速度", "三枚弹投放点与起爆点", "各弹对 M1 的有效时长", "总并集时长", "result1.xlsx"],
+      "decision_variables": ["theta", "v", "tr_1..tr_3", "tau_1..tau_3"],
+      "constraints": ["70<=v<=140", "tr_(k+1)-tr_k>=1", "tau_k>=0", "各起爆点 z>=0", "各起爆早于 M1 到达原点", "同机 theta/v 固定"],
+      "structural_features": ["nonconvex_continuous_optimization", "interval_union", "coupled_release_schedule"],
+      "task_types": ["optimization", "simulation", "nonlinear_optimization", "interval_coverage"],
+      "possible_task_types": ["mixed_integer_optimization"],
+      "uncertainty_sources": ["Q2 的全部口径不确定性", "三段区间重叠与边界根误差"],
+      "evaluation_metrics": ["三弹遮蔽并集长度", "相邻投放最小间隔", "各约束最大违反量", "高精度复算差"],
+      "risks": ["把各弹时长直接相加而重复计时", "模板中的单弹时长与边际贡献混淆"]
+    },
+    {
+      "subquestion_id": "Q4",
+      "id": "Q4",
+      "statement": "FY1、FY2、FY3 各投放 1 枚烟幕弹干扰 M1，填写 result2.xlsx。",
+      "goal": "联合优化三架无人机各自航向、速度、投放与起爆时序，最大化对 M1 的区间并集长度。",
+      "explicit_inputs": ["FY1–FY3 初始位置", "共享运动学/几何参数", "result2.xlsx 字段"],
+      "expected_outputs": ["每机航向与速度", "每弹投放/起爆点", "单弹时长与总并集时长", "result2.xlsx"],
+      "decision_variables": ["每机 theta_i", "每机 v_i", "每机 tr_i", "每机 tau_i"],
+      "constraints": ["每机 70<=v_i<=140", "tr_i,tau_i>=0", "起爆高度>=0", "起爆早于 M1 到达原点"],
+      "structural_features": ["multi_agent_continuous_optimization", "interval_union"],
+      "task_types": ["optimization", "simulation", "nonlinear_optimization", "interval_coverage"],
+      "possible_task_types": ["decomposition_optimization"],
+      "uncertainty_sources": ["目标判据口径", "全局优化随机性", "无人机可达域边界"],
+      "evaluation_metrics": ["三弹遮蔽并集长度", "单弹区间", "最大约束违反量", "替代初值稳定性"],
+      "risks": ["分别优化单弹不等于联合最优", "远端无人机不可达时仍输出伪可行点"]
+    },
+    {
+      "subquestion_id": "Q5",
+      "id": "Q5",
+      "statement": "5 架无人机每架至多投放 3 枚烟幕弹，联合干扰 M1、M2、M3，填写 result3.xlsx。",
+      "goal": "在固定单机航向/速度、投放间隔和弹数上限下，为三枚导弹分配烟幕弹并最大化分导弹有效区间并集之和。",
+      "explicit_inputs": ["M1–M3/FY1–FY5 初始位置", "每机至多 3 枚", "相邻投放至少 1 s", "result3.xlsx 字段"],
+      "expected_outputs": ["每机固定航向与速度", "至多 15 枚弹的投放/起爆点", "每弹干扰导弹编号与时长", "各导弹并集时长", "result3.xlsx"],
+      "decision_variables": ["每机 theta_i,v_i", "每枚弹 tr_ik,tau_ik", "弹到导弹的离散指派 a_ikj", "是否使用该弹 y_ik"],
+      "constraints": ["每机至多 3 枚", "同机投放间隔>=1 s", "同机 theta_i/v_i 固定", "每个已用弹指派至一枚导弹", "70<=v_i<=140", "起爆高度>=0", "起爆在对应导弹到达原点前"],
+      "structural_features": ["mixed_discrete_continuous_optimization", "multi_target_assignment", "interval_union"],
+      "task_types": ["optimization", "graph_network", "simulation", "mixed_integer_optimization", "assignment", "interval_coverage"],
+      "possible_task_types": ["multi_objective_optimization", "robust_optimization"],
+      "uncertainty_sources": ["总目标是求和还是公平性权衡的解释", "目标判据口径", "组合搜索规模", "启发式解全局最优性不可证"],
+      "evaluation_metrics": ["三枚导弹并集时长之和", "分导弹并集时长", "可行性/约束违反量", "基线提升", "多随机种子稳定性"],
+      "risks": ["把启发式可行解误称全局最优", "单弹重复指派", "同机航向速度不一致", "空白模板行误填为有效弹"]
+    }
+  ],
+  "global_risks": [
+    "题面没有定义有效遮蔽应取目标中心视线还是完整圆柱全遮蔽；主评分采用目标中心视线，完整圆柱作为同一方案的保守二次审计",
+    "题面没有给出 g 和最小引信延时；报告 g=9.8 主结果并做 g=9.81/正延时敏感性",
+    "所有时间目标必须以连续区间求根和并集复核，粗网格只能生成候选",
+    "Q5 启发式路线只承诺高质量可行解，除非有可验证的全局界",
+    "模板、正文、摘要与验证 JSON 的数字必须由同一 run_all 入口生成"
+  ]
+}

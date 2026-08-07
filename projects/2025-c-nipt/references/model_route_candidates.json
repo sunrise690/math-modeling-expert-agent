@@ -1,0 +1,507 @@
+{
+  "routes": [
+    {
+      "route_id": "Q1-R1",
+      "subquestion_id": "1",
+      "route_type": "baseline clustered regression",
+      "modeling_idea": "在对数 Y 浓度上拟合固定效应回归，并按孕妇代码计算聚类稳健标准误，作为最低复杂度基线。",
+      "mathematical_object": "带聚类稳健协方差的多项式线性回归",
+      "objective_or_rule": "最小化对数浓度残差平方和，并用孕妇簇修正协方差",
+      "validation_plan": "按孕妇 GroupKFold 计算 MAE 与 R2，并与混合模型比较",
+      "failure_modes": [
+        "不能分解个体方差",
+        "随机异质性较强时预测区间失真"
+      ],
+      "route_family": "baseline clustered regression",
+      "route_name": "带聚类稳健协方差的多项式线性回归",
+      "applicable_reason": "在对数 Y 浓度上拟合固定效应回归，并按孕妇代码计算聚类稳健标准误，作为最低复杂度基线。",
+      "inputs": [
+        "孕周",
+        "BMI",
+        "年龄",
+        "GC含量",
+        "过滤比例",
+        "孕妇代码"
+      ],
+      "outputs": [
+        "效应系数",
+        "ICC",
+        "预测误差"
+      ],
+      "constraints_or_assumptions": [
+        "同一孕妇不跨验证折",
+        "输入变量时点符合任务要求"
+      ],
+      "recommended_figures": [
+        "关系曲线",
+        "残差诊断"
+      ],
+      "suitable_role": "baseline",
+      "state_variables": [
+        "效应系数",
+        "ICC",
+        "预测误差"
+      ]
+    },
+    {
+      "route_id": "Q1-R2",
+      "subquestion_id": "1",
+      "route_type": "selected longitudinal inference",
+      "modeling_idea": "为每名孕妇设置随机截距，固定效应刻画孕周非线性、BMI 和测序质量变量。",
+      "mathematical_object": "随机截距线性混合效应模型",
+      "objective_or_rule": "最大似然估计固定效应与方差分量，报告 ICC 和边际/条件R2",
+      "validation_plan": "检查收敛、残差、ICC，并按孕妇分组计算组外 MAE",
+      "failure_modes": [
+        "随机效应分布偏离正态",
+        "固定变量难以预测新孕妇个体差异"
+      ],
+      "route_family": "selected longitudinal inference",
+      "route_name": "随机截距线性混合效应模型",
+      "applicable_reason": "为每名孕妇设置随机截距，固定效应刻画孕周非线性、BMI 和测序质量变量。",
+      "inputs": [
+        "孕周",
+        "BMI",
+        "年龄",
+        "GC含量",
+        "过滤比例",
+        "孕妇代码"
+      ],
+      "outputs": [
+        "效应系数",
+        "ICC",
+        "预测误差"
+      ],
+      "constraints_or_assumptions": [
+        "同一孕妇不跨验证折",
+        "输入变量时点符合任务要求"
+      ],
+      "recommended_figures": [
+        "关系曲线",
+        "残差诊断"
+      ],
+      "suitable_role": "main",
+      "state_variables": [
+        "效应系数",
+        "ICC",
+        "预测误差"
+      ]
+    },
+    {
+      "route_id": "Q1-R3",
+      "subquestion_id": "1",
+      "route_type": "nonlinear predictive alternative",
+      "modeling_idea": "使用梯度提升树拟合孕周、BMI 和质量变量的非线性关系，作为纯预测备选。",
+      "mathematical_object": "树集成非参数回归函数",
+      "objective_or_rule": "最小化平方损失并通过分组交叉验证选择复杂度",
+      "validation_plan": "GroupKFold 比较 MAE，并检查部分依赖方向是否符合题意",
+      "failure_modes": [
+        "显著性解释不足",
+        "样本外形状不稳定",
+        "重复测量相关未显式建模"
+      ],
+      "route_family": "nonlinear predictive alternative",
+      "route_name": "树集成非参数回归函数",
+      "applicable_reason": "使用梯度提升树拟合孕周、BMI 和质量变量的非线性关系，作为纯预测备选。",
+      "inputs": [
+        "孕周",
+        "BMI",
+        "年龄",
+        "GC含量",
+        "过滤比例",
+        "孕妇代码"
+      ],
+      "outputs": [
+        "效应系数",
+        "ICC",
+        "预测误差"
+      ],
+      "constraints_or_assumptions": [
+        "同一孕妇不跨验证折",
+        "输入变量时点符合任务要求"
+      ],
+      "recommended_figures": [
+        "关系曲线",
+        "残差诊断"
+      ],
+      "suitable_role": "auxiliary",
+      "state_variables": [
+        "效应系数",
+        "ICC",
+        "预测误差"
+      ]
+    },
+    {
+      "route_id": "Q2-R1",
+      "subquestion_id": "2",
+      "route_type": "naive first-hit baseline",
+      "modeling_idea": "把首次观测到达标的孕周视作达标时点，并按 BMI 分位数给出组内高分位数建议。",
+      "mathematical_object": "观测首次命中时间的经验分位数",
+      "objective_or_rule": "每组取经验90%达标时点并保持样本量下限",
+      "validation_plan": "比较经验达标率与 AFT 预测达标率",
+      "failure_modes": [
+        "忽略左删失导致时点偏晚",
+        "从未达标样本无法正确利用"
+      ],
+      "route_family": "naive first-hit baseline",
+      "route_name": "观测首次命中时间的经验分位数",
+      "applicable_reason": "把首次观测到达标的孕周视作达标时点，并按 BMI 分位数给出组内高分位数建议。",
+      "inputs": [
+        "BMI",
+        "删失时间上下界"
+      ],
+      "outputs": [
+        "连续BMI分组",
+        "推荐孕周",
+        "达标概率"
+      ],
+      "constraints_or_assumptions": [
+        "同一孕妇不跨验证折",
+        "输入变量时点符合任务要求"
+      ],
+      "recommended_figures": [
+        "达标概率曲线",
+        "分组边界图"
+      ],
+      "suitable_role": "baseline",
+      "decision_variables": [
+        "BMI分组边界",
+        "推荐检测孕周"
+      ]
+    },
+    {
+      "route_id": "Q2-R2",
+      "subquestion_id": "2",
+      "route_type": "selected censored timing model",
+      "modeling_idea": "按观测序列构造左、区间和右删失时点，用 BMI 解释对数达标时间，再动态划分连续区间。",
+      "mathematical_object": "BMI-only 对数正态区间删失 AFT 与动态规划",
+      "objective_or_rule": "最小化删失负对数似然；在组最小样本约束下最小化90%分位数组内离差",
+      "validation_plan": "检查优化收敛、删失构成、每组样本数及推荐点达标概率",
+      "failure_modes": [
+        "对数正态假设错误",
+        "高BMI尾部区间估计不稳"
+      ],
+      "route_family": "selected censored timing model",
+      "route_name": "BMI-only 对数正态区间删失 AFT 与动态规划",
+      "applicable_reason": "按观测序列构造左、区间和右删失时点，用 BMI 解释对数达标时间，再动态划分连续区间。",
+      "inputs": [
+        "BMI",
+        "删失时间上下界"
+      ],
+      "outputs": [
+        "连续BMI分组",
+        "推荐孕周",
+        "达标概率"
+      ],
+      "constraints_or_assumptions": [
+        "同一孕妇不跨验证折",
+        "输入变量时点符合任务要求"
+      ],
+      "recommended_figures": [
+        "达标概率曲线",
+        "分组边界图"
+      ],
+      "suitable_role": "main",
+      "decision_variables": [
+        "BMI分组边界",
+        "推荐检测孕周"
+      ]
+    },
+    {
+      "route_id": "Q2-R3",
+      "subquestion_id": "2",
+      "route_type": "binary probability surface",
+      "modeling_idea": "把每次检测是否达到 4% 作为二元响应，用 GEE 建立孕周与 BMI 的达标概率面。",
+      "mathematical_object": "按孕妇聚类的二项 GEE",
+      "objective_or_rule": "求各 BMI 组预测概率首次达到0.90的孕周",
+      "validation_plan": "按孕妇留出检验概率校准与 Brier score",
+      "failure_modes": [
+        "不能直接表达首次达标删失",
+        "概率随孕周可能不严格单调"
+      ],
+      "route_family": "binary probability surface",
+      "route_name": "按孕妇聚类的二项 GEE",
+      "applicable_reason": "把每次检测是否达到 4% 作为二元响应，用 GEE 建立孕周与 BMI 的达标概率面。",
+      "inputs": [
+        "BMI",
+        "删失时间上下界"
+      ],
+      "outputs": [
+        "连续BMI分组",
+        "推荐孕周",
+        "达标概率"
+      ],
+      "constraints_or_assumptions": [
+        "同一孕妇不跨验证折",
+        "输入变量时点符合任务要求"
+      ],
+      "recommended_figures": [
+        "达标概率曲线",
+        "分组边界图"
+      ],
+      "suitable_role": "auxiliary",
+      "decision_variables": [
+        "BMI分组边界",
+        "推荐检测孕周"
+      ]
+    },
+    {
+      "route_id": "Q3-R1",
+      "subquestion_id": "3",
+      "route_type": "selected multivariable survival",
+      "modeling_idea": "在区间删失 AFT 中加入检测前人口学与孕产变量，对 BMI 时点进行风险修正。",
+      "mathematical_object": "多因素对数正态区间删失 AFT",
+      "objective_or_rule": "最小化删失负对数似然，并比较多因素与BMI模型AIC",
+      "validation_plan": "检查优化收敛、AIC、分组约束和阈值扰动下的时点变化",
+      "failure_modes": [
+        "参数过多导致AIC升高",
+        "近似Hessian显著性不稳定"
+      ],
+      "route_family": "selected multivariable survival",
+      "route_name": "多因素对数正态区间删失 AFT",
+      "applicable_reason": "在区间删失 AFT 中加入检测前人口学与孕产变量，对 BMI 时点进行风险修正。",
+      "inputs": [
+        "BMI",
+        "年龄",
+        "身高",
+        "受孕方式",
+        "孕产次数",
+        "删失时间上下界"
+      ],
+      "outputs": [
+        "修正后分组",
+        "推荐孕周",
+        "AIC与敏感性"
+      ],
+      "constraints_or_assumptions": [
+        "同一孕妇不跨验证折",
+        "输入变量时点符合任务要求"
+      ],
+      "recommended_figures": [
+        "分组边界图",
+        "阈值敏感性图"
+      ],
+      "suitable_role": "main",
+      "decision_variables": [
+        "BMI分组边界",
+        "推荐检测孕周"
+      ]
+    },
+    {
+      "route_id": "Q3-R2",
+      "subquestion_id": "3",
+      "route_type": "nonlinear probability alternative",
+      "modeling_idea": "用梯度提升分类器拟合每个孕周的达标概率，再对每名孕妇搜索0.90阈值。",
+      "mathematical_object": "带单调后处理的梯度提升概率函数",
+      "objective_or_rule": "最小化对数损失并使孕周方向概率非减",
+      "validation_plan": "分组交叉验证 Brier score 与概率校准曲线",
+      "failure_modes": [
+        "重复行权重使多次检测孕妇占优",
+        "缺少严格删失似然"
+      ],
+      "route_family": "nonlinear probability alternative",
+      "route_name": "带单调后处理的梯度提升概率函数",
+      "applicable_reason": "用梯度提升分类器拟合每个孕周的达标概率，再对每名孕妇搜索0.90阈值。",
+      "inputs": [
+        "BMI",
+        "年龄",
+        "身高",
+        "受孕方式",
+        "孕产次数",
+        "删失时间上下界"
+      ],
+      "outputs": [
+        "修正后分组",
+        "推荐孕周",
+        "AIC与敏感性"
+      ],
+      "constraints_or_assumptions": [
+        "同一孕妇不跨验证折",
+        "输入变量时点符合任务要求"
+      ],
+      "recommended_figures": [
+        "分组边界图",
+        "阈值敏感性图"
+      ],
+      "suitable_role": "auxiliary",
+      "decision_variables": [
+        "BMI分组边界",
+        "推荐检测孕周"
+      ]
+    },
+    {
+      "route_id": "Q3-R3",
+      "subquestion_id": "3",
+      "route_type": "quantile decision alternative",
+      "modeling_idea": "直接对首次达标孕周拟合高分位回归，并用删失权重做近似修正。",
+      "mathematical_object": "加权0.90分位数回归",
+      "objective_or_rule": "最小化非对称绝对损失并输出条件高分位数",
+      "validation_plan": "检验推荐孕周后的经验覆盖率和重抽样稳定性",
+      "failure_modes": [
+        "左删失权重难准确指定",
+        "右删失信息利用不足"
+      ],
+      "route_family": "quantile decision alternative",
+      "route_name": "加权0.90分位数回归",
+      "applicable_reason": "直接对首次达标孕周拟合高分位回归，并用删失权重做近似修正。",
+      "inputs": [
+        "BMI",
+        "年龄",
+        "身高",
+        "受孕方式",
+        "孕产次数",
+        "删失时间上下界"
+      ],
+      "outputs": [
+        "修正后分组",
+        "推荐孕周",
+        "AIC与敏感性"
+      ],
+      "constraints_or_assumptions": [
+        "同一孕妇不跨验证折",
+        "输入变量时点符合任务要求"
+      ],
+      "recommended_figures": [
+        "分组边界图",
+        "阈值敏感性图"
+      ],
+      "suitable_role": "auxiliary",
+      "decision_variables": [
+        "BMI分组边界",
+        "推荐检测孕周"
+      ]
+    },
+    {
+      "route_id": "Q4-R1",
+      "subquestion_id": "4",
+      "route_type": "clinical-style baseline rule",
+      "modeling_idea": "使用任一 Z13、Z18、Z21 的绝对值达到3作为异常基线，不使用训练数据。",
+      "mathematical_object": "确定性绝对Z阈值分类规则",
+      "objective_or_rule": "max(|Z13|,|Z18|,|Z21|)大于等于3则判异常",
+      "validation_plan": "按全部记录计算混淆矩阵、ROC-AUC、PR-AUC、召回率和特异度",
+      "failure_modes": [
+        "与附件AB标签机制不一致",
+        "忽略测序质量与个体信息"
+      ],
+      "route_family": "clinical-style baseline rule",
+      "route_name": "确定性绝对Z阈值分类规则",
+      "applicable_reason": "使用任一 Z13、Z18、Z21 的绝对值达到3作为异常基线，不使用训练数据。",
+      "inputs": [
+        "Z值",
+        "X浓度",
+        "GC与读段质量",
+        "BMI",
+        "年龄",
+        "孕周"
+      ],
+      "outputs": [
+        "异常概率",
+        "混淆矩阵",
+        "ROC-AUC与PR-AUC"
+      ],
+      "constraints_or_assumptions": [
+        "同一孕妇不跨验证折",
+        "输入变量时点符合任务要求"
+      ],
+      "recommended_figures": [
+        "ROC/PR曲线",
+        "混淆矩阵",
+        "Bootstrap置信区间"
+      ],
+      "suitable_role": "baseline",
+      "state_variables": [
+        "异常概率",
+        "混淆矩阵",
+        "ROC-AUC与PR-AUC"
+      ]
+    },
+    {
+      "route_id": "Q4-R2",
+      "subquestion_id": "4",
+      "route_type": "selected interpretable classifier",
+      "modeling_idea": "标准化多指标后拟合逻辑回归，以孕妇为组进行分层五折验证。",
+      "mathematical_object": "正则化二项逻辑回归概率模型",
+      "objective_or_rule": "最小化对数损失，阈值0.5输出异常判定",
+      "validation_plan": "StratifiedGroupKFold 汇总ROC-AUC、PR-AUC、召回率、特异度、F1和混淆矩阵",
+      "failure_modes": [
+        "线性对数优势假设受限",
+        "阳性样本少导致系数不稳定"
+      ],
+      "route_family": "selected interpretable classifier",
+      "route_name": "正则化二项逻辑回归概率模型",
+      "applicable_reason": "标准化多指标后拟合逻辑回归，以孕妇为组进行分层五折验证。",
+      "inputs": [
+        "Z值",
+        "X浓度",
+        "GC与读段质量",
+        "BMI",
+        "年龄",
+        "孕周"
+      ],
+      "outputs": [
+        "异常概率",
+        "混淆矩阵",
+        "ROC-AUC与PR-AUC"
+      ],
+      "constraints_or_assumptions": [
+        "同一孕妇不跨验证折",
+        "输入变量时点符合任务要求"
+      ],
+      "recommended_figures": [
+        "ROC/PR曲线",
+        "混淆矩阵",
+        "Bootstrap置信区间"
+      ],
+      "suitable_role": "main",
+      "state_variables": [
+        "异常概率",
+        "混淆矩阵",
+        "ROC-AUC与PR-AUC"
+      ]
+    },
+    {
+      "route_id": "Q4-R3",
+      "subquestion_id": "4",
+      "route_type": "nonlinear ensemble alternative",
+      "modeling_idea": "比较随机森林与直方图梯度提升，捕捉 Z 值和质量变量的非线性交互。",
+      "mathematical_object": "树集成二分类器",
+      "objective_or_rule": "最小化分类损失并用0.5阈值输出标签",
+      "validation_plan": "与逻辑回归使用完全相同的孕妇分组五折，重点比较PR-AUC",
+      "failure_modes": [
+        "小阳性类过拟合",
+        "解释性弱于逻辑回归",
+        "折间波动较大"
+      ],
+      "route_family": "nonlinear ensemble alternative",
+      "route_name": "树集成二分类器",
+      "applicable_reason": "比较随机森林与直方图梯度提升，捕捉 Z 值和质量变量的非线性交互。",
+      "inputs": [
+        "Z值",
+        "X浓度",
+        "GC与读段质量",
+        "BMI",
+        "年龄",
+        "孕周"
+      ],
+      "outputs": [
+        "异常概率",
+        "混淆矩阵",
+        "ROC-AUC与PR-AUC"
+      ],
+      "constraints_or_assumptions": [
+        "同一孕妇不跨验证折",
+        "输入变量时点符合任务要求"
+      ],
+      "recommended_figures": [
+        "ROC/PR曲线",
+        "混淆矩阵",
+        "Bootstrap置信区间"
+      ],
+      "suitable_role": "auxiliary",
+      "state_variables": [
+        "异常概率",
+        "混淆矩阵",
+        "ROC-AUC与PR-AUC"
+      ]
+    }
+  ]
+}

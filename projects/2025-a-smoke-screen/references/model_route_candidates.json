@@ -1,0 +1,1996 @@
+{
+  "schema_version": 2,
+  "card_count": 14,
+  "routes": [
+    {
+      "subquestion": "Q1",
+      "subquestion_id": "Q1",
+      "route_id": "Q1_baseline_empirical",
+      "route_family": "baseline_empirical",
+      "route_type": "baseline_empirical",
+      "route_name": "Transparent baseline",
+      "task_types": [
+        "simulation",
+        "differential_equation",
+        "geometric_kinematics",
+        "deterministic_simulation"
+      ],
+      "applicable_reason": "Always included as a transparent comparator.",
+      "modeling_idea": "Transparent baseline: Use the simplest reproducible rule that answers the subquestion and exposes the value of added complexity.",
+      "mathematical_object": "simple rule, mean/median benchmark, or direct feasible heuristic",
+      "inputs": [
+        "M1/FY1 初始位置",
+        "导弹速度 300 m/s",
+        "FY1 速度 120 m/s 且朝原点",
+        "投放时刻 1.5 s",
+        "引信延时 3.6 s",
+        "云团半径/寿命/下沉速度",
+        "圆柱目标几何"
+      ],
+      "outputs": [
+        "中心视线口径遮蔽区间与时长",
+        "完整圆柱口径遮蔽区间与时长",
+        "边界残差与口径敏感性"
+      ],
+      "decision_variables": [],
+      "state_variables": [],
+      "objective_or_rule": "Use the simplest reproducible rule that answers the subquestion and exposes the value of added complexity.",
+      "core_formula_or_objective": "Use the simplest reproducible rule that answers the subquestion and exposes the value of added complexity.",
+      "constraints_or_assumptions": [
+        "云团只在起爆后 20 s 内有效",
+        "视线为导弹到目标的有限线段而非无限直线"
+      ],
+      "constraints": [
+        "云团只在起爆后 20 s 内有效",
+        "视线为导弹到目标的有限线段而非无限直线"
+      ],
+      "validation_plan": [
+        "compare against main route",
+        "check residual or feasibility baseline"
+      ],
+      "validation": [
+        "compare against main route",
+        "check residual or feasibility baseline"
+      ],
+      "recommended_figures": [
+        "baseline comparison",
+        "data profile"
+      ],
+      "failure_modes": [
+        "too simple for nonlinear or constrained structure",
+        "weak decision value"
+      ],
+      "limitations": "too simple for nonlinear or constrained structure; weak decision value",
+      "data_requirements": [
+        "variables must be available at the claimed decision time",
+        "sample count available to route selector: 29"
+      ],
+      "suitable_role": "baseline",
+      "suitable_as_main_model": false,
+      "model_card_refs": [
+        "simulation",
+        "differential_equation",
+        "sensitivity_analysis"
+      ]
+    },
+    {
+      "subquestion": "Q1",
+      "subquestion_id": "Q1",
+      "route_id": "Q1_simulation_scenario",
+      "route_family": "simulation_scenario",
+      "route_type": "simulation_scenario",
+      "route_name": "Scenario or stochastic simulation",
+      "task_types": [
+        "simulation",
+        "differential_equation",
+        "geometric_kinematics",
+        "deterministic_simulation"
+      ],
+      "applicable_reason": "Selected because it matches confirmed task structure, available data, or decision requirements.",
+      "modeling_idea": "Scenario or stochastic simulation: Propagate uncertainty through repeated scenarios and report intervals.",
+      "mathematical_object": "random process or repeated-run simulator",
+      "inputs": [
+        "M1/FY1 初始位置",
+        "导弹速度 300 m/s",
+        "FY1 速度 120 m/s 且朝原点",
+        "投放时刻 1.5 s",
+        "引信延时 3.6 s",
+        "云团半径/寿命/下沉速度",
+        "圆柱目标几何"
+      ],
+      "outputs": [
+        "中心视线口径遮蔽区间与时长",
+        "完整圆柱口径遮蔽区间与时长",
+        "边界残差与口径敏感性"
+      ],
+      "decision_variables": [],
+      "state_variables": [
+        "state variables from the statement"
+      ],
+      "objective_or_rule": "Propagate uncertainty through repeated scenarios and report intervals.",
+      "core_formula_or_objective": "Propagate uncertainty through repeated scenarios and report intervals.",
+      "constraints_or_assumptions": [
+        "云团只在起爆后 20 s 内有效",
+        "视线为导弹到目标的有限线段而非无限直线"
+      ],
+      "constraints": [
+        "云团只在起爆后 20 s 内有效",
+        "视线为导弹到目标的有限线段而非无限直线"
+      ],
+      "validation_plan": [
+        "repeated-run interval",
+        "convergence check",
+        "extreme scenario response"
+      ],
+      "validation": [
+        "repeated-run interval",
+        "convergence check",
+        "extreme scenario response"
+      ],
+      "recommended_figures": [
+        "scenario distribution",
+        "convergence curve",
+        "sensitivity band"
+      ],
+      "failure_modes": [
+        "unsupported distribution assumptions",
+        "too few replications",
+        "hidden parameter sensitivity"
+      ],
+      "limitations": "unsupported distribution assumptions; too few replications; hidden parameter sensitivity",
+      "data_requirements": [
+        "variables must be available at the claimed decision time",
+        "sample count available to route selector: 29"
+      ],
+      "suitable_role": "main",
+      "suitable_as_main_model": true,
+      "model_card_refs": [
+        "simulation",
+        "differential_equation",
+        "sensitivity_analysis"
+      ]
+    },
+    {
+      "subquestion": "Q1",
+      "subquestion_id": "Q1",
+      "route_id": "Q1_hybrid_uncertainty_decision",
+      "route_family": "hybrid_uncertainty_decision",
+      "route_type": "hybrid_uncertainty_decision",
+      "route_name": "Prediction-to-decision with uncertainty",
+      "task_types": [
+        "simulation",
+        "differential_equation",
+        "geometric_kinematics",
+        "deterministic_simulation"
+      ],
+      "applicable_reason": "Selected because it matches confirmed task structure, available data, or decision requirements.",
+      "modeling_idea": "Prediction-to-decision with uncertainty: Use validated estimates as inputs to a decision or feasibility rule, with uncertainty propagation.",
+      "mathematical_object": "validated predictor plus decision rule under uncertainty",
+      "inputs": [
+        "M1/FY1 初始位置",
+        "导弹速度 300 m/s",
+        "FY1 速度 120 m/s 且朝原点",
+        "投放时刻 1.5 s",
+        "引信延时 3.6 s",
+        "云团半径/寿命/下沉速度",
+        "圆柱目标几何"
+      ],
+      "outputs": [
+        "中心视线口径遮蔽区间与时长",
+        "完整圆柱口径遮蔽区间与时长",
+        "边界残差与口径敏感性"
+      ],
+      "decision_variables": [],
+      "state_variables": [],
+      "objective_or_rule": "Use validated estimates as inputs to a decision or feasibility rule, with uncertainty propagation.",
+      "core_formula_or_objective": "Use validated estimates as inputs to a decision or feasibility rule, with uncertainty propagation.",
+      "constraints_or_assumptions": [
+        "云团只在起爆后 20 s 内有效",
+        "视线为导弹到目标的有限线段而非无限直线"
+      ],
+      "constraints": [
+        "云团只在起爆后 20 s 内有效",
+        "视线为导弹到目标的有限线段而非无限直线"
+      ],
+      "validation_plan": [
+        "baseline comparison",
+        "uncertainty propagation",
+        "decision sensitivity"
+      ],
+      "validation": [
+        "baseline comparison",
+        "uncertainty propagation",
+        "decision sensitivity"
+      ],
+      "recommended_figures": [
+        "decision sensitivity",
+        "uncertainty interval",
+        "baseline vs final decision"
+      ],
+      "failure_modes": [
+        "prediction uncertainty ignored",
+        "decision thresholds unsupported",
+        "hard to communicate if not modular"
+      ],
+      "limitations": "prediction uncertainty ignored; decision thresholds unsupported; hard to communicate if not modular",
+      "data_requirements": [
+        "variables must be available at the claimed decision time",
+        "sample count available to route selector: 29"
+      ],
+      "suitable_role": "auxiliary",
+      "suitable_as_main_model": false,
+      "model_card_refs": [
+        "simulation",
+        "differential_equation",
+        "uncertainty_quantification",
+        "sensitivity_analysis"
+      ]
+    },
+    {
+      "subquestion": "Q1",
+      "subquestion_id": "Q1",
+      "route_id": "Q1_mechanism_state",
+      "route_family": "mechanism_state",
+      "route_type": "mechanism_state",
+      "route_name": "State or mechanism model",
+      "task_types": [
+        "simulation",
+        "differential_equation",
+        "geometric_kinematics",
+        "deterministic_simulation"
+      ],
+      "applicable_reason": "Selected because it matches confirmed task structure, available data, or decision requirements.",
+      "modeling_idea": "State or mechanism model: Represent system evolution with interpretable state equations and parameter checks.",
+      "mathematical_object": "state variables and transition or differential relations",
+      "inputs": [
+        "M1/FY1 初始位置",
+        "导弹速度 300 m/s",
+        "FY1 速度 120 m/s 且朝原点",
+        "投放时刻 1.5 s",
+        "引信延时 3.6 s",
+        "云团半径/寿命/下沉速度",
+        "圆柱目标几何"
+      ],
+      "outputs": [
+        "中心视线口径遮蔽区间与时长",
+        "完整圆柱口径遮蔽区间与时长",
+        "边界残差与口径敏感性"
+      ],
+      "decision_variables": [],
+      "state_variables": [
+        "state variables from the statement"
+      ],
+      "objective_or_rule": "Represent system evolution with interpretable state equations and parameter checks.",
+      "core_formula_or_objective": "Represent system evolution with interpretable state equations and parameter checks.",
+      "constraints_or_assumptions": [
+        "云团只在起爆后 20 s 内有效",
+        "视线为导弹到目标的有限线段而非无限直线"
+      ],
+      "constraints": [
+        "云团只在起爆后 20 s 内有效",
+        "视线为导弹到目标的有限线段而非无限直线"
+      ],
+      "validation_plan": [
+        "state trajectory check",
+        "parameter meaning",
+        "stability or conservation check"
+      ],
+      "validation": [
+        "state trajectory check",
+        "parameter meaning",
+        "stability or conservation check"
+      ],
+      "recommended_figures": [
+        "state trajectory",
+        "parameter sensitivity",
+        "mechanism diagram"
+      ],
+      "failure_modes": [
+        "parameters not identifiable",
+        "mechanism oversimplified",
+        "state data unavailable"
+      ],
+      "limitations": "parameters not identifiable; mechanism oversimplified; state data unavailable",
+      "data_requirements": [
+        "variables must be available at the claimed decision time",
+        "sample count available to route selector: 29"
+      ],
+      "suitable_role": "auxiliary",
+      "suitable_as_main_model": false,
+      "model_card_refs": [
+        "simulation",
+        "differential_equation",
+        "sensitivity_analysis"
+      ]
+    },
+    {
+      "subquestion": "Q2",
+      "subquestion_id": "Q2",
+      "route_id": "Q2_baseline_empirical",
+      "route_family": "baseline_empirical",
+      "route_type": "baseline_empirical",
+      "route_name": "Transparent baseline",
+      "task_types": [
+        "optimization",
+        "simulation",
+        "nonlinear_optimization",
+        "geometric_kinematics"
+      ],
+      "applicable_reason": "Always included as a transparent comparator.",
+      "modeling_idea": "Transparent baseline: Use the simplest reproducible rule that answers the subquestion and exposes the value of added complexity.",
+      "mathematical_object": "simple rule, mean/median benchmark, or direct feasible heuristic",
+      "inputs": [
+        "Q1 的共享运动学与几何参数",
+        "FY1 速度范围 70–140 m/s"
+      ],
+      "outputs": [
+        "航向角 (deg)",
+        "速度 (m/s)",
+        "投放时刻/点",
+        "起爆时刻/点",
+        "有效区间与时长",
+        "可行性和边界残差"
+      ],
+      "decision_variables": [
+        "航向角 theta",
+        "速度 v",
+        "投放时刻 tr",
+        "引信延时 tau"
+      ],
+      "state_variables": [],
+      "objective_or_rule": "Use the simplest reproducible rule that answers the subquestion and exposes the value of added complexity.",
+      "core_formula_or_objective": "Use the simplest reproducible rule that answers the subquestion and exposes the value of added complexity.",
+      "constraints_or_assumptions": [
+        "70<=v<=140",
+        "tr>=0",
+        "tau>=0",
+        "起爆高度>=0",
+        "起爆早于 M1 到达原点",
+        "航向和速度选定后不变"
+      ],
+      "constraints": [
+        "70<=v<=140",
+        "tr>=0",
+        "tau>=0",
+        "起爆高度>=0",
+        "起爆早于 M1 到达原点",
+        "航向和速度选定后不变"
+      ],
+      "validation_plan": [
+        "compare against main route",
+        "check residual or feasibility baseline"
+      ],
+      "validation": [
+        "compare against main route",
+        "check residual or feasibility baseline"
+      ],
+      "recommended_figures": [
+        "baseline comparison",
+        "data profile"
+      ],
+      "failure_modes": [
+        "too simple for nonlinear or constrained structure",
+        "weak decision value"
+      ],
+      "limitations": "too simple for nonlinear or constrained structure; weak decision value",
+      "data_requirements": [
+        "variables must be available at the claimed decision time",
+        "sample count available to route selector: 29"
+      ],
+      "suitable_role": "baseline",
+      "suitable_as_main_model": false,
+      "model_card_refs": [
+        "optimization",
+        "simulation",
+        "sensitivity_analysis"
+      ]
+    },
+    {
+      "subquestion": "Q2",
+      "subquestion_id": "Q2",
+      "route_id": "Q2_mathematical_programming",
+      "route_family": "mathematical_programming",
+      "route_type": "mathematical_programming",
+      "route_name": "Objective-constrained decision model",
+      "task_types": [
+        "optimization",
+        "simulation",
+        "nonlinear_optimization",
+        "geometric_kinematics"
+      ],
+      "applicable_reason": "Selected because it matches confirmed task structure, available data, or decision requirements.",
+      "modeling_idea": "Objective-constrained decision model: Optimize the objective while reporting feasibility and sensitivity to constraints.",
+      "mathematical_object": "decision vector x, objective F(x), constraints C(x) <= 0",
+      "inputs": [
+        "Q1 的共享运动学与几何参数",
+        "FY1 速度范围 70–140 m/s"
+      ],
+      "outputs": [
+        "航向角 (deg)",
+        "速度 (m/s)",
+        "投放时刻/点",
+        "起爆时刻/点",
+        "有效区间与时长",
+        "可行性和边界残差"
+      ],
+      "decision_variables": [
+        "航向角 theta",
+        "速度 v",
+        "投放时刻 tr",
+        "引信延时 tau"
+      ],
+      "state_variables": [],
+      "objective_or_rule": "Optimize the objective while reporting feasibility and sensitivity to constraints.",
+      "core_formula_or_objective": "Optimize the objective while reporting feasibility and sensitivity to constraints.",
+      "constraints_or_assumptions": [
+        "70<=v<=140",
+        "tr>=0",
+        "tau>=0",
+        "起爆高度>=0",
+        "起爆早于 M1 到达原点",
+        "航向和速度选定后不变"
+      ],
+      "constraints": [
+        "70<=v<=140",
+        "tr>=0",
+        "tau>=0",
+        "起爆高度>=0",
+        "起爆早于 M1 到达原点",
+        "航向和速度选定后不变"
+      ],
+      "validation_plan": [
+        "constraint satisfaction",
+        "objective value",
+        "scenario sensitivity",
+        "baseline comparison"
+      ],
+      "validation": [
+        "constraint satisfaction",
+        "objective value",
+        "scenario sensitivity",
+        "baseline comparison"
+      ],
+      "recommended_figures": [
+        "constraint status",
+        "feasible region",
+        "scenario comparison"
+      ],
+      "failure_modes": [
+        "infeasible constraints",
+        "poorly justified objective weights",
+        "unstable optimum"
+      ],
+      "limitations": "infeasible constraints; poorly justified objective weights; unstable optimum",
+      "data_requirements": [
+        "variables must be available at the claimed decision time",
+        "sample count available to route selector: 29"
+      ],
+      "suitable_role": "main",
+      "suitable_as_main_model": true,
+      "model_card_refs": [
+        "optimization",
+        "simulation",
+        "sensitivity_analysis"
+      ]
+    },
+    {
+      "subquestion": "Q2",
+      "subquestion_id": "Q2",
+      "route_id": "Q2_hybrid_uncertainty_decision",
+      "route_family": "hybrid_uncertainty_decision",
+      "route_type": "hybrid_uncertainty_decision",
+      "route_name": "Prediction-to-decision with uncertainty",
+      "task_types": [
+        "optimization",
+        "simulation",
+        "nonlinear_optimization",
+        "geometric_kinematics"
+      ],
+      "applicable_reason": "Selected because it matches confirmed task structure, available data, or decision requirements.",
+      "modeling_idea": "Prediction-to-decision with uncertainty: Use validated estimates as inputs to a decision or feasibility rule, with uncertainty propagation.",
+      "mathematical_object": "validated predictor plus decision rule under uncertainty",
+      "inputs": [
+        "Q1 的共享运动学与几何参数",
+        "FY1 速度范围 70–140 m/s"
+      ],
+      "outputs": [
+        "航向角 (deg)",
+        "速度 (m/s)",
+        "投放时刻/点",
+        "起爆时刻/点",
+        "有效区间与时长",
+        "可行性和边界残差"
+      ],
+      "decision_variables": [
+        "航向角 theta",
+        "速度 v",
+        "投放时刻 tr",
+        "引信延时 tau"
+      ],
+      "state_variables": [],
+      "objective_or_rule": "Use validated estimates as inputs to a decision or feasibility rule, with uncertainty propagation.",
+      "core_formula_or_objective": "Use validated estimates as inputs to a decision or feasibility rule, with uncertainty propagation.",
+      "constraints_or_assumptions": [
+        "70<=v<=140",
+        "tr>=0",
+        "tau>=0",
+        "起爆高度>=0",
+        "起爆早于 M1 到达原点",
+        "航向和速度选定后不变"
+      ],
+      "constraints": [
+        "70<=v<=140",
+        "tr>=0",
+        "tau>=0",
+        "起爆高度>=0",
+        "起爆早于 M1 到达原点",
+        "航向和速度选定后不变"
+      ],
+      "validation_plan": [
+        "baseline comparison",
+        "uncertainty propagation",
+        "decision sensitivity"
+      ],
+      "validation": [
+        "baseline comparison",
+        "uncertainty propagation",
+        "decision sensitivity"
+      ],
+      "recommended_figures": [
+        "decision sensitivity",
+        "uncertainty interval",
+        "baseline vs final decision"
+      ],
+      "failure_modes": [
+        "prediction uncertainty ignored",
+        "decision thresholds unsupported",
+        "hard to communicate if not modular"
+      ],
+      "limitations": "prediction uncertainty ignored; decision thresholds unsupported; hard to communicate if not modular",
+      "data_requirements": [
+        "variables must be available at the claimed decision time",
+        "sample count available to route selector: 29"
+      ],
+      "suitable_role": "auxiliary",
+      "suitable_as_main_model": false,
+      "model_card_refs": [
+        "optimization",
+        "simulation",
+        "uncertainty_quantification",
+        "sensitivity_analysis"
+      ]
+    },
+    {
+      "subquestion": "Q2",
+      "subquestion_id": "Q2",
+      "route_id": "Q2_simulation_scenario",
+      "route_family": "simulation_scenario",
+      "route_type": "simulation_scenario",
+      "route_name": "Scenario or stochastic simulation",
+      "task_types": [
+        "optimization",
+        "simulation",
+        "nonlinear_optimization",
+        "geometric_kinematics"
+      ],
+      "applicable_reason": "Selected because it matches confirmed task structure, available data, or decision requirements.",
+      "modeling_idea": "Scenario or stochastic simulation: Propagate uncertainty through repeated scenarios and report intervals.",
+      "mathematical_object": "random process or repeated-run simulator",
+      "inputs": [
+        "Q1 的共享运动学与几何参数",
+        "FY1 速度范围 70–140 m/s"
+      ],
+      "outputs": [
+        "航向角 (deg)",
+        "速度 (m/s)",
+        "投放时刻/点",
+        "起爆时刻/点",
+        "有效区间与时长",
+        "可行性和边界残差"
+      ],
+      "decision_variables": [
+        "航向角 theta",
+        "速度 v",
+        "投放时刻 tr",
+        "引信延时 tau"
+      ],
+      "state_variables": [
+        "state variables from the statement"
+      ],
+      "objective_or_rule": "Propagate uncertainty through repeated scenarios and report intervals.",
+      "core_formula_or_objective": "Propagate uncertainty through repeated scenarios and report intervals.",
+      "constraints_or_assumptions": [
+        "70<=v<=140",
+        "tr>=0",
+        "tau>=0",
+        "起爆高度>=0",
+        "起爆早于 M1 到达原点",
+        "航向和速度选定后不变"
+      ],
+      "constraints": [
+        "70<=v<=140",
+        "tr>=0",
+        "tau>=0",
+        "起爆高度>=0",
+        "起爆早于 M1 到达原点",
+        "航向和速度选定后不变"
+      ],
+      "validation_plan": [
+        "repeated-run interval",
+        "convergence check",
+        "extreme scenario response"
+      ],
+      "validation": [
+        "repeated-run interval",
+        "convergence check",
+        "extreme scenario response"
+      ],
+      "recommended_figures": [
+        "scenario distribution",
+        "convergence curve",
+        "sensitivity band"
+      ],
+      "failure_modes": [
+        "unsupported distribution assumptions",
+        "too few replications",
+        "hidden parameter sensitivity"
+      ],
+      "limitations": "unsupported distribution assumptions; too few replications; hidden parameter sensitivity",
+      "data_requirements": [
+        "variables must be available at the claimed decision time",
+        "sample count available to route selector: 29"
+      ],
+      "suitable_role": "auxiliary",
+      "suitable_as_main_model": false,
+      "model_card_refs": [
+        "optimization",
+        "simulation",
+        "sensitivity_analysis"
+      ]
+    },
+    {
+      "subquestion": "Q3",
+      "subquestion_id": "Q3",
+      "route_id": "Q3_baseline_empirical",
+      "route_family": "baseline_empirical",
+      "route_type": "baseline_empirical",
+      "route_name": "Transparent baseline",
+      "task_types": [
+        "optimization",
+        "simulation",
+        "nonlinear_optimization",
+        "interval_coverage"
+      ],
+      "applicable_reason": "Always included as a transparent comparator.",
+      "modeling_idea": "Transparent baseline: Use the simplest reproducible rule that answers the subquestion and exposes the value of added complexity.",
+      "mathematical_object": "simple rule, mean/median benchmark, or direct feasible heuristic",
+      "inputs": [
+        "Q2 的共享运动学/几何参数",
+        "同一无人机三枚弹",
+        "相邻投放至少间隔 1 s",
+        "result1.xlsx 字段"
+      ],
+      "outputs": [
+        "同一航向角与速度",
+        "三枚弹投放点与起爆点",
+        "各弹对 M1 的有效时长",
+        "总并集时长",
+        "result1.xlsx"
+      ],
+      "decision_variables": [
+        "theta",
+        "v",
+        "tr_1..tr_3",
+        "tau_1..tau_3"
+      ],
+      "state_variables": [],
+      "objective_or_rule": "Use the simplest reproducible rule that answers the subquestion and exposes the value of added complexity.",
+      "core_formula_or_objective": "Use the simplest reproducible rule that answers the subquestion and exposes the value of added complexity.",
+      "constraints_or_assumptions": [
+        "70<=v<=140",
+        "tr_(k+1)-tr_k>=1",
+        "tau_k>=0",
+        "各起爆点 z>=0",
+        "各起爆早于 M1 到达原点",
+        "同机 theta/v 固定"
+      ],
+      "constraints": [
+        "70<=v<=140",
+        "tr_(k+1)-tr_k>=1",
+        "tau_k>=0",
+        "各起爆点 z>=0",
+        "各起爆早于 M1 到达原点",
+        "同机 theta/v 固定"
+      ],
+      "validation_plan": [
+        "compare against main route",
+        "check residual or feasibility baseline"
+      ],
+      "validation": [
+        "compare against main route",
+        "check residual or feasibility baseline"
+      ],
+      "recommended_figures": [
+        "baseline comparison",
+        "data profile"
+      ],
+      "failure_modes": [
+        "too simple for nonlinear or constrained structure",
+        "weak decision value"
+      ],
+      "limitations": "too simple for nonlinear or constrained structure; weak decision value",
+      "data_requirements": [
+        "variables must be available at the claimed decision time",
+        "sample count available to route selector: 29"
+      ],
+      "suitable_role": "baseline",
+      "suitable_as_main_model": false,
+      "model_card_refs": [
+        "optimization",
+        "simulation",
+        "sensitivity_analysis"
+      ]
+    },
+    {
+      "subquestion": "Q3",
+      "subquestion_id": "Q3",
+      "route_id": "Q3_mathematical_programming",
+      "route_family": "mathematical_programming",
+      "route_type": "mathematical_programming",
+      "route_name": "Objective-constrained decision model",
+      "task_types": [
+        "optimization",
+        "simulation",
+        "nonlinear_optimization",
+        "interval_coverage"
+      ],
+      "applicable_reason": "Selected because it matches confirmed task structure, available data, or decision requirements.",
+      "modeling_idea": "Objective-constrained decision model: Optimize the objective while reporting feasibility and sensitivity to constraints.",
+      "mathematical_object": "decision vector x, objective F(x), constraints C(x) <= 0",
+      "inputs": [
+        "Q2 的共享运动学/几何参数",
+        "同一无人机三枚弹",
+        "相邻投放至少间隔 1 s",
+        "result1.xlsx 字段"
+      ],
+      "outputs": [
+        "同一航向角与速度",
+        "三枚弹投放点与起爆点",
+        "各弹对 M1 的有效时长",
+        "总并集时长",
+        "result1.xlsx"
+      ],
+      "decision_variables": [
+        "theta",
+        "v",
+        "tr_1..tr_3",
+        "tau_1..tau_3"
+      ],
+      "state_variables": [],
+      "objective_or_rule": "Optimize the objective while reporting feasibility and sensitivity to constraints.",
+      "core_formula_or_objective": "Optimize the objective while reporting feasibility and sensitivity to constraints.",
+      "constraints_or_assumptions": [
+        "70<=v<=140",
+        "tr_(k+1)-tr_k>=1",
+        "tau_k>=0",
+        "各起爆点 z>=0",
+        "各起爆早于 M1 到达原点",
+        "同机 theta/v 固定"
+      ],
+      "constraints": [
+        "70<=v<=140",
+        "tr_(k+1)-tr_k>=1",
+        "tau_k>=0",
+        "各起爆点 z>=0",
+        "各起爆早于 M1 到达原点",
+        "同机 theta/v 固定"
+      ],
+      "validation_plan": [
+        "constraint satisfaction",
+        "objective value",
+        "scenario sensitivity",
+        "baseline comparison"
+      ],
+      "validation": [
+        "constraint satisfaction",
+        "objective value",
+        "scenario sensitivity",
+        "baseline comparison"
+      ],
+      "recommended_figures": [
+        "constraint status",
+        "feasible region",
+        "scenario comparison"
+      ],
+      "failure_modes": [
+        "infeasible constraints",
+        "poorly justified objective weights",
+        "unstable optimum"
+      ],
+      "limitations": "infeasible constraints; poorly justified objective weights; unstable optimum",
+      "data_requirements": [
+        "variables must be available at the claimed decision time",
+        "sample count available to route selector: 29"
+      ],
+      "suitable_role": "main",
+      "suitable_as_main_model": true,
+      "model_card_refs": [
+        "optimization",
+        "simulation",
+        "sensitivity_analysis"
+      ]
+    },
+    {
+      "subquestion": "Q3",
+      "subquestion_id": "Q3",
+      "route_id": "Q3_hybrid_uncertainty_decision",
+      "route_family": "hybrid_uncertainty_decision",
+      "route_type": "hybrid_uncertainty_decision",
+      "route_name": "Prediction-to-decision with uncertainty",
+      "task_types": [
+        "optimization",
+        "simulation",
+        "nonlinear_optimization",
+        "interval_coverage"
+      ],
+      "applicable_reason": "Selected because it matches confirmed task structure, available data, or decision requirements.",
+      "modeling_idea": "Prediction-to-decision with uncertainty: Use validated estimates as inputs to a decision or feasibility rule, with uncertainty propagation.",
+      "mathematical_object": "validated predictor plus decision rule under uncertainty",
+      "inputs": [
+        "Q2 的共享运动学/几何参数",
+        "同一无人机三枚弹",
+        "相邻投放至少间隔 1 s",
+        "result1.xlsx 字段"
+      ],
+      "outputs": [
+        "同一航向角与速度",
+        "三枚弹投放点与起爆点",
+        "各弹对 M1 的有效时长",
+        "总并集时长",
+        "result1.xlsx"
+      ],
+      "decision_variables": [
+        "theta",
+        "v",
+        "tr_1..tr_3",
+        "tau_1..tau_3"
+      ],
+      "state_variables": [],
+      "objective_or_rule": "Use validated estimates as inputs to a decision or feasibility rule, with uncertainty propagation.",
+      "core_formula_or_objective": "Use validated estimates as inputs to a decision or feasibility rule, with uncertainty propagation.",
+      "constraints_or_assumptions": [
+        "70<=v<=140",
+        "tr_(k+1)-tr_k>=1",
+        "tau_k>=0",
+        "各起爆点 z>=0",
+        "各起爆早于 M1 到达原点",
+        "同机 theta/v 固定"
+      ],
+      "constraints": [
+        "70<=v<=140",
+        "tr_(k+1)-tr_k>=1",
+        "tau_k>=0",
+        "各起爆点 z>=0",
+        "各起爆早于 M1 到达原点",
+        "同机 theta/v 固定"
+      ],
+      "validation_plan": [
+        "baseline comparison",
+        "uncertainty propagation",
+        "decision sensitivity"
+      ],
+      "validation": [
+        "baseline comparison",
+        "uncertainty propagation",
+        "decision sensitivity"
+      ],
+      "recommended_figures": [
+        "decision sensitivity",
+        "uncertainty interval",
+        "baseline vs final decision"
+      ],
+      "failure_modes": [
+        "prediction uncertainty ignored",
+        "decision thresholds unsupported",
+        "hard to communicate if not modular"
+      ],
+      "limitations": "prediction uncertainty ignored; decision thresholds unsupported; hard to communicate if not modular",
+      "data_requirements": [
+        "variables must be available at the claimed decision time",
+        "sample count available to route selector: 29"
+      ],
+      "suitable_role": "auxiliary",
+      "suitable_as_main_model": false,
+      "model_card_refs": [
+        "optimization",
+        "simulation",
+        "uncertainty_quantification",
+        "sensitivity_analysis"
+      ]
+    },
+    {
+      "subquestion": "Q3",
+      "subquestion_id": "Q3",
+      "route_id": "Q3_simulation_scenario",
+      "route_family": "simulation_scenario",
+      "route_type": "simulation_scenario",
+      "route_name": "Scenario or stochastic simulation",
+      "task_types": [
+        "optimization",
+        "simulation",
+        "nonlinear_optimization",
+        "interval_coverage"
+      ],
+      "applicable_reason": "Selected because it matches confirmed task structure, available data, or decision requirements.",
+      "modeling_idea": "Scenario or stochastic simulation: Propagate uncertainty through repeated scenarios and report intervals.",
+      "mathematical_object": "random process or repeated-run simulator",
+      "inputs": [
+        "Q2 的共享运动学/几何参数",
+        "同一无人机三枚弹",
+        "相邻投放至少间隔 1 s",
+        "result1.xlsx 字段"
+      ],
+      "outputs": [
+        "同一航向角与速度",
+        "三枚弹投放点与起爆点",
+        "各弹对 M1 的有效时长",
+        "总并集时长",
+        "result1.xlsx"
+      ],
+      "decision_variables": [
+        "theta",
+        "v",
+        "tr_1..tr_3",
+        "tau_1..tau_3"
+      ],
+      "state_variables": [
+        "state variables from the statement"
+      ],
+      "objective_or_rule": "Propagate uncertainty through repeated scenarios and report intervals.",
+      "core_formula_or_objective": "Propagate uncertainty through repeated scenarios and report intervals.",
+      "constraints_or_assumptions": [
+        "70<=v<=140",
+        "tr_(k+1)-tr_k>=1",
+        "tau_k>=0",
+        "各起爆点 z>=0",
+        "各起爆早于 M1 到达原点",
+        "同机 theta/v 固定"
+      ],
+      "constraints": [
+        "70<=v<=140",
+        "tr_(k+1)-tr_k>=1",
+        "tau_k>=0",
+        "各起爆点 z>=0",
+        "各起爆早于 M1 到达原点",
+        "同机 theta/v 固定"
+      ],
+      "validation_plan": [
+        "repeated-run interval",
+        "convergence check",
+        "extreme scenario response"
+      ],
+      "validation": [
+        "repeated-run interval",
+        "convergence check",
+        "extreme scenario response"
+      ],
+      "recommended_figures": [
+        "scenario distribution",
+        "convergence curve",
+        "sensitivity band"
+      ],
+      "failure_modes": [
+        "unsupported distribution assumptions",
+        "too few replications",
+        "hidden parameter sensitivity"
+      ],
+      "limitations": "unsupported distribution assumptions; too few replications; hidden parameter sensitivity",
+      "data_requirements": [
+        "variables must be available at the claimed decision time",
+        "sample count available to route selector: 29"
+      ],
+      "suitable_role": "auxiliary",
+      "suitable_as_main_model": false,
+      "model_card_refs": [
+        "optimization",
+        "simulation",
+        "sensitivity_analysis"
+      ]
+    },
+    {
+      "subquestion": "Q4",
+      "subquestion_id": "Q4",
+      "route_id": "Q4_baseline_empirical",
+      "route_family": "baseline_empirical",
+      "route_type": "baseline_empirical",
+      "route_name": "Transparent baseline",
+      "task_types": [
+        "optimization",
+        "simulation",
+        "nonlinear_optimization",
+        "interval_coverage"
+      ],
+      "applicable_reason": "Always included as a transparent comparator.",
+      "modeling_idea": "Transparent baseline: Use the simplest reproducible rule that answers the subquestion and exposes the value of added complexity.",
+      "mathematical_object": "simple rule, mean/median benchmark, or direct feasible heuristic",
+      "inputs": [
+        "FY1–FY3 初始位置",
+        "共享运动学/几何参数",
+        "result2.xlsx 字段"
+      ],
+      "outputs": [
+        "每机航向与速度",
+        "每弹投放/起爆点",
+        "单弹时长与总并集时长",
+        "result2.xlsx"
+      ],
+      "decision_variables": [
+        "每机 theta_i",
+        "每机 v_i",
+        "每机 tr_i",
+        "每机 tau_i"
+      ],
+      "state_variables": [],
+      "objective_or_rule": "Use the simplest reproducible rule that answers the subquestion and exposes the value of added complexity.",
+      "core_formula_or_objective": "Use the simplest reproducible rule that answers the subquestion and exposes the value of added complexity.",
+      "constraints_or_assumptions": [
+        "每机 70<=v_i<=140",
+        "tr_i,tau_i>=0",
+        "起爆高度>=0",
+        "起爆早于 M1 到达原点"
+      ],
+      "constraints": [
+        "每机 70<=v_i<=140",
+        "tr_i,tau_i>=0",
+        "起爆高度>=0",
+        "起爆早于 M1 到达原点"
+      ],
+      "validation_plan": [
+        "compare against main route",
+        "check residual or feasibility baseline"
+      ],
+      "validation": [
+        "compare against main route",
+        "check residual or feasibility baseline"
+      ],
+      "recommended_figures": [
+        "baseline comparison",
+        "data profile"
+      ],
+      "failure_modes": [
+        "too simple for nonlinear or constrained structure",
+        "weak decision value"
+      ],
+      "limitations": "too simple for nonlinear or constrained structure; weak decision value",
+      "data_requirements": [
+        "variables must be available at the claimed decision time",
+        "sample count available to route selector: 29"
+      ],
+      "suitable_role": "baseline",
+      "suitable_as_main_model": false,
+      "model_card_refs": [
+        "optimization",
+        "simulation",
+        "sensitivity_analysis"
+      ]
+    },
+    {
+      "subquestion": "Q4",
+      "subquestion_id": "Q4",
+      "route_id": "Q4_mathematical_programming",
+      "route_family": "mathematical_programming",
+      "route_type": "mathematical_programming",
+      "route_name": "Objective-constrained decision model",
+      "task_types": [
+        "optimization",
+        "simulation",
+        "nonlinear_optimization",
+        "interval_coverage"
+      ],
+      "applicable_reason": "Selected because it matches confirmed task structure, available data, or decision requirements.",
+      "modeling_idea": "Objective-constrained decision model: Optimize the objective while reporting feasibility and sensitivity to constraints.",
+      "mathematical_object": "decision vector x, objective F(x), constraints C(x) <= 0",
+      "inputs": [
+        "FY1–FY3 初始位置",
+        "共享运动学/几何参数",
+        "result2.xlsx 字段"
+      ],
+      "outputs": [
+        "每机航向与速度",
+        "每弹投放/起爆点",
+        "单弹时长与总并集时长",
+        "result2.xlsx"
+      ],
+      "decision_variables": [
+        "每机 theta_i",
+        "每机 v_i",
+        "每机 tr_i",
+        "每机 tau_i"
+      ],
+      "state_variables": [],
+      "objective_or_rule": "Optimize the objective while reporting feasibility and sensitivity to constraints.",
+      "core_formula_or_objective": "Optimize the objective while reporting feasibility and sensitivity to constraints.",
+      "constraints_or_assumptions": [
+        "每机 70<=v_i<=140",
+        "tr_i,tau_i>=0",
+        "起爆高度>=0",
+        "起爆早于 M1 到达原点"
+      ],
+      "constraints": [
+        "每机 70<=v_i<=140",
+        "tr_i,tau_i>=0",
+        "起爆高度>=0",
+        "起爆早于 M1 到达原点"
+      ],
+      "validation_plan": [
+        "constraint satisfaction",
+        "objective value",
+        "scenario sensitivity",
+        "baseline comparison"
+      ],
+      "validation": [
+        "constraint satisfaction",
+        "objective value",
+        "scenario sensitivity",
+        "baseline comparison"
+      ],
+      "recommended_figures": [
+        "constraint status",
+        "feasible region",
+        "scenario comparison"
+      ],
+      "failure_modes": [
+        "infeasible constraints",
+        "poorly justified objective weights",
+        "unstable optimum"
+      ],
+      "limitations": "infeasible constraints; poorly justified objective weights; unstable optimum",
+      "data_requirements": [
+        "variables must be available at the claimed decision time",
+        "sample count available to route selector: 29"
+      ],
+      "suitable_role": "main",
+      "suitable_as_main_model": true,
+      "model_card_refs": [
+        "optimization",
+        "simulation",
+        "sensitivity_analysis"
+      ]
+    },
+    {
+      "subquestion": "Q4",
+      "subquestion_id": "Q4",
+      "route_id": "Q4_hybrid_uncertainty_decision",
+      "route_family": "hybrid_uncertainty_decision",
+      "route_type": "hybrid_uncertainty_decision",
+      "route_name": "Prediction-to-decision with uncertainty",
+      "task_types": [
+        "optimization",
+        "simulation",
+        "nonlinear_optimization",
+        "interval_coverage"
+      ],
+      "applicable_reason": "Selected because it matches confirmed task structure, available data, or decision requirements.",
+      "modeling_idea": "Prediction-to-decision with uncertainty: Use validated estimates as inputs to a decision or feasibility rule, with uncertainty propagation.",
+      "mathematical_object": "validated predictor plus decision rule under uncertainty",
+      "inputs": [
+        "FY1–FY3 初始位置",
+        "共享运动学/几何参数",
+        "result2.xlsx 字段"
+      ],
+      "outputs": [
+        "每机航向与速度",
+        "每弹投放/起爆点",
+        "单弹时长与总并集时长",
+        "result2.xlsx"
+      ],
+      "decision_variables": [
+        "每机 theta_i",
+        "每机 v_i",
+        "每机 tr_i",
+        "每机 tau_i"
+      ],
+      "state_variables": [],
+      "objective_or_rule": "Use validated estimates as inputs to a decision or feasibility rule, with uncertainty propagation.",
+      "core_formula_or_objective": "Use validated estimates as inputs to a decision or feasibility rule, with uncertainty propagation.",
+      "constraints_or_assumptions": [
+        "每机 70<=v_i<=140",
+        "tr_i,tau_i>=0",
+        "起爆高度>=0",
+        "起爆早于 M1 到达原点"
+      ],
+      "constraints": [
+        "每机 70<=v_i<=140",
+        "tr_i,tau_i>=0",
+        "起爆高度>=0",
+        "起爆早于 M1 到达原点"
+      ],
+      "validation_plan": [
+        "baseline comparison",
+        "uncertainty propagation",
+        "decision sensitivity"
+      ],
+      "validation": [
+        "baseline comparison",
+        "uncertainty propagation",
+        "decision sensitivity"
+      ],
+      "recommended_figures": [
+        "decision sensitivity",
+        "uncertainty interval",
+        "baseline vs final decision"
+      ],
+      "failure_modes": [
+        "prediction uncertainty ignored",
+        "decision thresholds unsupported",
+        "hard to communicate if not modular"
+      ],
+      "limitations": "prediction uncertainty ignored; decision thresholds unsupported; hard to communicate if not modular",
+      "data_requirements": [
+        "variables must be available at the claimed decision time",
+        "sample count available to route selector: 29"
+      ],
+      "suitable_role": "auxiliary",
+      "suitable_as_main_model": false,
+      "model_card_refs": [
+        "optimization",
+        "simulation",
+        "uncertainty_quantification",
+        "sensitivity_analysis"
+      ]
+    },
+    {
+      "subquestion": "Q4",
+      "subquestion_id": "Q4",
+      "route_id": "Q4_simulation_scenario",
+      "route_family": "simulation_scenario",
+      "route_type": "simulation_scenario",
+      "route_name": "Scenario or stochastic simulation",
+      "task_types": [
+        "optimization",
+        "simulation",
+        "nonlinear_optimization",
+        "interval_coverage"
+      ],
+      "applicable_reason": "Selected because it matches confirmed task structure, available data, or decision requirements.",
+      "modeling_idea": "Scenario or stochastic simulation: Propagate uncertainty through repeated scenarios and report intervals.",
+      "mathematical_object": "random process or repeated-run simulator",
+      "inputs": [
+        "FY1–FY3 初始位置",
+        "共享运动学/几何参数",
+        "result2.xlsx 字段"
+      ],
+      "outputs": [
+        "每机航向与速度",
+        "每弹投放/起爆点",
+        "单弹时长与总并集时长",
+        "result2.xlsx"
+      ],
+      "decision_variables": [
+        "每机 theta_i",
+        "每机 v_i",
+        "每机 tr_i",
+        "每机 tau_i"
+      ],
+      "state_variables": [
+        "state variables from the statement"
+      ],
+      "objective_or_rule": "Propagate uncertainty through repeated scenarios and report intervals.",
+      "core_formula_or_objective": "Propagate uncertainty through repeated scenarios and report intervals.",
+      "constraints_or_assumptions": [
+        "每机 70<=v_i<=140",
+        "tr_i,tau_i>=0",
+        "起爆高度>=0",
+        "起爆早于 M1 到达原点"
+      ],
+      "constraints": [
+        "每机 70<=v_i<=140",
+        "tr_i,tau_i>=0",
+        "起爆高度>=0",
+        "起爆早于 M1 到达原点"
+      ],
+      "validation_plan": [
+        "repeated-run interval",
+        "convergence check",
+        "extreme scenario response"
+      ],
+      "validation": [
+        "repeated-run interval",
+        "convergence check",
+        "extreme scenario response"
+      ],
+      "recommended_figures": [
+        "scenario distribution",
+        "convergence curve",
+        "sensitivity band"
+      ],
+      "failure_modes": [
+        "unsupported distribution assumptions",
+        "too few replications",
+        "hidden parameter sensitivity"
+      ],
+      "limitations": "unsupported distribution assumptions; too few replications; hidden parameter sensitivity",
+      "data_requirements": [
+        "variables must be available at the claimed decision time",
+        "sample count available to route selector: 29"
+      ],
+      "suitable_role": "auxiliary",
+      "suitable_as_main_model": false,
+      "model_card_refs": [
+        "optimization",
+        "simulation",
+        "sensitivity_analysis"
+      ]
+    },
+    {
+      "subquestion": "Q5",
+      "subquestion_id": "Q5",
+      "route_id": "Q5_baseline_empirical",
+      "route_family": "baseline_empirical",
+      "route_type": "baseline_empirical",
+      "route_name": "Transparent baseline",
+      "task_types": [
+        "optimization",
+        "graph_network",
+        "simulation",
+        "mixed_integer_optimization",
+        "assignment",
+        "interval_coverage"
+      ],
+      "applicable_reason": "Always included as a transparent comparator.",
+      "modeling_idea": "Transparent baseline: Use the simplest reproducible rule that answers the subquestion and exposes the value of added complexity.",
+      "mathematical_object": "simple rule, mean/median benchmark, or direct feasible heuristic",
+      "inputs": [
+        "M1–M3/FY1–FY5 初始位置",
+        "每机至多 3 枚",
+        "相邻投放至少 1 s",
+        "result3.xlsx 字段"
+      ],
+      "outputs": [
+        "每机固定航向与速度",
+        "至多 15 枚弹的投放/起爆点",
+        "每弹干扰导弹编号与时长",
+        "各导弹并集时长",
+        "result3.xlsx"
+      ],
+      "decision_variables": [
+        "每机 theta_i,v_i",
+        "每枚弹 tr_ik,tau_ik",
+        "弹到导弹的离散指派 a_ikj",
+        "是否使用该弹 y_ik"
+      ],
+      "state_variables": [],
+      "objective_or_rule": "Use the simplest reproducible rule that answers the subquestion and exposes the value of added complexity.",
+      "core_formula_or_objective": "Use the simplest reproducible rule that answers the subquestion and exposes the value of added complexity.",
+      "constraints_or_assumptions": [
+        "每机至多 3 枚",
+        "同机投放间隔>=1 s",
+        "同机 theta_i/v_i 固定",
+        "每个已用弹指派至一枚导弹",
+        "70<=v_i<=140",
+        "起爆高度>=0",
+        "起爆在对应导弹到达原点前"
+      ],
+      "constraints": [
+        "每机至多 3 枚",
+        "同机投放间隔>=1 s",
+        "同机 theta_i/v_i 固定",
+        "每个已用弹指派至一枚导弹",
+        "70<=v_i<=140",
+        "起爆高度>=0",
+        "起爆在对应导弹到达原点前"
+      ],
+      "validation_plan": [
+        "compare against main route",
+        "check residual or feasibility baseline"
+      ],
+      "validation": [
+        "compare against main route",
+        "check residual or feasibility baseline"
+      ],
+      "recommended_figures": [
+        "baseline comparison",
+        "data profile"
+      ],
+      "failure_modes": [
+        "too simple for nonlinear or constrained structure",
+        "weak decision value"
+      ],
+      "limitations": "too simple for nonlinear or constrained structure; weak decision value",
+      "data_requirements": [
+        "variables must be available at the claimed decision time",
+        "sample count available to route selector: 29"
+      ],
+      "suitable_role": "baseline",
+      "suitable_as_main_model": false,
+      "model_card_refs": [
+        "optimization",
+        "graph_network",
+        "simulation",
+        "sensitivity_analysis"
+      ]
+    },
+    {
+      "subquestion": "Q5",
+      "subquestion_id": "Q5",
+      "route_id": "Q5_mathematical_programming",
+      "route_family": "mathematical_programming",
+      "route_type": "mathematical_programming",
+      "route_name": "Objective-constrained decision model",
+      "task_types": [
+        "optimization",
+        "graph_network",
+        "simulation",
+        "mixed_integer_optimization",
+        "assignment",
+        "interval_coverage"
+      ],
+      "applicable_reason": "Selected because it matches confirmed task structure, available data, or decision requirements.",
+      "modeling_idea": "Objective-constrained decision model: Optimize the objective while reporting feasibility and sensitivity to constraints.",
+      "mathematical_object": "decision vector x, objective F(x), constraints C(x) <= 0",
+      "inputs": [
+        "M1–M3/FY1–FY5 初始位置",
+        "每机至多 3 枚",
+        "相邻投放至少 1 s",
+        "result3.xlsx 字段"
+      ],
+      "outputs": [
+        "每机固定航向与速度",
+        "至多 15 枚弹的投放/起爆点",
+        "每弹干扰导弹编号与时长",
+        "各导弹并集时长",
+        "result3.xlsx"
+      ],
+      "decision_variables": [
+        "每机 theta_i,v_i",
+        "每枚弹 tr_ik,tau_ik",
+        "弹到导弹的离散指派 a_ikj",
+        "是否使用该弹 y_ik"
+      ],
+      "state_variables": [],
+      "objective_or_rule": "Optimize the objective while reporting feasibility and sensitivity to constraints.",
+      "core_formula_or_objective": "Optimize the objective while reporting feasibility and sensitivity to constraints.",
+      "constraints_or_assumptions": [
+        "每机至多 3 枚",
+        "同机投放间隔>=1 s",
+        "同机 theta_i/v_i 固定",
+        "每个已用弹指派至一枚导弹",
+        "70<=v_i<=140",
+        "起爆高度>=0",
+        "起爆在对应导弹到达原点前"
+      ],
+      "constraints": [
+        "每机至多 3 枚",
+        "同机投放间隔>=1 s",
+        "同机 theta_i/v_i 固定",
+        "每个已用弹指派至一枚导弹",
+        "70<=v_i<=140",
+        "起爆高度>=0",
+        "起爆在对应导弹到达原点前"
+      ],
+      "validation_plan": [
+        "constraint satisfaction",
+        "objective value",
+        "scenario sensitivity",
+        "baseline comparison"
+      ],
+      "validation": [
+        "constraint satisfaction",
+        "objective value",
+        "scenario sensitivity",
+        "baseline comparison"
+      ],
+      "recommended_figures": [
+        "constraint status",
+        "feasible region",
+        "scenario comparison"
+      ],
+      "failure_modes": [
+        "infeasible constraints",
+        "poorly justified objective weights",
+        "unstable optimum"
+      ],
+      "limitations": "infeasible constraints; poorly justified objective weights; unstable optimum",
+      "data_requirements": [
+        "variables must be available at the claimed decision time",
+        "sample count available to route selector: 29"
+      ],
+      "suitable_role": "main",
+      "suitable_as_main_model": true,
+      "model_card_refs": [
+        "optimization",
+        "graph_network",
+        "simulation",
+        "sensitivity_analysis"
+      ]
+    },
+    {
+      "subquestion": "Q5",
+      "subquestion_id": "Q5",
+      "route_id": "Q5_hybrid_uncertainty_decision",
+      "route_family": "hybrid_uncertainty_decision",
+      "route_type": "hybrid_uncertainty_decision",
+      "route_name": "Prediction-to-decision with uncertainty",
+      "task_types": [
+        "optimization",
+        "graph_network",
+        "simulation",
+        "mixed_integer_optimization",
+        "assignment",
+        "interval_coverage"
+      ],
+      "applicable_reason": "Selected because it matches confirmed task structure, available data, or decision requirements.",
+      "modeling_idea": "Prediction-to-decision with uncertainty: Use validated estimates as inputs to a decision or feasibility rule, with uncertainty propagation.",
+      "mathematical_object": "validated predictor plus decision rule under uncertainty",
+      "inputs": [
+        "M1–M3/FY1–FY5 初始位置",
+        "每机至多 3 枚",
+        "相邻投放至少 1 s",
+        "result3.xlsx 字段"
+      ],
+      "outputs": [
+        "每机固定航向与速度",
+        "至多 15 枚弹的投放/起爆点",
+        "每弹干扰导弹编号与时长",
+        "各导弹并集时长",
+        "result3.xlsx"
+      ],
+      "decision_variables": [
+        "每机 theta_i,v_i",
+        "每枚弹 tr_ik,tau_ik",
+        "弹到导弹的离散指派 a_ikj",
+        "是否使用该弹 y_ik"
+      ],
+      "state_variables": [],
+      "objective_or_rule": "Use validated estimates as inputs to a decision or feasibility rule, with uncertainty propagation.",
+      "core_formula_or_objective": "Use validated estimates as inputs to a decision or feasibility rule, with uncertainty propagation.",
+      "constraints_or_assumptions": [
+        "每机至多 3 枚",
+        "同机投放间隔>=1 s",
+        "同机 theta_i/v_i 固定",
+        "每个已用弹指派至一枚导弹",
+        "70<=v_i<=140",
+        "起爆高度>=0",
+        "起爆在对应导弹到达原点前"
+      ],
+      "constraints": [
+        "每机至多 3 枚",
+        "同机投放间隔>=1 s",
+        "同机 theta_i/v_i 固定",
+        "每个已用弹指派至一枚导弹",
+        "70<=v_i<=140",
+        "起爆高度>=0",
+        "起爆在对应导弹到达原点前"
+      ],
+      "validation_plan": [
+        "baseline comparison",
+        "uncertainty propagation",
+        "decision sensitivity"
+      ],
+      "validation": [
+        "baseline comparison",
+        "uncertainty propagation",
+        "decision sensitivity"
+      ],
+      "recommended_figures": [
+        "decision sensitivity",
+        "uncertainty interval",
+        "baseline vs final decision"
+      ],
+      "failure_modes": [
+        "prediction uncertainty ignored",
+        "decision thresholds unsupported",
+        "hard to communicate if not modular"
+      ],
+      "limitations": "prediction uncertainty ignored; decision thresholds unsupported; hard to communicate if not modular",
+      "data_requirements": [
+        "variables must be available at the claimed decision time",
+        "sample count available to route selector: 29"
+      ],
+      "suitable_role": "auxiliary",
+      "suitable_as_main_model": false,
+      "model_card_refs": [
+        "optimization",
+        "graph_network",
+        "simulation",
+        "uncertainty_quantification",
+        "sensitivity_analysis"
+      ]
+    },
+    {
+      "subquestion": "Q5",
+      "subquestion_id": "Q5",
+      "route_id": "Q5_graph_path_flow",
+      "route_family": "graph_path_flow",
+      "route_type": "graph_path_flow",
+      "route_name": "Network path or flow model",
+      "task_types": [
+        "optimization",
+        "graph_network",
+        "simulation",
+        "mixed_integer_optimization",
+        "assignment",
+        "interval_coverage"
+      ],
+      "applicable_reason": "Selected because it matches confirmed task structure, available data, or decision requirements.",
+      "modeling_idea": "Network path or flow model: Solve path, connectivity, bottleneck, or flow decisions under network constraints.",
+      "mathematical_object": "graph G=(V,E), edge weights/capacities, path or flow variables",
+      "inputs": [
+        "M1–M3/FY1–FY5 初始位置",
+        "每机至多 3 枚",
+        "相邻投放至少 1 s",
+        "result3.xlsx 字段"
+      ],
+      "outputs": [
+        "每机固定航向与速度",
+        "至多 15 枚弹的投放/起爆点",
+        "每弹干扰导弹编号与时长",
+        "各导弹并集时长",
+        "result3.xlsx"
+      ],
+      "decision_variables": [
+        "每机 theta_i,v_i",
+        "每枚弹 tr_ik,tau_ik",
+        "弹到导弹的离散指派 a_ikj",
+        "是否使用该弹 y_ik"
+      ],
+      "state_variables": [],
+      "objective_or_rule": "Solve path, connectivity, bottleneck, or flow decisions under network constraints.",
+      "core_formula_or_objective": "Solve path, connectivity, bottleneck, or flow decisions under network constraints.",
+      "constraints_or_assumptions": [
+        "每机至多 3 枚",
+        "同机投放间隔>=1 s",
+        "同机 theta_i/v_i 固定",
+        "每个已用弹指派至一枚导弹",
+        "70<=v_i<=140",
+        "起爆高度>=0",
+        "起爆在对应导弹到达原点前"
+      ],
+      "constraints": [
+        "每机至多 3 枚",
+        "同机投放间隔>=1 s",
+        "同机 theta_i/v_i 固定",
+        "每个已用弹指派至一枚导弹",
+        "70<=v_i<=140",
+        "起爆高度>=0",
+        "起爆在对应导弹到达原点前"
+      ],
+      "validation_plan": [
+        "path or flow feasibility",
+        "bottleneck analysis",
+        "network robustness"
+      ],
+      "validation": [
+        "path or flow feasibility",
+        "bottleneck analysis",
+        "network robustness"
+      ],
+      "recommended_figures": [
+        "network solution",
+        "bottleneck chart",
+        "route comparison"
+      ],
+      "failure_modes": [
+        "missing adjacency information",
+        "edge weights not justified",
+        "network changes over time"
+      ],
+      "limitations": "missing adjacency information; edge weights not justified; network changes over time",
+      "data_requirements": [
+        "variables must be available at the claimed decision time",
+        "sample count available to route selector: 29"
+      ],
+      "suitable_role": "main",
+      "suitable_as_main_model": true,
+      "model_card_refs": [
+        "optimization",
+        "graph_network",
+        "simulation",
+        "sensitivity_analysis"
+      ]
+    },
+    {
+      "subquestion": "Q5",
+      "subquestion_id": "Q5",
+      "route_id": "Q5_simulation_scenario",
+      "route_family": "simulation_scenario",
+      "route_type": "simulation_scenario",
+      "route_name": "Scenario or stochastic simulation",
+      "task_types": [
+        "optimization",
+        "graph_network",
+        "simulation",
+        "mixed_integer_optimization",
+        "assignment",
+        "interval_coverage"
+      ],
+      "applicable_reason": "Selected because it matches confirmed task structure, available data, or decision requirements.",
+      "modeling_idea": "Scenario or stochastic simulation: Propagate uncertainty through repeated scenarios and report intervals.",
+      "mathematical_object": "random process or repeated-run simulator",
+      "inputs": [
+        "M1–M3/FY1–FY5 初始位置",
+        "每机至多 3 枚",
+        "相邻投放至少 1 s",
+        "result3.xlsx 字段"
+      ],
+      "outputs": [
+        "每机固定航向与速度",
+        "至多 15 枚弹的投放/起爆点",
+        "每弹干扰导弹编号与时长",
+        "各导弹并集时长",
+        "result3.xlsx"
+      ],
+      "decision_variables": [
+        "每机 theta_i,v_i",
+        "每枚弹 tr_ik,tau_ik",
+        "弹到导弹的离散指派 a_ikj",
+        "是否使用该弹 y_ik"
+      ],
+      "state_variables": [
+        "state variables from the statement"
+      ],
+      "objective_or_rule": "Propagate uncertainty through repeated scenarios and report intervals.",
+      "core_formula_or_objective": "Propagate uncertainty through repeated scenarios and report intervals.",
+      "constraints_or_assumptions": [
+        "每机至多 3 枚",
+        "同机投放间隔>=1 s",
+        "同机 theta_i/v_i 固定",
+        "每个已用弹指派至一枚导弹",
+        "70<=v_i<=140",
+        "起爆高度>=0",
+        "起爆在对应导弹到达原点前"
+      ],
+      "constraints": [
+        "每机至多 3 枚",
+        "同机投放间隔>=1 s",
+        "同机 theta_i/v_i 固定",
+        "每个已用弹指派至一枚导弹",
+        "70<=v_i<=140",
+        "起爆高度>=0",
+        "起爆在对应导弹到达原点前"
+      ],
+      "validation_plan": [
+        "repeated-run interval",
+        "convergence check",
+        "extreme scenario response"
+      ],
+      "validation": [
+        "repeated-run interval",
+        "convergence check",
+        "extreme scenario response"
+      ],
+      "recommended_figures": [
+        "scenario distribution",
+        "convergence curve",
+        "sensitivity band"
+      ],
+      "failure_modes": [
+        "unsupported distribution assumptions",
+        "too few replications",
+        "hidden parameter sensitivity"
+      ],
+      "limitations": "unsupported distribution assumptions; too few replications; hidden parameter sensitivity",
+      "data_requirements": [
+        "variables must be available at the claimed decision time",
+        "sample count available to route selector: 29"
+      ],
+      "suitable_role": "auxiliary",
+      "suitable_as_main_model": false,
+      "model_card_refs": [
+        "optimization",
+        "graph_network",
+        "simulation",
+        "sensitivity_analysis"
+      ]
+    }
+  ],
+  "rejected_routes": [
+    {
+      "route_family": "interpretable_regression",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q1"
+    },
+    {
+      "route_family": "time_series_forecast",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q1"
+    },
+    {
+      "route_family": "classification_threshold",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q1"
+    },
+    {
+      "route_family": "mathematical_programming",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q1"
+    },
+    {
+      "route_family": "evaluation_index",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q1"
+    },
+    {
+      "route_family": "grouping_structure",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q1"
+    },
+    {
+      "route_family": "graph_path_flow",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q1"
+    },
+    {
+      "route_family": "interpretable_regression",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q2"
+    },
+    {
+      "route_family": "time_series_forecast",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q2"
+    },
+    {
+      "route_family": "classification_threshold",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q2"
+    },
+    {
+      "route_family": "evaluation_index",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q2"
+    },
+    {
+      "route_family": "grouping_structure",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q2"
+    },
+    {
+      "route_family": "mechanism_state",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q2"
+    },
+    {
+      "route_family": "graph_path_flow",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q2"
+    },
+    {
+      "route_family": "interpretable_regression",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q3"
+    },
+    {
+      "route_family": "time_series_forecast",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q3"
+    },
+    {
+      "route_family": "classification_threshold",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q3"
+    },
+    {
+      "route_family": "evaluation_index",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q3"
+    },
+    {
+      "route_family": "grouping_structure",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q3"
+    },
+    {
+      "route_family": "mechanism_state",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q3"
+    },
+    {
+      "route_family": "graph_path_flow",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q3"
+    },
+    {
+      "route_family": "interpretable_regression",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q4"
+    },
+    {
+      "route_family": "time_series_forecast",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q4"
+    },
+    {
+      "route_family": "classification_threshold",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q4"
+    },
+    {
+      "route_family": "evaluation_index",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q4"
+    },
+    {
+      "route_family": "grouping_structure",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q4"
+    },
+    {
+      "route_family": "mechanism_state",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q4"
+    },
+    {
+      "route_family": "graph_path_flow",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q4"
+    },
+    {
+      "route_family": "interpretable_regression",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q5"
+    },
+    {
+      "route_family": "time_series_forecast",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q5"
+    },
+    {
+      "route_family": "classification_threshold",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q5"
+    },
+    {
+      "route_family": "evaluation_index",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q5"
+    },
+    {
+      "route_family": "grouping_structure",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q5"
+    },
+    {
+      "route_family": "mechanism_state",
+      "rejection_reason": "not selected because the confirmed task structure does not require this mathematical object",
+      "subquestion_id": "Q5"
+    }
+  ],
+  "route_diversity_check": {
+    "Q1": {
+      "passed": true,
+      "mathematical_object_count": 4,
+      "objective_rule_count": 4,
+      "validation_plan_count": 4,
+      "message": "routes differ by mathematical object, objective/rule, or validation"
+    },
+    "Q2": {
+      "passed": true,
+      "mathematical_object_count": 4,
+      "objective_rule_count": 4,
+      "validation_plan_count": 4,
+      "message": "routes differ by mathematical object, objective/rule, or validation"
+    },
+    "Q3": {
+      "passed": true,
+      "mathematical_object_count": 4,
+      "objective_rule_count": 4,
+      "validation_plan_count": 4,
+      "message": "routes differ by mathematical object, objective/rule, or validation"
+    },
+    "Q4": {
+      "passed": true,
+      "mathematical_object_count": 4,
+      "objective_rule_count": 4,
+      "validation_plan_count": 4,
+      "message": "routes differ by mathematical object, objective/rule, or validation"
+    },
+    "Q5": {
+      "passed": true,
+      "mathematical_object_count": 5,
+      "objective_rule_count": 5,
+      "validation_plan_count": 5,
+      "message": "routes differ by mathematical object, objective/rule, or validation"
+    }
+  }
+}

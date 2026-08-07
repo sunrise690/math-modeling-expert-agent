@@ -1,0 +1,4 @@
+interface:
+  display_name: "数模竞赛专家 Agent"
+  short_description: "从拆题、求解、验证到论文交付的可复现专业数模闭环能力"
+  default_prompt: "Use $cumcm-expert-agent to solve this modeling problem with reproducible computation and evidence-backed validation."

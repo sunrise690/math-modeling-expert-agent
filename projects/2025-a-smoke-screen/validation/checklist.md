@@ -1,0 +1,21 @@
+# Validation Checklist
+
+- [ ] Official files are present or missing official files are marked as blockers.
+- [ ] Problem decomposition covers every subquestion.
+- [ ] Problem structure JSON is generated from the statement and data headers.
+- [ ] At least three candidate modeling routes exist for each subquestion.
+- [ ] Main route, baseline route, auxiliary routes, and rejection reasons are recorded.
+- [ ] Innovation plan contains only defensible modeling-design innovations.
+- [ ] Variable availability and leakage audit is complete.
+- [ ] Data dictionary explains units, missing values, outliers, and sample size.
+- [ ] Claim-evidence map links every important claim to a regenerated artifact.
+- [ ] Figure plan and manifest bind each body figure to a claim and subquestion.
+- [ ] Verification report records pass/fail/limited status for each subquestion.
+- [ ] Red-team review is complete and major issues are repaired or explicitly bounded.
+- [ ] Model selection includes a baseline or a reason no baseline is meaningful.
+- [ ] Core formulas, objectives, constraints, and algorithm steps are in the body.
+- [ ] Validation, robustness, and sensitivity analysis are present.
+- [ ] Figures/tables have Chinese labels, captions, units, and decision roles.
+- [ ] References cover domain, methods, data/statistical standards, and software/algorithms.
+- [ ] Process records stay in appendix/support materials, not the paper body.
+- [ ] Strict scorer returns award-target-ready.

@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "allowed_sources": [
+    "problem reformulation",
+    "state variable or indicator construction",
+    "objective-function design",
+    "model-chain design",
+    "prediction-to-decision transformation",
+    "uncertainty propagation",
+    "constraint feasibility analysis",
+    "counterfactual comparison",
+    "robustness analysis",
+    "claim-oriented visualization"
+  ],
+  "plans": [
+    {
+      "subquestion": "Q1",
+      "main_model": "Q1_hybrid_uncertainty_decision",
+      "candidates": [
+        {
+          "source": "problem reformulation",
+          "description": "Restate the subquestion as an explicit input-output-decision problem.",
+          "acceptance": "The paper states what is predicted, optimized, ranked, classified, or explained."
+        },
+        {
+          "source": "objective-function design",
+          "description": "Connect model output to a loss, utility, feasibility, or ranking criterion.",
+          "acceptance": "The objective or decision rule is written as a formula and checked numerically."
+        },
+        {
+          "source": "uncertainty propagation",
+          "description": "Carry sampling, parameter, scenario, or measurement uncertainty into the final result.",
+          "acceptance": "The final result has an interval, sensitivity table, or scenario comparison."
+        },
+        {
+          "source": "claim-oriented visualization",
+          "description": "Design figures around claims rather than around available plotting routines.",
+          "acceptance": "Every formal figure is referenced by a claim in the evidence map."
+        }
+      ]
+    }
+  ]
+}

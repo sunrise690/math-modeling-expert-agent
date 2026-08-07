@@ -1,0 +1,41 @@
+{
+  "chart_type": "multi_panel",
+  "title": "数学建模 Agent 图形能力验收",
+  "filename": "publication-figure-qa",
+  "formats": ["png", "pdf", "svg"],
+  "dpi": 600,
+  "save_spec": true,
+  "panels": [
+    {
+      "chart_type": "line",
+      "title": "预测与 95% 置信带",
+      "x_label": "时间 (s)",
+      "y_label": "响应值",
+      "series": [
+        {
+          "name": "方案 A",
+          "x": [0, 1, 2, 3, 4],
+          "y": [1.0, 1.7, 2.3, 2.9, 3.2],
+          "ci_lower": [0.8, 1.4, 1.9, 2.5, 2.8],
+          "ci_upper": [1.2, 2.0, 2.7, 3.3, 3.6]
+        },
+        {
+          "name": "方案 B",
+          "x": [0, 1, 2, 3, 4],
+          "y": [0.9, 1.5, 2.0, 2.4, 2.7],
+          "y_error": [0.1, 0.15, 0.12, 0.18, 0.14]
+        }
+      ]
+    },
+    {
+      "chart_type": "heatmap",
+      "title": "参数相关性",
+      "matrix": [[1.0, 0.72, -0.31], [0.72, 1.0, -0.18], [-0.31, -0.18, 1.0]],
+      "x_ticks": ["速度", "角度", "延迟"],
+      "y_ticks": ["速度", "角度", "延迟"],
+      "cmap": "PuOr",
+      "center": 0,
+      "annotate_heatmap": true
+    }
+  ]
+}

@@ -1,0 +1,156 @@
+{
+  "project_root": ".",
+  "status": "ready",
+  "passed": true,
+  "check_count": 9,
+  "failed_count": 0,
+  "warning_count": 0,
+  "checks": [
+    {
+      "name": "problem_structure",
+      "artifact": "references/problem_structure.json",
+      "exists": true,
+      "passed": true,
+      "status": "pass",
+      "issues": [],
+      "warnings": [],
+      "details": {
+        "subquestion_count": 4
+      }
+    },
+    {
+      "name": "model_route_candidates",
+      "artifact": "references/model_route_candidates.json",
+      "exists": true,
+      "passed": true,
+      "status": "pass",
+      "issues": [],
+      "warnings": [],
+      "details": {
+        "route_count": 12,
+        "routes_per_subquestion": {
+          "1": 3,
+          "2": 3,
+          "3": 3,
+          "4": 3
+        }
+      }
+    },
+    {
+      "name": "model_selection",
+      "artifact": "references/model_selection.md",
+      "exists": true,
+      "passed": true,
+      "status": "pass",
+      "issues": [],
+      "warnings": [],
+      "details": {}
+    },
+    {
+      "name": "variable_audit",
+      "artifact": "references/variable_audit.md",
+      "exists": true,
+      "passed": true,
+      "status": "pass",
+      "issues": [],
+      "warnings": [],
+      "details": {
+        "classes_present": [
+          "pre",
+          "during",
+          "post",
+          "target",
+          "proxy"
+        ]
+      }
+    },
+    {
+      "name": "summary",
+      "artifact": "reports/summary_normalized.json",
+      "exists": true,
+      "passed": true,
+      "status": "pass",
+      "issues": [],
+      "warnings": [],
+      "details": {
+        "normalized": true,
+        "task_types": [
+          "classification",
+          "evaluation",
+          "grouping",
+          "optimization",
+          "prediction",
+          "simulation"
+        ],
+        "top_level_keys": [
+          "core_results",
+          "feasibility_checks",
+          "generated_figures",
+          "generated_tables",
+          "limitations",
+          "project_id",
+          "schema_version",
+          "source_summary",
+          "subquestions",
+          "task_types",
+          "uncertainty_or_sensitivity",
+          "validation_metrics"
+        ]
+      }
+    },
+    {
+      "name": "figure_manifest",
+      "artifact": "figures/figure_manifest.json",
+      "exists": true,
+      "passed": true,
+      "status": "pass",
+      "issues": [],
+      "warnings": [],
+      "details": {
+        "figure_count": 10,
+        "body_figure_count": 10,
+        "suggested_body_limit": 12
+      }
+    },
+    {
+      "name": "claim_evidence_map",
+      "artifact": "references/claim_evidence_map.md",
+      "exists": true,
+      "passed": true,
+      "status": "pass",
+      "issues": [],
+      "warnings": [],
+      "details": {
+        "claim_count": 9,
+        "claims_per_subquestion": {
+          "Q1": 3,
+          "Q2": 1,
+          "Q3": 3,
+          "Q4": 2
+        }
+      }
+    },
+    {
+      "name": "redteam_review",
+      "artifact": "reports/redteam_review.md",
+      "exists": true,
+      "passed": true,
+      "status": "pass",
+      "issues": [],
+      "warnings": [],
+      "details": {}
+    },
+    {
+      "name": "paper_source",
+      "artifact": "paper/main.tex",
+      "exists": true,
+      "passed": true,
+      "status": "pass",
+      "issues": [],
+      "warnings": [],
+      "details": {}
+    }
+  ],
+  "failed_checks": [],
+  "warning_checks": []
+}

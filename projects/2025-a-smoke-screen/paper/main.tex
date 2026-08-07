@@ -1,0 +1,470 @@
+\documentclass[UTF8,a4paper,12pt,fontset=windows]{ctexart}
+
+\usepackage{amsmath,amssymb,bm}
+\usepackage{geometry}
+\usepackage{booktabs,longtable,array,tabularx,multirow}
+\usepackage{graphicx,float,caption}
+\usepackage{xcolor,enumitem,fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.4cm}
+\setmainfont{Times New Roman}
+\setCJKmainfont[BoldFont=SimHei]{SimSun}
+\setCJKsansfont{SimHei}
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0pt}
+\linespread{1.28}
+\setlist{nosep,leftmargin=2.2em}
+\graphicspath{{../figures/}}
+\captionsetup{font=small,labelsep=quad}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{烟幕干扰弹投放策略}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{15pt}
+\renewcommand{\arraystretch}{1.18}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\meas}{\operatorname{meas}}
+\newcommand{\clip}{\operatorname{clip}}
+
+\ctexset{
+  section={format=\centering\heiti\zihao{3},beforeskip=1.0em,afterskip=0.7em},
+  subsection={format=\heiti\zihao{4},beforeskip=0.8em,afterskip=0.5em},
+  subsubsection={format=\heiti\zihao{-4},beforeskip=0.6em,afterskip=0.4em}
+}
+
+\begin{document}
+
+\begin{center}
+  {\heiti\zihao{2} 基于有限视线几何与区间并集优化的\par 烟幕干扰弹投放策略}
+\end{center}
+
+\begin{abstract}
+针对无人机投放烟幕干扰弹、以有限烟幕资源延长真目标遮蔽时间的问题，本文建立三维运动学--有限视线遮蔽模型，并将多弹协同转化为连续时间区间并集优化。题面未明确“遮蔽目标”的唯一几何口径，故以导弹至圆柱几何中心的视线被烟幕球截断作为主评分口径，同时以圆柱内所有目标点的视线均被截断作为保守审计口径。
+
+问题一按给定策略解析计算轨迹，以均匀扫时定位变号区间，再用连续验根确定边界。主口径有效区间为 $[8.0130,9.4481]$ s，时长为 $1.4351$ s；完整圆柱审计时长为 $1.3916$ s。问题二对航向、速度、投放时刻与引信延时联合搜索，并以连续区间重新评分，得到航向 $6.9111^\circ$、速度 $140$ m/s 的方案，主口径遮蔽 $4.8325$ s。问题三在同机固定航向、固定速度和投放间隔约束下联合安排三枚烟幕弹，得到连续并集 $[4.8046,11.2198]$ s，总时长 $6.4152$ s。问题四利用三架无人机的空间差异形成三个互不重叠的主要遮蔽窗口，总时长为 $15.7366$ s。
+
+问题五构造满足同机航向速度一致的候选组合，再联合完成弹--导弹指派与时序排程。在固定随机种子下得到一个可复现的高质量可行解：对 M1、M2、M3 的主口径遮蔽并集分别为 $22.9078$、$16.3713$、$13.8049$ s，总计 $53.0839$ s；相同决策按完整圆柱口径复核后总计 $41.3551$ s。所有推荐方案的最大约束违反量为 0，连续边界残差不超过 $2.22\times10^{-11}$ m，结果表回算的最大坐标误差为 $5.46\times10^{-12}$ m。本文不对问题五宣称全局最优，并将判据歧义、理想球形烟幕假设和环境扰动缺失列为适用边界。
+
+\textbf{关键词：}烟幕干扰；有限视线；连续验根；区间并集；组合优化
+\end{abstract}
+
+\section{问题重述}
+
+空地导弹以 $300$ m/s 沿初始位置至假目标原点的直线飞行。五架无人机在接到任务后可瞬时改变水平航向，随后以 $70\sim140$ m/s 等高度匀速直线飞行；同一架无人机的航向和速度保持不变。烟幕弹脱离无人机后作抛体运动，起爆后立即形成半径 $10$ m 的球形有效烟幕，球心以 $3$ m/s 下沉，单团烟幕的有效寿命为 $20$ s。真目标为下底面圆心 $(0,200,0)$、半径 $7$ m、高 $10$ m 的竖直圆柱\cite{problem}。
+
+需要依次完成以下任务：一是复算 FY1 按给定动作投放一枚烟幕弹时对 M1 的有效遮蔽时长；二是优化 FY1 的单弹策略；三是在 FY1 固定航向和速度的条件下协调三枚烟幕弹；四是由 FY1--FY3 各投放一枚烟幕弹，共同干扰 M1；五是令 FY1--FY5 每架至多投放三枚烟幕弹，在 M1、M2、M3 之间完成资源分配，使各导弹有效遮蔽并集长度之和尽可能大。后三问还需给出可执行的投放点和起爆点。
+
+\section{问题分析}
+
+本题不是单纯的抛体落点计算。烟幕是否有效取决于导弹、烟幕与目标三者的相对几何关系，且有效状态会在连续时间上多次进入或退出。若仅按固定步长统计命中点，端点误差会直接传递到目标函数；若把多枚烟幕弹的单独时长直接相加，重叠区间又会被重复计算。因此，运动状态采用解析表达，时间网格只负责发现区间，最终端点通过连续验根确定。该处理遵循“机理方程给状态、数值方法给边界”的建模原则\cite{modelbook,brent}。
+
+问题一没有决策变量，难点是明确有限视线和目标口径。问题二含四个连续决策量，目标函数由若干区间长度组成，在区间出现、消失处不光滑，单次局部优化容易停在零遮蔽平台。因此先采用全局候选搜索，再连续精化；差分进化适合处理有界、非光滑的连续变量搜索\cite{stornprice}。问题三增加同机投放间隔以及三枚弹共用航向、速度的耦合，目标必须按并集计算。问题四允许三条不同航路，核心是减少三个有效区间的重叠。问题五同时含连续航路、连续时序和离散指派，若直接求解高维黑箱模型，计算量大且难以核验；本文将其分解为“航路候选--同机组合--多机指派--连续复算”四层，在保留可行性结构的同时控制搜索规模\cite{nemhauser}。
+
+\section{模型假设与符号说明}
+
+\subsection{模型假设}
+
+\begin{enumerate}
+  \item 导弹在命中假目标前始终保持题面给定的直线匀速运动，不考虑末制导机动；该假设直接决定导弹轨迹式。
+  \item 无人机转向时间忽略，转向后水平匀速且高度不变；同机所有烟幕弹继承同一水平初速度。
+  \item 烟幕弹只受重力作用，主计算取 $g=9.8$ m/s$^2$；不计空气阻力与风。另以 $g=9.81$ m/s$^2$ 检查数值敏感性。
+  \item 起爆后的有效烟幕是半径恒为 $10$ m 的球体，在 $20$ s 内只发生球心匀速下沉；题面未给出的扩散、浓度衰减和风场不另行设参。
+  \item 主评分以真目标圆柱几何中心 $\bm q=(0,200,5)$ 的视线被截断为准。完整圆柱全遮蔽只作二次审计，不反向替换主目标函数。
+  \item 引信延时的数学可行域取 $\tau\geq0$。若工程上要求严格正延时，则另报告 $\tau=0.02$ s 的近边界方案。
+\end{enumerate}
+
+\subsection{主要符号}
+
+\begin{table}[H]
+\centering
+\caption{主要符号及含义}
+\begin{tabular}{clc}
+\toprule
+符号 & 含义 & 单位\\
+\midrule
+$\bm m_j^0,\bm m_j(t)$ & 导弹 M$j$ 的初始位置与时刻 $t$ 的位置 & m\\
+$\bm u_i^0,\bm u_i(t)$ & 无人机 FY$i$ 的初始位置与时刻 $t$ 的位置 & m\\
+$\theta_i,v_i$ & 无人机水平航向角与速度 & $^\circ$, m/s\\
+$t_{ik}^{r},\tau_{ik},t_{ik}^{e}$ & 投放时刻、引信延时与起爆时刻 & s\\
+$\bm p_{ik}^{r},\bm p_{ik}^{e}$ & 投放点与起爆点 & m\\
+$\bm c_{ik}(t)$ & 起爆后烟幕球心位置 & m\\
+$R_c,L_c,w_c$ & 烟幕半径、有效寿命、下沉速度 & m, s, m/s\\
+$I_{ikj}$ & 烟幕弹 $(i,k)$ 对导弹 $j$ 的有效时间集合 & s\\
+$D_j$ & 对导弹 $j$ 的遮蔽区间并集长度 & s\\
+$a_{ikj}$ & 烟幕弹 $(i,k)$ 是否指派给导弹 $j$ & 0/1\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{运动学与遮蔽几何模型}
+
+\subsection{导弹、无人机与烟幕轨迹}
+
+令假目标为坐标原点 $\bm o$。导弹 M$j$ 的速度向量和撞击时刻分别为
+\begin{equation}
+\bm v_j^m=300\frac{\bm o-\bm m_j^0}{\|\bm o-\bm m_j^0\|},\qquad
+T_j=\frac{\|\bm o-\bm m_j^0\|}{300},
+\label{eq:missile-velocity}
+\end{equation}
+故 $0\leq t\leq T_j$ 时
+\begin{equation}
+\bm m_j(t)=\bm m_j^0+\bm v_j^m t.
+\label{eq:missile-position}
+\end{equation}
+
+无人机 FY$i$ 的水平单位方向记为
+$\bm h_i=(\cos\theta_i,\sin\theta_i,0)$，则
+\begin{equation}
+\bm u_i(t)=\bm u_i^0+v_i\bm h_i t,\qquad 70\leq v_i\leq 140.
+\label{eq:uav}
+\end{equation}
+第 $k$ 枚弹在 $t_{ik}^r$ 投放，延时 $\tau_{ik}$ 起爆，$t_{ik}^e=t_{ik}^r+\tau_{ik}$。投放点与起爆点为
+\begin{align}
+\bm p_{ik}^r&=\bm u_i^0+v_i\bm h_i t_{ik}^r,\label{eq:release-point}\\
+\bm p_{ik}^e&=\bm u_i^0+v_i\bm h_i t_{ik}^e-\frac12g\tau_{ik}^2\bm e_z.
+\label{eq:explosion-point}
+\end{align}
+起爆后的球心轨迹为
+\begin{equation}
+\bm c_{ik}(t)=\bm p_{ik}^e-w_c(t-t_{ik}^e)\bm e_z,\qquad
+t\in[t_{ik}^e,t_{ik}^e+L_c].
+\label{eq:cloud}
+\end{equation}
+
+\subsection{目标中心有限视线判据}
+
+在时刻 $t$，导弹到目标中心的有限线段可写为
+\begin{equation}
+\bm \ell_j(t,\lambda)=\bm m_j(t)+\lambda[\bm q-\bm m_j(t)],\qquad 0\leq\lambda\leq1.
+\end{equation}
+烟幕球心到该线段的最近投影系数为
+\begin{equation}
+\lambda^*(t)=\clip_{[0,1]}
+\frac{[\bm c_{ik}(t)-\bm m_j(t)]^{\mathsf T}[\bm q-\bm m_j(t)]}
+{\|\bm q-\bm m_j(t)\|^2}.
+\label{eq:projection}
+\end{equation}
+定义距离和遮蔽裕度
+\begin{equation}
+d_{ikj}(t)=\left\|\bm c_{ik}(t)-\bm\ell_j(t,\lambda^*)\right\|,
+\qquad F_{ikj}(t)=R_c-d_{ikj}(t).
+\label{eq:margin}
+\end{equation}
+当烟幕处于有效期、导弹尚未撞击且 $F_{ikj}(t)\geq0$ 时，判定主口径有效。于是
+\begin{equation}
+I_{ikj}=\{t\in[t_{ik}^e,\min(t_{ik}^e+L_c,T_j)]:F_{ikj}(t)\geq0\}.
+\label{eq:interval}
+\end{equation}
+
+\subsection{完整圆柱保守审计}
+
+设真目标实体为 $\mathcal C$。若要求目标上每一点的视线均穿过烟幕球，则最不利距离为
+\begin{equation}
+d_{ikj}^{\rm cyl}(t)=\max_{\bm x\in\mathcal C}
+\operatorname{dist}\bigl(\bm c_{ik}(t),[\bm m_j(t),\bm x]\bigr).
+\label{eq:cylinder-distance}
+\end{equation}
+完整圆柱在时刻 $t$ 被遮蔽当且仅当 $d_{ikj}^{\rm cyl}(t)\leq R_c$。数值上先在圆柱侧面、上底面和下底面生成方位--径向节点，再对距离最大的候选点作有界连续精化；这是计算几何中“离散定位、连续求极值”的常用处理\cite{prep}. 该口径比目标中心视线严格，因而对同一方案给出的时长不大于主口径时长。
+
+\subsection{连续验根与区间并集}
+
+在烟幕有效时间窗内以不超过 $0.01$ s 的步长扫描 $F_{ikj}(t)$，仅用来隔离变号区间；随后在每个变号区间上采用 Brent 法求 $F_{ikj}(t)=0$ 的连续根\cite{brent}。区间端点绝对容差取 $10^{-11}$ s。对多枚烟幕弹，导弹 M$j$ 的总有效时长定义为
+\begin{equation}
+D_j=\meas\left(\bigcup_{i,k:a_{ikj}=1}I_{ikj}\right),
+\label{eq:union}
+\end{equation}
+从而自动扣除重叠时段。问题三、四最大化 $D_1$，问题五最大化
+\begin{equation}
+\max\;D_1+D_2+D_3.
+\label{eq:q5-objective}
+\end{equation}
+
+共同约束为
+\begin{equation}
+\begin{aligned}
+70\leq v_i\leq140,&\qquad t_{ik}^r\geq0,\qquad \tau_{ik}\geq0,
+\qquad (\bm p_{ik}^e)_z\geq0,\\
+t_{ik}^e\leq T_j,&\qquad t_{i,k+1}^{r}-t_{ik}^{r}\geq1,
+\qquad \sum_j a_{ikj}\leq1,\qquad a_{ikj}\in\{0,1\}.
+\end{aligned}
+\label{eq:constraints}
+\end{equation}
+
+\section{问题一：给定策略的连续复算}
+
+FY1 以 $120$ m/s 朝原点飞行，在 $1.5$ s 时投放，$3.6$ s 后起爆。由式\eqref{eq:release-point}--\eqref{eq:explosion-point}得到
+\[
+\bm p^r=(17620,0,1800)\ \text{m},\qquad
+\bm p^e=(17188,0,1736.496)\ \text{m},\quad t^e=5.1\ \text{s}.
+\]
+连续验根给出目标中心视线有效区间 $[8.013006,9.448088]$ s，时长为
+\[
+D_1=9.448088-8.013006=1.435082\ \text{s}.
+\]
+完整圆柱判据的进入时刻推迟至 $8.056445$ s，退出时刻基本不变，故保守时长为 $1.391643$ s。图\ref{fig:q1-intervals}中的两条水平区间直接显示，口径差主要发生在进入边界：烟幕首先截断中心视线，随后才覆盖圆柱最不利边界点的视线。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.78\textwidth]{q1_occlusion_intervals.pdf}
+\caption{问题一在目标中心视线与完整圆柱口径下的连续遮蔽区间}
+\label{fig:q1-intervals}
+\end{figure}
+
+作为数值检查，边界处最大距离残差为 $2.22\times10^{-11}$ m；把 $g$ 从 $9.8$ 改为 $9.81$ m/s$^2$ 后，中心视线时长变为 $1.448916$ s，变化 $0.013834$ s。该差值占主结果的 $0.964\%$，不会改变本问的量级判断。
+
+\section{问题二：单机单弹优化}
+
+\subsection{决策变量与求解方式}
+
+问题二的决策向量为 $\bm x=(\theta,v,t^r,\tau)$。目标 $-D_1(\bm x)$ 在“无交点--有交点”切换处不光滑，故先在有界区域内进行固定种子的差分进化搜索\cite{stornprice}，再对优良候选作局部无导数精化\cite{powell,nocedal}。候选评分采用较粗时间网格，最终结果全部以式\eqref{eq:interval}的连续根重新计算；这样粗网格只影响搜索效率，不决定报告精度。
+
+\subsection{结果与边界语义}
+
+表\ref{tab:q2}给出主口径最优候选。其投放发生在受领任务时刻，起爆延时约 $0.7132$ s；连续有效区间为 $[0.713246,5.545748]$ s，时长 $4.832502$ s。
+
+\begin{table}[H]
+\centering
+\caption{问题二目标中心视线口径的单弹策略}
+\label{tab:q2}
+\small
+\begin{tabular}{ccccc}
+\toprule
+航向/$^\circ$ & 速度/(m/s) & $t^r$/s & $\tau$/s & 遮蔽时长/s\\
+\midrule
+6.9111 & 140.0000 & 0.0000 & 0.7132 & 4.8325\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+对应的空间位置为
+\[
+\bm p^r=(17800.000,0.000,1800.000)\ \text{m},\qquad
+\bm p^e=(17899.129,12.015,1797.507)\ \text{m}.
+\]
+
+若把完整圆柱口径也作为独立优化目标，闭可行域上的最优候选落在 $\tau=0$ 边界，保守时长为 $4.588064$ s。为避免把数学边界误作唯一工程解释，固定 $\tau=0.02$ s 后重新精化，得到 $4.588063$ s，仅损失 $1.96\times10^{-7}$ s。因此，完整圆柱结果对严格正延时约束不敏感；但主口径与完整圆柱口径仍相差 $0.244438$ s，二者不能混写为同一目标下的最优值。
+
+\section{问题三：FY1 三弹协同}
+
+问题三要求三枚弹共用 $\theta_1,v_1$，并满足相邻投放至少间隔 $1$ s。先按航向--速度网格生成能靠近 M1--目标中心视线的起爆候选，再以新增并集长度而非单弹时长排序组合，最后对保留组合做连续区间复算。所得方案见表\ref{tab:q3}。
+
+\begin{table}[H]
+\centering
+\caption{问题三 FY1 三弹投放策略}
+\label{tab:q3}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{ccccccccc}
+\toprule
+弹号 & 航向/$^\circ$ & $v$/(m/s) & $t^r$/s & $t^e$/s & 投放点 $(x,y,z)$/m & 起爆点 $(x,y,z)$/m & 单弹时长/s\\
+\midrule
+1 & 179.852 & 128.068 & 0.005 & 0.018 & $(17799.304,0.002,1800.000)$ & $(17797.704,0.006,1799.999)$ & 2.6064\\
+2 & 179.852 & 128.068 & 2.071 & 6.541 & $(17534.829,0.685,1800.000)$ & $(16962.291,2.164,1702.068)$ & 3.3518\\
+3 & 179.852 & 128.068 & 3.683 & 8.917 & $(17328.311,1.218,1800.000)$ & $(16658.041,2.950,1665.780)$ & 2.3029\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+三枚弹的单独时长之和为 $8.2611$ s，但重叠部分不能重复计分。合并后只有一个连续区间 $[4.804550,11.219761]$ s，总时长 $6.415211$ s。相同策略在完整圆柱口径下的连续区间为 $[4.886881,11.219761]$ s，时长 $6.332880$ s，下降 $1.28\%$。三次投放的最小间隔为 $1.6126$ s，满足约束。
+
+\section{问题四：三机单弹联合投放}
+
+三架无人机初始位置差异较大。若各自只追求单弹时长，三个区间可能重叠；因此先按有效区间的时间中心分组保留候选，再以三机区间并集为目标进行联合组合。表\ref{tab:q4}给出的三个窗口分处任务早期、中期和后期。
+
+\begin{table}[H]
+\centering
+\caption{问题四 FY1--FY3 联合策略}
+\label{tab:q4}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{ccccccccc}
+\toprule
+无人机 & 航向/$^\circ$ & $v$/(m/s) & $t^r$/s & $t^e$/s & 投放点 $(x,y,z)$/m & 起爆点 $(x,y,z)$/m & 单弹时长/s\\
+\midrule
+FY1 & 5 & 110 & 0.962 & 1.088 & $(17905.438,9.225,1800.000)$ & $(17919.170,10.426,1799.923)$ & 4.7919\\
+FY2 & 255 & 140 & 3.145 & 9.938 & $(11886.037,974.684,1400.000)$ & $(11639.918,56.156,1173.933)$ & 5.0713\\
+FY3 & 145 & 140 & 28.870 & 39.338 & $(2689.113,-681.692,700.000)$ & $(1488.725,158.829,163.149)$ & 5.8735\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+主口径的三个区间为
+\begin{equation*}
+\begin{aligned}
+I_1&=[1.227985,6.019839]\ \text{s},\\
+I_2&=[10.195554,15.266823]\ \text{s},\\
+I_3&=[39.750537,45.624013]\ \text{s}.
+\end{aligned}
+\end{equation*}
+三者彼此不重叠，故总时长等于三个单弹时长之和，为 $15.736598$ s。完整圆柱复核后总时长为 $10.435489$ s，下降 $33.69\%$。该变化明显大于问题三，原因是 FY3 的后期烟幕靠近地面，目标圆柱上下边缘对应的最不利视线更难同时落入半径 $10$ m 的烟幕球。
+
+\section{问题五：五机多弹多目标协同}
+
+\subsection{分层组合模型}
+
+对每架无人机枚举有限的 $(\theta_i,v_i)$ 航路。给定航路和起爆时刻后，烟幕的水平位置已确定；利用该点与移动导弹--目标视线的平面共线条件先计算可能的遮蔽时刻，再由所需起爆高度反求 $\tau_{ik}$ 和 $t_{ik}^r$。无效候选在进入组合层前即被剔除。
+
+随后，对同一航路上的至多三枚弹构造“航路组合”，强制同机航向、速度一致和投放间隔约束；组合层以式\eqref{eq:union}的新增覆盖长度计分。最后在五架无人机之间进行弹--导弹指派，保留总并集较大的有限状态，并对最终状态逐弹连续验根。固定种子为 20250808。由于候选航路库与保留宽度均有限，该方法给出可复现的高质量可行解，不构成全局最优性证明。
+
+\subsection{推荐策略}
+
+表\ref{tab:q5-strategy}列出 15 枚烟幕弹的主要时序决策，完整投放点和起爆点写入题目要求的结果表；图\ref{fig:q5-xy}给出这些坐标的平面关系。每架无人机恰使用三枚弹；这只是当前高质量可行解的资源使用结果，并不意味着最优解必然用满全部烟幕弹。
+
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{5pt}
+\begin{longtable}{ccccccc}
+\caption{问题五固定种子下的高质量可行投放策略}\label{tab:q5-strategy}\\
+\toprule
+无人机 & $\theta/^\circ$ & $v$/(m/s) & 弹$\to$目标 & $t^r$/s & $t^e$/s & 单弹时长/s\\
+\midrule
+\endfirsthead
+\multicolumn{7}{c}{续表\thetable}\\
+\toprule
+无人机 & $\theta/^\circ$ & $v$/(m/s) & 弹$\to$目标 & $t^r$/s & $t^e$/s & 单弹时长/s\\
+\midrule
+\endhead
+\midrule
+\multicolumn{7}{r}{续下页}\\
+\endfoot
+\bottomrule
+\endlastfoot
+FY1&180&130&1$\to$M1&0.104&3.063&2.3092\\
+FY1&180&130&2$\to$M1&2.676&7.313&2.2692\\
+FY1&180&130&3$\to$M1&5.156&10.813&1.2996\\
+FY2&250&110&1$\to$M2&5.045&9.563&4.6893\\
+FY2&250&110&2$\to$M1&6.063&13.063&4.8458\\
+FY2&250&110&3$\to$M3&10.766&17.063&3.7620\\
+FY3&130&130&1$\to$M3&22.029&30.063&4.4498\\
+FY3&130&130&2$\to$M1&23.046&31.313&4.8297\\
+FY3&130&130&3$\to$M2&24.294&32.313&4.4988\\
+FY4&230&140&1$\to$M2&3.170&15.313&4.5449\\
+FY4&230&140&2$\to$M1&4.880&18.063&4.7915\\
+FY4&230&140&3$\to$M3&8.348&21.313&3.2456\\
+FY5&120&130&1$\to$M3&12.406&14.313&3.8861\\
+FY5&120&130&2$\to$M1&13.517&17.813&2.9813\\
+FY5&120&130&3$\to$M2&19.977&21.063&2.6383\\
+\end{longtable}
+\endgroup
+
+图\ref{fig:q5-xy}显示各无人机沿固定直线释放烟幕弹，投放点和起爆点之间的水平位移方向与同机航向一致。该空间结构是“固定航向、固定速度”约束的直接结果，不是把各起爆点当作独立自由变量拟合。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.84\textwidth]{q5_xy_strategy.pdf}
+\caption{问题五无人机航路、投放点和起爆点的平面投影}
+\label{fig:q5-xy}
+\end{figure}
+
+\subsection{遮蔽并集结果}
+
+表\ref{tab:q5-duration}给出按导弹合并后的结果。主口径总目标为 $53.083939$ s，其中 M1 获得最长遮蔽。这个“总时长”是三枚导弹各自并集长度之和；不同导弹在同一绝对时刻被遮蔽可以分别计入，单枚导弹内的区间重叠则只计一次。
+
+\begin{table}[H]
+\centering
+\caption{问题五按导弹汇总的遮蔽时长}
+\label{tab:q5-duration}
+\begin{tabular}{cccc}
+\toprule
+导弹 & 目标中心视线/s & 完整圆柱审计/s & 审计下降率/\%\\
+\midrule
+M1 & 22.9078 & 17.9772 & 21.52\\
+M2 & 16.3713 & 12.1515 & 25.78\\
+M3 & 13.8049 & 11.2263 & 18.68\\
+\midrule
+合计 & 53.0839 & 41.3551 & 22.09\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+图\ref{fig:q5-gantt}给出逐弹有效区间及合并关系。M1 的覆盖由多个时间段串联，M2 和 M3 仍保留若干空档，说明总目标继续提高的潜力主要在于填补空档，而不是继续叠加已有窗口。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.94\textwidth]{q5_coverage_gantt.pdf}
+\caption{问题五各烟幕弹的有效区间与导弹覆盖排程}
+\label{fig:q5-gantt}
+\end{figure}
+
+图\ref{fig:q5-robustness}进一步比较两种几何口径下的分导弹并集。三枚导弹的完整圆柱结果均低于目标中心视线结果，但仍保持 M1、M2、M3 的相对排序；因此，判据变化会显著改变绝对目标值，却未改变当前方案的资源倾向。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.76\textwidth]{q5_per_missile_robustness.pdf}
+\caption{问题五分导弹遮蔽并集的双口径对比}
+\label{fig:q5-robustness}
+\end{figure}
+
+\section{模型检验与敏感性分析}
+
+\subsection{连续边界与结果表回算}
+
+表\ref{tab:numerical-audit}汇总了独立复算指标。Q1--Q2 的最大时间边界距离残差为 $2.22\times10^{-11}$ m。问题三至五的结果表重新读入后，由航向、速度和投放时刻重构空间坐标，再重新计算各弹区间及总目标；最大坐标误差、单行时长误差和总目标误差均处于双精度舍入量级。
+
+\begin{table}[H]
+\centering
+\caption{数值与约束审计结果}
+\label{tab:numerical-audit}
+\begin{tabular}{lccc}
+\toprule
+审计项 & Q3 & Q4 & Q5\\
+\midrule
+结果表最大坐标重构误差/m & $3.64\times10^{-12}$ & $3.64\times10^{-12}$ & $5.46\times10^{-12}$\\
+结果表最大单行时长误差/s & $1.34\times10^{-12}$ & $1.90\times10^{-11}$ & $3.24\times10^{-11}$\\
+并集目标回算误差/s & $1.15\times10^{-12}$ & $1.83\times10^{-11}$ & $1.52\times10^{-11}$\\
+最大约束违反量 & 0 & 0 & 0\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+约束审计逐项检查速度上下界、同机固定航向和速度、投放时刻、引信延时、投放间隔、起爆高度以及正遮蔽时长。Q3--Q5 的最大违反量均为 0。特别地，问题五每架无人机相邻投放的最小间隔大于 $1$ s；每枚烟幕弹只指派给一枚导弹，未发生跨导弹重复计分。
+
+\subsection{遮蔽口径敏感性}
+
+图\ref{fig:criterion-sensitivity}比较五个问题的主结果与完整圆柱结果。Q1、Q3 的相对下降分别为 $3.03\%$ 和 $1.28\%$，表明烟幕球在这些方案中对目标中心与圆柱边界的覆盖较一致；Q4 下降 $33.69\%$，口径最敏感；Q5 总目标下降 $22.09\%$。Q2 的两根柱分别对应两个口径各自优化后的最好候选，不能理解为同一决策的前后复算。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\textwidth]{criterion_sensitivity.pdf}
+\caption{问题一至五在两种遮蔽判据下的有效时长比较}
+\label{fig:criterion-sensitivity}
+\end{figure}
+
+双口径结果给出了比单一参数扰动更直接的结构性敏感性证据：题面中“为目标提供有效遮蔽”的解释会改变可计时长，且影响随几何姿态而变化。因此，本文把中心视线结果用于统一优化与填表，把完整圆柱值作为同方案的保守性能界，并在问题二单独说明两种口径各自优化的差异。
+
+\section{模型评价、适用边界与改进}
+
+\subsection{模型特点}
+
+本模型的运动状态由解析式直接给出，避免了对导弹和烟幕轨迹作时间积分；固定步长只用于隔离根，报告值来自连续边界，因而多弹并集不会因采样步长产生系统性重复或漏计。目标中心与完整圆柱两种判据共享同一运动学状态，判据差异可以被单独量化。问题五的候选组合在进入总调度前即保持同机航路一致，最终策略无需再作不可执行的坐标修补。
+
+\subsection{适用边界}
+
+\begin{enumerate}
+  \item 目标中心视线是常用代理口径，但不保证圆柱整体同时被遮蔽。问题四的双口径差达到 $5.3011$ s，说明在对全目标遮蔽有硬性要求时，应直接把式\eqref{eq:cylinder-distance}写入优化目标，而不能只在事后审计。
+  \item 球形烟幕半径、有效寿命和下沉速度均按硬阈值处理。若存在风和浓度衰减，球心会产生水平漂移，有效边界也不再是固定半径；当前时长不能外推到该场景。
+  \item 导弹直线匀速且始终指向假目标。若末制导阶段重新瞄准，式\eqref{eq:missile-position}需要替换为分段或反馈轨迹，现有策略的后期窗口尤其可能改变。
+  \item Q3--Q5 的搜索依赖有限航路库和有限状态保留。Q5 的 $53.0839$ s 是固定种子下经过连续复核的高质量可行值，不是全局上界或全局最优证明。
+  \item 当前稳健性证据覆盖重力常数与遮蔽判据，尚未包含风速、起爆时间误差和定位误差的联合随机扰动。因此不能据此声称方案已具备现实环境下的概率可靠性。
+\end{enumerate}
+
+若获得风场和起爆误差数据，可把烟幕中心改写为带风漂移的随机轨迹，并以遮蔽时长的低分位数或条件风险值为目标；若完整圆柱遮蔽是实际评分口径，则可在候选生成阶段就用圆柱最不利视线筛选，减少事后性能回落。对问题五，可进一步构造可计算的松弛上界，用“当前可行值--上界”间隙替代无依据的最优性表述。
+
+\section{结论}
+
+有限视线距离、连续验根和区间并集构成了五个子问题的统一模型。给定策略的 Q1 主口径时长为 $1.4351$ s；单弹优化的 Q2 时长为 $4.8325$ s；FY1 三弹协同的 Q3 时长为 $6.4152$ s；三机单弹协同的 Q4 时长为 $15.7366$ s；五机多目标 Q5 在固定种子下得到总时长 $53.0839$ s 的高质量可行解，其中 M1、M2、M3 分别为 $22.9078$、$16.3713$、$13.8049$ s。完整圆柱审计把 Q5 总时长降至 $41.3551$ s，提示判据口径是当前结果中最主要的结构性不确定来源。所有输出方案均通过连续边界、约束与结果表回算检查，但 Q5 不具备全局最优性证明。
+
+\begin{thebibliography}{99}
+\bibitem{problem} 全国大学生数学建模竞赛组委会. 2025年高教社杯全国大学生数学建模竞赛A题：烟幕干扰弹的投放策略[EB/OL]. 2025.
+\bibitem{modelbook} 姜启源, 谢金星, 叶俊. 数学模型[M]. 5版. 北京: 高等教育出版社, 2018.
+\bibitem{brent} Brent R P. Algorithms for Minimization without Derivatives[M]. Englewood Cliffs: Prentice-Hall, 1973.
+\bibitem{stornprice} Storn R, Price K. Differential evolution---a simple and efficient heuristic for global optimization over continuous spaces[J]. Journal of Global Optimization, 1997, 11: 341--359.
+\bibitem{powell} Powell M J D. An efficient method for finding the minimum of a function of several variables without calculating derivatives[J]. The Computer Journal, 1964, 7(2): 155--162.
+\bibitem{nemhauser} Nemhauser G L, Wolsey L A. Integer and Combinatorial Optimization[M]. New York: Wiley, 1988.
+\bibitem{prep} Preparata F P, Shamos M I. Computational Geometry: An Introduction[M]. New York: Springer-Verlag, 1985.
+\bibitem{nocedal} Nocedal J, Wright S J. Numerical Optimization[M]. 2nd ed. New York: Springer, 2006.
+\end{thebibliography}
+
+\end{document}
