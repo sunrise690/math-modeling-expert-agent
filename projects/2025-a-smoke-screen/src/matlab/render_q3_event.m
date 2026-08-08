@@ -41,16 +41,22 @@ assert(size(unionInterval, 1) == 1 && size(unionInterval, 2) == 2, ...
     'Q3 M1 union is expected to be one continuous interval.');
 unionDuration = diff(unionInterval(1, :));
 
-% Muted editorial palette: color is reserved for physical meaning.
-C.paper = [0.992, 0.992, 0.986];
-C.ink = [30, 42, 50] / 255;
-C.muted = [108, 122, 132] / 255;
-C.guide = [218, 225, 229] / 255;
-C.blue = [62, 110, 147] / 255;
-C.blueLight = [201, 216, 226] / 255;
-C.orange = [190, 105, 61] / 255;
-C.orangeLight = [232, 199, 175] / 255;
-C.green = [92, 129, 115] / 255;
+% Restrained editorial palette. Shape, line style, and direct annotation
+% carry event meaning; hue is reserved for structure and warm emphasis.
+C.paper = hexColor('#FCFBF8');
+C.ink = hexColor('#25313A');
+C.muted = hexColor('#6C787F');
+C.guide = hexColor('#DDE3E3');
+C.panel = hexColor('#F4F5F3');
+C.primary = hexColor('#3E6F8F');
+C.secondary = hexColor('#5F8375');
+C.warm = hexColor('#C1844F');
+C.blue = C.primary;
+C.teal = C.secondary;
+C.coral = C.warm;
+C.plum = C.warm;
+C.violet = C.primary;
+C.bomb = [C.primary; C.secondary; C.primary];
 
 fontName = chooseChineseFont();
 fig = figure('Visible', 'off', 'Color', C.paper, 'Renderer', 'painters', ...
@@ -92,58 +98,65 @@ ylim(ax, [0.48, 3.64]);
 
 for k = 1:3
     y = rows(k);
-    yr = y + 0.10;
-    yb = y - 0.10;
     entry = intervals(k, 1);
     exitTime = intervals(k, 2);
+    duration = exitTime - entry;
+    accent = C.bomb(k, :);
+    eventY = [y + 0.09, y - 0.09, y + 0.09, y - 0.09];
 
-    plot(ax, [-0.15, 11.82], [y, y], '-', 'Color', C.guide, 'LineWidth', 0.70);
-    plot(ax, [release(k), detonate(k)], [yr, yb], '--', ...
-        'Color', C.muted, 'LineWidth', 1.0);
-    plot(ax, [detonate(k), entry], [yb, y], '--', ...
-        'Color', C.orange, 'LineWidth', 1.0);
-    plot(ax, [entry, exitTime], [y, y], '-', ...
-        'Color', C.blue, 'LineWidth', 4.1);
+    % A tapered coverage lens replaces the usual long Gantt bar. Its width
+    % remains the exact interval, while the four nodes preserve causality.
+    lensX = linspace(entry, exitTime, 100);
+    lensCenter = linspace(eventY(3), eventY(4), numel(lensX));
+    lensHalf = 0.105 * sin(pi * (lensX - entry) / duration);
+    patch(ax, [lensX, fliplr(lensX)], ...
+        [lensCenter + lensHalf, fliplr(lensCenter - lensHalf)], accent, ...
+        'FaceAlpha', 0.13, 'EdgeColor', accent, 'LineWidth', 0.70);
+    plot(ax, [-0.05, 11.82], [y, y], '-', 'Color', C.guide, 'LineWidth', 0.60);
+    drawEventArrow(ax, release(k), eventY(1), detonate(k), eventY(2), C.violet);
+    drawEventArrow(ax, detonate(k), eventY(2), entry, eventY(3), C.coral);
+    drawEventArrow(ax, entry, eventY(3), exitTime, eventY(4), accent);
 
-    plot(ax, release(k), yr, 'd', 'MarkerSize', 5.0, ...
-        'MarkerFaceColor', C.paper, 'MarkerEdgeColor', C.ink, 'LineWidth', 1.0);
-    plot(ax, detonate(k), yb, 'o', 'MarkerSize', 5.2, ...
-        'MarkerFaceColor', C.orange, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.7);
-    plot(ax, entry, y, '>', 'MarkerSize', 5.7, ...
-        'MarkerFaceColor', C.green, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.7);
-    plot(ax, exitTime, y, '<', 'MarkerSize', 5.7, ...
+    plot(ax, release(k), eventY(1), 'd', 'MarkerSize', 5.4, ...
+        'MarkerFaceColor', C.violet, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.7);
+    plot(ax, detonate(k), eventY(2), 'o', 'MarkerSize', 5.5, ...
+        'MarkerFaceColor', C.coral, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.7);
+    plot(ax, entry, eventY(3), '^', 'MarkerSize', 5.9, ...
+        'MarkerFaceColor', C.teal, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.7);
+    plot(ax, exitTime, eventY(4), 'v', 'MarkerSize', 5.9, ...
         'MarkerFaceColor', C.blue, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.7);
 
-    text(ax, -0.28, y, sprintf('烟幕弹 %d', k), ...
-        'HorizontalAlignment', 'right', 'VerticalAlignment', 'middle', ...
-        'FontName', fontName, 'FontSize', 7.8, 'FontWeight', 'bold', ...
+    scatter(ax, -0.73, y, 68, accent, 'filled', ...
+        'MarkerEdgeColor', C.paper, 'LineWidth', 0.7);
+    text(ax, -0.73, y, sprintf('%d', k), ...
+        'HorizontalAlignment', 'center', 'VerticalAlignment', 'middle', ...
+        'FontName', 'Arial', 'FontSize', 7.0, 'FontWeight', 'bold', ...
+        'Color', C.paper, 'Interpreter', 'none');
+    text(ax, -0.55, y, '烟幕', ...
+        'HorizontalAlignment', 'left', 'VerticalAlignment', 'middle', ...
+        'FontName', fontName, 'FontSize', 7.2, 'FontWeight', 'bold', ...
         'Color', C.ink, 'Interpreter', 'none');
 
-    if k ~= 1
-        labelEvent(ax, release(k), yr, sprintf('%.3f', release(k)), ...
-            +1, C.ink, C.paper, fontName);
-        labelEvent(ax, detonate(k), yb, sprintf('%.3f', detonate(k)), ...
-            -1, C.orange, C.paper, fontName);
-    end
-    labelEvent(ax, entry, y, sprintf('%.3f', entry), ...
-        +1, C.green, C.paper, fontName);
-    labelEvent(ax, exitTime, y, sprintf('%.3f', exitTime), ...
+    labelEvent(ax, release(k), eventY(1), sprintf('%.3f', release(k)), ...
+        +1, C.violet, C.paper, fontName);
+    labelEvent(ax, detonate(k), eventY(2), sprintf('%.3f', detonate(k)), ...
+        -1, C.coral, C.paper, fontName);
+    labelEvent(ax, entry, eventY(3), sprintf('%.3f', entry), ...
+        +1, C.teal, C.paper, fontName);
+    labelEvent(ax, exitTime, eventY(4), sprintf('%.3f', exitTime), ...
         -1, C.blue, C.paper, fontName);
+    if exitTime > 10.8
+        durationX = 2.15;
+        durationAlign = 'center';
+    else
+        durationX = 11.76;
+        durationAlign = 'right';
+    end
+    text(ax, durationX, y, sprintf('遮蔽 %.3f s', duration), ...
+        'HorizontalAlignment', durationAlign, 'VerticalAlignment', 'middle', ...
+        'FontName', fontName, 'FontSize', 7.0, 'FontWeight', 'bold', ...
+        'Color', accent, 'Interpreter', 'none');
 end
-
-% The first release/detonation pair and the third detonation/entry pair are
-% almost simultaneous. Short leader lines disclose exact time without moving
-% the event markers away from their true x coordinates.
-plot(ax, [release(1), 0.58], [rows(1) + 0.10, 3.42], '-', ...
-    'Color', C.guide, 'LineWidth', 0.7);
-plot(ax, [detonate(1), 1.20], [rows(1) - 0.10, 2.67], '-', ...
-    'Color', C.guide, 'LineWidth', 0.7);
-text(ax, 0.61, 3.42, sprintf('%.3f', release(1)), ...
-    'FontName', fontName, 'FontSize', 7.0, 'Color', C.ink, ...
-    'VerticalAlignment', 'middle');
-text(ax, 1.23, 2.67, sprintf('%.3f', detonate(1)), ...
-    'FontName', fontName, 'FontSize', 7.0, 'Color', C.orange, ...
-    'VerticalAlignment', 'middle');
 
 text(ax, 0.01, 1.095, 'a', 'Units', 'normalized', ...
     'FontName', 'Arial', 'FontSize', 9.2, 'FontWeight', 'bold', 'Color', C.ink);
@@ -161,6 +174,19 @@ hold(ax, 'off');
 end
 
 
+function drawEventArrow(ax, x0, y0, x1, y1, color)
+dx = x1 - x0;
+dy = y1 - y0;
+span = hypot(dx, dy);
+if span <= 1e-10
+    return;
+end
+quiver(ax, x0, y0, dx, dy, 0, 'Color', color, 'LineStyle', '--', ...
+    'LineWidth', 0.80, 'MaxHeadSize', min(0.18, 0.45 / max(span, 0.25)), ...
+    'AutoScale', 'off');
+end
+
+
 function labelEvent(ax, x, y, label, direction, color, paper, fontName)
 dy = 0.22 * direction;
 text(ax, x, y + dy, label, 'HorizontalAlignment', 'center', ...
@@ -174,6 +200,11 @@ function drawHandoff(ax, plans, intervals, oldIndex, newIndex, model, C, fontNam
 hold(ax, 'on');
 axis(ax, [0, 1, 0, 1]);
 axis(ax, 'off');
+
+cardTint = tintColor(mean(C.bomb([oldIndex, newIndex], :), 1), C.paper, 0.055);
+rectangle(ax, 'Position', [0.015, 0.035, 0.970, 0.925], ...
+    'Curvature', [0.035, 0.035], 'FaceColor', cardTint, ...
+    'EdgeColor', C.guide, 'LineWidth', 0.65);
 
 tEnter = intervals(newIndex, 1);
 tExit = intervals(oldIndex, 2);
@@ -210,7 +241,7 @@ figPos = get(fig, 'Position');
 displayAspect = (axPos(3) * figPos(3)) / (axPos(4) * figPos(4));
 ry = rx * displayAspect;
 xCenter = [0.25, 0.75];
-cloudColor = [C.blue; C.orange];
+cloudColor = C.bomb(indices, :);
 
 lineY = 0.31;
 quiver(ax, 0.045, lineY, 0.91, 0, 0, 'Color', C.ink, ...
@@ -221,8 +252,8 @@ for j = 1:2
     yc = lineY + ry * dPerp(j) / radius;
     xCircle = xCenter(j) + rx * cos(theta);
     yCircle = yc + ry * sin(theta);
-    fill(ax, xCircle, yCircle, cloudColor(j, :), ...
-        'FaceAlpha', 0.20, 'EdgeColor', cloudColor(j, :), 'LineWidth', 1.0);
+    fill(ax, xCircle, yCircle, tintColor(cloudColor(j, :), C.paper, 0.14), ...
+        'FaceAlpha', 0.92, 'EdgeColor', cloudColor(j, :), 'LineWidth', 1.05);
     plot(ax, xCenter(j), yc, '.', 'Color', cloudColor(j, :), 'MarkerSize', 7.0);
     plot(ax, [xCenter(j), xCenter(j)], [lineY, yc], ':', ...
         'Color', cloudColor(j, :), 'LineWidth', 0.9);
@@ -233,10 +264,10 @@ end
 
 text(ax, xCenter(1), 0.79, '旧云未退出', ...
     'HorizontalAlignment', 'center', 'FontName', fontName, 'FontSize', 7.4, ...
-    'FontWeight', 'bold', 'Color', C.blue, 'Interpreter', 'none');
+    'FontWeight', 'bold', 'Color', cloudColor(1, :), 'Interpreter', 'none');
 text(ax, xCenter(2), 0.79, '新云已进入', ...
     'HorizontalAlignment', 'center', 'FontName', fontName, 'FontSize', 7.4, ...
-    'FontWeight', 'bold', 'Color', C.orange, 'Interpreter', 'none');
+    'FontWeight', 'bold', 'Color', cloudColor(2, :), 'Interpreter', 'none');
 text(ax, 0.50, 0.975, sprintf('接续 I%d→I%d：[%.3f, %.3f] s，双覆盖 %.3f s', ...
     oldIndex, newIndex, tEnter, tExit, overlap), ...
     'HorizontalAlignment', 'center', 'VerticalAlignment', 'top', ...
@@ -265,37 +296,65 @@ for k = 1:(numel(breaks) - 1)
 end
 counts(end) = 0;
 
+% Shade event states rather than drawing a second set of interval bars.
+% Single-cloud regions use cool tints; physical hand-offs use warm emphasis.
+for k = 1:(numel(breaks) - 1)
+    if counts(k) == 0
+        continue;
+    end
+    probe = 0.5 * (breaks(k) + breaks(k + 1));
+    active = find(intervals(:, 1) <= probe & probe < intervals(:, 2));
+    if numel(active) == 1
+        fillColor = tintColor(C.bomb(active, :), C.paper, 0.10);
+    else
+        fillColor = tintColor(C.warm, C.paper, 0.12);
+    end
+    patch(ax, [breaks(k), breaks(k + 1), breaks(k + 1), breaks(k)], ...
+        [0, 0, counts(k), counts(k)], fillColor, ...
+        'EdgeColor', 'none', 'FaceAlpha', 0.96);
+end
 stairs(ax, breaks, counts, '-', 'Color', C.ink, 'LineWidth', 1.65);
+
+% Entry/exit glyphs make the staircase explicitly event-driven.
+for k = 1:3
+    plot(ax, [intervals(k, 1), intervals(k, 1)], [0, 2.08], ':', ...
+        'Color', tintColor(C.teal, C.paper, 0.40), 'LineWidth', 0.65);
+    plot(ax, intervals(k, 1), 0, '^', 'MarkerSize', 5.2, ...
+        'MarkerFaceColor', C.teal, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.6);
+    plot(ax, intervals(k, 2), 0, 'v', 'MarkerSize', 5.2, ...
+        'MarkerFaceColor', C.blue, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.6);
+end
 
 % Emphasize true double-coverage states as short event segments, not bars.
 for k = 1:(numel(breaks) - 1)
     if counts(k) == 2
         plot(ax, [breaks(k), breaks(k + 1)], [2, 2], '-', ...
-            'Color', C.orange, 'LineWidth', 3.2);
+            'Color', C.plum, 'LineWidth', 3.0);
         plot(ax, [breaks(k), breaks(k + 1)], [2, 2], 'o', ...
-            'Color', C.orange, 'MarkerFaceColor', C.paper, 'MarkerSize', 3.3);
+            'Color', C.plum, 'MarkerFaceColor', C.paper, 'MarkerSize', 3.3);
     end
 end
 
 % Exact union and overlap brackets make the event arithmetic inspectable.
-plot(ax, unionInterval, [-0.24, -0.24], '-', 'Color', C.blue, 'LineWidth', 2.4);
-plot(ax, unionInterval, [-0.24, -0.24], 'o', 'Color', C.blue, ...
+plot(ax, unionInterval, [-0.24, -0.24], '-', 'Color', C.teal, 'LineWidth', 2.4);
+plot(ax, unionInterval, [-0.24, -0.24], 'o', 'Color', C.teal, ...
     'MarkerFaceColor', C.paper, 'MarkerSize', 3.5);
 text(ax, mean(unionInterval), -0.08, sprintf('D_1 = %.3f s', unionDuration), ...
     'HorizontalAlignment', 'center', 'FontName', 'Arial', 'FontSize', 7.0, ...
-    'FontWeight', 'bold', 'Color', C.blue, 'Interpreter', 'tex');
+    'FontWeight', 'bold', 'Color', C.teal, 'Interpreter', 'tex');
 
 for k = 1:2
     left = intervals(k + 1, 1);
     right = intervals(k, 2);
     y = -0.62;
-    plot(ax, [left, right], [y, y], '-', 'Color', C.orange, 'LineWidth', 1.05);
-    plot(ax, [left, left], [y - 0.05, y + 0.05], '-', 'Color', C.orange, 'LineWidth', 0.9);
-    plot(ax, [right, right], [y - 0.05, y + 0.05], '-', 'Color', C.orange, 'LineWidth', 0.9);
+    overlapColor = C.bomb(k + 1, :);
+    plot(ax, [left, right], [y, y], '-', 'Color', overlapColor, 'LineWidth', 1.05);
+    plot(ax, [left, left], [y - 0.05, y + 0.05], '-', 'Color', overlapColor, 'LineWidth', 0.9);
+    plot(ax, [right, right], [y - 0.05, y + 0.05], '-', 'Color', overlapColor, 'LineWidth', 0.9);
     text(ax, mean([left, right]), y - 0.09, ...
         sprintf('I%d∩I%d = %.3f s', k, k + 1, right - left), ...
         'HorizontalAlignment', 'center', 'VerticalAlignment', 'top', ...
-        'FontName', fontName, 'FontSize', 7.0, 'Color', C.orange, ...
+        'FontName', fontName, 'FontSize', 7.0, 'Color', overlapColor, ...
         'Interpreter', 'none');
 end
 
@@ -307,7 +366,7 @@ text(ax, 0.50, 1.08, '事件扫描得到的覆盖数阶梯', ...
     'Color', C.ink, 'Interpreter', 'none');
 text(ax, 10.25, 2.18, 'n(t)=2：物理接续', ...
     'HorizontalAlignment', 'center', 'FontName', fontName, 'FontSize', 7.0, ...
-    'Color', C.orange, 'Interpreter', 'none');
+    'Color', C.plum, 'Interpreter', 'none');
 
 xlim(ax, [xMin, xMax]);
 ylim(ax, [-1.02, 2.45]);
@@ -315,8 +374,11 @@ xlabel(ax, '时间 / s', 'FontName', fontName, 'FontSize', 8.2, 'Color', C.ink);
 ylabel(ax, '覆盖数  n(t)', 'FontName', fontName, 'FontSize', 8.2, 'Color', C.ink);
 set(ax, 'XTick', 5:1:11, 'YTick', [0, 1, 2], 'FontName', fontName, ...
     'FontSize', 7.2, 'TickDir', 'out', 'TickLength', [0.010, 0.010], ...
-    'XColor', C.muted, 'YColor', C.muted, 'Color', C.paper, 'Box', 'off');
+    'XColor', C.muted, 'YColor', C.muted, 'Color', C.panel, 'Box', 'off');
 ax.LineWidth = 0.65;
+ax.YGrid = 'on';
+ax.GridColor = C.guide;
+ax.GridAlpha = 0.55;
 hold(ax, 'off');
 end
 
@@ -331,4 +393,15 @@ for k = 1:numel(preferred)
         return;
     end
 end
+end
+
+
+function color = tintColor(base, paper, strength)
+color = (1 - strength) .* paper + strength .* base;
+end
+
+
+function rgb = hexColor(code)
+code = char(erase(string(code), '#'));
+rgb = [hex2dec(code(1:2)), hex2dec(code(3:4)), hex2dec(code(5:6))] / 255;
 end

@@ -20,19 +20,22 @@ q1Index = find(contains(q1Fields, '9_80'), 1, 'first');
 assert(~isempty(q1Index), 'Q1 g = 9.80 m/s^2 record is missing.');
 q1 = q12.q1.(q1Fields{q1Index});
 
-palette.paper = hexColor('#FBFBFA');
-palette.ink = hexColor('#23323B');
-palette.muted = hexColor('#74828B');
-palette.grid = hexColor('#DDE4E7');
-palette.panel = hexColor('#F2F5F5');
-palette.blue = hexColor('#3D6F91');
-palette.blueLight = hexColor('#D2DEE5');
-palette.green = hexColor('#5F8375');
-palette.greenLight = hexColor('#DFE8E3');
-palette.orange = hexColor('#C67845');
-palette.orangeLight = hexColor('#EBD5C7');
-palette.red = hexColor('#A85C57');
-palette.grayLine = hexColor('#AAB5BA');
+% Restrained competition-paper palette.  Large areas use near-white tints;
+% saturated warm colour is reserved for the optimum or a decisive event.
+palette.paper = hexColor('#FBFBF8');
+palette.ink = hexColor('#25313A');
+palette.muted = hexColor('#66737C');
+palette.grid = hexColor('#DCE2E5');
+palette.panel = hexColor('#F5F7F6');
+palette.primary = hexColor('#3E6F8F');
+palette.secondary = hexColor('#5F8375');
+palette.accent = hexColor('#C1844F');
+palette.wine = hexColor('#9B5B64');
+palette.primaryLight = blendColor(palette.primary, palette.paper, 0.10);
+palette.secondaryLight = blendColor(palette.secondary, palette.paper, 0.09);
+palette.accentLight = blendColor(palette.accent, palette.paper, 0.09);
+palette.wineLight = blendColor(palette.wine, palette.paper, 0.09);
+palette.grayLine = blendColor(palette.muted, palette.paper, 0.43);
 palette.font = 'Microsoft YaHei';
 
 fprintf('MATLAB core figure rendering started.\n');
@@ -75,34 +78,35 @@ function renderFiniteSightline(q12, q1, outputDir, p)
     quiver(ax, 0.84, 0.24, 0.06, 0, 0, 'Color', p.ink, ...
         'LineWidth', 0.9, 'MaxHeadSize', 1.5);
     scatter(ax, 0.08, 0.24, 42, '>', 'filled', ...
-        'MarkerFaceColor', p.orange, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.5);
+        'MarkerFaceColor', p.accent, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.5);
     rectangle(ax, 'Position', [0.88, 0.18, 0.035, 0.12], ...
-        'FaceColor', p.green, 'EdgeColor', 'none');
+        'FaceColor', p.ink, 'EdgeColor', p.ink, 'LineWidth', 0.45);
 
     projectionX = 0.28;
     cloudXY = [projectionX, 0.65];
     theta = linspace(0, 2*pi, 240);
     patch(ax, cloudXY(1) + 0.075*cos(theta), cloudXY(2) + 0.075*sin(theta), ...
-        p.blueLight, 'EdgeColor', p.blue, 'LineWidth', 1.0, 'FaceAlpha', 0.88);
+        p.primaryLight, 'EdgeColor', p.primary, 'LineWidth', 1.0, 'FaceAlpha', 0.96);
     scatter(ax, cloudXY(1), cloudXY(2), 18, 'o', 'filled', ...
-        'MarkerFaceColor', p.blue, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.4);
+        'MarkerFaceColor', p.primary, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.4);
     plot(ax, [projectionX, projectionX], [0.24, cloudXY(2)], '--', ...
-        'Color', p.orange, 'LineWidth', 0.95);
+        'Color', p.accent, 'LineWidth', 1.05);
     scatter(ax, projectionX, 0.24, 34, 'o', ...
-        'MarkerFaceColor', p.paper, 'MarkerEdgeColor', p.orange, 'LineWidth', 1.1);
-    quiver(ax, projectionX, 0.29, 0, 0.29, 0, 'Color', p.orange, ...
+        'MarkerFaceColor', p.paper, 'MarkerEdgeColor', p.accent, 'LineWidth', 1.1);
+    quiver(ax, projectionX, 0.29, 0, 0.29, 0, 'Color', p.accent, ...
         'LineWidth', 0.85, 'MaxHeadSize', 0.22);
-    quiver(ax, projectionX, 0.60, 0, -0.27, 0, 'Color', p.orange, ...
+    quiver(ax, projectionX, 0.60, 0, -0.27, 0, 'Color', p.accent, ...
         'LineWidth', 0.85, 'MaxHeadSize', 0.22);
 
-    text(ax, 0.08, 0.13, '导弹 M', 'Color', p.muted, ...
+    text(ax, 0.08, 0.13, '导弹 M', 'Color', p.accent, ...
         'FontName', p.font, 'FontSize', 7.2, 'HorizontalAlignment', 'center');
     text(ax, 0.90, 0.13, '真目标 T', 'Color', p.muted, ...
         'FontName', p.font, 'FontSize', 7.2, 'HorizontalAlignment', 'center');
     text(ax, cloudXY(1) + 0.095, cloudXY(2) + 0.01, '烟幕截面', ...
-        'Color', p.blue, 'FontName', p.font, 'FontSize', 7.2, 'FontWeight', 'bold');
+        'Color', p.primary, 'FontName', p.font, 'FontSize', 7.2, 'FontWeight', 'bold');
     text(ax, projectionX + 0.025, 0.43, 'd(C_s, MT)', ...
-        'Color', p.orange, 'FontName', p.font, 'FontSize', 7.0);
+        'Color', p.accent, 'FontName', p.font, 'FontSize', 7.0, ...
+        'FontWeight', 'bold');
     text(ax, projectionX + 0.02, 0.285, ...
         sprintf('P*   λ* = %.4f', lambdaStar), ...
         'Color', p.ink, 'FontName', p.font, 'FontSize', 7.0);
@@ -130,18 +134,19 @@ function renderFiniteSightline(q12, q1, outputDir, p)
     radius = double(constants.smoke_radius_m);
     theta = linspace(0, 2*pi, 280);
     patch(ax, radius*cos(theta), distance + radius*sin(theta), ...
-        p.blueLight, 'EdgeColor', p.blue, 'LineWidth', 0.95, 'FaceAlpha', 0.70);
+        p.primaryLight, 'EdgeColor', p.primary, 'LineWidth', 0.95, 'FaceAlpha', 0.96);
     plot(ax, [-11.5, 11.5], [0, 0], '-', 'Color', p.ink, 'LineWidth', 1.0);
-    plot(ax, [0, 0], [0, distance], '--', 'Color', p.orange, 'LineWidth', 0.9);
-    scatter(ax, 0, distance, 22, 'o', 'filled', 'MarkerFaceColor', p.blue, ...
+    plot(ax, [0, 0], [0, distance], '--', 'Color', p.accent, 'LineWidth', 0.95);
+    scatter(ax, 0, distance, 22, 'o', 'filled', 'MarkerFaceColor', p.primary, ...
         'MarkerEdgeColor', p.paper, 'LineWidth', 0.4);
-    plot(ax, [0, radius], [distance, distance], '-', 'Color', p.blue, 'LineWidth', 0.85);
+    plot(ax, [0, radius], [distance, distance], '-', 'Color', p.primary, 'LineWidth', 0.85);
     scatter(ax, [0, radius], [distance, distance], 15, 'o', ...
-        'MarkerFaceColor', p.paper, 'MarkerEdgeColor', p.blue, 'LineWidth', 0.75);
-    text(ax, radius/2, distance + 1.1, 'R = 10 m', 'Color', p.blue, ...
+        'MarkerFaceColor', p.paper, 'MarkerEdgeColor', p.primary, 'LineWidth', 0.75);
+    text(ax, radius/2, distance + 1.1, 'R = 10 m', 'Color', p.primary, ...
         'FontName', p.font, 'FontSize', 7.0, 'HorizontalAlignment', 'center');
     text(ax, 0.8, distance/2, sprintf('d = %.2f m', distance), ...
-        'Color', p.orange, 'FontName', p.font, 'FontSize', 7.0);
+        'Color', p.accent, 'FontName', p.font, 'FontSize', 7.0, ...
+        'FontWeight', 'bold');
     xlabel(ax, '局部切向坐标 (m)', 'FontName', p.font, 'FontSize', 7.4);
     ylabel(ax, '距视线 (m)', 'FontName', p.font, 'FontSize', 7.4);
     xlim(ax, [-11.8, 11.8]);
@@ -154,11 +159,15 @@ function renderFiniteSightline(q12, q1, outputDir, p)
     ax = axes(fig, 'Position', [0.695, 0.16, 0.265, 0.25]);
     hold(ax, 'on');
     values = [centerMargin, fullMargin];
-    colors = [p.blue; p.orange];
+    colors = [p.primary; p.secondary];
+    markers = {'o', 'd'};
+    lineStyles = {'-', '--'};
     y = [2, 1];
     xline(ax, 0, '-', 'Color', p.ink, 'LineWidth', 0.75);
     for k = 1:2
-        scatter(ax, values(k), y(k), 42, 'o', 'filled', ...
+        plot(ax, [0, values(k)], [y(k), y(k)], lineStyles{k}, ...
+            'Color', colors(k, :), 'LineWidth', 1.0);
+        scatter(ax, values(k), y(k), 42, markers{k}, 'filled', ...
             'MarkerFaceColor', colors(k, :), 'MarkerEdgeColor', p.paper, ...
             'LineWidth', 0.55);
         text(ax, values(k) + 0.08, y(k), sprintf('%+.2f m', values(k)), ...
@@ -202,38 +211,45 @@ function renderQ1RootEvents(q12, q1, outputDir, p)
     hold(ax, 'on');
     positive = centerMargin >= 0;
     patches = contiguousRegions(time, positive);
+    fullPositive = contiguousRegions(time, fullMargin >= 0);
     yl = [-4.3, 6.3];
     for k = 1:size(patches, 1)
         patch(ax, [patches(k,1), patches(k,2), patches(k,2), patches(k,1)], ...
-            [0, 0, yl(2), yl(2)], p.blueLight, ...
-            'FaceAlpha', 0.22, 'EdgeColor', 'none');
+            [0, 0, yl(2), yl(2)], p.primaryLight, ...
+            'FaceAlpha', 0.70, 'EdgeColor', 'none');
     end
-    plot(ax, time, centerMargin, '-', 'Color', p.blue, 'LineWidth', 1.45);
-    plot(ax, time, fullMargin, '--', 'Color', p.orange, 'LineWidth', 1.30);
+    for k = 1:size(fullPositive, 1)
+        patch(ax, [fullPositive(k,1), fullPositive(k,2), ...
+            fullPositive(k,2), fullPositive(k,1)], ...
+            [yl(1), yl(1), 0, 0], p.secondaryLight, ...
+            'FaceAlpha', 0.72, 'EdgeColor', 'none');
+    end
+    plot(ax, time, centerMargin, '-', 'Color', p.primary, 'LineWidth', 1.45);
+    plot(ax, time, fullMargin, '--', 'Color', p.secondary, 'LineWidth', 1.30);
     yline(ax, 0, '-', 'Color', p.ink, 'LineWidth', 0.75);
     scatter(ax, centerRoots, [0, 0], 30, 'o', 'filled', ...
-        'MarkerFaceColor', p.blue, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.5);
+        'MarkerFaceColor', p.primary, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.5);
     scatter(ax, fullRoots, [0, 0], 30, 'd', 'filled', ...
-        'MarkerFaceColor', p.orange, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.5);
+        'MarkerFaceColor', p.secondary, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.5);
     for root = centerRoots
-        xline(ax, root, ':', 'Color', p.blue, 'LineWidth', 0.75);
+        xline(ax, root, ':', 'Color', p.primary, 'LineWidth', 0.75);
     end
     for root = fullRoots
-        xline(ax, root, ':', 'Color', p.orange, 'LineWidth', 0.75);
+        xline(ax, root, ':', 'Color', p.secondary, 'LineWidth', 0.75);
     end
     text(ax, 0.02, 0.08, '正裕度区域 = 中心视线遮蔽成立', ...
-        'Units', 'normalized', 'Color', p.blue, 'FontName', p.font, ...
+        'Units', 'normalized', 'Color', p.primary, 'FontName', p.font, ...
         'FontSize', 7.0, 'VerticalAlignment', 'bottom');
     text(ax, 9.30, -3.15, sprintf('中心视线持续 %.4f s', diff(centerRoots)), ...
-        'Color', p.blue, 'FontName', p.font, 'FontSize', 7.0, ...
+        'Color', p.primary, 'FontName', p.font, 'FontSize', 7.0, ...
         'FontWeight', 'bold', 'HorizontalAlignment', 'center');
     plot(ax, [8.35, 8.47], [5.74, 5.74], '-', ...
-        'Color', p.blue, 'LineWidth', 1.35);
-    text(ax, 8.50, 5.74, '目标中心视线', 'Color', p.blue, ...
+        'Color', p.primary, 'LineWidth', 1.35);
+    text(ax, 8.50, 5.74, '目标中心视线', 'Color', p.primary, ...
         'FontName', p.font, 'FontSize', 7.0, 'VerticalAlignment', 'middle');
     plot(ax, [8.35, 8.47], [5.26, 5.26], '--', ...
-        'Color', p.orange, 'LineWidth', 1.20);
-    text(ax, 8.50, 5.26, '完整圆柱全遮蔽', 'Color', p.orange, ...
+        'Color', p.secondary, 'LineWidth', 1.20);
+    text(ax, 8.50, 5.26, '完整圆柱全遮蔽', 'Color', p.secondary, ...
         'FontName', p.font, 'FontSize', 7.0, 'VerticalAlignment', 'middle');
     xlabel(ax, '任务时刻 t (s)', 'FontName', p.font, 'FontSize', 7.5);
     ylabel(ax, '遮蔽裕度 F(t) (m)', 'FontName', p.font, 'FontSize', 7.5);
@@ -251,23 +267,23 @@ function renderQ1RootEvents(q12, q1, outputDir, p)
         entryFull(k) = fullCylinderMargin(entryWindow(k), constants, strategy, 720);
     end
     hold(ax, 'on');
-    plot(ax, entryWindow, entryCenter, '-', 'Color', p.blue, 'LineWidth', 1.35);
-    plot(ax, entryWindow, entryFull, '--', 'Color', p.orange, 'LineWidth', 1.20);
+    plot(ax, entryWindow, entryCenter, '-', 'Color', p.primary, 'LineWidth', 1.35);
+    plot(ax, entryWindow, entryFull, '--', 'Color', p.secondary, 'LineWidth', 1.20);
     yline(ax, 0, '-', 'Color', p.ink, 'LineWidth', 0.70);
     scatter(ax, centerRoots(1), 0, 32, 'o', 'filled', ...
-        'MarkerFaceColor', p.blue, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.5);
+        'MarkerFaceColor', p.primary, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.5);
     scatter(ax, fullRoots(1), 0, 32, 'd', 'filled', ...
-        'MarkerFaceColor', p.orange, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.5);
+        'MarkerFaceColor', p.secondary, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.5);
     bracketY = min([entryCenter, entryFull]) + 0.22;
     plot(ax, [centerRoots(1), fullRoots(1)], [bracketY, bracketY], '-', ...
-        'Color', p.orange, 'LineWidth', 0.75);
+        'Color', p.accent, 'LineWidth', 0.85);
     plot(ax, [centerRoots(1), centerRoots(1)], bracketY + [-0.08, 0.08], '-', ...
-        'Color', p.orange, 'LineWidth', 0.75);
+        'Color', p.accent, 'LineWidth', 0.75);
     plot(ax, [fullRoots(1), fullRoots(1)], bracketY + [-0.08, 0.08], '-', ...
-        'Color', p.orange, 'LineWidth', 0.75);
+        'Color', p.accent, 'LineWidth', 0.75);
     text(ax, mean([centerRoots(1), fullRoots(1)]), 0.30, ...
         sprintf('进入延后 %.4f s', fullRoots(1) - centerRoots(1)), ...
-        'Color', p.orange, 'FontName', p.font, 'FontSize', 7.0, ...
+        'Color', p.accent, 'FontName', p.font, 'FontSize', 7.0, ...
         'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom');
     xlabel(ax, '进入事件 t (s)', 'FontName', p.font, 'FontSize', 7.2);
     ylabel(ax, 'F(t) (m)', 'FontName', p.font, 'FontSize', 7.2);
@@ -284,14 +300,14 @@ function renderQ1RootEvents(q12, q1, outputDir, p)
         exitFull(k) = fullCylinderMargin(exitWindow(k), constants, strategy, 720);
     end
     hold(ax, 'on');
-    plot(ax, exitWindow, exitCenter, '-', 'Color', p.blue, 'LineWidth', 1.35);
-    plot(ax, exitWindow, exitFull, '--', 'Color', p.orange, 'LineWidth', 1.20);
+    plot(ax, exitWindow, exitCenter, '-', 'Color', p.primary, 'LineWidth', 1.35);
+    plot(ax, exitWindow, exitFull, '--', 'Color', p.secondary, 'LineWidth', 1.20);
     yline(ax, 0, '-', 'Color', p.ink, 'LineWidth', 0.70);
     scatter(ax, centerRoots(2), 0, 34, 'o', 'filled', ...
-        'MarkerFaceColor', p.red, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.5);
-    xline(ax, centerRoots(2), ':', 'Color', p.red, 'LineWidth', 0.8);
+        'MarkerFaceColor', p.wine, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.5);
+    xline(ax, centerRoots(2), ':', 'Color', p.wine, 'LineWidth', 0.8);
     text(ax, 0.05, 0.13, sprintf('共同退出 %.4f s', centerRoots(2)), ...
-        'Units', 'normalized', 'Color', p.red, 'FontName', p.font, ...
+        'Units', 'normalized', 'Color', p.wine, 'FontName', p.font, ...
         'FontSize', 7.0, 'FontWeight', 'bold');
     xlabel(ax, '退出事件 t (s)', 'FontName', p.font, 'FontSize', 7.2);
     ylabel(ax, 'F(t) (m)', 'FontName', p.font, 'FontSize', 7.2);
@@ -341,10 +357,10 @@ function renderQ2Response(q12, outputDir, p)
         'MATLAB response surface is inconsistent with the validated optimum.');
 
     fig = publicationFigure(6.20, 3.38, p.paper);
-    ax = axes(fig, 'Position', [0.075, 0.16, 0.57, 0.76]);
+    ax = axes(fig, 'Position', [0.075, 0.16, 0.535, 0.76]);
     levels = linspace(0, max(surface, [], 'all') + 0.01, 12);
     contourf(ax, headings, explosionTimes, surface, levels, 'LineStyle', 'none');
-    colormap(ax, sequentialMap(p.paper, hexColor('#8BB0BE'), 128));
+    colormap(ax, mutedDurationMap(192));
     hold(ax, 'on');
     [contours, contourHandle] = contour(ax, headings, explosionTimes, surface, ...
         [1, 2, 3, 4], 'Color', p.muted, 'LineWidth', 0.60);
@@ -352,39 +368,49 @@ function renderQ2Response(q12, outputDir, p)
         'Color', p.muted, 'LabelSpacing', 220);
     plateau = 0.95 * optimumDuration;
     contour(ax, headings, explosionTimes, surface, [plateau, plateau], ...
-        'Color', p.blue, 'LineWidth', 1.35);
-    scatter(ax, optimumHeading, optimumTime, 46, 'o', 'filled', ...
-        'MarkerFaceColor', p.orange, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.65);
+        'Color', p.ink, 'LineWidth', 1.35);
+    scatter(ax, optimumHeading, optimumTime, 58, 'p', 'filled', ...
+        'MarkerFaceColor', p.accent, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.75);
     text(ax, optimumHeading + 0.42, optimumTime + 0.08, ...
         sprintf('连续解\nT* = %.3f s\nθ* = %.2f°，tᵉ* = %.3f s', ...
         optimumDuration, optimumHeading, optimumTime), ...
         'Color', p.ink, 'FontName', p.font, 'FontSize', 7.0, ...
         'FontWeight', 'bold', 'VerticalAlignment', 'bottom');
     text(ax, 0.02, 0.035, '深色闭合线：T ≥ 0.95T*', ...
-        'Units', 'normalized', 'Color', p.blue, 'FontName', p.font, ...
+        'Units', 'normalized', 'Color', p.ink, 'FontName', p.font, ...
         'FontSize', 7.0);
     xlabel(ax, '航向角 θ (°)', 'FontName', p.font, 'FontSize', 7.5);
     ylabel(ax, '起爆时刻 tᵉ (s)  （v = 140 m/s，tʳ = 0）', ...
         'FontName', p.font, 'FontSize', 7.5);
     styleAxes(ax, p, false);
+    cb = colorbar(ax);
+    cb.Position = [0.625, 0.18, 0.012, 0.71];
+    cb.Color = p.muted;
+    cb.FontName = p.font;
+    cb.FontSize = 6.6;
+    cb.LineWidth = 0.55;
+    cb.Label.String = 'T (s)';
+    cb.Label.Color = p.muted;
+    cb.Label.FontName = p.font;
+    cb.Label.FontSize = 7.0;
     panelLabel(ax, 'a', p, [-0.10, 1.04]);
 
     ax = axes(fig, 'Position', [0.735, 0.58, 0.235, 0.31]);
     hold(ax, 'on');
-    plot(ax, headingSliceX, headingSliceY, '-', 'Color', p.blue, 'LineWidth', 1.40);
-    xline(ax, optimumHeading, '--', 'Color', p.orange, 'LineWidth', 0.85);
-    scatter(ax, optimumHeading, optimumDuration, 38, 'o', 'filled', ...
-        'MarkerFaceColor', p.orange, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.5);
+    plot(ax, headingSliceX, headingSliceY, '-', 'Color', p.primary, 'LineWidth', 1.40);
+    xline(ax, optimumHeading, '--', 'Color', p.accent, 'LineWidth', 0.90);
+    scatter(ax, optimumHeading, optimumDuration, 42, 'p', 'filled', ...
+        'MarkerFaceColor', p.accent, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.55);
     high = headingSliceY >= plateau;
     if any(high)
         xBounds = [headingSliceX(find(high, 1, 'first')), headingSliceX(find(high, 1, 'last'))];
         yBase = min(headingSliceY) + 0.10 * ...
             (max(headingSliceY) - min(headingSliceY));
-        plot(ax, xBounds, [yBase, yBase], '-', 'Color', p.green, 'LineWidth', 0.9);
-        scatter(ax, xBounds, [yBase, yBase], 18, '|', 'MarkerEdgeColor', p.green, ...
+        plot(ax, xBounds, [yBase, yBase], '-', 'Color', p.muted, 'LineWidth', 0.9);
+        scatter(ax, xBounds, [yBase, yBase], 18, '|', 'MarkerEdgeColor', p.muted, ...
             'LineWidth', 0.9);
         text(ax, mean(xBounds), yBase + 0.08, sprintf('95%% 平台 %.2f°', diff(xBounds)), ...
-            'Color', p.green, 'FontName', p.font, 'FontSize', 7.0, ...
+            'Color', p.muted, 'FontName', p.font, 'FontSize', 7.0, ...
             'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom');
     end
     xlabel(ax, 'θ (°)，固定 tᵉ = tᵉ*', 'FontName', p.font, 'FontSize', 7.2);
@@ -394,20 +420,20 @@ function renderQ2Response(q12, outputDir, p)
 
     ax = axes(fig, 'Position', [0.735, 0.15, 0.235, 0.31]);
     hold(ax, 'on');
-    plot(ax, timeSliceX, timeSliceY, '-', 'Color', p.blue, 'LineWidth', 1.40);
-    xline(ax, optimumTime, '--', 'Color', p.orange, 'LineWidth', 0.85);
-    scatter(ax, optimumTime, optimumDuration, 38, 'o', 'filled', ...
-        'MarkerFaceColor', p.orange, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.5);
+    plot(ax, timeSliceX, timeSliceY, '-', 'Color', p.secondary, 'LineWidth', 1.40);
+    xline(ax, optimumTime, '--', 'Color', p.accent, 'LineWidth', 0.90);
+    scatter(ax, optimumTime, optimumDuration, 42, 'p', 'filled', ...
+        'MarkerFaceColor', p.accent, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.55);
     high = timeSliceY >= plateau;
     if any(high)
         xBounds = [timeSliceX(find(high, 1, 'first')), timeSliceX(find(high, 1, 'last'))];
         yBase = min(timeSliceY) + 0.10 * ...
             (max(timeSliceY) - min(timeSliceY));
-        plot(ax, xBounds, [yBase, yBase], '-', 'Color', p.green, 'LineWidth', 0.9);
-        scatter(ax, xBounds, [yBase, yBase], 18, '|', 'MarkerEdgeColor', p.green, ...
+        plot(ax, xBounds, [yBase, yBase], '-', 'Color', p.muted, 'LineWidth', 0.9);
+        scatter(ax, xBounds, [yBase, yBase], 18, '|', 'MarkerEdgeColor', p.muted, ...
             'LineWidth', 0.9);
         text(ax, mean(xBounds), yBase + 0.08, sprintf('95%% 平台 %.3f s', diff(xBounds)), ...
-            'Color', p.green, 'FontName', p.font, 'FontSize', 7.0, ...
+            'Color', p.muted, 'FontName', p.font, 'FontSize', 7.0, ...
             'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom');
     end
     xlabel(ax, 'tᵉ (s)，固定 θ = θ*', 'FontName', p.font, 'FontSize', 7.2);
@@ -449,34 +475,37 @@ function renderQ2Seeds(record, outputDir, p)
     ax = axes(fig, 'Position', [0.08, 0.20, 0.89, 0.72]);
     hold(ax, 'on');
     ax.YScale = 'log';
-    patch(ax, [generation, fliplr(generation)], ...
-        [q25, fliplr(q75)], p.blueLight, ...
-        'EdgeColor', 'none', 'FaceAlpha', 0.46);
-    for k = 1:n
-        stairs(ax, generation, gaps(k, :), '-', ...
-            'Color', p.grayLine, 'LineWidth', 0.70);
-    end
-    stairs(ax, generation, medianGap, '-', 'Color', p.blue, 'LineWidth', 1.65);
-
     patch(ax, [generation(1), generation(end), generation(end), generation(1)], ...
-        [1e-6, 1e-6, 1e-3, 1e-3], p.greenLight, ...
-        'EdgeColor', 'none', 'FaceAlpha', 0.52);
-    stairs(ax, generation, medianGap, '-', 'Color', p.blue, 'LineWidth', 1.65);
+        [1e-6, 1e-6, 1e-3, 1e-3], p.secondaryLight, ...
+        'EdgeColor', 'none', 'FaceAlpha', 0.78);
+    patch(ax, [generation, fliplr(generation)], ...
+        [q25, fliplr(q75)], p.primaryLight, ...
+        'EdgeColor', 'none', 'FaceAlpha', 0.82);
+    seedStyles = {'-', '--', '-.', ':', '-'};
+    for k = 1:n
+        styleIndex = 1 + mod(k - 1, numel(seedStyles));
+        stairs(ax, generation, gaps(k, :), seedStyles{styleIndex}, ...
+            'Color', p.grayLine, 'LineWidth', 0.72);
+    end
+    stairs(ax, generation, medianGap, '-', 'Color', p.primary, 'LineWidth', 1.65);
 
     thresholds = [1e-1, 1e-2, 1e-3];
     labelOffsets = [1.55, 1.62, 1.72];
+    thresholdMarkers = {'o', 'd', 's'};
     for k = 1:numel(thresholds)
+        yline(ax, thresholds(k), ':', ...
+            'Color', blendColor(p.muted, p.paper, 0.50), 'LineWidth', 0.55);
         idx = find(medianGap <= thresholds(k), 1, 'first');
         if ~isempty(idx)
-            scatter(ax, generation(idx), medianGap(idx), 24, 'o', 'filled', ...
-                'MarkerFaceColor', p.orange, 'MarkerEdgeColor', p.paper, ...
+            scatter(ax, generation(idx), medianGap(idx), 26, thresholdMarkers{k}, 'filled', ...
+                'MarkerFaceColor', p.accent, 'MarkerEdgeColor', p.paper, ...
                 'LineWidth', 0.45);
             text(ax, generation(idx) + 2.0, medianGap(idx) * labelOffsets(k), ...
                 sprintf('第 %d 代进入 10^{%d} s', generation(idx), round(log10(thresholds(k)))), ...
-                'Color', p.orange, 'FontName', p.font, 'FontSize', 7.0);
+                'Color', p.accent, 'FontName', p.font, 'FontSize', 7.0);
         end
     end
-    text(ax, 0.02, 0.94, '灰阶梯：单次运行    蓝阶梯/带：中位数 / IQR', ...
+    text(ax, 0.02, 0.94, '灰色细阶梯：单次运行    蓝灰阶梯 / 淡带：中位数 / IQR', ...
         'Units', 'normalized', 'Color', p.muted, 'FontName', p.font, ...
         'FontSize', 7.0, 'VerticalAlignment', 'top');
     text(ax, 0.98, 0.94, ...
@@ -485,12 +514,12 @@ function renderQ2Seeds(record, outputDir, p)
         'FontSize', 7.2, 'FontWeight', 'bold', ...
         'HorizontalAlignment', 'right', 'VerticalAlignment', 'top');
     text(ax, 0.98, 0.08, '阴影：误差进入 10^{-3} s', ...
-        'Units', 'normalized', 'Color', p.green, 'FontName', p.font, ...
+        'Units', 'normalized', 'Color', p.secondary, 'FontName', p.font, ...
         'FontSize', 7.0, 'HorizontalAlignment', 'right');
     xlabel(ax, '差分进化代数', 'FontName', p.font, 'FontSize', 7.6);
     ylabel(ax, '相对连续终值的绝对差 (s)', 'FontName', p.font, 'FontSize', 7.6);
     xlim(ax, [1, maxGeneration]);
-    ylim(ax, [5e-7, max(gaps, [], 'all') * 1.55]);
+    ylim(ax, [5e-7, max(gaps, [], 'all') * 3.0]);
     styleAxes(ax, p, true);
 
     exportTriple(fig, outputDir, 'q2_multiseed_stability', p);
@@ -518,30 +547,31 @@ function renderTimeStepAudit(q12, q1, outputDir, p)
     ax.XScale = 'log';
     ax.YScale = 'log';
     patch(ax, [min(steps), max(steps), max(steps), min(steps)], ...
-        [5e-5, 5e-5, 1e-2, 1e-2], p.greenLight, ...
-        'FaceAlpha', 0.55, 'EdgeColor', 'none');
-    loglog(ax, steps, errors(1, :), '-o', 'Color', p.blue, ...
-        'LineWidth', 1.35, 'MarkerSize', 4.2, 'MarkerFaceColor', p.blue, ...
+        [5e-5, 5e-5, 1e-2, 1e-2], p.secondaryLight, ...
+        'FaceAlpha', 0.80, 'EdgeColor', 'none');
+    loglog(ax, steps, errors(1, :), '-o', 'Color', p.primary, ...
+        'LineWidth', 1.35, 'MarkerSize', 4.2, 'MarkerFaceColor', p.primary, ...
         'MarkerEdgeColor', p.paper);
-    loglog(ax, steps, errors(2, :), '-s', 'Color', p.orange, ...
-        'LineWidth', 1.35, 'MarkerSize', 4.2, 'MarkerFaceColor', p.orange, ...
+    loglog(ax, steps, errors(2, :), '--s', 'Color', p.secondary, ...
+        'LineWidth', 1.35, 'MarkerSize', 4.2, 'MarkerFaceColor', p.secondary, ...
         'MarkerEdgeColor', p.paper);
     reference = 0.18 .* steps;
-    loglog(ax, steps, reference, '--', 'Color', p.grayLine, 'LineWidth', 0.85);
+    loglog(ax, steps, reference, '-.', ...
+        'Color', p.grayLine, 'LineWidth', 0.90);
     text(ax, 0.40, 0.75, 'O(Δt) 参考', 'Units', 'normalized', ...
         'Color', p.muted, 'FontName', p.font, 'FontSize', 7.0, ...
         'Rotation', 21);
     text(ax, 0.985, 0.08, '浅色区：误差 ≤ 0.01 s', ...
-        'Units', 'normalized', 'Color', p.green, 'FontName', p.font, ...
+        'Units', 'normalized', 'Color', p.secondary, 'FontName', p.font, ...
         'FontSize', 7.0, 'HorizontalAlignment', 'right');
     text(ax, 0.985, 0.94, '网格加密  →', ...
         'Units', 'normalized', 'Color', p.muted, 'FontName', p.font, ...
         'FontSize', 7.0, 'HorizontalAlignment', 'right');
     text(ax, 0.02, 0.94, '●  Q1 给定策略', 'Units', 'normalized', ...
-        'Color', p.blue, 'FontName', p.font, 'FontSize', 7.0, ...
+        'Color', p.primary, 'FontName', p.font, 'FontSize', 7.0, ...
         'FontWeight', 'bold', 'VerticalAlignment', 'top');
     text(ax, 0.20, 0.94, '■  Q2 优化策略', 'Units', 'normalized', ...
-        'Color', p.orange, 'FontName', p.font, 'FontSize', 7.0, ...
+        'Color', p.secondary, 'FontName', p.font, 'FontSize', 7.0, ...
         'FontWeight', 'bold', 'VerticalAlignment', 'top');
     text(ax, 0.39, 0.94, '– –  O(Δt) 参考', 'Units', 'normalized', ...
         'Color', p.muted, 'FontName', p.font, 'FontSize', 7.0, ...
@@ -586,12 +616,14 @@ function renderQ34Seeds(record, outputDir, p)
     ax = axes(fig, 'Position', [0.075, 0.15, 0.575, 0.78]);
     hold(ax, 'on');
     patch(ax, [iteration, fliplr(iteration)], [q3Q25, fliplr(q3Q75)], ...
-        p.blueLight, 'EdgeColor', 'none', 'FaceAlpha', 0.48);
+        p.primaryLight, 'EdgeColor', 'none', 'FaceAlpha', 0.82);
+    seedStyles = {'-', '--', '-.', ':', '-'};
     for k = 1:n3
-        stairs(ax, iteration, q3Matrix(k, :), '-', ...
+        styleIndex = 1 + mod(k - 1, numel(seedStyles));
+        stairs(ax, iteration, q3Matrix(k, :), seedStyles{styleIndex}, ...
             'Color', p.grayLine, 'LineWidth', 0.78);
     end
-    stairs(ax, iteration, q3Median, '-', 'Color', p.blue, 'LineWidth', 1.65);
+    stairs(ax, iteration, q3Median, '-', 'Color', p.primary, 'LineWidth', 1.65);
     accepted = false(size(iteration));
     for k = 1:n3
         trace = q3Runs(k).best_so_far_trace;
@@ -601,28 +633,30 @@ function renderQ34Seeds(record, outputDir, p)
     eventIdx = eventIdx(eventIdx >= 0);
     if ~isempty(eventIdx)
         selected = eventIdx(round(linspace(1, numel(eventIdx), min(7, numel(eventIdx)))));
-        scatter(ax, selected, q3Median(selected + 1), 18, 'o', 'filled', ...
-            'MarkerFaceColor', p.orange, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.4);
+        scatter(ax, selected, q3Median(selected + 1), 22, '^', 'filled', ...
+            'MarkerFaceColor', p.accent, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.4);
     end
     text(ax, 0.02, 0.96, '中位 best-so-far 轨迹', ...
-        'Units', 'normalized', 'Color', p.blue, 'FontName', p.font, ...
+        'Units', 'normalized', 'Color', p.primary, 'FontName', p.font, ...
         'FontSize', 7.2, 'FontWeight', 'bold', 'VerticalAlignment', 'top');
-    text(ax, 0.02, 0.90, '灰阶梯：单种子    淡色带：IQR    橙点：接受改进事件', ...
+    text(ax, 0.02, 0.90, '灰色细阶梯：单种子    淡蓝灰带：IQR    赭色三角：接受改进事件', ...
         'Units', 'normalized', 'Color', p.muted, 'FontName', p.font, ...
         'FontSize', 7.0, 'VerticalAlignment', 'top');
     xlabel(ax, '局部随机精化迭代', 'FontName', p.font, 'FontSize', 7.6);
     ylabel(ax, 'Q3 best-so-far 粗评分 (s)', 'FontName', p.font, 'FontSize', 7.6);
     xlim(ax, [0, maxIteration]);
+    ylim(ax, [min(q3Matrix, [], 'all') - 0.03, ...
+        max(q3Matrix, [], 'all') + 0.32]);
     styleAxes(ax, p, true);
     panelLabel(ax, 'a', p, [-0.10, 1.04]);
 
     ax = axes(fig, 'Position', [0.735, 0.58, 0.235, 0.32]);
-    endpointDots(ax, q3, false, p, 'Q3', p.blue);
+    endpointDots(ax, q3, false, p, 'Q3', p.primary);
     xlabel(ax, '并集时长 (s)', 'FontName', p.font, 'FontSize', 7.2);
     panelLabel(ax, 'b', p, [-0.18, 1.06]);
 
     ax = axes(fig, 'Position', [0.735, 0.15, 0.235, 0.32]);
-    endpointDots(ax, q4, true, p, 'Q4', p.orange);
+    endpointDots(ax, q4, true, p, 'Q4', p.wine);
     xlabel(ax, '相对中位数偏差 (ms)', 'FontName', p.font, 'FontSize', 7.2);
     panelLabel(ax, 'c', p, [-0.18, 1.06]);
 
@@ -656,8 +690,12 @@ function endpointDots(ax, record, centreMilliseconds, p, label, color)
         spanText = sprintf('终值极差 %.3f s', span);
     end
     y = [0.74, 0.30, 0.58, 0.18, 0.45];
-    xline(ax, lineAt, '--', 'Color', p.ink, 'LineWidth', 0.80);
-    scatter(ax, plotted, y, 44, 'o', 'filled', ...
+    marker = 'o';
+    if centreMilliseconds
+        marker = 'd';
+    end
+    xline(ax, lineAt, '--', 'Color', p.muted, 'LineWidth', 0.80);
+    scatter(ax, plotted, y, 44, marker, 'filled', ...
         'MarkerFaceColor', color, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.55);
     [~, order] = sort(plotted);
     labelIndices = unique([order(1), order(end)]);
@@ -853,7 +891,7 @@ function styleAxes(ax, p, useGrid)
     ax.LineWidth = 0.65;
     ax.XColor = p.muted;
     ax.YColor = p.muted;
-    ax.Color = p.paper;
+    ax.Color = p.panel;
     ax.Box = 'off';
     ax.TickDir = 'out';
     ax.TickLength = [0.014, 0.014];
@@ -892,9 +930,27 @@ function exportTriple(fig, outputDir, stem, p)
     close(fig);
 end
 
-function map = sequentialMap(low, high, count)
-    blend = linspace(0, 1, count)';
-    map = low + blend .* (high - low);
+function map = mutedDurationMap(count)
+    % Low-saturation blue-grey anchors with monotone lightness.  The map
+    % communicates order without introducing yellow-green or purple bands;
+    % the warm ochre is therefore reserved for the optimum marker.
+    anchors = [ ...
+        hexColor('#F3F5F3'); ...
+        hexColor('#D9E1E2'); ...
+        hexColor('#BCCBCD'); ...
+        hexColor('#91AAB1'); ...
+        hexColor('#667F8C'); ...
+        hexColor('#3E5D70') ...
+    ];
+    anchorX = linspace(0, 1, size(anchors, 1));
+    sampleX = linspace(0, 1, count);
+    map = interp1(anchorX, anchors, sampleX, 'pchip');
+    map = min(1, max(0, map));
+end
+
+function color = blendColor(foreground, background, foregroundWeight)
+    color = foregroundWeight .* foreground + ...
+        (1 - foregroundWeight) .* background;
 end
 
 function value = readJson(path)

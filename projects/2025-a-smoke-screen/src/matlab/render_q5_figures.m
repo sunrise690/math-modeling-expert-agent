@@ -48,6 +48,8 @@ axLocal = [ ...
 
 droneNames = {'FY1', 'FY2', 'FY3', 'FY4', 'FY5'};
 lineStyles = {'-', '--', '-.', ':', '-'};
+startMarkers = {'o', 's', '^', 'd', 'v'};
+missileStyles = {'--', '-.', ':'};
 hold(axGlobal, 'on');
 
 % Incoming missile directions from the official initial positions to the
@@ -55,13 +57,14 @@ hold(axGlobal, 'on');
 missileStarts = [20.0, 0.0; 19.0, 0.6; 18.0, -0.6];
 for k = 1:3
     plot(axGlobal, [missileStarts(k, 1), 0], [missileStarts(k, 2), 0], ...
-        '--', 'Color', C.guideDark, 'LineWidth', 0.85);
+        missileStyles{k}, 'Color', C.missile(k, :), 'LineWidth', 1.00);
     plot(axGlobal, missileStarts(k, 1), missileStarts(k, 2), '<', ...
         'MarkerSize', 5.2, 'MarkerFaceColor', C.paper, ...
-        'MarkerEdgeColor', C.muted, 'LineWidth', 0.8);
+        'MarkerEdgeColor', C.missile(k, :), 'LineWidth', 0.95);
     text(axGlobal, missileStarts(k, 1) - 0.18, missileStarts(k, 2) + 0.23, ...
         sprintf('M%d', k), 'HorizontalAlignment', 'center', ...
-        'FontName', fontName, 'FontSize', 7.2, 'Color', C.muted);
+        'FontName', fontName, 'FontSize', 7.2, 'FontWeight', 'bold', ...
+        'Color', C.missile(k, :));
 end
 
 for d = 1:numel(droneNames)
@@ -100,7 +103,7 @@ for d = 1:numel(droneNames)
     plot(axGlobal, explosionXY(:, 1), explosionXY(:, 2), 'o', ...
         'LineStyle', 'none', 'MarkerSize', 4.4, ...
         'MarkerFaceColor', color, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.55);
-    plot(axGlobal, startKm(1), startKm(2), '^', 'MarkerSize', 6.5, ...
+    plot(axGlobal, startKm(1), startKm(2), startMarkers{d}, 'MarkerSize', 6.5, ...
         'MarkerFaceColor', color, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.60);
 
     if startKm(2) >= 0
@@ -113,7 +116,7 @@ for d = 1:numel(droneNames)
     text(axGlobal, startKm(1), startKm(2) + dy, drone, ...
         'HorizontalAlignment', 'center', 'VerticalAlignment', va, ...
         'FontName', fontName, 'FontSize', 7.4, 'FontWeight', 'bold', ...
-        'Color', color);
+        'Color', C.ink);
 end
 
 plot(axGlobal, 0, 0, 'x', 'MarkerSize', 6.4, 'Color', C.ink, 'LineWidth', 1.25);
@@ -152,7 +155,7 @@ for m = 1:3
 end
 
 annotation(fig, 'textbox', [0.075, 0.012, 0.895, 0.035], ...
-    'String', '局部图按航程分段展开（横坐标非连续）；颜色=无人机，数字=同机弹序', ...
+    'String', '局部图按航程分段展开（横坐标非连续）；颜色/线型/中点符号=无人机，数字=同机弹序', ...
     'HorizontalAlignment', 'right', 'VerticalAlignment', 'middle', ...
     'FontName', fontName, 'FontSize', 7.0, 'Color', C.muted, ...
     'Interpreter', 'none', 'EdgeColor', 'none', 'FitBoxToText', 'off');
@@ -169,18 +172,22 @@ hold(ax, 'on');
 % and explicitly labelled as a segmented, non-continuous coordinate.
 windows = [16.0, 18.2; 8.7, 12.5; 2.8, 4.5];
 windowNames = {'16.0–18.2', '8.7–12.5', '2.8–4.5'};
+segmentColors = [ ...
+    mixColor(C.primary, C.paper, 0.025); ...
+    C.panel; ...
+    mixColor(C.secondary, C.paper, 0.025)];
 for w = 1:3
-    if mod(w, 2) == 0
-        patch(ax, [w-1, w, w, w-1], [-1.10, -1.10, 1.82, 1.82], ...
-            C.panel, 'EdgeColor', 'none');
-    end
+    patch(ax, [w-1, w, w, w-1], [-1.10, -1.10, 1.82, 1.82], ...
+        segmentColors(w, :), 'EdgeColor', 'none');
+    plot(ax, [w-1 + 0.06, w - 0.06], [1.59, 1.59], '-', ...
+        'Color', mixColor(C.ink, segmentColors(w, :), 0.20), 'LineWidth', 1.05);
     text(ax, w - 0.5, 1.71, windowNames{w}, ...
         'HorizontalAlignment', 'center', 'FontName', fontName, ...
         'FontSize', 7.0, 'Color', C.muted, 'Interpreter', 'none');
 end
-plot(ax, [1, 1], [-1.08, 1.82], ':', 'Color', C.guide, 'LineWidth', 0.65);
-plot(ax, [2, 2], [-1.08, 1.82], ':', 'Color', C.guide, 'LineWidth', 0.65);
-plot(ax, [0, 3], [0, 0], '-', 'Color', C.guide, 'LineWidth', 0.65);
+plot(ax, [1, 1], [-1.08, 1.82], ':', 'Color', C.grid, 'LineWidth', 0.65);
+plot(ax, [2, 2], [-1.08, 1.82], ':', 'Color', C.grid, 'LineWidth', 0.65);
+plot(ax, [0, 3], [0, 0], '-', 'Color', C.grid, 'LineWidth', 0.65);
 
 idx = find(strcmp({plans.missile_id}, missile));
 [~, order] = sort([plans(idx).explosion_time]);
@@ -195,6 +202,8 @@ else
     labelDy = [-0.25, 0.24, 0.17, 0.18];
     labelDx = [-0.04, 0.04, 0.04, 0.02];
 end
+droneStyles = {'-', '--', '-.', ':', '-'};
+droneMarkers = {'o', 's', '^', 'd', 'v'};
 
 for p = 1:numel(idx)
     planIndex = idx(p);
@@ -207,8 +216,11 @@ for p = 1:numel(idx)
     xe = segmentedX(explosionKm(1), windows);
     assert(isfinite(xr) && isfinite(xe), 'Q5 local x coordinate is outside the declared windows.');
 
-    plot(ax, [xr, xe], [releaseKm(2), explosionKm(2)], '-', ...
+    plot(ax, [xr, xe], [releaseKm(2), explosionKm(2)], droneStyles{droneNumber}, ...
         'Color', color, 'LineWidth', 1.15);
+    plot(ax, mean([xr, xe]), mean([releaseKm(2), explosionKm(2)]), ...
+        droneMarkers{droneNumber}, 'MarkerSize', 3.7, ...
+        'MarkerFaceColor', C.paper, 'MarkerEdgeColor', color, 'LineWidth', 0.75);
     plot(ax, xr, releaseKm(2), 'd', 'MarkerSize', 5.0, ...
         'MarkerFaceColor', C.paper, 'MarkerEdgeColor', color, 'LineWidth', 0.9);
     plot(ax, xe, explosionKm(2), 'o', 'MarkerSize', 5.5, ...
@@ -226,7 +238,7 @@ for p = 1:numel(idx)
         '-', 'Color', C.guideDark, 'LineWidth', 0.55);
     text(ax, xe + dx, explosionKm(2) + dy, label, ...
         'HorizontalAlignment', ha, 'VerticalAlignment', 'middle', ...
-        'FontName', fontName, 'FontSize', 7.0, 'FontWeight', 'bold', 'Color', color, ...
+        'FontName', fontName, 'FontSize', 7.0, 'FontWeight', 'bold', 'Color', C.ink, ...
         'BackgroundColor', C.paper, 'Margin', 0.4, 'Interpreter', 'none');
 end
 
@@ -289,7 +301,7 @@ for m = 1:3
 end
 
 annotation(fig, 'textbox', [0.100, 0.942, 0.860, 0.035], ...
-    'String', '▷ 进入事件    ◁ 退出事件    橙色阶梯 n_j(t)    ↔ 最大内部空窗', ...
+    'String', '▷ 进入    ◁ 退出    弧线型/顶点符号=无人机    蓝灰阶梯 n_j(t)    ↔ 最大空窗', ...
     'HorizontalAlignment', 'right', 'VerticalAlignment', 'middle', ...
     'FontName', fontName, 'FontSize', 7.0, 'Color', C.muted, ...
     'Interpreter', 'none', 'EdgeColor', 'none', 'FitBoxToText', 'off');
@@ -301,6 +313,8 @@ end
 
 function drawMissileEvents(ax, q5, plans, shotIndex, missile, xMin, xMax, C, fontName, panelLetter)
 hold(ax, 'on');
+missileNumber = sscanf(missile, 'M%d');
+missileColor = C.missile(missileNumber, :);
 idx = find(strcmp({plans.missile_id}, missile));
 [~, order] = sort([plans(idx).exact_centerline_duration]);
 idx = idx(order);
@@ -313,18 +327,33 @@ for k = 1:numel(idx)
     allIntervals(k, :) = interval(1, :);
 end
 
+% Quiet state bands expose the discrete count semantics without turning
+% intervals into long filled bars.
+stateBands = [ ...
+    C.panel; ...
+    mixColor(C.primary, C.paper, 0.025); ...
+    mixColor(C.secondary, C.paper, 0.025)];
+bandEdges = [0.11, 0.59, 1.09, 1.48];
+for level = 1:3
+    patch(ax, [xMin, xMax, xMax, xMin], ...
+        [bandEdges(level), bandEdges(level), bandEdges(level + 1), bandEdges(level + 1)], ...
+        stateBands(level, :), 'EdgeColor', 'none');
+end
+
 % Coverage-count staircase generated only by the discrete event list.
 [stepX, stepN] = eventStep(allIntervals, xMin, xMax);
 stepY = 0.34 + 0.50 * stepN;
-plot(ax, stepX, stepY, '-', 'Color', C.orange, 'LineWidth', 1.65);
+plot(ax, stepX, stepY, '-', 'Color', C.primary, 'LineWidth', 1.70);
 for level = 0:2
     plot(ax, [xMin, xMax], [0.34 + 0.50 * level, 0.34 + 0.50 * level], ...
-        ':', 'Color', C.guide, 'LineWidth', 0.55);
+        ':', 'Color', C.grid, 'LineWidth', 0.55);
 end
 
 % Entry/exit nodes share an event baseline; a shallow arc pairs them
 % without encoding duration as a thick bar.
 yBase = 1.55;
+arcStyles = {'-', '--', '-.', ':', '-'};
+arcMarkers = {'o', 's', '^', 'd', 'v'};
 for k = 1:numel(idx)
     planIndex = idx(k);
     plan = plans(planIndex);
@@ -339,15 +368,19 @@ for k = 1:numel(idx)
     u = linspace(0, 1, 80);
     xArc = a + (b - a) * u;
     yArc = yBase + 4 * arcHeight * u .* (1 - u);
-    plot(ax, xArc, yArc, '-', 'Color', color, 'LineWidth', 0.90);
+    plot(ax, xArc, yArc, arcStyles{droneNumber}, ...
+        'Color', color, 'LineWidth', 1.00);
+    plot(ax, mean([a, b]), yBase + arcHeight, arcMarkers{droneNumber}, ...
+        'MarkerSize', 3.8, 'MarkerFaceColor', C.paper, ...
+        'MarkerEdgeColor', color, 'LineWidth', 0.75);
     plot(ax, a, yBase, '>', 'MarkerSize', 5.8, ...
-        'MarkerFaceColor', C.green, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.6);
+        'MarkerFaceColor', C.paper, 'MarkerEdgeColor', C.ink, 'LineWidth', 0.85);
     plot(ax, b, yBase, '<', 'MarkerSize', 5.8, ...
-        'MarkerFaceColor', C.blue, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.6);
+        'MarkerFaceColor', C.ink, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.65);
     label = sprintf('%s·%d', plan.drone_id, shotIndex(planIndex));
     text(ax, 0.5 * (a + b), yBase + arcHeight + 0.055, label, ...
         'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom', ...
-        'FontName', fontName, 'FontSize', 7.0, 'Color', color, ...
+        'FontName', fontName, 'FontSize', 7.0, 'Color', C.ink, ...
         'BackgroundColor', C.paper, 'Margin', 0.25, 'Interpreter', 'none');
 end
 
@@ -359,15 +392,15 @@ if ~isempty(gaps)
     gap = gaps(gapIndex, :);
     yGap = 0.08;
     quiver(ax, gap(1), yGap, gap(2)-gap(1), 0, 0, ...
-        'Color', C.orange, 'LineWidth', 0.85, 'MaxHeadSize', 0.035, ...
+        'Color', C.warm, 'LineWidth', 0.90, 'MaxHeadSize', 0.035, ...
         'AutoScale', 'off');
     quiver(ax, gap(2), yGap, gap(1)-gap(2), 0, 0, ...
-        'Color', C.orange, 'LineWidth', 0.85, 'MaxHeadSize', 0.035, ...
+        'Color', C.warm, 'LineWidth', 0.90, 'MaxHeadSize', 0.035, ...
         'AutoScale', 'off');
     text(ax, mean(gap), -0.01, sprintf('最大空窗 %.2f s', gapLength), ...
         'HorizontalAlignment', 'center', 'VerticalAlignment', 'top', ...
         'FontName', fontName, 'FontSize', 7.0, 'FontWeight', 'bold', ...
-        'Color', C.orange, 'BackgroundColor', C.paper, 'Margin', 0.3, ...
+        'Color', C.warm, 'BackgroundColor', C.paper, 'Margin', 0.3, ...
         'Interpreter', 'none');
 end
 
@@ -376,7 +409,7 @@ text(ax, 0.008, 1.09, panelLetter, 'Units', 'normalized', ...
     'FontName', 'Arial', 'FontSize', 9.0, 'FontWeight', 'bold', 'Color', C.ink);
 text(ax, 0.050, 1.09, sprintf('%s  ·  并集 %.3f s', missile, duration), 'Units', 'normalized', ...
     'FontName', fontName, 'FontSize', 7.8, 'FontWeight', 'bold', ...
-    'Color', C.ink, 'Interpreter', 'none');
+    'Color', missileColor, 'Interpreter', 'none');
 
 xlim(ax, [xMin, xMax]);
 ylim(ax, [-0.10, 2.02]);
@@ -427,14 +460,15 @@ for k = 1:3
 end
 
 hold(axA, 'on');
+missileStyles = {'-', '--', '-.'};
 for k = 1:3
     y = 4 - k;
-    plot(axA, [full(k), center(k)], [y, y], '-', ...
-        'Color', C.guideDark, 'LineWidth', 1.35);
+    plot(axA, [full(k), center(k)], [y, y], missileStyles{k}, ...
+        'Color', C.muted, 'LineWidth', 1.25);
     plot(axA, center(k), y, 'o', 'MarkerSize', 7.3, ...
-        'MarkerFaceColor', C.blue, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.7);
-    plot(axA, full(k), y, 'o', 'MarkerSize', 7.3, ...
-        'MarkerFaceColor', C.paper, 'MarkerEdgeColor', C.orange, 'LineWidth', 1.25);
+        'MarkerFaceColor', C.primary, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.7);
+    plot(axA, full(k), y, 's', 'MarkerSize', 6.8, ...
+        'MarkerFaceColor', C.paper, 'MarkerEdgeColor', C.wine, 'LineWidth', 1.25);
     loss = center(k) - full(k);
     retention = 100 * full(k) / center(k);
     text(axA, 0.5 * (full(k) + center(k)), y + 0.22, ...
@@ -461,17 +495,17 @@ lossTotal = centerTotal - fullTotal;
 retentionTotal = 100 * fullTotal / centerTotal;
 hold(axB, 'on');
 plot(axB, [fullTotal, centerTotal], [1, 1], '-', ...
-    'Color', C.guideDark, 'LineWidth', 1.55);
+    'Color', C.muted, 'LineWidth', 1.45);
 plot(axB, centerTotal, 1, 'o', 'MarkerSize', 8.2, ...
-    'MarkerFaceColor', C.blue, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.7);
-plot(axB, fullTotal, 1, 'o', 'MarkerSize', 8.2, ...
-    'MarkerFaceColor', C.paper, 'MarkerEdgeColor', C.orange, 'LineWidth', 1.35);
+    'MarkerFaceColor', C.primary, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.7);
+plot(axB, fullTotal, 1, 's', 'MarkerSize', 7.7, ...
+    'MarkerFaceColor', C.paper, 'MarkerEdgeColor', C.wine, 'LineWidth', 1.35);
 text(axB, centerTotal, 0.77, sprintf('%.2f', centerTotal), ...
     'HorizontalAlignment', 'center', 'FontName', fontName, ...
-    'FontSize', 7.2, 'FontWeight', 'bold', 'Color', C.blue);
+    'FontSize', 7.2, 'FontWeight', 'bold', 'Color', C.primary);
 text(axB, fullTotal, 0.77, sprintf('%.2f', fullTotal), ...
     'HorizontalAlignment', 'center', 'FontName', fontName, ...
-    'FontSize', 7.2, 'FontWeight', 'bold', 'Color', C.orange);
+    'FontSize', 7.2, 'FontWeight', 'bold', 'Color', C.wine);
 text(axB, mean([fullTotal, centerTotal]), 1.26, ...
     sprintf('总损失 %.2f s\n保留 %.1f%%', lossTotal, retentionTotal), ...
     'HorizontalAlignment', 'center', 'FontName', fontName, ...
@@ -492,11 +526,11 @@ hold(axB, 'off');
 % Direct labels are more stable than a boxed legend at manuscript size.
 annotation(fig, 'textbox', [0.105, 0.940, 0.175, 0.045], ...
     'String', '●  中心视线口径', 'FontName', fontName, ...
-    'FontSize', 7.0, 'Color', C.blue, 'Interpreter', 'none', ...
+    'FontSize', 7.0, 'Color', C.primary, 'Interpreter', 'none', ...
     'EdgeColor', 'none', 'FitBoxToText', 'off', 'VerticalAlignment', 'middle');
 annotation(fig, 'textbox', [0.285, 0.940, 0.240, 0.045], ...
-    'String', '○  完整圆柱保守口径', 'FontName', fontName, ...
-    'FontSize', 7.0, 'Color', C.orange, 'Interpreter', 'none', ...
+    'String', '□  完整圆柱保守口径', 'FontName', fontName, ...
+    'FontSize', 7.0, 'Color', C.wine, 'Interpreter', 'none', ...
     'EdgeColor', 'none', 'FitBoxToText', 'off', 'VerticalAlignment', 'middle');
 
 exportFigure(fig, outDir, 'q5_per_missile_robustness', C.paper);
@@ -516,21 +550,22 @@ end
 
 
 function C = editorialPalette()
-C.paper = [0.992, 0.992, 0.986];
-C.panel = [0.956, 0.963, 0.963];
-C.ink = [30, 42, 50] / 255;
-C.muted = [108, 122, 132] / 255;
-C.guide = [218, 225, 229] / 255;
-C.guideDark = [174, 186, 192] / 255;
-C.blue = [62, 110, 147] / 255;
-C.green = [92, 129, 115] / 255;
-C.orange = [190, 105, 61] / 255;
-C.drone = [ ...
-    62, 110, 147; ...   % slate blue
-    92, 129, 115; ...   % mineral green
-    190, 105, 61; ...   % terracotta
-    112, 103, 137; ...  % muted violet slate
-    163, 133, 78] / 255;% antique ochre
+C.paper = hexColor('#FCFBF7');
+C.ink = hexColor('#25313A');
+C.muted = hexColor('#66737C');
+C.grid = hexColor('#DCE2E5');
+C.primary = hexColor('#3E6F8F');
+C.secondary = hexColor('#5F8375');
+C.warm = hexColor('#C1844F');
+C.wine = hexColor('#9B5B64');
+C.panel = mixColor(C.grid, C.paper, 0.24);
+C.blueDark = mixColor(C.ink, C.primary, 0.24);
+C.blueSoft = mixColor(C.primary, C.muted, 0.62);
+C.tealSoft = mixColor(C.secondary, C.muted, 0.66);
+C.guide = C.grid;
+C.guideDark = mixColor(C.muted, C.paper, 0.62);
+C.drone = [C.primary; C.blueDark; C.blueSoft; C.secondary; C.tealSoft];
+C.missile = repmat(C.muted, 3, 1);
 end
 
 
@@ -543,12 +578,24 @@ if verticalGrid
     grid(ax, 'on');
     ax.XGrid = 'on';
     ax.YGrid = 'off';
-    ax.GridColor = C.guide;
+    ax.GridColor = C.grid;
     ax.GridAlpha = 0.38;
     ax.GridLineStyle = ':';
 else
     grid(ax, 'off');
 end
+end
+
+
+function rgb = hexColor(code)
+code = char(erase(string(code), '#'));
+rgb = [hex2dec(code(1:2)), hex2dec(code(3:4)), hex2dec(code(5:6))] / 255;
+end
+
+
+function color = mixColor(foreground, background, weight)
+weight = max(0, min(1, weight));
+color = weight * foreground + (1 - weight) * background;
 end
 
 

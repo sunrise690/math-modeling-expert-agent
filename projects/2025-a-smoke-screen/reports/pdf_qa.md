@@ -7,7 +7,7 @@
 | 字段 | 值 |
 |---|---|
 | 文件 | `paper/main.pdf` |
-| SHA-256 | `07b208dd109bd8ad0e403f72a5ea84e15903b2a190496cc79eebc2702f99365d` |
+| SHA-256 | `8d1d00f3c05d65554df84cfb2aa1c2d8db5d2e57174ea377b52a0206a3a907b4` |
 | 页数 | 26 |
 | 页面尺寸 | 595.28 × 841.89 pt（A4） |
 
@@ -15,7 +15,7 @@
 
 | 检查项 | 结果 | 证据 |
 |---|---|---|
-| `main.tex`、全部图件、验证 JSON、输出工作簿与 PDF/日志绑定 | PASS | 53 个输入的联合 SHA-256 为 `26f88a7e99ac72213c036ee2848cfd7746940c6c9bc2e8cbbc73e405baa9347f`，并与编译记录逐项匹配 |
+| `main.tex`、全部图件、验证 JSON、输出工作簿与 PDF/日志绑定 | PASS | 53 个输入的联合 SHA-256 为 `f6a036d163cc5f4af82b131c2b5052b1488f22ffcced20c2ac0b7087a0149408`，并与编译记录逐项匹配 |
 | 论文成品审计时效 | PASS | 审计结果、审计 JSON 哈希、PDF 哈希和输入联合指纹四者绑定 |
 | 18–28 页紧凑 A4 成稿 | PASS | 共 26 页；逐页 MediaBox 均为 595.28 × 841.89 pt |
 | 字体嵌入 | PASS | 检出 32 个字体，未嵌入字体 0 个 |
@@ -29,9 +29,9 @@
 
 - 状态：**PASS**。
 - 审查类型：`codex_page_by_page_visual`。
-- 审查记录：Codex 主任务逐页视觉检查；日期 `2026-08-08`。
+- 审查记录：Codex 主任务逐页视觉检查；日期 `2026-08-09`。
 - 审查范围：当前 PDF 的 26 页；本机保留 26 张逐页渲染证据。
-- 渲染证据：`support/pdf-render-evidence/page-01.png ... support/pdf-render-evidence/page-26.png；全部页面均由当前最终 PDF 在 140 dpi 下重新渲染并逐页复核，且与上一轮已逐页检查的 26 张渲染图逐像素一致；该证据集随仓库版本化`。
+- 渲染证据：`support/pdf-render-evidence/page-01.png ... support/pdf-render-evidence/page-26.png；全部页面均由当前最终 PDF 在 140 dpi 下重新渲染，并通过 4 组联系表与关键原尺寸页面完成逐页复核；该证据集随仓库版本化`。
 - 已确认：正文、公式、表格、插图、标题、摘要、结论和参考文献页无可见裁切、重叠或越界，文字与数学符号可辨识。
 - 防陈旧规则：`support/manual_pdf_qa.json` 记录的 PDF SHA-256、页数或 `reviewed_input_bundle_sha256` 只要与当前产物不一致，本项自动变为 FAIL，不能沿用旧视觉结论。
 

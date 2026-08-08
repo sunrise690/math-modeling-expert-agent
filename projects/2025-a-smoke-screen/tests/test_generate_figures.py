@@ -18,6 +18,40 @@ import generate_figures  # noqa: E402
 
 
 class MatlabFigureManifestTests(unittest.TestCase):
+    def test_matlab_log_sanitizer_keeps_metrics_and_drops_local_paths(self) -> None:
+        output = (
+            "Rendered event evidence:\n"
+            "  C:\\Users\\person\\project\\figure.png\n"
+            "objective 4.832502 s\n"
+            "Rendered in D:/private/project/figures\n"
+        )
+
+        sanitized = generate_figures._sanitize_matlab_stdout(output)
+
+        self.assertEqual(
+            sanitized,
+            "Rendered event evidence:\nobjective 4.832502 s",
+        )
+        self.assertNotIn("Users", sanitized)
+
+    def test_svg_normalization_only_removes_trailing_whitespace(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            svg = root / "figure.svg"
+            png = root / "figure.png"
+            svg.write_bytes(
+                b"<svg>   \r\n  <path d='M0 0' /> \t\r\n</svg>\r\n"
+            )
+            png.write_bytes(b"not-an-svg  \n")
+
+            generate_figures._normalize_svg_whitespace([svg, png])
+
+            self.assertEqual(
+                svg.read_text(encoding="utf-8"),
+                "<svg>\n  <path d='M0 0' />\n</svg>\n",
+            )
+            self.assertEqual(png.read_bytes(), b"not-an-svg  \n")
+
     def test_dependency_provenance_requires_exact_source_and_input_binding(self) -> None:
         current = {
             "schema_version": 1,

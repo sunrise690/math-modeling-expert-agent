@@ -51,16 +51,16 @@
     "至少 3 张图可能缺少正文中的结论性解释。"
   ],
   "metrics": {
-    "characters": 25322,
+    "characters": 25487,
     "pages": 26,
     "sections": 12,
     "questions": 5,
     "questionCharacters": {
       "1": 1250,
-      "2": 2108,
-      "3": 2219,
-      "4": 2352,
-      "5": 3932
+      "2": 2150,
+      "3": 2249,
+      "4": 2366,
+      "5": 3947
     },
     "abstractCharacters": 817,
     "abstractNumericResults": 8,
@@ -85,7 +85,7 @@
     "placeholders": 0,
     "minimumFigures": 8,
     "artifactName": "main.pdf",
-    "artifactSha256": "07b208dd109bd8ad0e403f72a5ea84e15903b2a190496cc79eebc2702f99365d",
+    "artifactSha256": "8d1d00f3c05d65554df84cfb2aa1c2d8db5d2e57174ea377b52a0206a3a907b4",
     "fullPaper": true,
     "expectedQuestions": 5
   },

@@ -49,9 +49,9 @@ description: 数学建模竞赛专家工作流，覆盖国赛、美赛及校赛�
 
 ### 4. 绑定证据与图表
 
-先列出每个结论需要的表、图、公式或日志，再生成产物。读取 [references/figure-standards.md](references/figure-standards.md) 规划正式图；调用 `create_plot` 时优先选择与主张匹配的语义 `template`，并填写 `figure_intent`。每张图只服务于明确主张，包含变量、单位和可编辑格式；图例能由直接标注替代时不堆叠图例。
+先列出每个结论需要的表、图、公式或日志，再生成产物。读取 [references/figure-standards.md](references/figure-standards.md) 规划正式图；调用 `create_plot` 时优先选择与主张匹配的语义 `template`，并填写 `figure_intent`。每张图只服务于明确主张，包含变量、单位和可编辑格式；图例能由直接标注替代时不堆叠图例。默认采用低饱和蓝灰主色与单一暖色强调，单面板通常不超过两个主数据色；多实体优先用线型、标记和直接标签区分，不得用彩虹配色制造“丰富感”。一旦用户指定 MATLAB-only，本轮及后续迭代的全部正式图均保持 MATLAB 渲染，不用 Python 静默替换；实体、事件和评分口径在整篇中必须固定语义与冗余编码。
 
-`create_plot` 返回 `figureLint`、请求尺寸和实际尺寸。出现语义错误、图注声明图层缺失或尺寸偏差超过 5% 时必须修复；警告需逐项判断，不得在最终交付中静默忽略。
+`create_plot` 返回 `figureLint`、请求尺寸和实际尺寸。出现语义错误、图注声明图层缺失或尺寸偏差超过 5% 时必须修复；警告需逐项判断，不得在最终交付中静默忽略。整篇出图后必须检查彩色联系表和关键图灰度版；发现重叠、裁切、语义换色或黑白难辨时回到绘图脚本修复并重新导出。
 
 按 [references/evidence-and-validation.md](references/evidence-and-validation.md) 建立主张—证据映射。资料原文只能支撑来源性主张，不能替代数值计算。
 

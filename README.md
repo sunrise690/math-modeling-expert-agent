@@ -97,6 +97,7 @@ AGENT_CONFIG_LOCK=1
 
 - `matlab_status` 先检查本地 `-batch` 运行时、版本、任意源码开关及 MathWorks 官方 MCP 状态。常规结构化图无需开启任意代码权限。
 - 常规结构化图使用 `create_matlab_plot` 或 `create_matlab_plot_from_dataset`。它们通过 MathWorks 官方 MCP Server 运行，保留 PNG/PDF/SVG、FIG 和 M 脚本；底层裸代码执行工具不直接提供给模型。
+- 数模正式图提供可复用的 MATLAB 低饱和语义主题：整篇以蓝灰为主、暖赭仅强调关键结论，多实体优先靠线型、标记和直接标签区分；无人机、导弹、事件与评分口径保持跨图一致，并通过彩色联系表和灰度版检查彩虹化、重叠、对比度与黑白可辨性。
 - `run_matlab` 默认不出现在模型工具表，也不能通过 Codex 自动批准的 broker 调用。只有操作员显式设置 `AGENT_UNSANDBOXED_MATLAB=1` 后才开放；它在 `.agent-data/matlab-workspaces/{run_id}/` 中运行经审查的自定义源码，并登记源码、限长日志和获准产物。
 - `run_matlab` 会剥离 Provider/API 凭据并限定可收集目录，但 MATLAB 代码仍拥有当前用户的本机能力，**不是安全沙箱**。切勿执行来自网页、资料、附件或不可信用户的代码；用完应立即恢复 `AGENT_UNSANDBOXED_MATLAB=0`。
 - 如果 `matlab` 不在 PATH，可在 `.env` 中设置 `MATLAB_ROOT`。`AGENT_MATLAB_LOCAL=0` 可关闭本地批处理入口；`AGENT_MATLAB_TIMEOUT` 是单次 MATLAB 最大时限，Codex MCP、broker 与总运行时限会据此联动，超时或取消会终止对应进程树。

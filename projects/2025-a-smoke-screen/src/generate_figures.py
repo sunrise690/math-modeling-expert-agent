@@ -66,6 +66,31 @@ def expected_artifacts() -> list[Path]:
     return [ROOT / relative for stem in FIGURE_STEMS for relative in figure_files(stem)]
 
 
+def _normalize_svg_whitespace(paths: list[Path]) -> None:
+    """Remove renderer-only trailing spaces without changing SVG geometry."""
+
+    for path in paths:
+        if path.suffix.lower() != ".svg" or not path.is_file():
+            continue
+        source = path.read_text(encoding="utf-8")
+        normalized = "\n".join(line.rstrip() for line in source.splitlines())
+        if source.endswith(("\n", "\r")):
+            normalized += "\n"
+        if normalized != source:
+            path.write_text(normalized, encoding="utf-8", newline="\n")
+
+
+def _sanitize_matlab_stdout(output: str) -> str:
+    """Keep numeric diagnostics while excluding machine-local paths."""
+
+    safe_lines = [
+        line.rstrip()
+        for line in output.splitlines()
+        if ":\\" not in line and ":/" not in line
+    ]
+    return "\n".join(line for line in safe_lines if line).strip()
+
+
 def _required_files(paths: list[Path] | tuple[Path, ...], *, label: str) -> None:
     missing = [
         path.relative_to(ROOT).as_posix()
@@ -351,7 +376,8 @@ def _render_all_with_matlab() -> dict[str, Any]:
             environment=_matlab_environment(),
             timeout_seconds=900,
         )
-        stdout_parts.append(completed.stdout)
+        safe_stdout = _sanitize_matlab_stdout(completed.stdout)
+        stdout_parts.append(safe_stdout)
         if completed.returncode != 0:
             detail = (completed.stderr or completed.stdout or "MATLAB 未返回诊断")[-3000:]
             raise RuntimeError(f"MATLAB 正式图生成失败（{script_name}）：{detail}")
@@ -359,11 +385,12 @@ def _render_all_with_matlab() -> dict[str, Any]:
             {
                 "script": f"src/matlab/{script_name}",
                 "returncode": completed.returncode,
-                "stdout_tail": completed.stdout[-500:],
+                "stdout_tail": safe_stdout[-500:],
             }
         )
 
     _required_files(expected, label=" MATLAB 正式图件")
+    _normalize_svg_whitespace(expected)
     stale: list[str] = []
     for path in expected:
         before = previous[path]
