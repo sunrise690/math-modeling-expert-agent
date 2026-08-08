@@ -112,8 +112,8 @@ Q5 & 五机至多十五弹、三枚来袭导弹 & 航路一致包、多机指派
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.96\textwidth]{modeling_workflow.pdf}
-\caption{五问共享的运动学、连续事件、区间并集、组合优化与验证流程。前一问的几何和区间模块直接成为后一问的评分内核。}
+\includegraphics[width=0.98\textwidth]{modeling_workflow.pdf}
+\caption{五问共享的输入审计、机理内核、连续事件、组合决策与证据闭环。下方反向箭头表示验证失败时必须回到口径、机理或候选层修订。}
 \label{fig:workflow}
 \end{figure}
 
@@ -179,7 +179,7 @@ T_j=\frac{\|\bm o-\bm m_j^0\|}{300},
 
 无人机 FY$i$ 的水平单位方向记为 $\bm h_i=(\cos\theta_i,\sin\theta_i,0)$，则
 \begin{equation}
-\bm u_i(t)=\bm u_i^0+v_i\bm h_i t,qquad 70\leq v_i\leq 140.
+\bm u_i(t)=\bm u_i^0+v_i\bm h_i t,\qquad 70\leq v_i\leq 140.
 \label{eq:uav}
 \end{equation}
 第 $k$ 枚弹在 $t_{ik}^r$ 投放，延时 $\tau_{ik}$ 起爆，$t_{ik}^e=t_{ik}^r+\tau_{ik}$。投放点、起爆点与起爆后球心轨迹为
@@ -197,8 +197,8 @@ T_j=\frac{\|\bm o-\bm m_j^0\|}{300},
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.90\textwidth]{finite_sightline_geometry.pdf}
-\caption{有限视线几何与烟幕截面的尺度关系。烟幕是否有效由球心到导弹--目标有限线段的距离决定。}
+\includegraphics[width=0.98\textwidth]{finite_sightline_geometry.pdf}
+\caption{有限视线判据的三层证据。A 为有限线段及最近点的非比例示意，B 为 $t=8.70$ s 的真实尺度局部截面，C 为同一时刻两种遮蔽口径的裕度复算；烟幕圆未被裁切。}
 \label{fig:sightline-geometry}
 \end{figure}
 
@@ -253,10 +253,10 @@ D_j=\meas\left(\bigcup_{i,k:a_{ikj}=1}I_{ikj}\right),
 共同约束写为
 \begin{equation}
 \begin{aligned}
-70\leq v_i\leq140,&\qquad t_{ik}^r\geq0,qquad \tau_{ik}\geq0,
+70\leq v_i\leq140,&\qquad t_{ik}^r\geq0,\qquad \tau_{ik}\geq0,
 \qquad (\bm p_{ik}^e)_z\geq0,\\
-t_{i,k+1}^{r}-t_{ik}^{r}&\geq1,qquad
-\sum_j a_{ikj}\leq1,qquad a_{ikj}\in\{0,1\},\\
+t_{i,k+1}^{r}-t_{ik}^{r}&\geq1,\qquad
+\sum_j a_{ikj}\leq1,\qquad a_{ikj}\in\{0,1\},\\
 a_{ikj}=1&\Longrightarrow t_{ik}^e\leq T_j.
 \end{aligned}
 \label{eq:constraints}
@@ -298,8 +298,8 @@ D_1=9.448088-8.013006=1.435082\ \text{s}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.90\textwidth]{q1_occlusion_intervals.pdf}
-\caption{Q1 两种遮蔽口径的连续裕度与有效区间。零水平线给出连续进入和退出边界；圆柱口径的进入时刻较晚。}
+\includegraphics[width=0.96\textwidth]{q1_occlusion_intervals.pdf}
+\caption{Q1 零点邻域的连续裕度与有效区间。A 聚焦进入、退出边界，B 直接标出完整圆柱口径的进入延迟 $0.0434$ s 及相应时长差。}
 \label{fig:q1-intervals}
 \end{figure}
 
@@ -323,8 +323,8 @@ D_1=9.448088-8.013006=1.435082\ \text{s}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.82\textwidth]{q2_response_surface.pdf}
-\caption{Q2 在速度 $140$ m/s、即时投放截面上的航向--起爆时刻响应面。星号为连续精化方案；零平台与狭窄高值区说明全局候选阶段是必要的。}
+\includegraphics[width=0.96\textwidth]{q2_response_surface.pdf}
+\caption{Q2 在速度 $140$ m/s、即时投放截面上的响应面与穿过连续解的两条正交剖面。星号和橙点为连续精化方案，浅色带给出不低于峰值 $95\%$ 的局部高值区。}
 \label{fig:q2-surface}
 \end{figure}
 
@@ -340,7 +340,7 @@ D_1=9.448088-8.013006=1.435082\ \text{s}.
   \item 保留优良候选，转换为 $(\theta,v,t^r,\tau)$；
   \item 用无导数局部优化精化活动变量；
   \item 使用连续根重新计算区间，若约束违反非零则拒绝；
-  \item 对 8 个独立种子重复上述过程，报告最终值分布而非只报最好一次。
+  \item 对 8 个独立种子重复上述过程，报告收敛缺口、可行率、计算代价和终值一致性，而非只报最好一次。
 \end{enumerate}
 \end{algobox}
 
@@ -376,12 +376,12 @@ D_1=9.448088-8.013006=1.435082\ \text{s}.
 (T_{\min},T_{\mathrm{med}},T_{\max})
 =(4.832501802462559,\ 4.8325018024627795,\ 4.832501802462888)\ \text{s}.
 \]
-标准差为 $1.1782\times10^{-13}$ s，四分位距为 $1.5987\times10^{-13}$ s，最大约束违反量为 0。图\ref{fig:q2-multiseed}同时报告每代 best-so-far 轨迹和连续复算终值分布。该结果说明在当前参数化和精化器下，8 个起点收敛到同一活动面；它仍不是解析的全局最优证书。
+标准差为 $1.1782\times10^{-13}$ s，四分位距为 $1.5987\times10^{-13}$ s，最大约束违反量为 0。该离散已处于双精度数值噪声量级，因此图\ref{fig:q2-multiseed}不把它放大成箱线分布，而是报告每代 best-so-far 距连续终值的差、中位数/IQR 和函数评估次数。结果说明在当前参数化和精化器下，8 个起点收敛到同一活动面；它仍不是解析的全局最优证书。
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.86\textwidth]{q2_multiseed_stability.pdf}
-\caption{Q2 八个独立随机种子的逐代收敛轨迹与连续精化终值分布（$n=8$）。目标值离散处于双精度量级，所有运行约束违反量均为 0。}
+\includegraphics[width=0.96\textwidth]{q2_multiseed_stability.pdf}
+\caption{Q2 八个独立随机种子的收敛缺口与计算代价。A 用灰色单次轨迹及中位数/IQR 取代对浮点噪声的箱线放大；B 给出每次函数评估量，并确认 $8/8$ 可行、终值极差为 $3.3\times10^{-13}$ s。}
 \label{fig:q2-multiseed}
 \end{figure}
 
@@ -437,8 +437,8 @@ I_1=[4.807671,11.438782]\ \text{s},\qquad D_1=6.631110\ \text{s}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.86\textwidth]{q3_interval_union.pdf}
-\caption{Q3 三弹原始有效区间与去重并集。并集而非单弹时长和定义本问目标。}
+\includegraphics[width=0.96\textwidth]{q3_interval_union.pdf}
+\caption{Q3 三弹原始区间、逐弹端点、两处重叠与去重并集。图内算式显示单弹时长和扣除 $0.183$ s 重复覆盖后得到 $6.631$ s。}
 \label{fig:q3-union}
 \end{figure}
 
@@ -497,8 +497,8 @@ I_3&=[39.517183,45.428685]\ \text{s}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.86\textwidth]{q4_temporal_synergy.pdf}
-\caption{Q4 三架无人机的有效窗口及时间互补关系。三个主窗口互不重叠，联合目标没有重复计分。}
+\includegraphics[width=0.96\textwidth]{q4_temporal_synergy.pdf}
+\caption{Q4 三架无人机的有效窗口、两个内部空窗与并集摘要。三个主窗口互不重叠，故联合目标等于三段时长之和。}
 \label{fig:q4-synergy}
 \end{figure}
 
@@ -508,8 +508,8 @@ I_3&=[39.517183,45.428685]\ \text{s}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.92\textwidth]{q3_q4_multiseed_stability.pdf}
-\caption{Q3、Q4 五个独立种子的随机局部精化轨迹与连续复算终值分布。Q3 离散明显，Q4 多数种子停在同一平台；所有运行的最大约束违反量均为 0。}
+\includegraphics[width=0.98\textwidth]{q3_q4_multiseed_stability.pdf}
+\caption{Q3、Q4 五个独立种子的局部精化轨迹与连续终值点图。灰线为单种子，色线/带为中位数/IQR；右侧不对 $n=5$ 使用箱线图，并直接报告范围与标准差。}
 \label{fig:q34-multiseed}
 \end{figure}
 
@@ -542,8 +542,8 @@ Q5 共评估 1440 条航路，生成 1334 个可用候选，最终在多机组�
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.92\textwidth]{search_quality_diagnostics.pdf}
-\caption{Q3--Q5 的快速基线、候选粗评分、连续复算和搜索规模。不同评分层只用于展示数值迁移；连续复算值才是终稿值。}
+\includegraphics[width=0.98\textwidth]{search_quality_diagnostics.pdf}
+\caption{Q3--Q5 的相对基线改进与搜索记账。A 将各问基线归一为 $100\%$ 以避免量级压制；B 用对数点图分列候选、航路与保留包，三者仅作计算规模记录而不解释为漏斗。}
 \label{fig:search-quality}
 \end{figure}
 
@@ -592,8 +592,8 @@ FY5&120&130&3$\to$M2&19.977&21.063&2.6383\\
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.88\textwidth]{q5_xy_strategy.pdf}
-\caption{Q5 无人机航向、投放点与起爆点的平面投影。颜色区分指派导弹；同机三弹沿同一水平航向运动。}
+\includegraphics[width=0.98\textwidth]{q5_xy_strategy.pdf}
+\caption{Q5 空间策略的全局真比例总览与决策带纵向放大。图中同时给出无人机航迹、投放点、起爆点、导弹指派及同机弹序，颜色固定表示导弹。}
 \label{fig:q5-xy}
 \end{figure}
 
@@ -620,8 +620,8 @@ M3 & 13.8049 & 11.2263 & 18.68\\
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.96\textwidth]{q5_coverage_gantt.pdf}
-\caption{Q5 十五枚烟幕弹的有效区间、导弹归属与覆盖排程。同一导弹内部按并集计时，空白区域是当前方案未覆盖的时间段。}
+\includegraphics[width=0.98\textwidth]{q5_coverage_gantt.pdf}
+\caption{Q5 十五枚烟幕弹按导弹分组的有效区间与并集摘要行。标签中的弹序按每架无人机实际投放时刻生成；浅橙区标出各导弹内部最大空窗。}
 \label{fig:q5-gantt}
 \end{figure}
 
@@ -631,8 +631,8 @@ M3 & 13.8049 & 11.2263 & 18.68\\
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.78\textwidth]{q5_per_missile_robustness.pdf}
-\caption{Q5 同一策略在目标中心视线与完整圆柱口径下的分导弹配对审计。柱上数值来自同一次策略复算。}
+\includegraphics[width=0.94\textwidth]{q5_per_missile_robustness.pdf}
+\caption{Q5 同一策略在两种遮蔽口径下的配对敏感性审计。A 展示分导弹绝对损失和下降率，B 单列合计量，避免总量压缩分导弹差异。}
 \label{fig:q5-robustness}
 \end{figure}
 
@@ -646,8 +646,8 @@ M3 & 13.8049 & 11.2263 & 18.68\\
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.82\textwidth]{time_step_convergence.pdf}
-\caption{Q1、Q2 均匀计点法相对连续验根的绝对误差。横轴为扫描步长，纵轴为时长误差；连续值作为比较基准。}
+\includegraphics[width=0.90\textwidth]{time_step_convergence.pdf}
+\caption{Q1、Q2 均匀计点法相对连续验根的绝对误差。横轴向右表示网格加密，虚线为 $O(\Delta t)$ 参考，浅色区标识误差不超过 $0.01$ s。}
 \label{fig:time-convergence}
 \end{figure}
 
@@ -678,7 +678,7 @@ M3 & 13.8049 & 11.2263 & 18.68\\
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.88\textwidth]{criterion_sensitivity.pdf}
+\includegraphics[width=0.98\textwidth]{criterion_sensitivity.pdf}
 \caption{五问对遮蔽判据的敏感性。Q1、Q3--Q5 为同策略配对审计；Q2 为两个口径各自优化后的候选，图中单独标注其语义差异。}
 \label{fig:criterion-sensitivity}
 \end{figure}

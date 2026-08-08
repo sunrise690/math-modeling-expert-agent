@@ -1200,12 +1200,43 @@ def _verify_artifacts(
     figure_records = figure_manifest.get("figures", [])
     required_figure_fields = {
         "id", "claim_id", "subquestion", "files", "data_source", "axes", "units",
-        "caption", "interpretation", "paper_location", "sha256",
+        "caption", "interpretation", "paper_location", "figure_intent", "visual_qa", "sha256",
     }
+    if int(figure_manifest.get("schema_version", 0)) < 4 or not figure_manifest.get("design_system"):
+        malformed_figures.append("manifest:semantic-design-system")
     for record in figure_records:
         figure_id = str(record.get("id", "?"))
         if not required_figure_fields.issubset(record):
             malformed_figures.append(f"{figure_id}:fields")
+        intent = record.get("figure_intent", {})
+        semantic_layers = set(intent.get("semantic_layers", [])) if isinstance(intent, dict) else set()
+        if not isinstance(intent, dict) or not {
+            "template", "reader_takeaway", "semantic_layers", "comparison_semantics", "cannot_infer",
+        }.issubset(intent):
+            malformed_figures.append(f"{figure_id}:intent")
+        qa = record.get("visual_qa", {})
+        if (
+            not isinstance(qa, dict)
+            or float(qa.get("minimum_font_pt", 0.0)) < 7.0
+            or not 5.5 <= float(qa.get("final_width_in", 0.0)) <= 7.2
+            or bool(qa.get("figure_level_title", True))
+            or not bool(qa.get("vector_text_editable", False))
+            or not bool(qa.get("redundant_encoding", False))
+        ):
+            malformed_figures.append(f"{figure_id}:visual-qa")
+        required_layers_by_figure = {
+            "F3": {"zero_crossing", "interval", "entry_delay"},
+            "F5": {"median", "iqr", "evaluation_count", "feasibility"},
+            "F6": {"shot_index", "overlap", "union"},
+            "F7": {"gap", "union"},
+            "F9": {"release_position", "explosion_position", "shot_index", "missile_assignment"},
+            "F10": {"shot_index", "union", "largest_gap"},
+            "F11": {"absolute_loss", "relative_loss", "total"},
+            "F12": {"same_strategy_retention", "independent_optimization_boundary"},
+            "F13": {"reference_order", "tolerance_band"},
+        }
+        if not required_layers_by_figure.get(figure_id, set()).issubset(semantic_layers):
+            malformed_figures.append(f"{figure_id}:semantic-layers")
         files = record.get("files", [])
         if {Path(item).suffix.lower() for item in files} != {".png", ".pdf", ".svg"}:
             malformed_figures.append(f"{figure_id}:formats")
@@ -1235,7 +1266,7 @@ def _verify_artifacts(
         checks,
         "figure-manifest",
         len(figure_records) >= 12 and not missing_figures and not malformed_figures,
-        f"{len(figure_records)} 个证据图均登记主张、来源、单位、解释、哈希及 PNG/PDF/SVG；PNG≥300 dpi，SVG 保留文本",
+        f"{len(figure_records)} 个证据图均登记主张、语义图层、比较边界、最终字号、哈希及 PNG/PDF/SVG；PNG≥300 dpi，SVG 保留文本",
         "图件清单、文件或质量元数据不完整：" + ", ".join(missing_figures + malformed_figures),
     )
     return checks

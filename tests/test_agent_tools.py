@@ -286,6 +286,64 @@ class AgentToolsTests(unittest.TestCase):
         self.assertTrue(advanced <= dataset_types)
         self.assertIn("multi_panel", inline_types)
         self.assertNotIn("multi_panel", dataset_types)
+        expected_templates = {
+            "contest_paper",
+            "root_event_zoom",
+            "coverage_timeline",
+            "optimization_landscape",
+            "convergence_audit",
+            "paired_sensitivity",
+            "trajectory_geometry",
+        }
+        self.assertEqual(
+            set(definitions["create_plot"]["properties"]["template"]["enum"]),
+            expected_templates,
+        )
+        self.assertEqual(
+            set(definitions["create_plot_from_dataset"]["properties"]["template"]["enum"]),
+            expected_templates,
+        )
+        for field in (
+            "figure_intent",
+            "event_times",
+            "threshold",
+            "optimum",
+            "summarize_intervals",
+            "geometry_layers",
+        ):
+            self.assertIn(field, definitions["create_plot"]["properties"])
+            self.assertIn(field, definitions["create_plot_from_dataset"]["properties"])
+
+    def test_semantic_plot_template_returns_lint_and_exact_size(self) -> None:
+        result = self.registry.execute(
+            "create_plot",
+            {
+                "chart_type": "interval",
+                "template": "coverage_timeline",
+                "filename": "semantic-coverage",
+                "formats": ["png"],
+                "dpi": 300,
+                "figsize": [6.0, 3.0],
+                "x_label": "时间 (s)",
+                "figure_intent": {
+                    "claim": "多区间的并集包含重叠与空档",
+                    "source": "连续事件求根",
+                    "required_layers": ["union", "overlap", "gap"],
+                    "strict": True,
+                },
+                "series": [
+                    {"name": "事件 1", "intervals": [[0.0, 2.0]]},
+                    {"name": "事件 2", "intervals": [[1.0, 3.0]]},
+                    {"name": "事件 3", "intervals": [[4.0, 5.0]]},
+                ],
+            },
+            self.run_id,
+        )
+        self.assertTrue(result["figureLint"]["ok"])
+        self.assertEqual(result["template"], "coverage_timeline")
+        self.assertAlmostEqual(result["semanticSummary"]["unionDuration"], 4.0)
+        self.assertLessEqual(abs(result["actualSizeInches"]["width"] - 6.0) / 6.0, 0.05)
+        self.assertLessEqual(abs(result["actualSizeInches"]["height"] - 3.0) / 3.0, 0.05)
 
     def test_creates_advanced_modeling_panels_with_editable_vector_text(self) -> None:
         result = self.registry.execute(

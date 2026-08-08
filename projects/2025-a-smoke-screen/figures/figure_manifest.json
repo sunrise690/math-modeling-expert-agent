@@ -1,7 +1,14 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "run_id": "cumcm-2025a-20260808-r3",
   "generated_by": "src/generate_figures.py",
+  "design_system": {
+    "profile": "contest-paper-evidence-first",
+    "palette": "graphite + Okabe-Ito-derived semantic accents",
+    "title_policy": "paper captions carry titles; panels use A/B/C tags only",
+    "export": "exact physical size; 600 dpi PNG plus editable PDF/SVG",
+    "minimum_final_font_pt": 7.0
+  },
   "figures": [
     {
       "id": "F1",
@@ -18,10 +25,27 @@
       "caption": "五问共享运动学、连续事件、区间并集与证据审计链路。",
       "interpretation": "递进问题不是五套孤立模型。",
       "paper_location": "问题分析与技术路线",
+      "figure_intent": {
+        "template": "evidence_pipeline",
+        "reader_takeaway": "递进问题不是五套孤立模型。",
+        "semantic_layers": [
+          "module_dependency",
+          "feedback_loop"
+        ],
+        "comparison_semantics": "only like-for-like quantities share an axis",
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+      },
+      "visual_qa": {
+        "final_width_in": 6.2,
+        "minimum_font_pt": 7.0,
+        "figure_level_title": false,
+        "vector_text_editable": true,
+        "redundant_encoding": true
+      },
       "sha256": {
-        "figures/modeling_workflow.png": "89c2e5888d6a1bd3253567a5575963c6686a4b4a46503b521ff333c842bcad24",
-        "figures/modeling_workflow.pdf": "a5681631fcc8c78a0515f199aa2ef6499a6c48c660f93bad5a4b33b94df6be29",
-        "figures/modeling_workflow.svg": "632a1fef6299e35b95ae853861e0e9782c1b2fd476e0a8f2ad86894e77aa95d1"
+        "figures/modeling_workflow.png": "5ecd5e63d7d95c0bd860ca3f93095732e7bd22c17dc1e04dd56740a0ec04d5c2",
+        "figures/modeling_workflow.pdf": "6a86bd1653860e8be726d71e551833960b24791bbe891cccb6dbb6bebb92ffef",
+        "figures/modeling_workflow.svg": "d1f45de42cbb1fea5a16fc79e0cacb7665355beb9f6a682c118d112f78528dae"
       }
     },
     {
@@ -39,10 +63,29 @@
       "caption": "有限视线几何及烟幕截面的真实尺度关系。",
       "interpretation": "遮蔽由球心到有限线段的距离而非无限直线距离决定。",
       "paper_location": "统一遮蔽模型",
+      "figure_intent": {
+        "template": "trajectory_geometry",
+        "reader_takeaway": "遮蔽由球心到有限线段的距离而非无限直线距离决定。",
+        "semantic_layers": [
+          "finite_segment",
+          "nearest_point",
+          "smoke_radius",
+          "criterion_margin"
+        ],
+        "comparison_semantics": "only like-for-like quantities share an axis",
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+      },
+      "visual_qa": {
+        "final_width_in": 6.2,
+        "minimum_font_pt": 7.0,
+        "figure_level_title": false,
+        "vector_text_editable": true,
+        "redundant_encoding": true
+      },
       "sha256": {
-        "figures/finite_sightline_geometry.png": "f4c1ea3343e26b9da2981f4cd831d32be40e73de510b6db5417b9aaece65d466",
-        "figures/finite_sightline_geometry.pdf": "fbb6ff0ced70d0e5f1514a00ca0b90f0fec6652829824845be06114d6e7828a6",
-        "figures/finite_sightline_geometry.svg": "f7696ebd02a5cec1affdc00530a5777db47eb91bfecfe6083b81c3d4a0e88399"
+        "figures/finite_sightline_geometry.png": "d604a0baf950cd9b9824c915ceb9b5c8c76b11f19fddbd76f41e165bb30c46c3",
+        "figures/finite_sightline_geometry.pdf": "f053ee52085790afc4207790ef858cc5a6a6b850065a61ef356f0efb686fe6f1",
+        "figures/finite_sightline_geometry.svg": "8ed4a2094aaffc77d95ea637dc64fa9693097738c91e1120c5562befcfeed304"
       }
     },
     {
@@ -60,10 +103,29 @@
       "caption": "Q1 两种口径的连续裕度与有效区间。",
       "interpretation": "口径差异主要来自进入边界。",
       "paper_location": "问题一结果与检验",
+      "figure_intent": {
+        "template": "root_event_zoom",
+        "reader_takeaway": "口径差异主要来自进入边界。",
+        "semantic_layers": [
+          "zero_crossing",
+          "interval",
+          "entry_delay",
+          "duration_delta"
+        ],
+        "comparison_semantics": "only like-for-like quantities share an axis",
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+      },
+      "visual_qa": {
+        "final_width_in": 6.2,
+        "minimum_font_pt": 7.0,
+        "figure_level_title": false,
+        "vector_text_editable": true,
+        "redundant_encoding": true
+      },
       "sha256": {
-        "figures/q1_occlusion_intervals.png": "a2683048c1281695d7601ddbe431b785e870626fa17f48f4659e4f3e8f650ec8",
-        "figures/q1_occlusion_intervals.pdf": "33f5ad7aecaaebe2e39ef406e2dcdfa9f8697a56d81a808a74625773d5a139ca",
-        "figures/q1_occlusion_intervals.svg": "f175ccc9d97da3b1d6beb6c602429cfb83a79496e5809e057d0356de5d0b3a55"
+        "figures/q1_occlusion_intervals.png": "d29fd6724cea0c99db022d42b8cb12668f20d7130739bfaed07ba0103c021e5c",
+        "figures/q1_occlusion_intervals.pdf": "c9b3b1f89190a2e890f10641b79da06368b433dedb39f94928c8bbf7f35ae969",
+        "figures/q1_occlusion_intervals.svg": "1af3a98f25f627265c37bd3d5720255f51e38b3bf57976b4d27329b2de2e3a9e"
       }
     },
     {
@@ -81,10 +143,29 @@
       "caption": "固定速度与即时投放截面上的 Q2 目标函数地形。",
       "interpretation": "目标面具有零平台与狭窄高值区，支持全局候选后连续精化。",
       "paper_location": "问题二求解",
+      "figure_intent": {
+        "template": "optimization_landscape",
+        "reader_takeaway": "目标面具有零平台与狭窄高值区，支持全局候选后连续精化。",
+        "semantic_layers": [
+          "response_surface",
+          "optimum",
+          "orthogonal_slices",
+          "high_value_band"
+        ],
+        "comparison_semantics": "only like-for-like quantities share an axis",
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+      },
+      "visual_qa": {
+        "final_width_in": 6.2,
+        "minimum_font_pt": 7.0,
+        "figure_level_title": false,
+        "vector_text_editable": true,
+        "redundant_encoding": true
+      },
       "sha256": {
-        "figures/q2_response_surface.png": "cdc280b8fcfc91867ce309828a1e4590b100bbb705686c481e72f63b9f7a9404",
-        "figures/q2_response_surface.pdf": "76e7fa3dca01a4d952cd2558f23b78ae8192a57efb403f7de2452a3e4cebf3ff",
-        "figures/q2_response_surface.svg": "43f12e94f5fd1a83af4a17224361a7c56474004818d6df9bf59b31e0226dae41"
+        "figures/q2_response_surface.png": "91f1cd6aac295befab64323506ffefd18c7e14fe26fd9616159daf0623b57c7a",
+        "figures/q2_response_surface.pdf": "f9f199922815cd1ad0e901cef0bf83aaf2c6424f5bb5d28c80b884629dd9d118",
+        "figures/q2_response_surface.svg": "d9c9e7f110c069571ddf9caba1ad14266db604853583905bde6dbd6e6653f45d"
       }
     },
     {
@@ -97,15 +178,35 @@
         "figures/q2_multiseed_stability.svg"
       ],
       "data_source": "validation/q2_multiseed.json",
-      "axes": "迭代代数/best-so-far/连续终值偏差",
-      "units": "iteration,s,ps",
-      "caption": "8 个独立种子的逐代收敛轨迹与连续复算终值分布。",
-      "interpretation": "不同全局搜索起点均穿越零平台，连续精化终值在当前参数化下高度一致。",
+      "axes": "迭代代数/距终值差/函数评估量",
+      "units": "iteration,s,count",
+      "caption": "8 个独立种子的收敛缺口、中位数/IQR 与函数评估量。",
+      "interpretation": "8 次均可行且终值在数值容差内一致；皮秒级浮点噪声不作为统计分布放大。",
       "paper_location": "问题二稳定性检验",
+      "figure_intent": {
+        "template": "convergence_audit",
+        "reader_takeaway": "8 次均可行且终值在数值容差内一致；皮秒级浮点噪声不作为统计分布放大。",
+        "semantic_layers": [
+          "individual_trace",
+          "median",
+          "iqr",
+          "evaluation_count",
+          "feasibility"
+        ],
+        "comparison_semantics": "only like-for-like quantities share an axis",
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+      },
+      "visual_qa": {
+        "final_width_in": 6.2,
+        "minimum_font_pt": 7.0,
+        "figure_level_title": false,
+        "vector_text_editable": true,
+        "redundant_encoding": true
+      },
       "sha256": {
-        "figures/q2_multiseed_stability.png": "2c049686d53eaf0df7c0905267e3800dc392625e1beef55bc4dafbd674d771ca",
-        "figures/q2_multiseed_stability.pdf": "d5677132b35f0d57a82366a5bb85ad4ec7e42d24f49d3970d8e595c2ba9b9e69",
-        "figures/q2_multiseed_stability.svg": "4d07c6e58b6525365996309d476638b47a99ce4506faf2a7e36cf63004df49cd"
+        "figures/q2_multiseed_stability.png": "5b65a4cc875b6534cb7b51bbff96289c09c246d7010eaebd2993a4d4ee45ffda",
+        "figures/q2_multiseed_stability.pdf": "e59387b7fbb86338c52d36f175d373bfe887421abbf43a08694ab5ae6afbda7d",
+        "figures/q2_multiseed_stability.svg": "f3b37aab082cf492831773a5508c29e15328c06ad907c833704ce66cef6b8cf9"
       }
     },
     {
@@ -123,10 +224,29 @@
       "caption": "Q3 三弹原始区间及去重并集。",
       "interpretation": "6.8140 s 单弹和经重叠扣除后形成 6.6311 s 连续并集。",
       "paper_location": "问题三结果与检验",
+      "figure_intent": {
+        "template": "coverage_timeline",
+        "reader_takeaway": "6.8140 s 单弹和经重叠扣除后形成 6.6311 s 连续并集。",
+        "semantic_layers": [
+          "shot_index",
+          "interval",
+          "overlap",
+          "union"
+        ],
+        "comparison_semantics": "only like-for-like quantities share an axis",
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+      },
+      "visual_qa": {
+        "final_width_in": 6.2,
+        "minimum_font_pt": 7.0,
+        "figure_level_title": false,
+        "vector_text_editable": true,
+        "redundant_encoding": true
+      },
       "sha256": {
-        "figures/q3_interval_union.png": "3a1cc5b67e4567392dcb199622975f897bf7fd6a5d330cd13cb0209710a58324",
-        "figures/q3_interval_union.pdf": "8b53ad6f0291c51e6b9bbb97f36971f474c59a31ac9d0ca8ecf61c636de942bf",
-        "figures/q3_interval_union.svg": "27175e7e2d4348c506cc91970a7cfcf096d17165b1d66fd1d94c34eff82b83d0"
+        "figures/q3_interval_union.png": "8ae3e6dab66b519fc8e771615c582769fade0261dc3af2834c14bc9f8c141169",
+        "figures/q3_interval_union.pdf": "bbcf12eaab47baaccb8454a47c5e44c20e12147c4d72fb8d06fd818b0902d054",
+        "figures/q3_interval_union.svg": "6ea243bed6845e7c3756d232b2f492d24da7b02e3e45644e968c1df982ad6f64"
       }
     },
     {
@@ -144,10 +264,29 @@
       "caption": "Q4 三机时间窗的互补结构。",
       "interpretation": "三段互不重叠窗口使并集等于单弹时长之和。",
       "paper_location": "问题四结果与检验",
+      "figure_intent": {
+        "template": "coverage_timeline",
+        "reader_takeaway": "三段互不重叠窗口使并集等于单弹时长之和。",
+        "semantic_layers": [
+          "drone",
+          "interval",
+          "gap",
+          "union"
+        ],
+        "comparison_semantics": "only like-for-like quantities share an axis",
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+      },
+      "visual_qa": {
+        "final_width_in": 6.2,
+        "minimum_font_pt": 7.0,
+        "figure_level_title": false,
+        "vector_text_editable": true,
+        "redundant_encoding": true
+      },
       "sha256": {
-        "figures/q4_temporal_synergy.png": "85ad9f7476b1c33c426ebfb188ca02b01d3e09d2a6f9e96c62f9c4bf14ef87c6",
-        "figures/q4_temporal_synergy.pdf": "c24a96c6fc59f49738218c897da407c61562bc9f3fd63bcffd62f666be5249d8",
-        "figures/q4_temporal_synergy.svg": "837347d65e6f2f635e7c6e3e11330c427de70dd8989245d2a1b48167c483c92a"
+        "figures/q4_temporal_synergy.png": "faf8c06334cd36616089a1d90b21c5917bf7ee1e0210b07cdf15171d6a8ba772",
+        "figures/q4_temporal_synergy.pdf": "11c6e971c22932c526e01ff9392a39110665919e63005b98fc39c3cd94db74ca",
+        "figures/q4_temporal_synergy.svg": "07e070c0df91e671d3ae51f5fb5e476348fb909037996252121bacc6f5f3d116"
       }
     },
     {
@@ -160,15 +299,34 @@
         "figures/search_quality_diagnostics.svg"
       ],
       "data_source": "validation/q3_q5_independent.json",
-      "axes": "问题/目标值/候选规模",
-      "units": "s,count",
-      "caption": "Q3–Q5 基线、粗评、连续复算及搜索规模。",
-      "interpretation": "连续复算可纠正粗网格乐观偏差，且 Q3/Q5 相对基线取得提升。",
+      "axes": "相对基线/搜索记账量",
+      "units": "%,count",
+      "caption": "Q3–Q5 归一化质量迁移及对数搜索记账。",
+      "interpretation": "连续复算可纠正粗评偏差；候选、航路与保留包只作分项记账而非漏斗。",
       "paper_location": "组合搜索算法与质量标定",
+      "figure_intent": {
+        "template": "search_quality",
+        "reader_takeaway": "连续复算可纠正粗评偏差；候选、航路与保留包只作分项记账而非漏斗。",
+        "semantic_layers": [
+          "normalized_baseline",
+          "coarse_score",
+          "exact_score",
+          "search_accounting"
+        ],
+        "comparison_semantics": "only like-for-like quantities share an axis",
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+      },
+      "visual_qa": {
+        "final_width_in": 6.2,
+        "minimum_font_pt": 7.0,
+        "figure_level_title": false,
+        "vector_text_editable": true,
+        "redundant_encoding": true
+      },
       "sha256": {
-        "figures/search_quality_diagnostics.png": "71662126c513f0c8e954a3bccca20a8a07eebdba79a5819f43105579ede23ceb",
-        "figures/search_quality_diagnostics.pdf": "a5722b0f6e67b733177513021178ca22614c0f35ba7a9c0f885a5ba5e59001b3",
-        "figures/search_quality_diagnostics.svg": "04ede9e06207a97d777a2d09d9a61357571768275a6f7ea2245d0a01d79ec2f5"
+        "figures/search_quality_diagnostics.png": "3a120f75978f4d1049d16bd89c4dca196b6a5161f04f1a6e089fc63d1d666323",
+        "figures/search_quality_diagnostics.pdf": "17f44e1157e051372a3433e0100c3826d634ab29951ebe6e0b84af6eef01d812",
+        "figures/search_quality_diagnostics.svg": "c572ee19676dabed6376cae8ea5c411795ff474d72554ecef8f8f0f8672fa3f4"
       }
     },
     {
@@ -182,14 +340,35 @@
       ],
       "data_source": "validation/q3_q5_independent.json",
       "axes": "x/y 坐标",
-      "units": "m",
-      "caption": "Q5 无人机航向与起爆点平面投影。",
-      "interpretation": "同机三弹共享航向与速度。",
+      "units": "km",
+      "caption": "Q5 航迹、投放点、起爆点、目标指派与同机弹序。",
+      "interpretation": "同机三弹共享航向与速度，且投放层与起爆层均被显式绘制。",
       "paper_location": "问题五策略解释",
+      "figure_intent": {
+        "template": "trajectory_geometry",
+        "reader_takeaway": "同机三弹共享航向与速度，且投放层与起爆层均被显式绘制。",
+        "semantic_layers": [
+          "drone_start",
+          "route",
+          "release_position",
+          "explosion_position",
+          "shot_index",
+          "missile_assignment"
+        ],
+        "comparison_semantics": "only like-for-like quantities share an axis",
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+      },
+      "visual_qa": {
+        "final_width_in": 6.2,
+        "minimum_font_pt": 7.0,
+        "figure_level_title": false,
+        "vector_text_editable": true,
+        "redundant_encoding": true
+      },
       "sha256": {
-        "figures/q5_xy_strategy.png": "623eb80475502cb1c1ddf1ae13b9dfee4f2ed28bff1e34d87026fc4fd1596c69",
-        "figures/q5_xy_strategy.pdf": "c3d8cf5b58596ac5b7173f79ae7ab6f488e6392c671b6c9997d24056dd351a7a",
-        "figures/q5_xy_strategy.svg": "1875884880eb9529c60137263dcc76428fda0d032e5769199bf0fc3caaabae1f"
+        "figures/q5_xy_strategy.png": "c15c64872390410f21d1ed2330e9d3937dff5507fb8e6cb0488ee20660acb446",
+        "figures/q5_xy_strategy.pdf": "557873b02a226d1a438bca98479377b93cd5a0f28abf0ce90337adad9c5c96c1",
+        "figures/q5_xy_strategy.svg": "0d4edad4f38f3a2a0949b41b6dca284911a111421ee10dc059d3e72ac14a898a"
       }
     },
     {
@@ -202,15 +381,35 @@
         "figures/q5_coverage_gantt.svg"
       ],
       "data_source": "validation/q3_q5_independent.json",
-      "axes": "任务时刻/烟幕弹",
+      "axes": "任务时刻/烟幕弹/并集",
       "units": "s",
-      "caption": "Q5 的 15 枚烟幕弹有效区间排程。",
-      "interpretation": "M2、M3 仍有可利用空档，当前结果不构成上界。",
+      "caption": "Q5 的 15 枚烟幕弹、逐导弹并集与最大空窗。",
+      "interpretation": "并集摘要与内部空窗说明当前结果仍非上界；弹序按每机投放时刻生成。",
       "paper_location": "问题五覆盖结果",
+      "figure_intent": {
+        "template": "coverage_timeline",
+        "reader_takeaway": "并集摘要与内部空窗说明当前结果仍非上界；弹序按每机投放时刻生成。",
+        "semantic_layers": [
+          "shot_index",
+          "missile_group",
+          "interval",
+          "union",
+          "largest_gap"
+        ],
+        "comparison_semantics": "only like-for-like quantities share an axis",
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+      },
+      "visual_qa": {
+        "final_width_in": 6.2,
+        "minimum_font_pt": 7.0,
+        "figure_level_title": false,
+        "vector_text_editable": true,
+        "redundant_encoding": true
+      },
       "sha256": {
-        "figures/q5_coverage_gantt.png": "5a27634a637a7acd9de39ae0e1ca5f315f87cfab285120d52aed806c46c50e73",
-        "figures/q5_coverage_gantt.pdf": "0ba0fd4fa9534ef4bce2d80350a4c201be0da4c97a34daafa80fac85c7ba1333",
-        "figures/q5_coverage_gantt.svg": "725167b513d495dce8e31c2e609cebaad95a603f943f701d0d9be92f3b8173e0"
+        "figures/q5_coverage_gantt.png": "f564e9de66a7ff35ae44a977847f7a75de94dfeb3b29cfec04fadb0c648c743c",
+        "figures/q5_coverage_gantt.pdf": "e3dd33a3b1ce58c1322a2d8492923ad744fc196d1a01c9f0759f93e4b651d84a",
+        "figures/q5_coverage_gantt.svg": "594d711f4de4dbe85a29f55b572d38bc734285fd169732e5474cf5f0ac222edf"
       }
     },
     {
@@ -228,10 +427,29 @@
       "caption": "Q5 同一策略的双口径配对审计。",
       "interpretation": "保守口径降低绝对值但未改变导弹间排序。",
       "paper_location": "问题五保守审计",
+      "figure_intent": {
+        "template": "paired_sensitivity",
+        "reader_takeaway": "保守口径降低绝对值但未改变导弹间排序。",
+        "semantic_layers": [
+          "paired_value",
+          "absolute_loss",
+          "relative_loss",
+          "total"
+        ],
+        "comparison_semantics": "only like-for-like quantities share an axis",
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+      },
+      "visual_qa": {
+        "final_width_in": 6.2,
+        "minimum_font_pt": 7.0,
+        "figure_level_title": false,
+        "vector_text_editable": true,
+        "redundant_encoding": true
+      },
       "sha256": {
-        "figures/q5_per_missile_robustness.png": "1ea987196e5d86d153c5376e16b291a97af0e73272d174e5d71bdc9cb810ea2a",
-        "figures/q5_per_missile_robustness.pdf": "8df7c8d5ca8be19c9d24d163b805e33da4d894da0139f3d4bc6993ee08abfd54",
-        "figures/q5_per_missile_robustness.svg": "faf9ed81702322e1fb82105e6a925be5e96a3ac36ac4d18c2922c28b482cca5c"
+        "figures/q5_per_missile_robustness.png": "ae136c7d60f3289ced3d38fa9b33af671cc4e7220d7358b884616a3ad0ed220b",
+        "figures/q5_per_missile_robustness.pdf": "997651ae9ecd4e14730fce0782a6ef2cf496ab1cdec6a2fa161c99862c44f912",
+        "figures/q5_per_missile_robustness.svg": "1b14c6b654e10f150ff6157aafad27176483e77f33cccc4bf5084d5a7c6de246"
       }
     },
     {
@@ -244,15 +462,32 @@
         "figures/criterion_sensitivity.svg"
       ],
       "data_source": "validation/q1_q2_independent.json; validation/q3_q5_independent.json",
-      "axes": "问题/有效时长",
-      "units": "s",
-      "caption": "五问对遮蔽判据的敏感性。",
-      "interpretation": "Q4 和 Q5 的几何口径风险最高。",
+      "axes": "同策略保留率/Q2 独立优化时长",
+      "units": "%,s",
+      "caption": "同策略判据保留率与 Q2 独立优化结果的分面比较。",
+      "interpretation": "Q4 和 Q5 的几何口径风险最高；Q2 不得解释为同一策略前后损失。",
       "paper_location": "跨问题判据敏感性",
+      "figure_intent": {
+        "template": "paired_sensitivity",
+        "reader_takeaway": "Q4 和 Q5 的几何口径风险最高；Q2 不得解释为同一策略前后损失。",
+        "semantic_layers": [
+          "same_strategy_retention",
+          "independent_optimization_boundary"
+        ],
+        "comparison_semantics": "only like-for-like quantities share an axis",
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+      },
+      "visual_qa": {
+        "final_width_in": 6.2,
+        "minimum_font_pt": 7.0,
+        "figure_level_title": false,
+        "vector_text_editable": true,
+        "redundant_encoding": true
+      },
       "sha256": {
-        "figures/criterion_sensitivity.png": "6187f9057b5a2dea146a69fc97ff6a98a40490366401b6cc7c7680a112362713",
-        "figures/criterion_sensitivity.pdf": "3f7860ae05e7451b909ed870dd66d31d98d385a25c3f7972fba807485e972b0b",
-        "figures/criterion_sensitivity.svg": "3d1ecf3acd2e6ce5ecae85e3a55876a2d637f4bbb5f19072dfa55a57b96a6b72"
+        "figures/criterion_sensitivity.png": "2e569d7c059d9b3f8c15ef36b26805776985190fb713549e4c6e982b0404f1eb",
+        "figures/criterion_sensitivity.pdf": "aadd9fd21dbeea971188d93eb9869bdcfdb2417bb14a9ba7afeb3676bbd6340e",
+        "figures/criterion_sensitivity.svg": "ca1a3b35715a0ba337054a0c70cc26abe36ede7d3810e14d9fb0d7a1bdf7e43d"
       }
     },
     {
@@ -270,10 +505,29 @@
       "caption": "均匀计点法相对连续验根的离散误差。",
       "interpretation": "根精化消除了把采样分辨率直接当作报告精度的风险。",
       "paper_location": "数值收敛检验",
+      "figure_intent": {
+        "template": "convergence_audit",
+        "reader_takeaway": "根精化消除了把采样分辨率直接当作报告精度的风险。",
+        "semantic_layers": [
+          "step_size",
+          "absolute_error",
+          "reference_order",
+          "tolerance_band"
+        ],
+        "comparison_semantics": "only like-for-like quantities share an axis",
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+      },
+      "visual_qa": {
+        "final_width_in": 6.2,
+        "minimum_font_pt": 7.0,
+        "figure_level_title": false,
+        "vector_text_editable": true,
+        "redundant_encoding": true
+      },
       "sha256": {
-        "figures/time_step_convergence.png": "025e7e5bed5b6461e1cda1b0ec181d89d82ff6dcf61e37a0760de7fd80ad90f3",
-        "figures/time_step_convergence.pdf": "fa4933ca54a704a43621f49034daf8243b7cab2e522c07d9df3d8e5d64d4b38b",
-        "figures/time_step_convergence.svg": "eb8f18e414d77d8abbb1ece2d4e7979be2d6fd463638d556508e09c037d7a497"
+        "figures/time_step_convergence.png": "97049ad95dc2e6d8850cca6b494b2a2e8952e8ce9c65e3321bd3ef8063c545cc",
+        "figures/time_step_convergence.pdf": "75864c4a98968c2ef9fea47bb9c9a752b4cad5586267ae2069023b6172290da3",
+        "figures/time_step_convergence.svg": "f8193841b68008bb0cb747d980f535a1269250c6063aaac9b78994bdbc6f887c"
       }
     },
     {
@@ -286,15 +540,35 @@
         "figures/q3_q4_multiseed_stability.svg"
       ],
       "data_source": "validation/q3_q4_multiseed.json",
-      "axes": "局部精化迭代/best-so-far/连续终值",
+      "axes": "局部精化迭代/best-so-far/连续终值点",
       "units": "iteration,s",
-      "caption": "Q3/Q4 五个独立种子的局部精化轨迹与连续复算终值分布。",
-      "interpretation": "Q3 的种子离散明显大于 Q4，说明固定种子可复现不等于随机搜索稳定；本批最好可行值应被回写并重新核验。",
+      "caption": "Q3/Q4 五个种子的轨迹中位数/IQR 与连续终值点图。",
+      "interpretation": "Q3 的种子离散明显大于 Q4；$n=5$ 不使用箱线图制造分布感。",
       "paper_location": "问题三、四随机搜索检验",
+      "figure_intent": {
+        "template": "convergence_audit",
+        "reader_takeaway": "Q3 的种子离散明显大于 Q4；$n=5$ 不使用箱线图制造分布感。",
+        "semantic_layers": [
+          "individual_trace",
+          "median",
+          "iqr",
+          "terminal_points",
+          "sample_size"
+        ],
+        "comparison_semantics": "only like-for-like quantities share an axis",
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+      },
+      "visual_qa": {
+        "final_width_in": 6.2,
+        "minimum_font_pt": 7.0,
+        "figure_level_title": false,
+        "vector_text_editable": true,
+        "redundant_encoding": true
+      },
       "sha256": {
-        "figures/q3_q4_multiseed_stability.png": "5c73f43dd694b3709e9ac454af2f941f6324bdd22a1eb6c9aefe742411537804",
-        "figures/q3_q4_multiseed_stability.pdf": "17fefefee6a70206fc81903cb0ec344b33c7da46fc6f5ba629ee8431a7d3c258",
-        "figures/q3_q4_multiseed_stability.svg": "a91ad133b9705bb5b8f219565d478c3f395b676a6fa09e91928892fec9194b72"
+        "figures/q3_q4_multiseed_stability.png": "814afac61b0fd1d9a4743f07b7281c3c0af288156dadc1fc4643b7af0c6644ad",
+        "figures/q3_q4_multiseed_stability.pdf": "5d2a4c645b3935623ccc1f7ce7496e74806a2aa3223ab26117f20471d00ccdaa",
+        "figures/q3_q4_multiseed_stability.svg": "b130601f9eed6ce6e29b9f3ebfc52f81ad2d3f02c2d2cf5408a747f13475154a"
       }
     }
   ]

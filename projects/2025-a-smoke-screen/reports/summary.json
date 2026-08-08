@@ -151,16 +151,16 @@
         "problem",
         "stornprice"
       ],
-      "embedded_font_count": 52,
+      "embedded_font_count": 57,
       "fonts_fully_embedded": true,
-      "input_bundle_sha256": "1a7a707bc87ec338246831405fd91882d3c1fe73ce69113b7f8d1ecfeec59b40",
+      "input_bundle_sha256": "809f1c4447a8d10a33a0791ce94fbf08b02c7eff661708f514b6814ca6b3911c",
       "input_file_count": 53,
       "layout_warnings": [],
       "local_rendered_page_count": 23,
       "log_exists": true,
-      "log_sha256": "5a655f6e70c84ec92f6341067f860580a89a1a8792ddec679afeffb63eae18fb",
+      "log_sha256": "9ff9ed6454ba8a7bdacee36cdba2fb1d73c00f2a5dbc27463b54e7d7a8efe535",
       "manual_record_exists": true,
-      "manual_render_evidence": "tmp/final-qa6/page-01.png ... tmp/final-qa6/page-23.png；其中 22 页与上一轮逐页验收渲染像素一致，改文案的第 18 页已单页复核",
+      "manual_render_evidence": "tmp/final-visual-redesign-20260808-r5/page-01.png ... tmp/final-visual-redesign-20260808-r5/page-23.png；全部页面均由当前最终 PDF 在 140 dpi 下重新渲染",
       "manual_render_evidence_pass": true,
       "manual_review_type": "codex_page_by_page_visual",
       "manual_reviewed_at_local": "2026-08-08",
@@ -265,7 +265,7 @@
       ],
       "pdf_exists": true,
       "pdf_read_error": null,
-      "pdf_sha256": "c55cb78750490a4cbf0e61ac06d327a017f36caf20405b37428d1b001124c4e2",
+      "pdf_sha256": "eb184ca962258c338649831a709c9dbe471f7fdfdf92d9f082e9b65b5744a621",
       "reference_warnings": [],
       "references_pass": true,
       "technical_pass": true,
@@ -481,7 +481,7 @@
       },
       {
         "check_id": "figure-manifest",
-        "detail": "14 个证据图均登记主张、来源、单位、解释、哈希及 PNG/PDF/SVG；PNG≥300 dpi，SVG 保留文本",
+        "detail": "14 个证据图均登记主张、语义图层、比较边界、最终字号、哈希及 PNG/PDF/SVG；PNG≥300 dpi，SVG 保留文本",
         "status": "PASS"
       },
       {
@@ -496,7 +496,7 @@
       },
       {
         "check_id": "paper-pdf-technical",
-        "detail": "PDF 为 23 页 A4，52 个字体全部嵌入，日志无阻断型布局警告",
+        "detail": "PDF 为 23 页 A4，57 个字体全部嵌入，日志无阻断型布局警告",
         "status": "PASS"
       },
       {

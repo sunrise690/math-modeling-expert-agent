@@ -11,7 +11,7 @@
 | 稳健性/敏感性 | PASS_WITH_LIMITATIONS | 已检验重力、判据和完整圆柱；尚无 Q5 全局最优证书 |
 | 图件 | PASS | 14 个图各有 PNG/PDF/SVG、claim/source/unit/interpretation 与哈希；论文内图件需逐页视觉复核 |
 | 参考文献 | PASS | `main.tex` 有 8 个文献条目和 8 个对应引用键；日志无未定义引用 |
-| PDF 技术 QA | PASS | `main.pdf` 为 23 页 A4，52 个字体全部嵌入，日志无布局/构建错误；见 `reports/pdf_qa.md` |
+| PDF 技术 QA | PASS | `main.pdf` 为 23 页 A4，57 个字体全部嵌入，日志无布局/构建错误；见 `reports/pdf_qa.md` |
 | PDF 视觉 QA（逐页） | PASS | 审查者类型与当前 PDF SHA-256 绑定；不是由自动技术检查推断；见 `support/manual_pdf_qa.json` |
 | 最优性措辞 | PASS | Q5 固定为“经验证可行解”，且无多种子证据时禁止“稳定”“高质量”；所有无全局证明的问题均禁止全局最优措辞 |
 
