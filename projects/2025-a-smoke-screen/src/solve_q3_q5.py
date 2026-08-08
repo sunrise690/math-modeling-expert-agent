@@ -2,7 +2,8 @@
 
 Example
 -------
-    python -B src/solve_q3_q5.py --seed 20250808
+    python -B src/solve_q3_q5.py --seed 20250808 \
+        --q3-seed 20250810 --q4-seed 20250809 --q5-seed 20250808
 
 The official templates under ``source/`` are never edited.  Each run copies
 them to ``outputs/`` and fills only the designated data cells.
@@ -23,6 +24,11 @@ import numpy as np
 import openpyxl
 import scipy
 from openpyxl import load_workbook
+
+try:
+    from run_identity import RUN_ID
+except ImportError:  # pragma: no cover - package-style execution
+    from .run_identity import RUN_ID  # type: ignore
 
 try:
     from geometry_engine import (
@@ -436,17 +442,45 @@ def roundtrip_validate_workbook(
     }
 
 
+def resolve_problem_seeds(
+    seed: int,
+    *,
+    q3_seed: int | None = None,
+    q4_seed: int | None = None,
+    q5_seed: int | None = None,
+) -> dict[str, int]:
+    """Resolve per-problem seeds while retaining ``--seed`` compatibility."""
+
+    return {
+        "Q3": seed if q3_seed is None else q3_seed,
+        "Q4": seed if q4_seed is None else q4_seed,
+        "Q5": seed if q5_seed is None else q5_seed,
+    }
+
+
 def run_all(
-    *, seed: int, quick: bool, full_cylinder_audit: bool
+    *,
+    seed: int,
+    quick: bool,
+    full_cylinder_audit: bool,
+    q3_seed: int | None = None,
+    q4_seed: int | None = None,
+    q5_seed: int | None = None,
 ) -> tuple[dict[str, SolveResult], dict[str, object]]:
-    print(f"[Q3] solving (seed={seed}, quick={quick})", flush=True)
-    q3 = solve_q3(seed=seed, quick=quick)
+    problem_seeds = resolve_problem_seeds(
+        seed,
+        q3_seed=q3_seed,
+        q4_seed=q4_seed,
+        q5_seed=q5_seed,
+    )
+    print(f"[Q3] solving (seed={problem_seeds['Q3']}, quick={quick})", flush=True)
+    q3 = solve_q3(seed=problem_seeds["Q3"], quick=quick)
     print(f"[Q3] exact objective={q3.exact_objective:.9f}", flush=True)
-    print("[Q4] solving", flush=True)
-    q4 = solve_q4(seed=seed, quick=quick)
+    print(f"[Q4] solving (seed={problem_seeds['Q4']}, quick={quick})", flush=True)
+    q4 = solve_q4(seed=problem_seeds["Q4"], quick=quick)
     print(f"[Q4] exact objective={q4.exact_objective:.9f}", flush=True)
-    print("[Q5] solving", flush=True)
-    q5 = solve_q5(seed=seed, quick=quick)
+    print(f"[Q5] solving (seed={problem_seeds['Q5']}, quick={quick})", flush=True)
+    q5 = solve_q5(seed=problem_seeds["Q5"], quick=quick)
     print(f"[Q5] exact objective={q5.exact_objective:.9f}", flush=True)
     results = {"Q3": q3, "Q4": q4, "Q5": q5}
 
@@ -470,9 +504,11 @@ def run_all(
         SOURCE_DIR / "result3.xlsx",
     ]
     report: dict[str, object] = {
-        "schema_version": "1.0",
+        "schema_version": "1.1",
+        "run_id": RUN_ID,
         "scope": "Independent reproducible Q3-Q5 solver using only official source files and geometry_engine.py.",
         "random_seed": seed,
+        "random_seed_by_problem": problem_seeds,
         "quick_mode": quick,
         "model": {
             "target_centerline_point": list(DEFAULT_TARGET.center),
@@ -502,6 +538,8 @@ def run_all(
             for problem in workbooks
         },
         "reproduction_command": f"python -B src/solve_q3_q5.py --seed {seed}"
+        f" --q3-seed {problem_seeds['Q3']} --q4-seed {problem_seeds['Q4']}"
+        f" --q5-seed {problem_seeds['Q5']}"
         + (" --quick" if quick else ""),
         "optimality_disclaimer": (
             "All reported strategies are continuously verified feasible solutions. "
@@ -513,7 +551,15 @@ def run_all(
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--seed", type=int, default=DEFAULT_RANDOM_SEED)
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=DEFAULT_RANDOM_SEED,
+        help="Compatibility default used by any problem without an explicit per-problem seed.",
+    )
+    parser.add_argument("--q3-seed", type=int, default=None)
+    parser.add_argument("--q4-seed", type=int, default=None)
+    parser.add_argument("--q5-seed", type=int, default=None)
     parser.add_argument(
         "--quick", action="store_true", help="Use smaller route grids for a smoke test."
     )
@@ -529,6 +575,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parse_args(argv)
     _results, report = run_all(
         seed=args.seed,
+        q3_seed=args.q3_seed,
+        q4_seed=args.q4_seed,
+        q5_seed=args.q5_seed,
         quick=args.quick,
         full_cylinder_audit=not args.skip_full_cylinder_audit,
     )

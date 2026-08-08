@@ -3,41 +3,45 @@
     "Q3": {
       "convention": "continuous-time Brent roots with 96-azimuth/9-linear-node candidate generation and continuous boundary refinement on the complete cylinder; conservative secondary audit",
       "duration_by_missile": {
-        "M1": 6.332880277638777,
+        "M1": 6.541337540415638,
         "M2": 0.0,
         "M3": 0.0
       },
       "individual_durations": [
-        2.5240651580595337,
-        3.24150081696387,
-        2.3029238881739964
+        2.522033125687316,
+        2.433221772612133,
+        1.701515093753553
       ],
       "individual_intervals": [
         [
           [
-            4.886880547327722,
-            7.410945705387256
+            4.889895772597322,
+            7.411928898284638
           ]
         ],
         [
           [
-            6.964099932323202,
-            10.205600749287072
+            7.419477269546323,
+            9.852699042158456
           ]
         ],
         [
           [
-            8.916836936792503,
-            11.2197608249665
+            9.737266590521092,
+            11.438781684274645
           ]
         ]
       ],
-      "objective": 6.332880277638777,
+      "objective": 6.541337540415638,
       "union_by_missile": {
         "M1": [
           [
-            4.886880547327722,
-            11.2197608249665
+            4.889895772597322,
+            7.411928898284638
+          ],
+          [
+            7.419477269546323,
+            11.438781684274645
           ]
         ],
         "M2": [],
@@ -47,14 +51,14 @@
     "Q4": {
       "convention": "continuous-time Brent roots with 96-azimuth/9-linear-node candidate generation and continuous boundary refinement on the complete cylinder; conservative secondary audit",
       "duration_by_missile": {
-        "M1": 10.435489069432371,
+        "M1": 10.430630286040866,
         "M2": 0.0,
         "M3": 0.0
       },
       "individual_durations": [
         4.581264815928225,
         3.869128331301784,
-        1.9850959222023619
+        1.9802371388108568
       ],
       "individual_intervals": [
         [
@@ -71,12 +75,12 @@
         ],
         [
           [
-            41.78725453282,
-            43.77235045502236
+            41.61299118226259,
+            43.59322832107345
           ]
         ]
       ],
-      "objective": 10.435489069432371,
+      "objective": 10.430630286040866,
       "union_by_missile": {
         "M1": [
           [
@@ -88,8 +92,8 @@
             14.74108506390184
           ],
           [
-            41.78725453282,
-            43.77235045502236
+            41.61299118226259,
+            43.59322832107345
           ]
         ],
         "M2": [],
@@ -300,13 +304,18 @@
   },
   "optimality_disclaimer": "All reported strategies are continuously verified feasible solutions. Q5 is a restricted route-library/beam-search solution and is not claimed globally optimal.",
   "output_workbook_sha256": {
-    "result1.xlsx": "d0570ab80d2456aab1f9f50b87b0395fc98defc1f214379de3bd48e10dbd66db",
-    "result2.xlsx": "54ddabf6fc46345dee1c2f6d9ea071d0113c24c4fa5e75b8c8b9cd274effb28a",
-    "result3.xlsx": "783eb6c2b067abb56b7e2ab44898362118add6b0bf7b3fedb327aa08804589ad"
+    "result1.xlsx": "9650ff0b39cb00b2b28230196619c74edd985f493805f640646e911d41dda269",
+    "result2.xlsx": "7fee8c3eea2f6081768666297aaaf44db2260891992b62a7a9630daf7a3d6062",
+    "result3.xlsx": "a98a721eb0e72c0011fa98b29295559e0159f59da5b31c2fc3af87d1eff56772"
   },
   "quick_mode": false,
   "random_seed": 20250808,
-  "reproduction_command": "python -B src/solve_q3_q5.py --seed 20250808",
+  "random_seed_by_problem": {
+    "Q3": 20250810,
+    "Q4": 20250809,
+    "Q5": 20250808
+  },
+  "reproduction_command": "python -B src/solve_q3_q5.py --seed 20250808 --q3-seed 20250810 --q4-seed 20250809 --q5-seed 20250808",
   "results": {
     "Q3": {
       "diagnostics": {
@@ -322,37 +331,1969 @@
           "speed_lower": 0.0,
           "speed_upper": 0.0
         },
-        "exact_objective": 6.415210810901319,
+        "exact_objective": 6.631110247634764,
         "exact_union_by_missile": {
-          "M1": 6.415210810901319,
+          "M1": 6.631110247634764,
           "M2": 0.0,
           "M3": 0.0
         },
         "fast_baseline_objective": 3.599999999999998,
-        "fast_final_objective": 6.423911505102315,
+        "fast_final_objective": 6.641463179257595,
+        "local_refinement_candidate_exact_objective": 6.631110247630884,
+        "local_refinement_iterations": 320,
+        "local_refinement_seed": 20251111,
+        "local_refinement_start_exact_objective": 5.029084693000903,
+        "local_refinement_trace": [
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.0249999999999995,
+            "iteration": 0,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.0249999999999995,
+            "iteration": 1,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.0249999999999995,
+            "iteration": 2,
+            "proposal_max_constraint_violation": 0.23413504302286636
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.0249999999999995,
+            "iteration": 3,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.0249999999999995,
+            "iteration": 4,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.0249999999999995,
+            "iteration": 5,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.0249999999999995,
+            "iteration": 6,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.0249999999999995,
+            "iteration": 7,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.0249999999999995,
+            "iteration": 8,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.0249999999999995,
+            "iteration": 9,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.0249999999999995,
+            "iteration": 10,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.0249999999999995,
+            "iteration": 11,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.0249999999999995,
+            "iteration": 12,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.0249999999999995,
+            "iteration": 13,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.0249999999999995,
+            "iteration": 14,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.0249999999999995,
+            "iteration": 15,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.0249999999999995,
+            "iteration": 16,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.0249999999999995,
+            "iteration": 17,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.0249999999999995,
+            "iteration": 18,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": true,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 19,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 20,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 21,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 22,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 23,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 24,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 25,
+            "proposal_max_constraint_violation": 0.03944598064273963
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 26,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 27,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 28,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 29,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 30,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 31,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 32,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 33,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 34,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 35,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 36,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 37,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 38,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 39,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 40,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 41,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 42,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 43,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 44,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 45,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 46,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 47,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 48,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 49,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 50,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 51,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 52,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 53,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 54,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 55,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 56,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.182703654769489,
+            "iteration": 57,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": true,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 58,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 59,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 60,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 61,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 62,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 63,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 64,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 65,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 66,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 67,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 68,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 69,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 70,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 71,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 72,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 73,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 74,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 75,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 76,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 77,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 78,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 79,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 80,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 81,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 82,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 83,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 84,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 85,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 86,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 87,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 88,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.207703654769491,
+            "iteration": 89,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": true,
+            "best_fast_objective_s": 5.2804288033234545,
+            "iteration": 90,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.2804288033234545,
+            "iteration": 91,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.2804288033234545,
+            "iteration": 92,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.2804288033234545,
+            "iteration": 93,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.2804288033234545,
+            "iteration": 94,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.2804288033234545,
+            "iteration": 95,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.2804288033234545,
+            "iteration": 96,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.2804288033234545,
+            "iteration": 97,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.2804288033234545,
+            "iteration": 98,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.2804288033234545,
+            "iteration": 99,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": true,
+            "best_fast_objective_s": 5.341673781380283,
+            "iteration": 100,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.341673781380283,
+            "iteration": 101,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.341673781380283,
+            "iteration": 102,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.341673781380283,
+            "iteration": 103,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": true,
+            "best_fast_objective_s": 5.454045010625736,
+            "iteration": 104,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.454045010625736,
+            "iteration": 105,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.454045010625736,
+            "iteration": 106,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.454045010625736,
+            "iteration": 107,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": true,
+            "best_fast_objective_s": 5.702319263917534,
+            "iteration": 108,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.702319263917534,
+            "iteration": 109,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.702319263917534,
+            "iteration": 110,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.702319263917534,
+            "iteration": 111,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.702319263917534,
+            "iteration": 112,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.702319263917534,
+            "iteration": 113,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.702319263917534,
+            "iteration": 114,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.702319263917534,
+            "iteration": 115,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.702319263917534,
+            "iteration": 116,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.702319263917534,
+            "iteration": 117,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.702319263917534,
+            "iteration": 118,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.702319263917534,
+            "iteration": 119,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.702319263917534,
+            "iteration": 120,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.702319263917534,
+            "iteration": 121,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.702319263917534,
+            "iteration": 122,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.702319263917534,
+            "iteration": 123,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.702319263917534,
+            "iteration": 124,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.702319263917534,
+            "iteration": 125,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.702319263917534,
+            "iteration": 126,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.702319263917534,
+            "iteration": 127,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": true,
+            "best_fast_objective_s": 5.7273192639175345,
+            "iteration": 128,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.7273192639175345,
+            "iteration": 129,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.7273192639175345,
+            "iteration": 130,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.7273192639175345,
+            "iteration": 131,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.7273192639175345,
+            "iteration": 132,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.7273192639175345,
+            "iteration": 133,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.7273192639175345,
+            "iteration": 134,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.7273192639175345,
+            "iteration": 135,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.7273192639175345,
+            "iteration": 136,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.7273192639175345,
+            "iteration": 137,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.7273192639175345,
+            "iteration": 138,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.7273192639175345,
+            "iteration": 139,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.7273192639175345,
+            "iteration": 140,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.7273192639175345,
+            "iteration": 141,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": true,
+            "best_fast_objective_s": 5.792653405969478,
+            "iteration": 142,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.792653405969478,
+            "iteration": 143,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.792653405969478,
+            "iteration": 144,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.792653405969478,
+            "iteration": 145,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.792653405969478,
+            "iteration": 146,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": true,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 147,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 148,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 149,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 150,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 151,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 152,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 153,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 154,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 155,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 156,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 157,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 158,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 159,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 160,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 161,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 162,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 163,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 164,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 165,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 166,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 167,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 168,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 169,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 170,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 171,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 172,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 173,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 174,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 175,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 176,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 5.9231858245468745,
+            "iteration": 177,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": true,
+            "best_fast_objective_s": 6.036562338752154,
+            "iteration": 178,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.036562338752154,
+            "iteration": 179,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.036562338752154,
+            "iteration": 180,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.036562338752154,
+            "iteration": 181,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.036562338752154,
+            "iteration": 182,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.036562338752154,
+            "iteration": 183,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.036562338752154,
+            "iteration": 184,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.036562338752154,
+            "iteration": 185,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.036562338752154,
+            "iteration": 186,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.036562338752154,
+            "iteration": 187,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.036562338752154,
+            "iteration": 188,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.036562338752154,
+            "iteration": 189,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": true,
+            "best_fast_objective_s": 6.109951521355733,
+            "iteration": 190,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.109951521355733,
+            "iteration": 191,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.109951521355733,
+            "iteration": 192,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.109951521355733,
+            "iteration": 193,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.109951521355733,
+            "iteration": 194,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.109951521355733,
+            "iteration": 195,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.109951521355733,
+            "iteration": 196,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.109951521355733,
+            "iteration": 197,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.109951521355733,
+            "iteration": 198,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.109951521355733,
+            "iteration": 199,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.109951521355733,
+            "iteration": 200,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.109951521355733,
+            "iteration": 201,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.109951521355733,
+            "iteration": 202,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.109951521355733,
+            "iteration": 203,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.109951521355733,
+            "iteration": 204,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.109951521355733,
+            "iteration": 205,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.109951521355733,
+            "iteration": 206,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.109951521355733,
+            "iteration": 207,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.109951521355733,
+            "iteration": 208,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.109951521355733,
+            "iteration": 209,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": true,
+            "best_fast_objective_s": 6.262231073563458,
+            "iteration": 210,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.262231073563458,
+            "iteration": 211,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.262231073563458,
+            "iteration": 212,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.262231073563458,
+            "iteration": 213,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.262231073563458,
+            "iteration": 214,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.262231073563458,
+            "iteration": 215,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.262231073563458,
+            "iteration": 216,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.262231073563458,
+            "iteration": 217,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.262231073563458,
+            "iteration": 218,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.262231073563458,
+            "iteration": 219,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": true,
+            "best_fast_objective_s": 6.362231073563458,
+            "iteration": 220,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.362231073563458,
+            "iteration": 221,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.362231073563458,
+            "iteration": 222,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.362231073563458,
+            "iteration": 223,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": true,
+            "best_fast_objective_s": 6.535532813895948,
+            "iteration": 224,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.535532813895948,
+            "iteration": 225,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.535532813895948,
+            "iteration": 226,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.535532813895948,
+            "iteration": 227,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.535532813895948,
+            "iteration": 228,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.535532813895948,
+            "iteration": 229,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.535532813895948,
+            "iteration": 230,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.535532813895948,
+            "iteration": 231,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.535532813895948,
+            "iteration": 232,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.535532813895948,
+            "iteration": 233,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.535532813895948,
+            "iteration": 234,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.535532813895948,
+            "iteration": 235,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.535532813895948,
+            "iteration": 236,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": true,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 237,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 238,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 239,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 240,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 241,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 242,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 243,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 244,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 245,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 246,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 247,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 248,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 249,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 250,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 251,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 252,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 253,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 254,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 255,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 256,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 257,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 258,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 259,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 260,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 261,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 262,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 263,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 264,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 265,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 266,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.560532813895948,
+            "iteration": 267,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": true,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 268,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 269,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 270,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 271,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 272,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 273,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 274,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 275,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 276,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 277,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 278,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 279,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 280,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 281,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 282,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 283,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 284,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 285,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 286,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 287,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 288,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 289,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 290,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 291,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 292,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 293,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 294,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 295,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 296,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 297,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 298,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 299,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 300,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 301,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 302,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 303,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.611794678038751,
+            "iteration": 304,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": true,
+            "best_fast_objective_s": 6.6344922060294245,
+            "iteration": 305,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.6344922060294245,
+            "iteration": 306,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.6344922060294245,
+            "iteration": 307,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.6344922060294245,
+            "iteration": 308,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.6344922060294245,
+            "iteration": 309,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.6344922060294245,
+            "iteration": 310,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.6344922060294245,
+            "iteration": 311,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.6344922060294245,
+            "iteration": 312,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": true,
+            "best_fast_objective_s": 6.641463179257595,
+            "iteration": 313,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.641463179257595,
+            "iteration": 314,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.641463179257595,
+            "iteration": 315,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.641463179257595,
+            "iteration": 316,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.641463179257595,
+            "iteration": 317,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.641463179257595,
+            "iteration": 318,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.641463179257595,
+            "iteration": 319,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 6.641463179257595,
+            "iteration": 320,
+            "proposal_max_constraint_violation": 0.0
+          }
+        ],
         "max_constraint_violation": 0.0,
         "method": "route grid + aligned candidate beam + seeded local refinement",
         "notes": [
           "Aligned-candidate surrogate score=0.394486990; fast baseline is the 0.04 s centreline-grid union.",
-          "Top approximate packages were re-ranked by continuous intervals; local exact score=6.415210811."
+          "Top approximate packages were re-ranked by continuous intervals; local exact score=6.631110248."
         ],
-        "optimality_claim": "Best verified solution found by the deterministic search; no global proof.",
+        "optimality_claim": "Best verified solution found by the seeded search; no global proof.",
         "packages_retained": 47,
         "routes_evaluated": 1001,
-        "seed": 20250808,
+        "seed": 20250810,
         "status": "feasible_verified"
       },
       "exact_centerline_duration_by_missile": {
-        "M1": 6.415210810901319,
+        "M1": 6.631110247634764,
         "M2": 0.0,
         "M3": 0.0
       },
-      "exact_centerline_objective": 6.415210810901319,
+      "exact_centerline_objective": 6.631110247634764,
       "exact_centerline_union": {
         "M1": [
           [
-            4.804550014065174,
-            11.219760824966492
+            4.807671436639712,
+            11.438781684274476
           ]
         ],
         "M2": [],
@@ -362,83 +2303,83 @@
         {
           "anchor_time": null,
           "drone_id": "FY1",
-          "exact_centerline_duration": 2.6063956913220805,
+          "exact_centerline_duration": 2.604257461644922,
           "exact_centerline_intervals": [
             [
-              4.804550014065174,
-              7.410945705387254
+              4.807671436639712,
+              7.411928898284634
             ]
           ],
           "explosion_position": [
-            17797.70433159744,
-            0.005929614643422495,
-            1799.9992351844212
+            17797.41416630796,
+            0.019127375969288526,
+            1799.9997450701403
           ],
-          "explosion_time": 0.017925431690187385,
-          "fuse_delay": 0.01249339073317177,
-          "heading_deg": 179.85200774759872,
+          "explosion_time": 0.020803411263494685,
+          "fuse_delay": 0.007212939897453312,
+          "heading_deg": 179.57619164280908,
           "missile_id": "M1",
           "release_position": [
-            17799.304331131214,
-            0.0017968833420074707,
+            17798.310724221912,
+            0.012495549509915113,
             1800.0
           ],
-          "release_time": 0.005432040957015615,
-          "speed": 128.06810459000675
+          "release_time": 0.013590471366041374,
+          "speed": 124.30194263754106
         },
         {
           "anchor_time": null,
           "drone_id": "FY1",
-          "exact_centerline_duration": 3.3517683797917934,
+          "exact_centerline_duration": 2.5082516006466617,
           "exact_centerline_intervals": [
             [
-              6.85383236949535,
-              10.205600749287143
+              7.344447441521248,
+              9.85269904216791
             ]
           ],
           "explosion_position": [
-            16962.290660049806,
-            2.163767887191465,
-            1702.0676687164948
+            17066.67279708547,
+            5.424411152901882,
+            1720.831402830285
           ],
-          "explosion_time": 6.54114572155142,
-          "fuse_delay": 4.47059168990618,
-          "heading_deg": 179.85200774759872,
+          "explosion_time": 5.89972488946181,
+          "fuse_delay": 4.019559250122826,
+          "heading_deg": 179.57619164280908,
           "missile_id": "M1",
           "release_position": [
-            17534.828954281522,
-            0.684925625125224,
+            17566.298152007857,
+            1.7286893294889971,
             1800.0
           ],
-          "release_time": 2.0705540316452398,
-          "speed": 128.06810459000675
+          "release_time": 1.880165639338984,
+          "speed": 124.30194263754106
         },
         {
           "anchor_time": null,
           "drone_id": "FY1",
-          "exact_centerline_duration": 2.3029238881739893,
+          "exact_centerline_duration": 1.7015150937533843,
           "exact_centerline_intervals": [
             [
-              8.916836936792503,
-              11.219760824966492
+              9.737266590521092,
+              11.438781684274476
             ]
           ],
           "explosion_position": [
-            16658.041403946536,
-            2.949630881266809,
-            1665.7802110696778
+            16589.67195815951,
+            8.952779745161948,
+            1664.894866776935
           ],
-          "explosion_time": 8.916836936792503,
-          "fuse_delay": 5.233717002212616,
-          "heading_deg": 179.85200774759872,
+          "explosion_time": 9.737266590521092,
+          "fuse_delay": 5.250950025278515,
+          "heading_deg": 179.57619164280908,
           "missile_id": "M1",
           "release_position": [
-            17328.311384473705,
-            1.21835179620926,
+            17242.357391264974,
+            4.124874645497287,
             1800.0
           ],
-          "release_time": 3.6831199345798864,
-          "speed": 128.06810459000675
+          "release_time": 4.486316565242577,
+          "speed": 124.30194263754106
         }
       ],
       "problem": "Q3"
@@ -457,32 +2398,1724 @@
           "speed_lower": 0.0,
           "speed_upper": 0.0
         },
-        "exact_objective": 15.736598187500483,
+        "exact_objective": 15.774625235050912,
         "exact_union_by_missile": {
-          "M1": 15.736598187500483,
+          "M1": 15.774625235050912,
           "M2": 0.0,
           "M3": 0.0
         },
         "fast_baseline_objective": 15.760000000000009,
-        "fast_final_objective": 15.750000000000005,
+        "fast_final_objective": 15.800000000000002,
+        "local_refinement_candidate_exact_objective": 15.774625235050454,
+        "local_refinement_iterations": 280,
+        "local_refinement_seed": 20251210,
+        "local_refinement_start_exact_objective": 15.736598187482347,
+        "local_refinement_trace": [
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 0,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 1,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 2,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 3,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 4,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 5,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 6,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 7,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 8,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 9,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 10,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 11,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 12,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 13,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 14,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 15,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 16,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 17,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 18,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 19,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 20,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 21,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 22,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 23,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 24,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 25,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 26,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 27,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 28,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 29,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 30,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 31,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 32,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 33,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 34,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 35,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 36,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 37,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 38,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 39,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 40,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 41,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 42,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 43,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 44,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 45,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 46,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 47,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 48,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 49,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 50,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 51,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 52,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 53,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 54,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 55,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 56,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 57,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 58,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 59,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 60,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 61,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 62,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 63,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 64,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 65,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 66,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 67,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 68,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 69,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 70,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 71,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 72,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 73,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 74,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 75,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 76,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 77,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 78,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 79,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 80,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 81,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 82,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 83,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 84,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 85,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 86,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 87,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 88,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 89,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 90,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 91,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 92,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 93,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 94,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 95,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 96,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 97,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 98,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 99,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 100,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 101,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 102,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 103,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 104,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 105,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 106,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 107,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 108,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 109,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 110,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 111,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 112,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 113,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 114,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 115,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 116,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 117,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 118,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 119,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 120,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 121,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 122,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 123,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 124,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 125,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 126,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 127,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 128,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 129,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 130,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 131,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 132,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 133,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 134,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 135,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 136,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 137,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 138,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 139,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 140,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 141,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 142,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 143,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 144,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 145,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 146,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 147,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 148,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 149,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 150,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 151,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 152,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 153,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 154,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 155,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 156,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 157,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 158,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 159,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 160,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 161,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 162,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 163,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 164,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 165,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 166,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 167,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 168,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 169,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 170,
+            "proposal_max_constraint_violation": null
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 171,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 172,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 173,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 174,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 175,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 176,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 177,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 178,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 179,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 180,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 181,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 182,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 183,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 184,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 185,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 186,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 187,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 188,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 189,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 190,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 191,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 192,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 193,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 194,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 195,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 196,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 197,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 198,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 199,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 200,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 201,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 202,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 203,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 204,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 205,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 206,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 207,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 208,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 209,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 210,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 211,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 212,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 213,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 214,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 215,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 216,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 217,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 218,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 219,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 220,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 221,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 222,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 223,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 224,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 225,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 226,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 227,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 228,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 229,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 230,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 231,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 232,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 233,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 234,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 235,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 236,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 237,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 238,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 239,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 240,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 241,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 242,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 243,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 244,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 245,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 246,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.750000000000005,
+            "iteration": 247,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": true,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 248,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 249,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 250,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 251,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 252,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 253,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 254,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 255,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 256,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 257,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 258,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 259,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 260,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 261,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 262,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 263,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 264,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 265,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 266,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 267,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 268,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 269,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 270,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 271,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 272,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 273,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 274,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 275,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 276,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 277,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 278,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 279,
+            "proposal_max_constraint_violation": 0.0
+          },
+          {
+            "accepted_improvement": false,
+            "best_fast_objective_s": 15.800000000000002,
+            "iteration": 280,
+            "proposal_max_constraint_violation": 0.0
+          }
+        ],
         "max_constraint_violation": 0.0,
         "method": "temporally diverse single-bomb pools + cross-UAV coverage beam",
         "notes": [
           "Pool surrogate score=15.758567379; fast baseline is the 0.04 s centreline-grid union.",
-          "Temporal pools prevent three independent single-bomb maxima from overlapping; local exact score=15.736598187."
+          "Temporal pools prevent three independent single-bomb maxima from overlapping; local exact score=15.774625235."
         ],
-        "optimality_claim": "Best verified solution found by the deterministic search; no global proof.",
+        "optimality_claim": "Best verified solution found by the seeded search; no global proof.",
         "packages_retained": 360,
         "routes_evaluated": 1728,
-        "seed": 20250808,
+        "seed": 20250809,
         "status": "feasible_verified"
       },
       "exact_centerline_duration_by_missile": {
-        "M1": 15.736598187500483,
+        "M1": 15.774625235050912,
         "M2": 0.0,
         "M3": 0.0
       },
-      "exact_centerline_objective": 15.736598187500483,
+      "exact_centerline_objective": 15.774625235050912,
       "exact_centerline_union": {
         "M1": [
           [
@@ -494,8 +4127,8 @@
             15.266823279625372
           ],
           [
-            39.75053738733984,
-            45.62401260169244
+            39.51718316333589,
+            45.428685425238925
           ]
         ],
         "M2": [],
@@ -557,30 +4190,30 @@
           "speed": 140.0
         },
         {
-          "anchor_time": 42.772671550777204,
+          "anchor_time": null,
           "drone_id": "FY3",
-          "exact_centerline_duration": 5.873475214352602,
+          "exact_centerline_duration": 5.911502261903031,
           "exact_centerline_intervals": [
             [
-              39.75053738733984,
-              45.62401260169244
+              39.51718316333589,
+              45.428685425238925
             ]
           ],
           "explosion_position": [
-            1488.7249040894494,
-            158.82882909429748,
-            163.14872578863412
+            1483.1772274924433,
+            158.9477567046382,
+            161.63047638010482
           ],
-          "explosion_time": 39.3375,
-          "fuse_delay": 10.467162200564765,
-          "heading_deg": 145.0,
+          "explosion_time": 39.370453341534756,
+          "fuse_delay": 10.481952649721283,
+          "heading_deg": 145.03206436209862,
           "missile_id": "M1",
           "release_position": [
-            2689.112528119042,
-            -681.6916340248658,
+            2685.73189502174,
+            -682.087537491202,
             700.0
           ],
-          "release_time": 28.870337799435234,
+          "release_time": 28.88850069181347,
           "speed": 140.0
         }
       ],
@@ -608,6 +4241,11 @@
         },
         "fast_baseline_objective": 51.37000000000002,
         "fast_final_objective": 53.06000000000002,
+        "local_refinement_candidate_exact_objective": 0.0,
+        "local_refinement_iterations": 0,
+        "local_refinement_seed": null,
+        "local_refinement_start_exact_objective": 0.0,
+        "local_refinement_trace": [],
         "max_constraint_violation": 0.0,
         "method": "route-consistent package generation + multi-UAV assignment beam",
         "notes": [
@@ -616,7 +4254,7 @@
           "The restricted package beam jointly assigns bombs to M1/M2/M3 and enforces release gaps.",
           "Result is a reproducible feasible baseline, not a global optimum certificate."
         ],
-        "optimality_claim": "High-quality feasible solution from a deterministic restricted route library; no global optimality proof.",
+        "optimality_claim": "Verified feasible solution from a deterministic restricted route library; no global optimality proof.",
         "packages_retained": 35,
         "routes_evaluated": 1440,
         "seed": 20250808,
@@ -1098,13 +4736,14 @@
       "problem": "Q5"
     }
   },
+  "run_id": "cumcm-2025a-20260808-r3",
   "runtime": {
     "numpy": "2.4.6",
     "openpyxl": "3.1.5",
     "python": "3.14.5",
     "scipy": "1.18.0"
   },
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "scope": "Independent reproducible Q3-Q5 solver using only official source files and geometry_engine.py.",
   "source_sha256": {
     "A题.pdf": "a37f6aad30b16ea09da9cb320ce194b12d3a28874008cf9ff19549f6c6079447",
@@ -1127,10 +4766,10 @@
       },
       "max_constraint_violation": 0.0,
       "max_reconstructed_coordinate_error_m": 3.637978807091713e-12,
-      "max_row_duration_error_s": 1.3371526108585385e-12,
-      "objective_error_s": 1.149302875091962e-12,
-      "recomputed_objective": 6.415210810902468,
-      "reference_objective": 6.415210810901319,
+      "max_row_duration_error_s": 9.048317650695026e-12,
+      "objective_error_s": 3.852917984659143e-12,
+      "recomputed_objective": 6.631110247630911,
+      "reference_objective": 6.631110247634764,
       "rows_parsed": 3
     },
     "Q4": {
@@ -1147,10 +4786,10 @@
       },
       "max_constraint_violation": 0.0,
       "max_reconstructed_coordinate_error_m": 3.637978807091713e-12,
-      "max_row_duration_error_s": 1.8978596472152276e-11,
-      "objective_error_s": 1.828759366162558e-11,
-      "recomputed_objective": 15.736598187482196,
-      "reference_objective": 15.736598187500483,
+      "max_row_duration_error_s": 1.2789769243681803e-12,
+      "objective_error_s": 5.879741138414829e-13,
+      "recomputed_objective": 15.774625235050324,
+      "reference_objective": 15.774625235050912,
       "rows_parsed": 3
     },
     "Q5": {

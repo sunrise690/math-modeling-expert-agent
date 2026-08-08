@@ -35,37 +35,37 @@
     "Q3": {
       "feasibility_status": "feasible_verified",
       "full_cylinder_secondary_by_missile_s": {
-        "M1": 6.332880277638777,
+        "M1": 6.541337540415638,
         "M2": 0.0,
         "M3": 0.0
       },
-      "full_cylinder_secondary_objective_s": 6.332880277638777,
+      "full_cylinder_secondary_objective_s": 6.541337540415638,
       "maximum_constraint_violation": 0.0,
-      "optimality_claim": "Best verified solution found by the deterministic search; no global proof.",
+      "optimality_claim": "Best verified solution found by the seeded search; no global proof.",
       "primary_centerline_by_missile_s": {
-        "M1": 6.415210810901319,
+        "M1": 6.631110247634764,
         "M2": 0.0,
         "M3": 0.0
       },
-      "primary_centerline_objective_s": 6.415210810901319,
+      "primary_centerline_objective_s": 6.631110247634764,
       "search_method": "route grid + aligned candidate beam + seeded local refinement"
     },
     "Q4": {
       "feasibility_status": "feasible_verified",
       "full_cylinder_secondary_by_missile_s": {
-        "M1": 10.435489069432371,
+        "M1": 10.430630286040866,
         "M2": 0.0,
         "M3": 0.0
       },
-      "full_cylinder_secondary_objective_s": 10.435489069432371,
+      "full_cylinder_secondary_objective_s": 10.430630286040866,
       "maximum_constraint_violation": 0.0,
-      "optimality_claim": "Best verified solution found by the deterministic search; no global proof.",
+      "optimality_claim": "Best verified solution found by the seeded search; no global proof.",
       "primary_centerline_by_missile_s": {
-        "M1": 15.736598187500483,
+        "M1": 15.774625235050912,
         "M2": 0.0,
         "M3": 0.0
       },
-      "primary_centerline_objective_s": 15.736598187500483,
+      "primary_centerline_objective_s": 15.774625235050912,
       "search_method": "temporally diverse single-bomb pools + cross-UAV coverage beam"
     },
     "Q5": {
@@ -77,7 +77,7 @@
       },
       "full_cylinder_secondary_objective_s": 41.35506419398516,
       "maximum_constraint_violation": 0.0,
-      "optimality_claim": "High-quality feasible solution from a deterministic restricted route library; no global optimality proof.",
+      "optimality_claim": "Verified feasible solution from a deterministic restricted route library; no global optimality proof.",
       "primary_centerline_by_missile_s": {
         "M1": 22.907800482555785,
         "M2": 16.37128644113473,
@@ -97,7 +97,7 @@
   "limitations": [
     "中心视线是论文主口径；完整圆柱结果是对同一策略的保守二次审计。",
     "Q2 的完整圆柱闭集最优解位于零引信延迟边界，同时报告 0.02 s 正延迟工程解。",
-    "Q3--Q5 为固定种子确定性搜索得到的经连续时间核验可行解；尤其 Q5 无全局最优证明。",
+    "Q3/Q4 各完成 5 个种子的收敛与终值审计并采用本批最好可行解；Q3 离散明显。Q5 仅为固定种子下经连续时间核验的可行解。三问均无全局最优证明。",
     "快速模式不重跑搜索或单元测试，只验证现有产物的完整性与内部一致性。"
   ],
   "metadata": {
@@ -118,20 +118,29 @@
         "full_recompute": "python -B src/run_all.py --recompute",
         "quick": "python -B src/run_all.py --quick"
       },
-      "default": "核验现有高质量产物并运行测试，不重复昂贵全局搜索",
+      "default": "核验现有且经连续复算的产物并运行测试，不重复昂贵全局搜索",
       "quick": "仅核验现有 JSON/XLSX/图件和数值不变量，不运行求解器或测试",
-      "recompute": "完整重跑 Q1--Q5 求解器、工作簿、二次审计和图件",
+      "recompute": "完整重跑 Q1--Q5 求解器、工作簿、二次审计、图件、TeX 编译和论文审计",
       "run_mode": "verify"
     },
     "paper_qa": {
       "all_pages_a4": true,
       "artifacts_current": true,
+      "audit_artifact_match": true,
+      "audit_current": true,
+      "audit_exists": true,
+      "audit_pass": true,
+      "audit_record_exists": true,
       "benign_package_warnings": [
         "Package xeCJK Warning: Redefining CJKfamily `\\CJKrmdefault' (SimSun(0)).",
         "Package xeCJK Warning: Redefining CJKfamily `\\CJKsfdefault' (Microsoft YaHei)."
       ],
       "bibliography_items": 8,
       "build_errors": [],
+      "build_inputs_match": true,
+      "build_log_match": true,
+      "build_pdf_match": true,
+      "build_record_exists": true,
       "citation_keys": [
         "brent",
         "modelbook",
@@ -142,21 +151,69 @@
         "problem",
         "stornprice"
       ],
-      "embedded_font_count": 29,
+      "embedded_font_count": 52,
       "fonts_fully_embedded": true,
+      "input_bundle_sha256": "1a7a707bc87ec338246831405fd91882d3c1fe73ce69113b7f8d1ecfeec59b40",
+      "input_file_count": 53,
       "layout_warnings": [],
-      "local_rendered_page_count": 12,
+      "local_rendered_page_count": 23,
       "log_exists": true,
+      "log_sha256": "5a655f6e70c84ec92f6341067f860580a89a1a8792ddec679afeffb63eae18fb",
       "manual_record_exists": true,
-      "manual_render_evidence": "paper/tmp/qa2-page-01.png ... paper/tmp/qa2-page-12.png",
-      "manual_review_type": "human_page_by_page",
+      "manual_render_evidence": "tmp/final-qa6/page-01.png ... tmp/final-qa6/page-23.png；其中 22 页与上一轮逐页验收渲染像素一致，改文案的第 18 页已单页复核",
+      "manual_render_evidence_pass": true,
+      "manual_review_type": "codex_page_by_page_visual",
       "manual_reviewed_at_local": "2026-08-08",
-      "manual_reviewer_record": "主任务人工逐页审查",
+      "manual_reviewer_record": "Codex 主任务逐页视觉检查",
       "manual_visual_pass": true,
       "missing_citation_keys": [],
       "overall_pass": true,
-      "page_count": 12,
+      "page_count": 23,
       "page_sizes_pt": [
+        [
+          595.28,
+          841.89
+        ],
+        [
+          595.28,
+          841.89
+        ],
+        [
+          595.28,
+          841.89
+        ],
+        [
+          595.28,
+          841.89
+        ],
+        [
+          595.28,
+          841.89
+        ],
+        [
+          595.28,
+          841.89
+        ],
+        [
+          595.28,
+          841.89
+        ],
+        [
+          595.28,
+          841.89
+        ],
+        [
+          595.28,
+          841.89
+        ],
+        [
+          595.28,
+          841.89
+        ],
+        [
+          595.28,
+          841.89
+        ],
         [
           595.28,
           841.89
@@ -208,22 +265,35 @@
       ],
       "pdf_exists": true,
       "pdf_read_error": null,
-      "pdf_sha256": "2e5a0bb176b02d6818be773f67d29c66e4080d7788167ca22dd89aea730860c4",
+      "pdf_sha256": "c55cb78750490a4cbf0e61ac06d327a017f36caf20405b37428d1b001124c4e2",
       "reference_warnings": [],
       "references_pass": true,
       "technical_pass": true,
       "tex_exists": true,
+      "underfull_warnings": [
+        "Underfull \\hbox (badness 1478) in paragraph at lines 108--108",
+        "Underfull \\hbox (badness 1478) in paragraph at lines 108--108",
+        "Underfull \\hbox (badness 1478) in paragraph at lines 108--108",
+        "Underfull \\hbox (badness 10000) in paragraph at lines 108--108",
+        "Underfull \\hbox (badness 10000) in paragraph at lines 161--161",
+        "Underfull \\hbox (badness 10000) in paragraph at lines 732--732"
+      ],
       "unembedded_fonts": [],
       "unused_bibliography_keys": []
     },
     "provenance": {
-      "figure_count": 5,
+      "figure_count": 14,
       "output_workbook_sha256": {
-        "result1.xlsx": "d0570ab80d2456aab1f9f50b87b0395fc98defc1f214379de3bd48e10dbd66db",
-        "result2.xlsx": "54ddabf6fc46345dee1c2f6d9ea071d0113c24c4fa5e75b8c8b9cd274effb28a",
-        "result3.xlsx": "783eb6c2b067abb56b7e2ab44898362118add6b0bf7b3fedb327aa08804589ad"
+        "result1.xlsx": "9650ff0b39cb00b2b28230196619c74edd985f493805f640646e911d41dda269",
+        "result2.xlsx": "7fee8c3eea2f6081768666297aaaf44db2260891992b62a7a9630daf7a3d6062",
+        "result3.xlsx": "a98a721eb0e72c0011fa98b29295559e0159f59da5b31c2fc3af87d1eff56772"
       },
       "random_seed": 20250808,
+      "random_seed_by_problem": {
+        "Q3": 20250810,
+        "Q4": 20250809,
+        "Q5": 20250808
+      },
       "source_sha256": {
         "A题.pdf": "a37f6aad30b16ea09da9cb320ce194b12d3a28874008cf9ff19549f6c6079447",
         "result1.xlsx": "af04b16e6a4719628971bcf5a03d230c9da6738e67eebac9276d254fdd4df1a7",
@@ -231,9 +301,11 @@
         "result3.xlsx": "b648c82d63e459ba6e6b3711ae79875e373521cd543b45571c4d8ff1ad5ec54a"
       },
       "validation_sha256": {
-        "validation/q1_independent.json": "c069625b74f597e39e1eebab9380be635e4686edb550c92498d023726d6af58e",
-        "validation/q1_q2_independent.json": "a7e75fce74825005e6c4dd676e2ccf7b836f7f1f203fdff19859d2bc898327f5",
-        "validation/q3_q5_independent.json": "dc146dc55b63e0444a88c3ddb2679a888dc7d0e6c9111616e81b1fdef1dd5cef"
+        "validation/q1_independent.json": "57f62c81deba4a1d6cb24945f0f8784c826c8f1785648ab644e47f60c4f93423",
+        "validation/q1_q2_independent.json": "87356ed221129d27784aff9bd90dceb8be4da372b767db4d3db7ccba4cf597c9",
+        "validation/q2_multiseed.json": "ef066c6811eb3d62769c6e015adddbd864b157c5e7b84ab0e53ef9bd12a4a314",
+        "validation/q3_q4_multiseed.json": "b6a789e46ed875ba0eace96a8f5ef594c2289456ae31e62c0e28b468858c1be4",
+        "validation/q3_q5_independent.json": "8dc5fa5a489e7228371a79d0248987032e45b55b6d2b85792c9558c4f86c1baa"
       }
     }
   },
@@ -242,6 +314,7 @@
     "受动力学、投放时序和航迹一致性约束的区间并集最大化"
   ],
   "project_id": "2025-a-smoke-screen",
+  "run_id": "cumcm-2025a-20260808-r3",
   "schema_version": "1.0",
   "status": "verified",
   "subquestions": [
@@ -321,12 +394,12 @@
         "primary_centerline_s": 4.832501802462596
       },
       "Q3": {
-        "full_cylinder_secondary_s": 6.332880277638777,
-        "primary_centerline_s": 6.415210810901319
+        "full_cylinder_secondary_s": 6.541337540415638,
+        "primary_centerline_s": 6.631110247634764
       },
       "Q4": {
-        "full_cylinder_secondary_s": 10.435489069432371,
-        "primary_centerline_s": 15.736598187500483
+        "full_cylinder_secondary_s": 10.430630286040866,
+        "primary_centerline_s": 15.774625235050912
       },
       "Q5": {
         "full_cylinder_secondary_s": 41.35506419398516,
@@ -367,6 +440,21 @@
         "status": "PASS"
       },
       {
+        "check_id": "q2-multiseed-stability",
+        "detail": "Q2 原始 runs 复算：8 个独立种子，成功率 100%，终值标准差 1.178e-13 s，最大约束违反 0.000e+00，8 条收敛轨迹齐全",
+        "status": "PASS"
+      },
+      {
+        "check_id": "q3-q4-multiseed-evidence",
+        "detail": "Q3/Q4 原始 runs 复算通过：Q3=5 个独立种子，最佳 seed 20250810，终值 6.631110248 s，最大约束违反 0.000e+00；Q4=5 个独立种子，最佳 seed 20250809，终值 15.774625235 s，最大约束违反 0.000e+00",
+        "status": "PASS"
+      },
+      {
+        "check_id": "q3-q4-best-seed-selection",
+        "detail": "Q3/Q4 最终报告分别采用多种子原始终值复算得到的最佳 seed 与对应策略：20250810 / 20250809",
+        "status": "PASS"
+      },
+      {
         "check_id": "q3-q5-objective-unions",
         "detail": "Q3--Q5 主口径与保守审计目标值均等于分导弹并集时长之和",
         "status": "PASS"
@@ -383,17 +471,17 @@
       },
       {
         "check_id": "workbook-roundtrip",
-        "detail": "工作簿回读：最大坐标/行时长/目标误差为 5.457e-12 m / 3.241e-11 s / 1.829e-11 s",
+        "detail": "工作簿回读：最大坐标/行时长/目标误差为 5.457e-12 m / 3.241e-11 s / 1.525e-11 s",
         "status": "PASS"
       },
       {
         "check_id": "q5-optimality-boundary",
-        "detail": "Q5 被限定为固定种子、受限路线库搜索得到的高质量可行解，无全局最优声明",
+        "detail": "Q5 被限定为固定种子、受限路线库搜索得到的经验证可行解，无随机稳定性、高质量或全局最优声明",
         "status": "PASS"
       },
       {
         "check_id": "figure-manifest",
-        "detail": "5 个证据图均具有 PNG/PDF/SVG 非空文件并登记在图件清单中",
+        "detail": "14 个证据图均登记主张、来源、单位、解释、哈希及 PNG/PDF/SVG；PNG≥300 dpi，SVG 保留文本",
         "status": "PASS"
       },
       {
@@ -402,13 +490,18 @@
         "status": "PASS"
       },
       {
+        "check_id": "paper-quality-audit",
+        "detail": "论文成品审计通过，且审计 JSON 与当前输入指纹及 PDF SHA-256 完全绑定",
+        "status": "PASS"
+      },
+      {
         "check_id": "paper-pdf-technical",
-        "detail": "PDF 为 12 页 A4，29 个字体全部嵌入，日志无布局警告",
+        "detail": "PDF 为 23 页 A4，52 个字体全部嵌入，日志无阻断型布局警告",
         "status": "PASS"
       },
       {
         "check_id": "paper-pdf-manual-visual",
-        "detail": "人工逐页 QA 记录与当前 PDF 的 SHA-256 和 12 页页数完全绑定",
+        "detail": "逐页视觉 QA 记录与当前 PDF 的 SHA-256 和 23 页页数完全绑定",
         "status": "PASS"
       },
       {
@@ -418,7 +511,7 @@
       }
     ],
     "checks_failed": 0,
-    "checks_passed": 15,
+    "checks_passed": 19,
     "checks_skipped": 0,
     "paper_pdf_manual_visual_pass": true,
     "paper_pdf_technical_pass": true,
@@ -428,7 +521,7 @@
     "tolerance": 1e-08,
     "unit_test_result": "OK",
     "workbook_max_coordinate_error_m": 5.4569682106375694e-12,
-    "workbook_max_objective_error_s": 1.828759366162558e-11,
+    "workbook_max_objective_error_s": 1.524824710941175e-11,
     "workbook_max_row_duration_error_s": 3.241407142695607e-11
   }
 }

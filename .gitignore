@@ -22,6 +22,7 @@ projects/*/data/raw/
 projects/*/data/processed/
 projects/*/validation/*_render/
 projects/*/validation/lo_profile*/
+projects/*/tmp/
 
 # LaTeX build cache; keep the source and final PDF.
 *.aux

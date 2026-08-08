@@ -1,7 +1,39 @@
-# Quality Gate Report
+# 质量门禁记录
 
-- Latest scorer command: TODO
-- Latest score/band: TODO
-- Blocking risks: TODO
-- Repairs completed: TODO
-- Remaining blockers: TODO
+- 统一运行编号：`cumcm-2025a-20260808-r3`
+- 最终验证入口：`python -B projects/2025-a-smoke-screen/src/run_all.py`
+- 完整重算入口：`python -B projects/2025-a-smoke-screen/src/run_all.py --recompute`
+- 论文成品审计：`python -B scripts/audit_paper.py projects/2025-a-smoke-screen/paper/main.pdf --spec projects/2025-a-smoke-screen/validation/paper_audit_spec.json`
+- 验收日期：2026-08-08（Asia/Shanghai）
+
+## 最终放行结果
+
+| 检查项 | 结果 | 实测证据 |
+|---|---|---|
+| 项目一键门禁 | PASS | 19/19 项通过，`verification passed` |
+| 项目测试 | PASS | 41/41 |
+| Agent 根目录测试 | PASS | 93/93 |
+| 专家 Skill 校验 | PASS | `Skill is valid!` |
+| 论文成品审计 | PASS | 100/100，无 issue、无 advisory |
+| PDF 技术检查 | PASS | 23 页 A4；52 个字体全部嵌入；Overfull、缺字、构建错误均为 0 |
+| PDF 逐页视觉检查 | PASS | 23/23 页；14 幅图、13 张表和公式均无可见裁切、重叠或越界 |
+| Git 差异检查 | PASS | `git diff --check` 返回 0 |
+
+## 成品身份与证据密度
+
+- PDF SHA-256：`c55cb78750490a4cbf0e61ac06d327a017f36caf20405b37428d1b001124c4e2`
+- 论文输入联合 SHA-256：`1a7a707bc87ec338246831405fd91882d3c1fe73ce69113b7f8d1ecfeec59b40`
+- 成稿规模：23 页、14 幅正式插图、13 张表、17 个编号公式、8 条参考文献。
+- 图文闭环：五个问题均有专属图；14 幅图均在正文中解释；至少 2 幅图直接承担验证或稳定性证据。
+- 审计防陈旧：自动审计、编译记录和逐页视觉记录均同时绑定输入联合指纹与当前 PDF 哈希；旧报告不能为新 PDF 放行。
+
+## 随机优化与结论强度
+
+- Q2：8 个独立种子全部成功，8 条收敛轨迹齐全，连续复算终值的样本标准差约 `1.18e-13 s`，最大约束违反为 0。
+- Q3：5 个独立种子的连续复算终值为 `5.6801–6.6311 s`，标准差约 `0.3936 s`。离散性明显，论文已明确披露，不能声称搜索稳定或全局最优。
+- Q4：5 个独立种子的连续复算终值为 `15.7366–15.7746 s`，标准差约 `0.0170 s`，全部可行。
+- Q5：只给出固定种子、受限路线库搜索得到的经验证可行解；未构造多种子稳定性或全局上界，因此不使用“稳定”“高质量”或“全局最优”等越证据表述。
+
+## 放行结论
+
+当前成稿通过本项目定义的数值、证据、写作、图件、复现、PDF 技术和逐页视觉门禁。该结论表示内部工程验收通过，不等同于竞赛评奖结果，也不构成国一等奖保证。

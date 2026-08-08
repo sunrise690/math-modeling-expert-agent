@@ -32,6 +32,7 @@ from typing import Callable, Literal, Sequence
 import numpy as np
 from numpy.typing import NDArray
 from scipy.optimize import brentq, differential_evolution, minimize, minimize_scalar
+from run_identity import RUN_ID
 
 # Use the shared engine's public point/segment primitive when it is present.
 # Q2's mathematically important tau=0 boundary is represented locally because
@@ -529,6 +530,8 @@ def _coarse_margins(
 def run_global_search(mode: Mode, gravity: float = 9.8) -> dict[str, object]:
     """Seeded broad search; exact boundary faces are polished afterwards."""
 
+    search_trace: list[dict[str, float | int]] = []
+
     def objective(values: FloatArray) -> float:
         strategy = _decode_global_variables(values)
         violations = constraint_violations(strategy, gravity)["max"]
@@ -547,6 +550,29 @@ def run_global_search(mode: Mode, gravity: float = 9.8) -> dict[str, object]:
         guide = float(np.clip(np.max(margins), -100.0, 10.0))
         return -duration - 1e-5 * guide
 
+    def record_generation(values: FloatArray, convergence: float) -> bool:
+        """Persist the DE incumbent so convergence can be audited per seed."""
+
+        strategy = _decode_global_variables(values)
+        violations = constraint_violations(strategy, gravity)["max"]
+        times, margins = _coarse_margins(
+            strategy,
+            mode,
+            gravity,
+            step_s=0.04 if mode == "centerline" else 0.06,
+            full_azimuth=24,
+        )
+        search_trace.append(
+            {
+                "generation": len(search_trace) + 1,
+                "best_objective": float(objective(values)),
+                "best_coarse_duration_s": float(_linear_measure(times, margins)),
+                "best_max_constraint_violation": float(violations),
+                "population_convergence": float(convergence),
+            }
+        )
+        return False
+
     result = differential_evolution(
         objective,
         bounds=((-pi, pi), (SPEED_MIN, SPEED_MAX), (0.03, 14.0), (0.0, 1.0)),
@@ -558,6 +584,7 @@ def run_global_search(mode: Mode, gravity: float = 9.8) -> dict[str, object]:
         polish=True,
         updating="immediate",
         workers=1,
+        callback=record_generation,
     )
     strategy = _decode_global_variables(result.x)
     times, margins = _coarse_margins(
@@ -578,6 +605,7 @@ def run_global_search(mode: Mode, gravity: float = 9.8) -> dict[str, object]:
         "function_evaluations": int(result.nfev),
         "success": bool(result.success),
         "message": str(result.message),
+        "best_so_far_trace": search_trace,
     }
 
 
@@ -954,6 +982,7 @@ def solve_all(*, run_search: bool = True) -> dict[str, object]:
     q2 = solve_q2(run_search=run_search)
     return {
         "metadata": {
+            "run_id": RUN_ID,
             "title": "2025 CUMCM A Q1-Q2 independent validation",
             "official_source": "source/A题.pdf",
             "random_seed": RANDOM_SEED,

@@ -51,7 +51,7 @@ MODES: dict[str, dict[str, str]] = {
         "target": "$math-modeling-paper",
         "use": "结果、草稿、摘要。",
         "output": "结构、表达、润色。",
-        "instruction": "围绕数学建模竞赛论文写作展开，优先保证结构、证据、模型检验与表达规范，不虚构实验数据。",
+        "instruction": "围绕数学建模竞赛论文写作展开。完整成稿必须逐问形成目标、路线选择、推导、算法、量化结果、解释、检验和小结的闭环，并用承担明确主张的图件组织证据；不得把短报告、结果表堆叠或装饰性作图当作论文完成。",
     },
     "reviewer": {
         "label": "质检",
@@ -1070,6 +1070,7 @@ def build_system_prompt(mode: str, root: Path = ROOT) -> str:
             f"以下是本 Agent 的数模专家执行契约：\n<expert_skill>\n{expert}\n</expert_skill>" if expert else "",
             "不得伪造数据、代码运行结果、引用或文件内容。信息不足时明确列出假设和需要补充的数据。输出使用 Markdown。",
             "最终答复提交前必须自检六项：任务覆盖、模型严谨性、证据可复现性、验证稳健性、表达交付质量、真实性边界。明确要求的代码、图表或风险检查不能省略；有附件时未预检不得给出数据结论。",
+            "当任务要求生成或完善完整竞赛论文时，必须在交付前调用 audit_competition_paper 审计实际的 PDF、DOCX、LaTeX 或 Markdown 成稿；结构、逐问深度、量化摘要、图谱覆盖、验证图、正文引用和占位符任一硬门禁失败时，应先修订产物，不能仅在回答中解释缺口。通过该审计不等于保证获奖，最终仍需人工逐页检查。",
             "按题型执行竞赛级验证：机理结果同时报告量纲/单位检查与初边值、守恒、极限或步长收敛；竞赛优化结果用基线、理论界、最优间隙、多初值或独立算法标定；后一问放宽可行域时必须注入前一问方案并检查目标支配关系；随机优化必须多随机种子并报告离散程度或收敛统计；预测结果必须给出尊重时间/主体结构的样本外验证与误差指标；导出表逐行回算约束。训练拟合、单次最好值和算法名称不能替代这些证据。",
             "最终答复只能链接成功工具调用实际返回并由后端登记的 artifacts；计划生成、工作区内未收集、格式不获准或不存在的文件不得写成下载链接。若需要的文件没有出现在工具结果中，应明确说明未交付，而不是猜测 URL。",
             "需要专业方法时先调用 search_skills，再按需调用 read_skill；当 SKILL.md 明确链接到必要细则时，用 read_skill_reference 读取对应 references/ 文件。存在数据附件时，必须先用 inspect_dataset 核对字段、缺失与样例，再进行建模；需要直接按列作图时使用对应的 from_dataset 工具。需要计算、图表或文档时优先调用确定性工具，并在回答中链接生成的产物。",
@@ -1734,6 +1735,15 @@ class RunManager:
         }
         if item.name == "read_material":
             record["grounded"] = bool(result.get("content"))
+        if item.name == "audit_competition_paper" and isinstance(result.get("audit"), dict):
+            audit = result["audit"]
+            record["audit"] = {
+                "passed": bool(audit.get("passed", False)),
+                "score": audit.get("score"),
+                "status": audit.get("status"),
+                "gates": audit.get("gates", []),
+                "metrics": audit.get("metrics", {}),
+            }
         tool_history.append(record)
         preview = json.dumps(result, ensure_ascii=False)
         self._emit(

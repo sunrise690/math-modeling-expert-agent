@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 import mimetypes
@@ -45,6 +46,21 @@ MAX_DATA_ROWS = 200_000
 MAX_PYTHON_CODE_CHARS = 100_000
 MAX_PYTHON_OUTPUT_CHARS = 32_000
 MAX_PYTHON_ARTIFACT_BYTES = 100 * 1024 * 1024
+PYTHON_PLOT_TYPES = (
+    "line",
+    "scatter",
+    "bar",
+    "histogram",
+    "box",
+    "violin",
+    "heatmap",
+    "interval",
+    "tornado",
+    "contour",
+    "pareto",
+    "multi_panel",
+)
+DATASET_PLOT_TYPES = tuple(item for item in PYTHON_PLOT_TYPES if item != "multi_panel")
 AVAILABLE_SKILLS = (
     "cumcm-expert-agent",
     "math-modeling-toolkit",
@@ -328,13 +344,13 @@ class ToolRegistry:
                 "type": "function",
                 "function": {
                     "name": "create_plot_from_dataset",
-                    "description": "Create a publication-ready figure directly from selected columns of an uploaded dataset after inspection.",
+                    "description": "Create a publication-ready evidence figure from inspected dataset columns, including interval, tornado, contour, Pareto, and violin diagnostics.",
                     "parameters": {
                         "type": "object",
                         "properties": {
                             "upload_id": {"type": "string"},
                             "sheet_name": {"type": ["string", "integer"]},
-                            "chart_type": {"type": "string", "enum": ["line", "scatter", "bar", "histogram", "box", "heatmap", "multi_panel"]},
+                            "chart_type": {"type": "string", "enum": list(DATASET_PLOT_TYPES)},
                             "x_column": {"type": "string"},
                             "y_columns": {"type": "array", "items": {"type": "string"}, "maxItems": 30},
                             "title": {"type": "string"},
@@ -342,6 +358,18 @@ class ToolRegistry:
                             "y_label": {"type": "string"},
                             "filename": {"type": "string"},
                             "formats": {"type": "array", "items": {"type": "string", "enum": ["png", "pdf", "svg"]}},
+                            "baseline": {"type": "number"},
+                            "low_label": {"type": "string"},
+                            "high_label": {"type": "string"},
+                            "sort_effects": {"type": "boolean"},
+                            "annotate_values": {"type": "boolean"},
+                            "cmap": {"type": "string"},
+                            "center": {"type": "number"},
+                            "levels": {"type": "integer", "minimum": 3, "maximum": 50},
+                            "filled": {"type": "boolean"},
+                            "colorbar_label": {"type": "string"},
+                            "x_sense": {"type": "string", "enum": ["min", "max"]},
+                            "y_sense": {"type": "string", "enum": ["min", "max"]},
                         },
                         "required": ["upload_id", "chart_type", "filename"],
                         "additionalProperties": False,
@@ -352,11 +380,11 @@ class ToolRegistry:
                 "type": "function",
                 "function": {
                     "name": "create_plot",
-                    "description": "Create publication-ready PNG, PDF, or SVG figures from verified inline data.",
+                    "description": "Create publication-ready single or multi-panel evidence figures from verified inline data; supports uncertainty, intervals, sensitivity, contours, Pareto fronts, and distributions.",
                     "parameters": {
                         "type": "object",
                         "properties": {
-                            "chart_type": {"type": "string", "enum": ["line", "scatter", "bar", "histogram", "box", "heatmap"]},
+                            "chart_type": {"type": "string", "enum": list(PYTHON_PLOT_TYPES)},
                             "title": {"type": "string"},
                             "x_label": {"type": "string"},
                             "y_label": {"type": "string"},
@@ -371,21 +399,45 @@ class ToolRegistry:
                                         "x": {"type": "array", "items": {"type": ["number", "string"]}},
                                         "y": {"type": "array", "items": {"type": "number"}},
                                         "values": {"type": "array", "items": {"type": "number"}},
+                                        "intervals": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "array",
+                                                "items": {"type": "number"},
+                                                "minItems": 2,
+                                                "maxItems": 2,
+                                            },
+                                        },
+                                        "low": {"type": "number"},
+                                        "high": {"type": "number"},
                                         "y_error": {"type": "array", "items": {"type": "number"}},
                                         "ci_lower": {"type": "array", "items": {"type": "number"}},
                                         "ci_upper": {"type": "array", "items": {"type": "number"}},
                                         "linestyle": {"type": "string", "enum": ["-", "--", "-.", ":"]},
                                         "marker": {"type": "string"},
                                         "bins": {"type": "integer"},
+                                        "highlight_indices": {"type": "array", "items": {"type": "integer"}},
                                     },
                                 },
                             },
                             "matrix": {"type": "array", "items": {"type": "array", "items": {"type": "number"}}},
+                            "x_values": {"type": "array", "items": {"type": "number"}},
+                            "y_values": {"type": "array", "items": {"type": "number"}},
                             "x_ticks": {"type": "array", "items": {"type": "string"}},
                             "y_ticks": {"type": "array", "items": {"type": "string"}},
                             "cmap": {"type": "string"},
                             "center": {"type": "number"},
                             "annotate_heatmap": {"type": "boolean"},
+                            "annotate_values": {"type": "boolean"},
+                            "baseline": {"type": "number"},
+                            "low_label": {"type": "string"},
+                            "high_label": {"type": "string"},
+                            "sort_effects": {"type": "boolean"},
+                            "levels": {"type": "integer", "minimum": 3, "maximum": 50},
+                            "filled": {"type": "boolean"},
+                            "colorbar_label": {"type": "string"},
+                            "x_sense": {"type": "string", "enum": ["min", "max"]},
+                            "y_sense": {"type": "string", "enum": ["min", "max"]},
                             "panels": {"type": "array", "items": {"type": "object"}, "maxItems": 6},
                             "panel_labels": {"type": "boolean"},
                             "figsize": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
@@ -393,6 +445,32 @@ class ToolRegistry:
                             "save_spec": {"type": "boolean"},
                         },
                         "required": ["chart_type", "filename"],
+                        "additionalProperties": False,
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "audit_competition_paper",
+                    "description": "Audit an actual mathematical-modeling manuscript artifact before final delivery. Checks full-paper structure, quantified abstract, per-question depth, figure coverage and balance, validation figures, citations, and placeholders; returns JSON and Markdown audit artifacts. Passing does not guarantee an award.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "artifact_name": {
+                                "type": "string",
+                                "description": "Existing PDF, DOCX, TeX, Markdown, or TXT artifact from this task.",
+                            },
+                            "expected_questions": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 10,
+                                "description": "Number of contest subquestions; omit only when headings are reliable.",
+                            },
+                            "full_paper": {"type": "boolean", "default": True},
+                            "filename": {"type": "string", "default": "paper-quality-audit"},
+                        },
+                        "required": ["artifact_name"],
                         "additionalProperties": False,
                     },
                 },
@@ -593,6 +671,7 @@ class ToolRegistry:
             "create_matlab_plot_from_dataset": lambda args: self._create_mcp_plot_from_dataset("matlab", args, run_id),
             "create_origin_plot": lambda args: self._create_mcp_plot("origin", args, run_id),
             "create_origin_plot_from_dataset": lambda args: self._create_mcp_plot_from_dataset("origin", args, run_id),
+            "audit_competition_paper": lambda args: self._audit_competition_paper(args, run_id),
             "export_report": lambda args: self._run_script("export_report.py", args, run_id),
         }
         handler = handlers.get(name)
@@ -1118,17 +1197,41 @@ class ToolRegistry:
         result.update({"source": self.get_upload(upload_id), "selectedSheet": context["selectedSheet"]})
         return result
 
+    def _audit_competition_paper(self, arguments: dict[str, Any], run_id: str) -> dict[str, Any]:
+        artifact_name = str(arguments.get("artifact_name", "")).strip()
+        if not artifact_name:
+            raise ToolError("artifact_name 不能为空")
+        manuscript = self.artifact_path(run_id, artifact_name)
+        if manuscript.suffix.lower() not in {".md", ".tex", ".txt", ".pdf", ".docx"}:
+            raise ToolError("论文审计仅支持 Markdown、LaTeX、TXT、PDF 和 DOCX")
+        spec = {
+            "input_path": str(manuscript),
+            "expected_questions": arguments.get("expected_questions", 0),
+            "full_paper": bool(arguments.get("full_paper", True)),
+            "filename": str(arguments.get("filename", "paper-quality-audit")),
+        }
+        return self._run_script("audit_paper.py", spec, run_id)
+
     def _dataset_plot_spec(self, arguments: dict[str, Any]) -> tuple[dict[str, Any], str, dict[str, Any]]:
         import pandas as pd
 
         upload_id = str(arguments.get("upload_id", "")).strip()
         frame, context = self._load_dataset(upload_id, arguments.get("sheet_name"))
-        chart_type = str(arguments.get("chart_type", "")).strip()
+        chart_type = str(arguments.get("chart_type", "")).strip().lower()
+        if chart_type not in DATASET_PLOT_TYPES:
+            raise ToolError("图表类型无效")
         x_column = str(arguments.get("x_column", "")).strip()
+        y_columns_supplied = "y_columns" in arguments
         raw_y_columns = arguments.get("y_columns", [])
         if not isinstance(raw_y_columns, list):
             raise ToolError("y_columns 必须是列名数组")
-        y_columns = list(dict.fromkeys(str(item) for item in raw_y_columns if str(item) in frame.columns))
+        requested_y_columns = [str(item) for item in raw_y_columns]
+        missing_y_columns = list(
+            dict.fromkeys(column for column in requested_y_columns if column not in frame.columns)
+        )
+        if missing_y_columns:
+            raise ToolError(f"数据列不存在：{'、'.join(missing_y_columns)}")
+        y_columns = list(dict.fromkeys(requested_y_columns))
         if x_column and x_column not in frame.columns:
             raise ToolError(f"数据列不存在：{x_column}")
 
@@ -1138,11 +1241,31 @@ class ToolRegistry:
             "x_label": str(arguments.get("x_label", x_column)).strip(),
             "y_label": str(arguments.get("y_label", "")).strip(),
             "filename": arguments.get("filename"),
-            "formats": arguments.get("formats", ["png"]),
+            "formats": arguments.get("formats", ["png", "pdf", "svg"]),
         }
+        for option in (
+            "baseline",
+            "low_label",
+            "high_label",
+            "sort_effects",
+            "annotate_values",
+            "cmap",
+            "center",
+            "levels",
+            "filled",
+            "colorbar_label",
+            "x_sense",
+            "y_sense",
+        ):
+            if option in arguments:
+                spec[option] = arguments[option]
 
         if chart_type == "heatmap":
-            selected = y_columns or [str(column) for column in frame.select_dtypes(include="number").columns]
+            if y_columns_supplied and not y_columns:
+                raise ToolError("热力图显式提供 y_columns 时不能为空")
+            selected = y_columns if y_columns_supplied else [
+                str(column) for column in frame.select_dtypes(include="number").columns
+            ]
             if not 2 <= len(selected) <= 30:
                 raise ToolError("热力图需要选择 2-30 个数值列")
             numeric = frame[selected].apply(pd.to_numeric, errors="coerce")
@@ -1154,9 +1277,42 @@ class ToolRegistry:
                 raise ToolError("相关矩阵包含未定义值，请检查缺失或样本量")
             matrix = correlations.values.tolist()
             spec.update({"matrix": matrix, "x_ticks": selected, "y_ticks": selected})
-        elif chart_type in {"histogram", "box"}:
+        elif chart_type == "contour":
+            if not x_column or len(y_columns) != 2:
+                raise ToolError("等高线图需要 x_column，并在 y_columns 中依次选择 y 坐标列和 z 数值列")
+            y_coordinate, z_column = y_columns
+            if len({x_column, y_coordinate, z_column}) != 3:
+                raise ToolError("等高线图的 x、y、z 必须来自三个不同列")
+            selected = frame[[x_column, y_coordinate, z_column]].copy()
+            for column in (x_column, y_coordinate, z_column):
+                selected[column] = pd.to_numeric(selected[column], errors="coerce")
+            selected = selected.dropna()
+            if selected.empty:
+                raise ToolError("等高线图没有可用的数值网格")
+            if selected.duplicated([x_column, y_coordinate]).any():
+                raise ToolError("等高线图网格包含重复的 (x, y) 坐标")
+            x_values = sorted(float(value) for value in selected[x_column].unique())
+            y_values = sorted(float(value) for value in selected[y_coordinate].unique())
+            if len(x_values) < 2 or len(y_values) < 2:
+                raise ToolError("等高线图至少需要 2x2 网格")
+            if len(x_values) * len(y_values) != len(selected):
+                raise ToolError("等高线图需要完整矩形网格，不能含缺失的 (x, y) 组合")
+            pivot = selected.pivot(index=y_coordinate, columns=x_column, values=z_column)
+            pivot = pivot.reindex(index=y_values, columns=x_values)
+            if pivot.isna().any().any():
+                raise ToolError("等高线图网格包含缺失值")
+            spec.update(
+                {
+                    "matrix": pivot.values.tolist(),
+                    "x_values": x_values,
+                    "y_values": y_values,
+                    "x_label": str(arguments.get("x_label", x_column)).strip(),
+                    "y_label": str(arguments.get("y_label", y_coordinate)).strip(),
+                }
+            )
+        elif chart_type in {"histogram", "box", "violin"}:
             if not y_columns:
-                raise ToolError("直方图或箱线图至少需要一个数值列")
+                raise ToolError("直方图、箱线图或小提琴图至少需要一个数值列")
             series = []
             for column in y_columns:
                 values = pd.to_numeric(frame[column], errors="coerce").dropna()
@@ -1166,19 +1322,55 @@ class ToolRegistry:
                     values = values.iloc[:: max(1, len(values) // 20_000)]
                 series.append({"name": column, "values": [float(value) for value in values]})
             spec["series"] = series
+        elif chart_type in {"interval", "tornado"}:
+            if len(y_columns) != 2:
+                label = "区间图" if chart_type == "interval" else "龙卷风图"
+                raise ToolError(f"{label}需要在 y_columns 中依次选择低/起点列和高/终点列")
+            low_column, high_column = y_columns
+            selected_columns = list(
+                dict.fromkeys(column for column in (x_column, low_column, high_column) if column)
+            )
+            selected = frame[selected_columns].copy()
+            selected[low_column] = pd.to_numeric(selected[low_column], errors="coerce")
+            selected[high_column] = pd.to_numeric(selected[high_column], errors="coerce")
+            selected = selected.dropna(subset=[low_column, high_column])
+            if selected.empty:
+                raise ToolError("所选区间列没有可用数值")
+            if len(selected) > 200:
+                raise ToolError("区间图或龙卷风图最多支持 200 行，请先筛选关键参数或事件")
+            series = []
+            baseline = float(arguments.get("baseline", 0.0))
+            for position, (_row_index, row) in enumerate(selected.iterrows(), start=1):
+                name = str(row[x_column]) if x_column else f"Row {position}"
+                low = float(row[low_column])
+                high = float(row[high_column])
+                if high < low:
+                    raise ToolError(f"{name} 的高/终点值小于低/起点值")
+                if chart_type == "interval":
+                    series.append({"name": name, "intervals": [[low, high]]})
+                else:
+                    if not low <= baseline <= high:
+                        raise ToolError(f"{name} 不满足 low <= baseline <= high")
+                    series.append({"name": name, "low": low, "high": high})
+            spec["series"] = series
         else:
-            if chart_type not in {"line", "scatter", "bar"}:
-                raise ToolError("图表类型无效")
             if not y_columns:
-                raise ToolError("折线图、散点图或柱状图至少需要一个数值列")
+                raise ToolError("折线图、散点图、柱状图或 Pareto 图至少需要一个数值列")
             x_values = frame[x_column] if x_column else pd.Series(range(1, len(frame) + 1), index=frame.index)
             series = []
-            limit = 200 if chart_type == "bar" else 5_000
+            limit = 200 if chart_type == "bar" else 50_000 if chart_type == "pareto" else 5_000
             for column in y_columns:
                 y_values = pd.to_numeric(frame[column], errors="coerce")
                 selected = pd.DataFrame({"x": x_values, "y": y_values}).dropna()
                 if selected.empty:
                     raise ToolError(f"数据列没有可用数值：{column}")
+                if chart_type == "pareto":
+                    selected["x"] = pd.to_numeric(selected["x"], errors="coerce")
+                    selected = selected.dropna()
+                    if selected.empty:
+                        raise ToolError("Pareto 图要求数值型 x_column")
+                    if len(selected) > limit:
+                        raise ToolError("Pareto 图最多支持 50000 个候选点，禁止静默抽样破坏前沿")
                 if len(selected) > limit:
                     selected = selected.iloc[:: max(1, len(selected) // limit)].head(limit)
                 x_json = json.loads(selected[["x"]].to_json(orient="records", force_ascii=False, date_format="iso"))
@@ -1576,8 +1768,15 @@ runpy.run_path(sys.argv[1], run_name="__main__")
 
     def _artifact_record(self, path: Path, run_id: str) -> dict[str, str]:
         mime_type, _ = mimetypes.guess_type(path.name)
-        return {
+        record = {
             "name": path.name,
             "url": f"/api/artifacts/{run_id}/{quote(path.name)}",
             "mimeType": mime_type or "application/octet-stream",
         }
+        if path.suffix.lower() in {".md", ".tex", ".txt", ".pdf", ".docx"}:
+            digest = hashlib.sha256()
+            with path.open("rb") as handle:
+                for block in iter(lambda: handle.read(1024 * 1024), b""):
+                    digest.update(block)
+            record["sha256"] = digest.hexdigest()
+        return record

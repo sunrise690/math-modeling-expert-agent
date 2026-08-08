@@ -58,7 +58,7 @@ class RevisingProvider:
 class QualityScoringTests(unittest.TestCase):
     def test_rubric_weights_are_complete(self) -> None:
         spec = rubric_spec()
-        self.assertEqual(spec["version"], "2026.4")
+        self.assertEqual(spec["version"], "2026.5")
         self.assertEqual({item["id"] for item in spec["dimensions"]}, set(MODE_WEIGHTS["solver"]))
         self.assertTrue(all(sum(weights.values()) == 100 for weights in MODE_WEIGHTS.values()))
         gate_ids = {item["id"] for item in spec["hardGates"]}
@@ -229,6 +229,16 @@ class QualityScoringTests(unittest.TestCase):
             mode="solver",
             prompt="用户内容：用模拟退火优化",
             answer=answer,
+            tool_history=[{"name": "run_python", "ok": True, "artifacts": []}],
+        )
+        gate = next(item for item in report["gates"] if item["id"] == "stochastic_robustness")
+        self.assertFalse(gate["passed"])
+
+        too_few = answer + "\n使用 3 个不同随机种子独立运行，中位数与四分位距为 12.2 和 0.3，停止阈值为 1e-6。"
+        report = QualityEvaluator(82).evaluate(
+            mode="solver",
+            prompt="用户内容：用模拟退火优化",
+            answer=too_few,
             tool_history=[{"name": "run_python", "ok": True, "artifacts": []}],
         )
         gate = next(item for item in report["gates"] if item["id"] == "stochastic_robustness")
@@ -424,6 +434,166 @@ class QualityScoringTests(unittest.TestCase):
         )
         gate = next(item for item in report["gates"] if item["id"] == "artifact_link_integrity")
         self.assertTrue(gate["passed"])
+
+    def test_paper_artifact_requires_completed_manuscript_audit(self) -> None:
+        report = QualityEvaluator(82).evaluate(
+            mode="paper",
+            prompt="用户内容：完成整篇数学建模竞赛论文",
+            answer=STRONG_ANSWER,
+            artifacts=[{"name": "submission.pdf"}],
+        )
+        gates = {item["id"]: item for item in report["gates"]}
+        self.assertFalse(gates["paper_artifact_audit"]["passed"])
+        self.assertFalse(gates["paper_visual_evidence"]["passed"])
+        self.assertLessEqual(report["total"], 72)
+
+    def test_successful_paper_audit_satisfies_artifact_gates(self) -> None:
+        audit_gates = [
+            {"id": gate_id, "passed": True}
+            for gate_id in (
+                "paper_structure",
+                "quantitative_abstract",
+                "question_depth",
+                "visual_evidence",
+                "validation_traceability",
+                "scholarly_traceability",
+                "manuscript_integrity",
+            )
+        ]
+        report = QualityEvaluator(82).evaluate(
+            mode="paper",
+            prompt="用户内容：完成整篇数学建模竞赛论文",
+            answer=STRONG_ANSWER,
+            artifacts=[{"name": "submission.pdf", "sha256": "a" * 64}],
+            tool_history=[
+                {
+                    "name": "audit_competition_paper",
+                    "ok": True,
+                    "arguments": {"artifact_name": "submission.pdf", "full_paper": True},
+                    "artifacts": [],
+                    "audit": {
+                        "passed": True,
+                        "score": 100,
+                        "gates": audit_gates,
+                        "metrics": {
+                            "artifactName": "submission.pdf",
+                            "artifactSha256": "a" * 64,
+                            "fullPaper": True,
+                        },
+                    },
+                }
+            ],
+        )
+        gates = {item["id"]: item["passed"] for item in report["gates"]}
+        self.assertTrue(gates["paper_artifact_audit"])
+        self.assertTrue(gates["paper_visual_evidence"])
+        self.assertTrue(gates["paper_scholarly_structure"])
+
+    def test_report_named_manuscript_cannot_bypass_audit(self) -> None:
+        report = QualityEvaluator(82).evaluate(
+            mode="paper",
+            prompt="用户内容：完成整篇数学建模竞赛论文",
+            answer=STRONG_ANSWER,
+            artifacts=[{"name": "modeling-report.pdf", "sha256": "a" * 64}],
+        )
+        gates = {item["id"]: item["passed"] for item in report["gates"]}
+        self.assertFalse(gates["paper_artifact_audit"])
+        self.assertFalse(gates["paper_visual_evidence"])
+        self.assertFalse(gates["paper_scholarly_structure"])
+
+    def test_paper_audit_must_match_name_hash_and_full_paper(self) -> None:
+        audit_gates = [
+            {"id": gate_id, "passed": True}
+            for gate_id in (
+                "paper_structure",
+                "quantitative_abstract",
+                "question_depth",
+                "visual_evidence",
+                "validation_traceability",
+                "scholarly_traceability",
+                "manuscript_integrity",
+            )
+        ]
+        cases = (
+            ("old-draft.pdf", "a" * 64, True),
+            ("submission.pdf", "b" * 64, True),
+            ("submission.pdf", "a" * 64, False),
+        )
+        for audited_name, audited_hash, full_paper in cases:
+            with self.subTest(name=audited_name, sha=audited_hash[:1], full_paper=full_paper):
+                report = QualityEvaluator(82).evaluate(
+                    mode="paper",
+                    prompt="用户内容：完成整篇数学建模竞赛论文",
+                    answer=STRONG_ANSWER,
+                    artifacts=[{"name": "submission.pdf", "sha256": "a" * 64}],
+                    tool_history=[
+                        {
+                            "name": "audit_competition_paper",
+                            "ok": True,
+                            "arguments": {"artifact_name": audited_name, "full_paper": full_paper},
+                            "artifacts": [],
+                            "audit": {
+                                "passed": True,
+                                "gates": audit_gates,
+                                "metrics": {
+                                    "artifactName": audited_name,
+                                    "artifactSha256": audited_hash,
+                                    "fullPaper": full_paper,
+                                },
+                            },
+                        }
+                    ],
+                )
+                gate = next(item for item in report["gates"] if item["id"] == "paper_artifact_audit")
+                self.assertFalse(gate["passed"])
+
+    def test_visual_and_scholarly_paper_gates_are_independent(self) -> None:
+        base = {
+            "paper_structure": True,
+            "quantitative_abstract": True,
+            "question_depth": True,
+            "visual_evidence": True,
+            "validation_traceability": True,
+            "scholarly_traceability": True,
+            "manuscript_integrity": True,
+        }
+
+        def evaluate(overrides: dict[str, bool]) -> dict[str, bool]:
+            states = {**base, **overrides}
+            report = QualityEvaluator(82).evaluate(
+                mode="paper",
+                prompt="用户内容：完成整篇数学建模竞赛论文",
+                answer=STRONG_ANSWER,
+                artifacts=[{"name": "submission.pdf", "sha256": "a" * 64}],
+                tool_history=[
+                    {
+                        "name": "audit_competition_paper",
+                        "ok": True,
+                        "arguments": {"artifact_name": "submission.pdf", "full_paper": True},
+                        "artifacts": [],
+                        "audit": {
+                            "passed": all(states.values()),
+                            "gates": [
+                                {"id": gate_id, "passed": passed}
+                                for gate_id, passed in states.items()
+                            ],
+                            "metrics": {
+                                "artifactName": "submission.pdf",
+                                "artifactSha256": "a" * 64,
+                                "fullPaper": True,
+                            },
+                        },
+                    }
+                ],
+            )
+            return {item["id"]: item["passed"] for item in report["gates"]}
+
+        structure_failure = evaluate({"question_depth": False})
+        self.assertTrue(structure_failure["paper_visual_evidence"])
+        self.assertFalse(structure_failure["paper_scholarly_structure"])
+        visual_failure = evaluate({"visual_evidence": False})
+        self.assertFalse(visual_failure["paper_visual_evidence"])
+        self.assertTrue(visual_failure["paper_scholarly_structure"])
 
     def test_run_auto_revision_keeps_better_answer(self) -> None:
         RevisingProvider.calls = 0

@@ -8,7 +8,8 @@ The search deliberately has two levels:
   reported strategy.
 
 The Q5 routine is a route-consistent beam-search baseline.  It produces a
-high-quality feasible solution, but it does not claim a global optimum.
+continuously verified feasible solution, but it does not claim search
+stability or a global optimum.
 """
 
 from __future__ import annotations
@@ -172,6 +173,11 @@ class SolveDiagnostics:
     exact_union_by_missile: dict[str, float] = field(default_factory=dict)
     max_constraint_violation: float = 0.0
     constraint_violations: dict[str, float] = field(default_factory=dict)
+    local_refinement_seed: int | None = None
+    local_refinement_iterations: int = 0
+    local_refinement_start_exact_objective: float = 0.0
+    local_refinement_candidate_exact_objective: float = 0.0
+    local_refinement_trace: list[dict[str, object]] = field(default_factory=list)
     optimality_claim: str = "No global optimality proof."
     notes: list[str] = field(default_factory=list)
 
@@ -685,17 +691,33 @@ def _local_random_refine(
     seed: int,
     iterations: int,
     share_route_by_drone: bool,
-) -> tuple[tuple[BombPlan, ...], float]:
-    """Deterministic seeded feasibility-preserving local hill climb."""
+) -> tuple[tuple[BombPlan, ...], float, list[dict[str, object]]]:
+    """Seeded, reproducible, feasibility-preserving local hill climb."""
 
     if not plans or iterations <= 0:
         state = tuple(plans)
-        return state, coverage_objective(coverage_intervals(state, _plan_intervals_estimated))
+        score = coverage_objective(coverage_intervals(state, _plan_intervals_estimated))
+        return state, score, [
+            {
+                "iteration": 0,
+                "best_fast_objective_s": float(score),
+                "accepted_improvement": False,
+                "proposal_max_constraint_violation": 0.0,
+            }
+        ]
     rng = np.random.default_rng(seed)
     best = tuple(plans)
     best_score = coverage_objective(
         coverage_intervals(best, lambda plan: sampled_centerline_intervals(plan, step=0.025))
     )
+    trace: list[dict[str, object]] = [
+        {
+            "iteration": 0,
+            "best_fast_objective_s": float(best_score),
+            "accepted_improvement": False,
+            "proposal_max_constraint_violation": 0.0,
+        }
+    ]
     drone_ids = sorted({plan.drone_id for plan in best})
     for iteration in range(iterations):
         progress = iteration / max(1, iterations - 1)
@@ -730,7 +752,20 @@ def _local_random_refine(
             )
         proposal = tuple(changed)
         violations = strategy_constraint_violations(proposal)
-        if max(violations.values(), default=0.0) > 1e-10:
+        max_violation = max(violations.values(), default=0.0)
+        recorded_violation = (
+            float(max_violation) if np.isfinite(max_violation) else None
+        )
+        accepted = False
+        if max_violation > 1e-10:
+            trace.append(
+                {
+                    "iteration": iteration + 1,
+                    "best_fast_objective_s": float(best_score),
+                    "accepted_improvement": False,
+                    "proposal_max_constraint_violation": recorded_violation,
+                }
+            )
             continue
         score = coverage_objective(
             coverage_intervals(
@@ -740,7 +775,16 @@ def _local_random_refine(
         if score > best_score + 1e-8:
             best = proposal
             best_score = score
-    return best, best_score
+            accepted = True
+        trace.append(
+            {
+                "iteration": iteration + 1,
+                "best_fast_objective_s": float(best_score),
+                "accepted_improvement": accepted,
+                "proposal_max_constraint_violation": recorded_violation,
+            }
+        )
+    return best, best_score, trace
 
 
 def solve_q3(
@@ -755,7 +799,7 @@ def solve_q3(
         seed=seed,
         status="searching",
         method="route grid + aligned candidate beam + seeded local refinement",
-        optimality_claim="Best verified solution found by the deterministic search; no global proof.",
+        optimality_claim="Best verified solution found by the seeded search; no global proof.",
     )
     coarse_packages: list[RoutePackage] = []
     for heading, speed in _route_grid(
@@ -839,16 +883,23 @@ def solve_q3(
         exact_candidates.append((coverage_objective(union), package.plans))
     exact_candidates.sort(key=lambda item: item[0], reverse=True)
     starting_plans = exact_candidates[0][1]
-    locally_refined, _local_fast_score = _local_random_refine(
+    local_seed = seed + 301
+    local_iterations = 80 if quick else 320
+    locally_refined, _local_fast_score, local_trace = _local_random_refine(
         starting_plans,
-        seed=seed + 301,
-        iterations=80 if quick else 320,
+        seed=local_seed,
+        iterations=local_iterations,
         share_route_by_drone=True,
     )
     base_exact = exact_candidates[0][0]
     _, local_union = exact_evaluate(locally_refined, max_step=0.01)
     local_exact = coverage_objective(local_union)
     final_plans = locally_refined if local_exact > base_exact + 1e-8 else starting_plans
+    diagnostics.local_refinement_seed = local_seed
+    diagnostics.local_refinement_iterations = local_iterations
+    diagnostics.local_refinement_start_exact_objective = float(base_exact)
+    diagnostics.local_refinement_candidate_exact_objective = float(local_exact)
+    diagnostics.local_refinement_trace = local_trace
     diagnostics.fast_final_objective = coverage_objective(
         coverage_intervals(
             final_plans, lambda plan: sampled_centerline_intervals(plan, step=0.025)
@@ -922,7 +973,7 @@ def solve_q4(
         seed=seed,
         status="searching",
         method="temporally diverse single-bomb pools + cross-UAV coverage beam",
-        optimality_claim="Best verified solution found by the deterministic search; no global proof.",
+        optimality_claim="Best verified solution found by the seeded search; no global proof.",
     )
     pools = {
         drone_id: _single_candidate_pool(
@@ -968,10 +1019,12 @@ def solve_q4(
         exact_candidates.append((coverage_objective(union), state.plans))
     exact_candidates.sort(key=lambda item: item[0], reverse=True)
     starting_plans = exact_candidates[0][1]
-    locally_refined, _local_fast_score = _local_random_refine(
+    local_seed = seed + 401
+    local_iterations = 80 if quick else 280
+    locally_refined, _local_fast_score, local_trace = _local_random_refine(
         starting_plans,
-        seed=seed + 401,
-        iterations=80 if quick else 280,
+        seed=local_seed,
+        iterations=local_iterations,
         share_route_by_drone=False,
     )
     _, local_union = exact_evaluate(locally_refined, max_step=0.01)
@@ -981,6 +1034,11 @@ def solve_q4(
         if local_exact > exact_candidates[0][0] + 1e-8
         else starting_plans
     )
+    diagnostics.local_refinement_seed = local_seed
+    diagnostics.local_refinement_iterations = local_iterations
+    diagnostics.local_refinement_start_exact_objective = float(exact_candidates[0][0])
+    diagnostics.local_refinement_candidate_exact_objective = float(local_exact)
+    diagnostics.local_refinement_trace = local_trace
     diagnostics.fast_final_objective = coverage_objective(
         coverage_intervals(
             final_plans, lambda plan: sampled_centerline_intervals(plan, step=0.025)
@@ -1070,7 +1128,7 @@ def solve_q5(
         status="searching",
         method="route-consistent package generation + multi-UAV assignment beam",
         optimality_claim=(
-            "High-quality feasible solution from a deterministic restricted route library; "
+            "Verified feasible solution from a deterministic restricted route library; "
             "no global optimality proof."
         ),
     )

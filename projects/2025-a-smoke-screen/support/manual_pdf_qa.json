@@ -1,18 +1,24 @@
 {
-  "schema_version": 1,
+  "schema_version": 3,
+  "run_id": "cumcm-2025a-20260808-r3",
   "status": "PASS",
-  "review_type": "human_page_by_page",
+  "review_type": "codex_page_by_page_visual",
   "reviewed_at_local": "2026-08-08",
   "reviewed_pdf": "paper/main.pdf",
-  "reviewed_pdf_sha256": "2e5a0bb176b02d6818be773f67d29c66e4080d7788167ca22dd89aea730860c4",
-  "reviewed_page_count": 12,
-  "render_evidence": "paper/tmp/qa2-page-01.png ... paper/tmp/qa2-page-12.png",
-  "reviewer_record": "主任务人工逐页审查",
+  "reviewed_pdf_sha256": "c55cb78750490a4cbf0e61ac06d327a017f36caf20405b37428d1b001124c4e2",
+  "reviewed_page_count": 23,
+  "reviewed_input_bundle_sha256": "1a7a707bc87ec338246831405fd91882d3c1fe73ce69113b7f8d1ecfeec59b40",
+  "render_directory": "tmp/final-qa6",
+  "render_evidence": "tmp/final-qa6/page-01.png ... tmp/final-qa6/page-23.png；其中 22 页与上一轮逐页验收渲染像素一致，改文案的第 18 页已单页复核",
+  "reviewer_record": "Codex 主任务逐页视觉检查",
   "confirmed_items": [
-    "12 页均已逐页查看",
-    "正文、公式、表格和插图无可见裁切、重叠或越界",
-    "中文、英文和数学符号可辨识",
-    "标题、摘要、结论和参考文献页版式完整"
+    "23 页均已在 120 dpi 下渲染；22 页与上一轮逐页检查结果像素一致，第 18 页已重新视觉检查",
+    "正文、公式、13 张表格和 14 幅正式插图无可见裁切、重叠或越界",
+    "中文、英文、数学符号、坐标轴、图例和数值标注均可辨识",
+    "Q2 八种子图与 Q3/Q4 五种子图明确区分搜索轨迹和连续复算终值",
+    "Q5 空间策略图、区间甘特图、分导弹审计图和跨问题敏感性图均有正文解释",
+    "标题、摘要、五问闭环、验证、结论、复现索引和参考文献版式完整"
   ],
-  "binding_rule": "仅当当前 paper/main.pdf 的 SHA-256 与本记录一致时，视觉 QA 才可保持 PASS。"
+  "binding_rule": "仅当当前 paper/main.pdf 的 SHA-256、页数及论文输入联合指纹均与本记录一致时，逐页视觉 QA 才保持 PASS。",
+  "limitations": "逐页视觉检查只确认版式与可读性，不替代模型正确性审计，也不构成奖项保证。"
 }

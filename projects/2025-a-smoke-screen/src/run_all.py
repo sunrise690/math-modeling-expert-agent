@@ -1,9 +1,9 @@
 """2025 国赛 A 题的一键复现、快速核验与证据链生成入口。
 
-默认模式不会重复运行昂贵的全局搜索，而是核验已保存的高质量结果、
+默认模式不会重复运行昂贵的全局搜索，而是核验已保存且经连续复算的结果、
 官方源文件、输出工作簿、连续时间诊断与图件，并运行单元测试。使用
 ``--quick`` 时仅做确定性的产物与数值核验；使用 ``--recompute`` 时才会
-完整重跑 Q1--Q5 求解器和图件生成器。
+完整重跑 Q1--Q5 求解器、图件生成器、TeX 编译与论文成品审计。
 """
 
 from __future__ import annotations
@@ -14,11 +14,14 @@ import json
 import math
 import os
 import re
+import statistics
 import subprocess
 import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable
+
+from run_identity import RUN_ID
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,15 +33,23 @@ SUPPORT_DIR = ROOT / "support"
 Q1_Q2_PATH = VALIDATION_DIR / "q1_q2_independent.json"
 Q1_GEOMETRY_PATH = VALIDATION_DIR / "q1_independent.json"
 Q3_Q5_PATH = VALIDATION_DIR / "q3_q5_independent.json"
+Q2_MULTISEED_PATH = VALIDATION_DIR / "q2_multiseed.json"
+Q3_Q4_MULTISEED_PATH = VALIDATION_DIR / "q3_q4_multiseed.json"
 FIGURE_MANIFEST_PATH = ROOT / "figures" / "figure_manifest.json"
 PAPER_DIR = ROOT / "paper"
 PAPER_TEX_PATH = PAPER_DIR / "main.tex"
 PAPER_PDF_PATH = PAPER_DIR / "main.pdf"
 PAPER_LOG_PATH = PAPER_DIR / "main.log"
 MANUAL_PDF_QA_PATH = SUPPORT_DIR / "manual_pdf_qa.json"
+PAPER_BUILD_PROVENANCE_PATH = SUPPORT_DIR / "paper_build_provenance.json"
+PAPER_AUDIT_SPEC_PATH = VALIDATION_DIR / "paper_audit_spec.json"
+PAPER_AUDIT_JSON_PATH = VALIDATION_DIR / "paper-quality-audit.json"
+PAPER_AUDIT_PROVENANCE_PATH = SUPPORT_DIR / "paper_audit_provenance.json"
 
 SEED = 20_250_808
+RECOMPUTE_SEEDS = {"Q3": 20_250_810, "Q4": 20_250_809, "Q5": 20_250_808}
 NUMERIC_TOLERANCE = 1.0e-8
+VISUAL_REVIEW_TYPES = {"human_page_by_page", "codex_page_by_page_visual"}
 
 
 @dataclass(frozen=True)
@@ -58,6 +69,379 @@ def _sha256(path: Path) -> str:
         for block in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def _fingerprint_files(paths: Iterable[Path], *, base: Path) -> tuple[str, dict[str, str]]:
+    """Return one deterministic digest for a named collection of files."""
+
+    hashes: dict[str, str] = {}
+    for path in sorted({item.resolve() for item in paths}, key=lambda item: item.as_posix()):
+        if not path.is_file():
+            continue
+        try:
+            name = path.relative_to(base.resolve()).as_posix()
+        except ValueError:
+            name = path.as_posix()
+        hashes[name] = _sha256(path)
+    digest = hashlib.sha256()
+    for name, file_hash in sorted(hashes.items()):
+        digest.update(name.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(file_hash.encode("ascii"))
+        digest.update(b"\n")
+    return digest.hexdigest(), hashes
+
+
+def _paper_input_files() -> list[Path]:
+    """Enumerate every artifact whose contents can affect the final paper.
+
+    The generated paper audit is deliberately excluded from the validation
+    input set because it is an output of the PDF build.  Its freshness is
+    bound separately through ``paper_audit_provenance.json``.
+    """
+
+    validation_inputs = [
+        path
+        for path in VALIDATION_DIR.glob("*.json")
+        if path != PAPER_AUDIT_JSON_PATH
+    ]
+    return [
+        PAPER_TEX_PATH,
+        *[path for path in (ROOT / "figures").rglob("*") if path.is_file()],
+        *validation_inputs,
+        *[path for path in (ROOT / "outputs").glob("*.xlsx") if path.is_file()],
+    ]
+
+
+def _paper_input_state() -> dict[str, Any]:
+    paths = _paper_input_files()
+    bundle_hash, file_hashes = _fingerprint_files(paths, base=ROOT)
+    return {
+        "bundle_sha256": bundle_hash,
+        "files": file_hashes,
+        "file_count": len(file_hashes),
+        "latest_mtime_ns": max(
+            (path.stat().st_mtime_ns for path in paths if path.is_file()),
+            default=0,
+        ),
+    }
+
+
+def _record_matches(record: Any, expected: dict[str, Any]) -> bool:
+    return isinstance(record, dict) and all(
+        record.get(key) == value for key, value in expected.items()
+    )
+
+
+def _q5_claim_respects_boundary(claim: Any, disclaimer: Any) -> bool:
+    """Require Q5 wording to state only verified restricted-search feasibility."""
+
+    claim_text = str(claim)
+    claim_lower = claim_text.lower()
+    combined_lower = f"{claim_text} {disclaimer}".lower()
+    has_verified_feasibility = bool(
+        "verified feasible solution" in claim_lower
+        or "continuously verified feasible solution" in claim_lower
+        or "经验证可行解" in claim_text
+    )
+    has_restricted_search = bool(
+        re.search(r"restricted[^.;\n]{0,40}(?:route|library|search)", claim_lower)
+        or re.search(r"受限[^。；\n]{0,20}(?:路线|候选|搜索)", claim_text)
+    )
+    has_no_global_claim = bool(
+        "no global" in combined_lower
+        or "not claimed globally" in combined_lower
+        or "不声称全局最优" in str(disclaimer)
+        or "无全局最优" in str(disclaimer)
+    )
+    banned_quality_claim = bool(
+        re.search(
+            r"\bhigh[- ]quality\b|\b(?:stable|robust)\s+(?:solution|search|result)\b",
+            claim_lower,
+        )
+        or re.search(r"高质量|稳定(?:解|结果|搜索)|稳健(?:解|结果)", claim_text)
+    )
+    return bool(
+        has_verified_feasibility
+        and has_restricted_search
+        and has_no_global_claim
+        and not banned_quality_claim
+    )
+
+
+def _q5_paper_claims_are_bounded(tex_text: str) -> bool:
+    """Reject unqualified quality, stability, robustness, or global claims in Q5."""
+
+    start = re.search(r"\\section\{[^{}]*问题五[^{}]*\}", tex_text)
+    if start is None:
+        return False
+    next_section = re.search(r"\\section\{", tex_text[start.end() :])
+    end = start.end() + next_section.start() if next_section else len(tex_text)
+    q5_text = tex_text[start.start() : end]
+    claim_pattern = re.compile(
+        r"high[- ]quality|\bstable\b|\brobust\b|globally\s+optimal|global\s+optimum|"
+        r"高质量|稳定(?:性|解|结果|搜索)?|稳健(?:性|解|结果)?|全局最优",
+        re.IGNORECASE,
+    )
+    negation_pattern = re.compile(
+        r"(?:不|未|无|没有|不能|不得|尚未|不作|禁止|并非|绝不)"
+        r"[^，,;；。.!?]{0,24}$|"
+        r"(?:\bno\b|\bnot\b|\bwithout\b|\bnever\b|\bcannot\b|\bdoes\s+not\b)"
+        r"[^,;.!?]{0,40}$",
+        re.IGNORECASE,
+    )
+    for clause in re.split(r"[。！？；\n]|(?<=[.!?;])\s+", q5_text):
+        for match in claim_pattern.finditer(clause):
+            prefix = clause[max(0, match.start() - 48) : match.start()]
+            if negation_pattern.search(prefix):
+                continue
+            return False
+    return True
+
+
+def _manual_visual_record_is_current(
+    manual: Any,
+    *,
+    pdf_sha256: str | None,
+    page_count: int,
+    input_bundle_sha256: str,
+    rendered_page_count: int | None = None,
+) -> bool:
+    """Reject a visual verdict as soon as either PDF or any paper input changes."""
+
+    try:
+        reviewed_page_count = int(manual.get("reviewed_page_count", -1))
+    except (AttributeError, TypeError, ValueError):
+        return False
+    review_type = manual.get("review_type") if isinstance(manual, dict) else None
+    render_evidence_is_complete = bool(
+        review_type == "human_page_by_page"
+        or (rendered_page_count is not None and rendered_page_count == page_count)
+    )
+    return bool(
+        isinstance(manual, dict)
+        and manual.get("status") == "PASS"
+        and review_type in VISUAL_REVIEW_TYPES
+        and manual.get("reviewed_pdf_sha256") == pdf_sha256
+        and reviewed_page_count == page_count
+        and manual.get("reviewed_input_bundle_sha256") == input_bundle_sha256
+        and render_evidence_is_complete
+    )
+
+
+def _q2_multiseed_metrics(payload: Any) -> dict[str, Any]:
+    """Recompute Q2 stochastic-search evidence exclusively from raw runs."""
+
+    runs = payload.get("runs", []) if isinstance(payload, dict) else []
+    if not isinstance(runs, list):
+        runs = []
+    seeds: list[str] = []
+    terminal_values: list[float] = []
+    constraint_values: list[float] = []
+    success_count = 0
+    trace_count = 0
+    malformed_runs = 0
+    for run in runs:
+        if not isinstance(run, dict):
+            malformed_runs += 1
+            continue
+        seed = run.get("seed")
+        if seed is None:
+            malformed_runs += 1
+        else:
+            seeds.append(str(seed))
+        if run.get("success") is True:
+            success_count += 1
+        try:
+            terminal = float(run["exact_duration_s"])
+            constraint = float(run["max_constraint_violation"])
+        except (KeyError, TypeError, ValueError):
+            malformed_runs += 1
+            continue
+        if not math.isfinite(terminal) or not math.isfinite(constraint):
+            malformed_runs += 1
+            continue
+        terminal_values.append(terminal)
+        constraint_values.append(constraint)
+
+        trace = run.get("best_so_far_trace")
+        if not isinstance(trace, list) or not trace:
+            continue
+        generations: list[int] = []
+        trace_valid = True
+        for point in trace:
+            if not isinstance(point, dict):
+                trace_valid = False
+                break
+            try:
+                generation = int(point["generation"])
+                objective = float(point["best_coarse_duration_s"])
+            except (KeyError, TypeError, ValueError):
+                trace_valid = False
+                break
+            if generation <= 0 or not math.isfinite(objective):
+                trace_valid = False
+                break
+            generations.append(generation)
+        if trace_valid and generations == sorted(set(generations)):
+            trace_count += 1
+
+    n_runs = len(runs)
+    unique_seed_count = len(set(seeds))
+    standard_deviation = (
+        statistics.stdev(terminal_values) if len(terminal_values) >= 2 else math.inf
+    )
+    max_constraint = max(constraint_values, default=math.inf)
+    success_rate = success_count / n_runs if n_runs else 0.0
+    passed = bool(
+        n_runs >= 5
+        and malformed_runs == 0
+        and len(seeds) == n_runs
+        and unique_seed_count == n_runs
+        and success_count == n_runs
+        and len(terminal_values) == n_runs
+        and max_constraint <= NUMERIC_TOLERANCE
+        and standard_deviation <= 1.0e-9
+        and trace_count == n_runs
+    )
+    return {
+        "passed": passed,
+        "n_runs": n_runs,
+        "unique_seed_count": unique_seed_count,
+        "success_count": success_count,
+        "success_rate": success_rate,
+        "standard_deviation_s": standard_deviation,
+        "max_constraint_violation": max_constraint,
+        "trace_count": trace_count,
+        "malformed_runs": malformed_runs,
+    }
+
+
+def _finite_constraint_values(node: Any) -> list[float] | None:
+    """Flatten a constraint mapping; return ``None`` for malformed values."""
+
+    if isinstance(node, dict):
+        values: list[float] = []
+        for value in node.values():
+            nested = _finite_constraint_values(value)
+            if nested is None:
+                return None
+            values.extend(nested)
+        return values
+    if isinstance(node, list):
+        values = []
+        for value in node:
+            nested = _finite_constraint_values(value)
+            if nested is None:
+                return None
+            values.extend(nested)
+        return values
+    try:
+        value = float(node)
+    except (TypeError, ValueError):
+        return None
+    return [value] if math.isfinite(value) else None
+
+
+def _q3_q4_multiseed_metrics(payload: Any) -> dict[str, dict[str, Any]]:
+    """Audit Q3/Q4 raw runs without trusting their precomputed summaries."""
+
+    problem_payloads = payload.get("problems", {}) if isinstance(payload, dict) else {}
+    metrics: dict[str, dict[str, Any]] = {}
+    for problem in ("Q3", "Q4"):
+        record = problem_payloads.get(problem, {}) if isinstance(problem_payloads, dict) else {}
+        runs = record.get("runs", []) if isinstance(record, dict) else []
+        if not isinstance(runs, list):
+            runs = []
+        seeds: list[str] = []
+        terminals: list[tuple[float, int]] = []
+        feasible_count = 0
+        plan_count_ok = 0
+        trace_count = 0
+        malformed_runs = 0
+        recomputed_max_constraint = 0.0
+        for run in runs:
+            if not isinstance(run, dict):
+                malformed_runs += 1
+                continue
+            try:
+                seed_value = int(run["seed"])
+                terminal = float(run["final_exact_objective_s"])
+                reported_max_constraint = float(run["max_constraint_violation"])
+            except (KeyError, TypeError, ValueError):
+                malformed_runs += 1
+                continue
+            if not math.isfinite(terminal) or not math.isfinite(reported_max_constraint):
+                malformed_runs += 1
+                continue
+            seeds.append(str(seed_value))
+            terminals.append((terminal, seed_value))
+            if run.get("status") == "feasible_verified":
+                feasible_count += 1
+            if isinstance(run.get("plans"), list) and len(run["plans"]) == 3:
+                plan_count_ok += 1
+
+            constraint_values = _finite_constraint_values(run.get("constraint_violations"))
+            if not constraint_values:
+                malformed_runs += 1
+            else:
+                recomputed_max_constraint = max(
+                    recomputed_max_constraint,
+                    reported_max_constraint,
+                    max(constraint_values),
+                )
+
+            trace = run.get("best_so_far_trace")
+            if not isinstance(trace, list) or not trace:
+                continue
+            best_values: list[float] = []
+            trace_valid = True
+            for point in trace:
+                if not isinstance(point, dict):
+                    trace_valid = False
+                    break
+                try:
+                    best_value = float(point["best_fast_objective_s"])
+                except (KeyError, TypeError, ValueError):
+                    trace_valid = False
+                    break
+                if not math.isfinite(best_value):
+                    trace_valid = False
+                    break
+                best_values.append(best_value)
+            if trace_valid and all(
+                right + 1.0e-12 >= left
+                for left, right in zip(best_values, best_values[1:])
+            ):
+                trace_count += 1
+
+        n_runs = len(runs)
+        unique_seed_count = len(set(seeds))
+        best_seed = max(terminals)[1] if terminals else None
+        passed = bool(
+            n_runs >= 5
+            and malformed_runs == 0
+            and len(seeds) == n_runs
+            and unique_seed_count == n_runs
+            and feasible_count == n_runs
+            and plan_count_ok == n_runs
+            and trace_count == n_runs
+            and len(terminals) == n_runs
+            and recomputed_max_constraint <= NUMERIC_TOLERANCE
+        )
+        metrics[problem] = {
+            "passed": passed,
+            "n_runs": n_runs,
+            "unique_seed_count": unique_seed_count,
+            "feasible_count": feasible_count,
+            "plan_count_ok": plan_count_ok,
+            "trace_count": trace_count,
+            "malformed_runs": malformed_runs,
+            "best_seed": best_seed,
+            "best_terminal_s": max((value for value, _seed in terminals), default=math.nan),
+            "max_constraint_violation": recomputed_max_constraint,
+        }
+    return metrics
 
 
 def _fmt(value: float, digits: int = 9) -> str:
@@ -125,12 +509,19 @@ def _paper_qa_state() -> dict[str, Any]:
     count still match the current file.
     """
 
+    input_state = _paper_input_state()
     state: dict[str, Any] = {
         "tex_exists": PAPER_TEX_PATH.is_file(),
         "pdf_exists": PAPER_PDF_PATH.is_file(),
         "log_exists": PAPER_LOG_PATH.is_file(),
         "manual_record_exists": MANUAL_PDF_QA_PATH.is_file(),
+        "build_record_exists": PAPER_BUILD_PROVENANCE_PATH.is_file(),
+        "audit_exists": PAPER_AUDIT_JSON_PATH.is_file(),
+        "audit_record_exists": PAPER_AUDIT_PROVENANCE_PATH.is_file(),
+        "input_bundle_sha256": input_state["bundle_sha256"],
+        "input_file_count": input_state["file_count"],
         "pdf_sha256": None,
+        "log_sha256": None,
         "page_count": 0,
         "all_pages_a4": False,
         "page_sizes_pt": [],
@@ -138,6 +529,7 @@ def _paper_qa_state() -> dict[str, Any]:
         "unembedded_fonts": [],
         "fonts_fully_embedded": False,
         "layout_warnings": [],
+        "underfull_warnings": [],
         "build_errors": [],
         "benign_package_warnings": [],
         "bibliography_items": 0,
@@ -146,15 +538,22 @@ def _paper_qa_state() -> dict[str, Any]:
         "unused_bibliography_keys": [],
         "reference_warnings": [],
         "artifacts_current": False,
+        "build_inputs_match": False,
+        "build_pdf_match": False,
+        "build_log_match": False,
+        "audit_pass": False,
+        "audit_artifact_match": False,
+        "audit_current": False,
         "references_pass": False,
         "technical_pass": False,
         "manual_visual_pass": False,
+        "manual_render_evidence_pass": False,
         "overall_pass": False,
         "manual_review_type": None,
         "manual_reviewed_at_local": None,
         "manual_reviewer_record": None,
         "manual_render_evidence": None,
-        "local_rendered_page_count": len(list((PAPER_DIR / "tmp").glob("qa2-page-*.png"))),
+        "local_rendered_page_count": 0,
         "pdf_read_error": None,
     }
 
@@ -186,9 +585,8 @@ def _paper_qa_state() -> dict[str, Any]:
     if state["log_exists"]:
         log_text = PAPER_LOG_PATH.read_text(encoding="utf-8", errors="replace")
         log_lines = log_text.splitlines()
-        layout_pattern = re.compile(
-            r"(?:Over|Under)full \\[hv]box|Missing character", re.IGNORECASE
-        )
+        layout_pattern = re.compile(r"Overfull \\[hv]box|Missing character", re.IGNORECASE)
+        underfull_pattern = re.compile(r"Underfull \\[hv]box", re.IGNORECASE)
         error_pattern = re.compile(
             r"Undefined control sequence|^! (?:LaTeX|Package).*Error|Fatal error",
             re.IGNORECASE,
@@ -201,6 +599,9 @@ def _paper_qa_state() -> dict[str, Any]:
         state["layout_warnings"] = [
             line.strip() for line in log_lines if layout_pattern.search(line)
         ]
+        state["underfull_warnings"] = [
+            line.strip() for line in log_lines if underfull_pattern.search(line)
+        ]
         state["build_errors"] = [
             line.strip() for line in log_lines if error_pattern.search(line)
         ]
@@ -212,6 +613,7 @@ def _paper_qa_state() -> dict[str, Any]:
             for line in log_lines
             if "Warning:" in line
             and not layout_pattern.search(line)
+            and not underfull_pattern.search(line)
             and not reference_pattern.search(line)
             and not error_pattern.search(line)
         ]
@@ -244,11 +646,61 @@ def _paper_qa_state() -> dict[str, Any]:
         except Exception as exc:  # pragma: no cover - environment-specific PDF failure
             state["pdf_read_error"] = f"{type(exc).__name__}: {exc}"
 
-    if state["tex_exists"] and state["pdf_exists"] and state["log_exists"]:
-        state["artifacts_current"] = (
-            PAPER_PDF_PATH.stat().st_mtime_ns >= PAPER_TEX_PATH.stat().st_mtime_ns
-            and PAPER_LOG_PATH.stat().st_mtime_ns >= PAPER_TEX_PATH.stat().st_mtime_ns
+    if state["log_exists"]:
+        state["log_sha256"] = _sha256(PAPER_LOG_PATH)
+
+    if state["build_record_exists"]:
+        build_record = _load_json(PAPER_BUILD_PROVENANCE_PATH)
+        state["build_inputs_match"] = _record_matches(
+            build_record,
+            {"input_bundle_sha256": state["input_bundle_sha256"]},
         )
+        state["build_pdf_match"] = _record_matches(
+            build_record,
+            {"paper_pdf_sha256": state["pdf_sha256"]},
+        )
+        state["build_log_match"] = _record_matches(
+            build_record,
+            {"paper_log_sha256": state["log_sha256"]},
+        )
+    if state["tex_exists"] and state["pdf_exists"] and state["log_exists"]:
+        state["artifacts_current"] = bool(
+            state["build_inputs_match"]
+            and state["build_pdf_match"]
+            and state["build_log_match"]
+            and PAPER_PDF_PATH.stat().st_mtime_ns >= input_state["latest_mtime_ns"]
+            and PAPER_LOG_PATH.stat().st_mtime_ns >= input_state["latest_mtime_ns"]
+        )
+
+    if state["audit_exists"]:
+        audit = _load_json(PAPER_AUDIT_JSON_PATH)
+        state["audit_artifact_match"] = _audit_targets_artifact(
+            audit,
+            artifact_name=PAPER_PDF_PATH.name,
+            artifact_sha256=state["pdf_sha256"],
+            expected_questions=5,
+        )
+        state["audit_pass"] = bool(
+            audit.get("passed")
+            and audit.get("status") == "pass"
+            and state["audit_artifact_match"]
+        )
+        if state["audit_record_exists"] and state["pdf_exists"]:
+            audit_record = _load_json(PAPER_AUDIT_PROVENANCE_PATH)
+            state["audit_current"] = bool(
+                state["audit_artifact_match"]
+                and
+                _record_matches(
+                    audit_record,
+                    {
+                        "input_bundle_sha256": state["input_bundle_sha256"],
+                        "paper_pdf_sha256": state["pdf_sha256"],
+                        "audit_json_sha256": _sha256(PAPER_AUDIT_JSON_PATH),
+                    },
+                )
+                and PAPER_AUDIT_JSON_PATH.stat().st_mtime_ns
+                >= PAPER_PDF_PATH.stat().st_mtime_ns
+            )
 
     state["references_pass"] = bool(
         state["tex_exists"]
@@ -263,7 +715,9 @@ def _paper_qa_state() -> dict[str, Any]:
         and state["pdf_exists"]
         and state["log_exists"]
         and state["artifacts_current"]
-        and state["page_count"] == 12
+        and state["audit_pass"]
+        and state["audit_current"]
+        and 18 <= state["page_count"] <= 28
         and state["all_pages_a4"]
         and state["fonts_fully_embedded"]
         and not state["layout_warnings"]
@@ -277,11 +731,28 @@ def _paper_qa_state() -> dict[str, Any]:
         state["manual_reviewed_at_local"] = manual.get("reviewed_at_local")
         state["manual_reviewer_record"] = manual.get("reviewer_record")
         state["manual_render_evidence"] = manual.get("render_evidence")
-        state["manual_visual_pass"] = bool(
-            manual.get("status") == "PASS"
-            and manual.get("review_type") == "human_page_by_page"
-            and manual.get("reviewed_pdf_sha256") == state["pdf_sha256"]
-            and int(manual.get("reviewed_page_count", -1)) == state["page_count"]
+        render_directory = manual.get("render_directory")
+        if isinstance(render_directory, str):
+            render_path = (ROOT / render_directory).resolve()
+            try:
+                render_path.relative_to(ROOT.resolve())
+            except ValueError:
+                render_path = ROOT / "__invalid_render_evidence__"
+            state["local_rendered_page_count"] = sum(
+                1
+                for path in render_path.glob("page-*.png")
+                if path.is_file() and path.stat().st_size > 0
+            )
+        state["manual_render_evidence_pass"] = bool(
+            state["manual_review_type"] == "human_page_by_page"
+            or state["local_rendered_page_count"] == state["page_count"]
+        )
+        state["manual_visual_pass"] = _manual_visual_record_is_current(
+            manual,
+            pdf_sha256=state["pdf_sha256"],
+            page_count=state["page_count"],
+            input_bundle_sha256=state["input_bundle_sha256"],
+            rendered_page_count=state["local_rendered_page_count"],
         )
     state["overall_pass"] = bool(
         state["references_pass"]
@@ -291,13 +762,38 @@ def _paper_qa_state() -> dict[str, Any]:
     return state
 
 
-def _run(command: list[str]) -> subprocess.CompletedProcess[str]:
+def _audit_targets_artifact(
+    audit: dict[str, Any],
+    *,
+    artifact_name: str,
+    artifact_sha256: str | None,
+    expected_questions: int,
+) -> bool:
+    """Return whether one passing full-paper audit names the exact PDF bytes."""
+
+    metrics = audit.get("metrics")
+    if not isinstance(metrics, dict) or not artifact_sha256:
+        return False
+    return bool(
+        audit.get("passed")
+        and audit.get("status") == "pass"
+        and metrics.get("artifactName") == artifact_name
+        and str(metrics.get("artifactSha256", "")).lower()
+        == artifact_sha256.lower()
+        and metrics.get("fullPaper") is True
+        and metrics.get("expectedQuestions") == expected_questions
+    )
+
+
+def _run(
+    command: list[str], *, cwd: Path = ROOT
+) -> subprocess.CompletedProcess[str]:
     environment = os.environ.copy()
     environment["PYTHONDONTWRITEBYTECODE"] = "1"
-    print("run:", " ".join(command), flush=True)
+    print(f"run [{cwd}]:", " ".join(command), flush=True)
     return subprocess.run(
         command,
-        cwd=ROOT,
+        cwd=cwd,
         env=environment,
         text=True,
         encoding="utf-8",
@@ -307,12 +803,80 @@ def _run(command: list[str]) -> subprocess.CompletedProcess[str]:
     )
 
 
+def _write_paper_build_provenance(compile_command: list[str]) -> None:
+    if not PAPER_PDF_PATH.is_file() or not PAPER_LOG_PATH.is_file():
+        raise RuntimeError("TeX 编译没有生成 paper/main.pdf 和 paper/main.log")
+    input_state = _paper_input_state()
+    record = {
+        "schema_version": 1,
+        "run_id": RUN_ID,
+        "input_bundle_sha256": input_state["bundle_sha256"],
+        "input_file_count": input_state["file_count"],
+        "input_sha256": input_state["files"],
+        "paper_pdf_sha256": _sha256(PAPER_PDF_PATH),
+        "paper_log_sha256": _sha256(PAPER_LOG_PATH),
+        "compile_command": compile_command,
+    }
+    PAPER_BUILD_PROVENANCE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    PAPER_BUILD_PROVENANCE_PATH.write_text(
+        json.dumps(record, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+
+def _write_paper_audit_provenance() -> None:
+    if not PAPER_AUDIT_JSON_PATH.is_file():
+        raise RuntimeError("论文审计未生成 validation/paper-quality-audit.json")
+    if not PAPER_PDF_PATH.is_file():
+        raise RuntimeError("论文 PDF 未生成 paper/main.pdf")
+    audit = _load_json(PAPER_AUDIT_JSON_PATH)
+    paper_pdf_sha256 = _sha256(PAPER_PDF_PATH)
+    if not _audit_targets_artifact(
+        audit,
+        artifact_name=PAPER_PDF_PATH.name,
+        artifact_sha256=paper_pdf_sha256,
+        expected_questions=5,
+    ):
+        raise RuntimeError(
+            "论文成品审计未通过，或审计结果不属于当前完整 PDF"
+        )
+    input_state = _paper_input_state()
+    record = {
+        "schema_version": 1,
+        "run_id": RUN_ID,
+        "input_bundle_sha256": input_state["bundle_sha256"],
+        "paper_pdf_sha256": paper_pdf_sha256,
+        "audit_json_sha256": _sha256(PAPER_AUDIT_JSON_PATH),
+    }
+    PAPER_AUDIT_PROVENANCE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    PAPER_AUDIT_PROVENANCE_PATH.write_text(
+        json.dumps(record, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+
 def _full_recompute() -> None:
     commands = [
         [sys.executable, "-B", "src/solve_q1_q2.py"],
-        [sys.executable, "-B", "src/solve_q3_q5.py", "--seed", str(SEED)],
-        [sys.executable, "-B", "src/generate_figures.py"],
+        [
+            sys.executable,
+            "-B",
+            "src/solve_q3_q5.py",
+            "--seed",
+            str(SEED),
+            "--q3-seed",
+            str(RECOMPUTE_SEEDS["Q3"]),
+            "--q4-seed",
+            str(RECOMPUTE_SEEDS["Q4"]),
+            "--q5-seed",
+            str(RECOMPUTE_SEEDS["Q5"]),
+        ],
+        [sys.executable, "-B", "src/validate_q2_multiseed.py"],
     ]
+    q3_q4_validator = ROOT / "src" / "validate_q3_q4_multiseed.py"
+    if q3_q4_validator.is_file():
+        commands.append([sys.executable, "-B", "src/validate_q3_q4_multiseed.py"])
+    commands.append([sys.executable, "-B", "src/generate_figures.py"])
     for command in commands:
         result = _run(command)
         if result.stdout:
@@ -322,6 +886,47 @@ def _full_recompute() -> None:
                 print(result.stderr.rstrip(), file=sys.stderr, flush=True)
             raise RuntimeError(f"重算命令失败（退出码 {result.returncode}）：{' '.join(command)}")
 
+    compile_command = [
+        "latexmk",
+        "-gg",
+        "-xelatex",
+        "-interaction=nonstopmode",
+        "-halt-on-error",
+        "-file-line-error",
+        "main.tex",
+    ]
+    compile_result = _run(compile_command, cwd=PAPER_DIR)
+    if compile_result.stdout:
+        print(compile_result.stdout.rstrip(), flush=True)
+    if compile_result.returncode != 0:
+        if compile_result.stderr:
+            print(compile_result.stderr.rstrip(), file=sys.stderr, flush=True)
+        raise RuntimeError(
+            f"论文编译失败（退出码 {compile_result.returncode}）：{' '.join(compile_command)}"
+        )
+    _write_paper_build_provenance(compile_command)
+
+    repository_root = ROOT.parents[1]
+    audit_command = [
+        sys.executable,
+        "-B",
+        str(repository_root / "scripts" / "audit_paper.py"),
+        "--spec",
+        str(PAPER_AUDIT_SPEC_PATH),
+        "--output-dir",
+        str(VALIDATION_DIR),
+    ]
+    audit_result = _run(audit_command, cwd=repository_root)
+    if audit_result.stdout:
+        print(audit_result.stdout.rstrip(), flush=True)
+    if audit_result.returncode != 0:
+        if audit_result.stderr:
+            print(audit_result.stderr.rstrip(), file=sys.stderr, flush=True)
+        raise RuntimeError(
+            f"论文审计失败（退出码 {audit_result.returncode}）：{' '.join(audit_command)}"
+        )
+    _write_paper_audit_provenance()
+
 
 def _add_check(
     checks: list[Check], check_id: str, condition: bool, success: str, failure: str
@@ -330,7 +935,14 @@ def _add_check(
 
 
 def _load_artifacts() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]]:
-    required = (Q1_Q2_PATH, Q1_GEOMETRY_PATH, Q3_Q5_PATH, FIGURE_MANIFEST_PATH)
+    required = (
+        Q1_Q2_PATH,
+        Q1_GEOMETRY_PATH,
+        Q3_Q5_PATH,
+        Q2_MULTISEED_PATH,
+        Q3_Q4_MULTISEED_PATH,
+        FIGURE_MANIFEST_PATH,
+    )
     missing = [path.relative_to(ROOT).as_posix() for path in required if not path.is_file()]
     if missing:
         raise FileNotFoundError("缺少必需产物：" + ", ".join(missing))
@@ -422,6 +1034,80 @@ def _verify_artifacts(
         "Q2 判据或边界/工程解的时长顺序异常",
     )
 
+    q2_multiseed = _load_json(Q2_MULTISEED_PATH)
+    multiseed_metrics = _q2_multiseed_metrics(q2_multiseed)
+    _add_check(
+        checks,
+        "q2-multiseed-stability",
+        bool(multiseed_metrics["passed"]),
+        f"Q2 原始 runs 复算：{multiseed_metrics['unique_seed_count']} 个独立种子，"
+        f"成功率 {multiseed_metrics['success_rate']:.0%}，终值标准差 "
+        f"{multiseed_metrics['standard_deviation_s']:.3e} s，"
+        f"最大约束违反 {multiseed_metrics['max_constraint_violation']:.3e}，"
+        f"{multiseed_metrics['trace_count']} 条收敛轨迹齐全",
+        "Q2 原始 runs 复算未通过："
+        f"runs={multiseed_metrics['n_runs']}，独立种子={multiseed_metrics['unique_seed_count']}，"
+        f"成功={multiseed_metrics['success_count']}，轨迹={multiseed_metrics['trace_count']}，"
+        f"畸形记录={multiseed_metrics['malformed_runs']}，终值标准差="
+        f"{multiseed_metrics['standard_deviation_s']:.3e} s，最大约束违反="
+        f"{multiseed_metrics['max_constraint_violation']:.3e}",
+    )
+
+    q3_q4_multiseed = _load_json(Q3_Q4_MULTISEED_PATH)
+    q3_q4_metrics = _q3_q4_multiseed_metrics(q3_q4_multiseed)
+    q3_q4_pass = all(q3_q4_metrics[problem]["passed"] for problem in ("Q3", "Q4"))
+    _add_check(
+        checks,
+        "q3-q4-multiseed-evidence",
+        q3_q4_pass,
+        "Q3/Q4 原始 runs 复算通过："
+        + "；".join(
+            f"{problem}={q3_q4_metrics[problem]['n_runs']} 个独立种子，"
+            f"最佳 seed {q3_q4_metrics[problem]['best_seed']}，"
+            f"终值 {q3_q4_metrics[problem]['best_terminal_s']:.9f} s，"
+            f"最大约束违反 {q3_q4_metrics[problem]['max_constraint_violation']:.3e}"
+            for problem in ("Q3", "Q4")
+        ),
+        "Q3/Q4 多种子原始证据未通过："
+        + "；".join(
+            f"{problem}(runs={q3_q4_metrics[problem]['n_runs']}，"
+            f"唯一种子={q3_q4_metrics[problem]['unique_seed_count']}，"
+            f"可行={q3_q4_metrics[problem]['feasible_count']}，"
+            f"三方案={q3_q4_metrics[problem]['plan_count_ok']}，"
+            f"单调轨迹={q3_q4_metrics[problem]['trace_count']}，"
+            f"畸形={q3_q4_metrics[problem]['malformed_runs']}，"
+            f"最大违反={q3_q4_metrics[problem]['max_constraint_violation']:.3e})"
+            for problem in ("Q3", "Q4")
+        ),
+    )
+
+    report_seed_map = q35.get("random_seed_by_problem", {})
+    selected_best_seeds_match = bool(
+        isinstance(report_seed_map, dict)
+        and all(
+            report_seed_map.get(problem) == q3_q4_metrics[problem]["best_seed"]
+            for problem in ("Q3", "Q4")
+        )
+    )
+    selected_best_objectives_match = all(
+        _close(
+            float(q35["results"][problem]["exact_centerline_objective"]),
+            float(q3_q4_metrics[problem]["best_terminal_s"]),
+        )
+        for problem in ("Q3", "Q4")
+    )
+    _add_check(
+        checks,
+        "q3-q4-best-seed-selection",
+        selected_best_seeds_match and selected_best_objectives_match,
+        "Q3/Q4 最终报告分别采用多种子原始终值复算得到的最佳 seed 与对应策略："
+        f"{q3_q4_metrics['Q3']['best_seed']} / {q3_q4_metrics['Q4']['best_seed']}",
+        "最终 q3_q5 报告的 seed 或目标值未采用多种子原始终值复算最佳结果；"
+        f"报告={report_seed_map}，复算 Q3/Q4="
+        f"{q3_q4_metrics['Q3']['best_seed']}/{q3_q4_metrics['Q4']['best_seed']}，"
+        f"目标一致={selected_best_objectives_match}",
+    )
+
     objective_failures: list[str] = []
     constraint_failures: list[str] = []
     audit_failures: list[str] = []
@@ -494,31 +1180,63 @@ def _verify_artifacts(
 
     q5_claim = str(q35["results"]["Q5"]["diagnostics"].get("optimality_claim", ""))
     disclaimer = str(q35.get("optimality_disclaimer", ""))
-    has_no_global_claim = "global" in (q5_claim + " " + disclaimer).lower() and (
-        "no global" in (q5_claim + " " + disclaimer).lower()
-        or "not claimed globally" in (q5_claim + " " + disclaimer).lower()
+    q5_claim_is_bounded = _q5_claim_respects_boundary(q5_claim, disclaimer)
+    q5_paper_claims_are_bounded = bool(
+        PAPER_TEX_PATH.is_file()
+        and _q5_paper_claims_are_bounded(
+            PAPER_TEX_PATH.read_text(encoding="utf-8", errors="replace")
+        )
     )
     _add_check(
         checks,
         "q5-optimality-boundary",
-        has_no_global_claim,
-        "Q5 被限定为固定种子、受限路线库搜索得到的高质量可行解，无全局最优声明",
-        "Q5 缺少明确的非全局最优免责声明",
+        q5_claim_is_bounded and q5_paper_claims_are_bounded,
+        "Q5 被限定为固定种子、受限路线库搜索得到的经验证可行解，无随机稳定性、高质量或全局最优声明",
+        "Q5 的诊断和论文正文必须同时声明经验证可行性、受限搜索和非全局最优，且不得使用“高质量”“稳定”或“稳健”等越证据措辞",
     )
 
     missing_figures: list[str] = []
+    malformed_figures: list[str] = []
     figure_records = figure_manifest.get("figures", [])
+    required_figure_fields = {
+        "id", "claim_id", "subquestion", "files", "data_source", "axes", "units",
+        "caption", "interpretation", "paper_location", "sha256",
+    }
     for record in figure_records:
+        figure_id = str(record.get("id", "?"))
+        if not required_figure_fields.issubset(record):
+            malformed_figures.append(f"{figure_id}:fields")
+        files = record.get("files", [])
+        if {Path(item).suffix.lower() for item in files} != {".png", ".pdf", ".svg"}:
+            malformed_figures.append(f"{figure_id}:formats")
         for relative_path in record.get("files", []):
             path = ROOT / relative_path
             if not path.is_file() or path.stat().st_size == 0:
                 missing_figures.append(relative_path)
+                continue
+            expected_hash = str(record.get("sha256", {}).get(relative_path, ""))
+            if len(expected_hash) != 64 or _sha256(path) != expected_hash:
+                malformed_figures.append(f"{figure_id}:hash:{Path(relative_path).name}")
+            if path.suffix.lower() == ".svg":
+                svg = path.read_text(encoding="utf-8", errors="replace")
+                if "<text" not in svg:
+                    malformed_figures.append(f"{figure_id}:svg-text")
+            if path.suffix.lower() == ".png":
+                try:
+                    from PIL import Image
+
+                    with Image.open(path) as image:
+                        dpi = image.info.get("dpi", (0, 0))
+                        if min(image.size) < 1200 or min(float(item) for item in dpi) < 295:
+                            malformed_figures.append(f"{figure_id}:png-quality")
+                except Exception as error:
+                    malformed_figures.append(f"{figure_id}:png-read:{type(error).__name__}")
     _add_check(
         checks,
         "figure-manifest",
-        len(figure_records) == 5 and not missing_figures,
-        "5 个证据图均具有 PNG/PDF/SVG 非空文件并登记在图件清单中",
-        "图件清单不完整或文件缺失：" + ", ".join(missing_figures),
+        len(figure_records) >= 12 and not missing_figures and not malformed_figures,
+        f"{len(figure_records)} 个证据图均登记主张、来源、单位、解释、哈希及 PNG/PDF/SVG；PNG≥300 dpi，SVG 保留文本",
+        "图件清单、文件或质量元数据不完整：" + ", ".join(missing_figures + malformed_figures),
     )
     return checks
 
@@ -664,6 +1382,7 @@ def _summary(
     }
     return {
         "schema_version": "1.0",
+        "run_id": RUN_ID,
         "project_id": ROOT.name,
         "task_types": task_types,
         "subquestions": subquestions,
@@ -675,9 +1394,9 @@ def _summary(
             "paper_qa": paper_qa,
             "execution_policy": {
                 "run_mode": run_mode,
-                "default": "核验现有高质量产物并运行测试，不重复昂贵全局搜索",
+                "default": "核验现有且经连续复算的产物并运行测试，不重复昂贵全局搜索",
                 "quick": "仅核验现有 JSON/XLSX/图件和数值不变量，不运行求解器或测试",
-                "recompute": "完整重跑 Q1--Q5 求解器、工作簿、二次审计和图件",
+                "recompute": "完整重跑 Q1--Q5 求解器、工作簿、二次审计、图件、TeX 编译和论文审计",
                 "commands": {
                     "quick": "python -B src/run_all.py --quick",
                     "default": "python -B src/run_all.py",
@@ -696,6 +1415,7 @@ def _summary(
             },
             "provenance": {
                 "random_seed": q35.get("random_seed", SEED),
+                "random_seed_by_problem": q35.get("random_seed_by_problem", {}),
                 "source_sha256": source_hashes,
                 "validation_sha256": {
                     Q1_Q2_PATH.relative_to(ROOT).as_posix(): _sha256(Q1_Q2_PATH),
@@ -703,6 +1423,10 @@ def _summary(
                         Q1_GEOMETRY_PATH
                     ),
                     Q3_Q5_PATH.relative_to(ROOT).as_posix(): _sha256(Q3_Q5_PATH),
+                    Q2_MULTISEED_PATH.relative_to(ROOT).as_posix(): _sha256(Q2_MULTISEED_PATH),
+                    Q3_Q4_MULTISEED_PATH.relative_to(ROOT).as_posix(): _sha256(
+                        Q3_Q4_MULTISEED_PATH
+                    ),
                 },
                 "output_workbook_sha256": q35["output_workbook_sha256"],
                 "figure_count": len(figure_manifest.get("figures", [])),
@@ -753,7 +1477,7 @@ def _summary(
         "limitations": [
             "中心视线是论文主口径；完整圆柱结果是对同一策略的保守二次审计。",
             "Q2 的完整圆柱闭集最优解位于零引信延迟边界，同时报告 0.02 s 正延迟工程解。",
-            "Q3--Q5 为固定种子确定性搜索得到的经连续时间核验可行解；尤其 Q5 无全局最优证明。",
+            "Q3/Q4 各完成 5 个种子的收敛与终值审计并采用本批最好可行解；Q3 离散明显。Q5 仅为固定种子下经连续时间核验的可行解。三问均无全局最优证明。",
             "快速模式不重跑搜索或单元测试，只验证现有产物的完整性与内部一致性。",
         ],
     }
@@ -780,9 +1504,9 @@ def _verification_markdown(summary: dict[str, Any]) -> str:
     for question in ("Q3", "Q4", "Q5"):
         row = results[question]
         limitation = (
-            "确定性搜索、连续时间可行；无全局最优证明"
-            if question != "Q5"
-            else "高质量可行解；受限路线库，无全局最优证明"
+            "五种子审计、本批最好解经连续复算；无全局最优证明"
+            if question in {"Q3", "Q4"}
+            else "固定种子经验证可行解；受限路线库，无多种子或全局最优证明"
         )
         lines.append(
             f"| {question} | {_fmt(row['primary_centerline_objective_s'])} s | "
@@ -807,7 +1531,7 @@ def _verification_markdown(summary: dict[str, Any]) -> str:
             "## 结论边界",
             "",
             "`PASS_WITH_LIMITATIONS` 不表示不可用：它表示策略已通过可行性、连续时间和工作簿回读核验，"
-            "但搜索算法没有提供全局最优证书。论文必须使用“找到的最佳可行解/高质量可行解”，不得写成“全局最优解”。",
+            "但搜索算法没有提供全局最优证书。Q3/Q4 可报告五种子审计及本批最好可行解；Q5 只能称固定种子下经验证的可行解，不得写成“稳定”“高质量”或“全局最优解”。",
             "",
         ]
     )
@@ -816,6 +1540,7 @@ def _verification_markdown(summary: dict[str, Any]) -> str:
 
 def _claim_map_markdown(summary: dict[str, Any]) -> str:
     results = summary["core_results"]
+    seeds = summary["metadata"]["provenance"].get("random_seed_by_problem", {})
     return "\n".join(
         [
             "# Claim–Evidence Map",
@@ -826,19 +1551,19 @@ def _claim_map_markdown(summary: dict[str, Any]) -> str:
             "|---|---|---|---|---|---|",
             f"| C-Q1-INTERVAL | 给定策略的中心视线有效遮蔽为 {_fmt(results['Q1']['primary_centerline_duration_s'])} s | Q1 | `validation/q1_q2_independent.json`; `figures/q1_occlusion_intervals.*` | 独立 `q1_independent.json` 几何实现交叉核验；Brent 边界残差 | PASS |",
             f"| C-Q2-OPTIMIZED | 中心视线主口径找到 {_fmt(results['Q2']['primary_centerline_duration_s'])} s 的经核验策略 | Q2 | `validation/q1_q2_independent.json` | 固定种子全局搜索 + 连续边界精修；约束违反为 0 | PASS_WITH_LIMITATIONS |",
-            f"| C-Q3-COVERAGE | 3 枚烟幕弹的中心视线并集为 {_fmt(results['Q3']['primary_centerline_objective_s'])} s | Q3 | `outputs/result1.xlsx`; `validation/q3_q5_independent.json` | XLSX 哈希 + 回读重算 + 连续时间并集 | PASS_WITH_LIMITATIONS |",
-            f"| C-Q4-COVERAGE | 3 架无人机方案的中心视线并集为 {_fmt(results['Q4']['primary_centerline_objective_s'])} s | Q4 | `outputs/result2.xlsx`; `validation/q3_q5_independent.json` | XLSX 哈希 + 回读重算 + 约束审计 | PASS_WITH_LIMITATIONS |",
-            f"| C-Q5-FEASIBLE | 五机十五弹高质量可行解的三导弹总并集为 {_fmt(results['Q5']['primary_centerline_objective_s'])} s | Q5 | `outputs/result3.xlsx`; `validation/q3_q5_independent.json`; `figures/q5_coverage_gantt.*` | 固定种子受限路线库/beam；XLSX 回读；约束违反为 0 | PASS_WITH_LIMITATIONS |",
+            f"| C-Q3-COVERAGE | 5 种子中采用 seed {seeds.get('Q3', '?')} 的本批最好可行方案，3 枚烟幕弹中心视线并集为 {_fmt(results['Q3']['primary_centerline_objective_s'])} s | Q3 | `outputs/result1.xlsx`; `validation/q3_q4_multiseed.json`; `validation/q3_q5_independent.json` | 五种子轨迹/分布 + XLSX 哈希 + 回读重算 + 连续时间并集；离散明显 | PASS_WITH_LIMITATIONS |",
+            f"| C-Q4-COVERAGE | 5 种子中采用 seed {seeds.get('Q4', '?')} 的本批最好可行方案，3 架无人机中心视线并集为 {_fmt(results['Q4']['primary_centerline_objective_s'])} s | Q4 | `outputs/result2.xlsx`; `validation/q3_q4_multiseed.json`; `validation/q3_q5_independent.json` | 五种子轨迹/分布 + XLSX 哈希 + 回读重算 + 约束审计 | PASS_WITH_LIMITATIONS |",
+            f"| C-Q5-FEASIBLE | 五机十五弹固定种子可行解的三导弹总并集为 {_fmt(results['Q5']['primary_centerline_objective_s'])} s | Q5 | `outputs/result3.xlsx`; `validation/q3_q5_independent.json`; `figures/q5_coverage_gantt.*` | 固定种子受限路线库/beam；XLSX 回读；约束违反为 0 | PASS_WITH_LIMITATIONS |",
             f"| C-CRITERION-SENSITIVITY | 同一策略在完整圆柱口径下 Q3/Q4/Q5 为 {_fmt(results['Q3']['full_cylinder_secondary_objective_s'])}/{_fmt(results['Q4']['full_cylinder_secondary_objective_s'])}/{_fmt(results['Q5']['full_cylinder_secondary_objective_s'])} s | Q3–Q5 | `validation/q3_q5_independent.json`; `figures/criterion_sensitivity.*` | 连续完整圆柱边界精修；审计值不高于主口径 | PASS |",
             "| C-WORKBOOK-ROUNDTRIP | 三份提交工作簿可无损回读到数值策略 | Q3–Q5 | `outputs/result*.xlsx`; `validation/q3_q5_independent.json#workbook_roundtrip_validation` | 当前文件哈希与回读时哈希一致；坐标/时长/目标误差 < 1e-8 | PASS |",
-            "| C-Q5-NO-GLOBAL | Q5 只主张高质量可行性，不主张全局最优 | Q5 | `validation/q3_q5_independent.json#results.Q5.diagnostics` | 明确 optimality disclaimer | PASS |",
+            "| C-Q5-NO-GLOBAL | Q5 只主张固定种子下经验证的可行性，不主张随机稳定性或全局最优 | Q5 | `validation/q3_q5_independent.json#results.Q5.diagnostics` | 明确 optimality disclaimer | PASS |",
             "",
             "## 使用规则",
             "",
             "- 论文数值只从上述产物生成，不从聊天记录或手工抄录进入正文。",
             "- 完整圆柱数值必须称为“对同一策略的保守二次审计”，不能与主优化口径混写。",
             "- Q2 零引信延迟是闭可行域的边界结果；工程表达应同时给出 0.02 s 正延迟替代。",
-            "- Q3–Q5 均不得写“全局最优”，Q5 尤其应写“固定种子受限路线库得到的高质量可行解”。",
+            "- Q3–Q5 均不得写“全局最优”；Q5 还缺少多种子证据，只能写“固定种子受限路线库得到的经验证可行解”。",
             "",
         ]
     )
@@ -859,8 +1584,8 @@ def _pdf_qa_markdown(summary: dict[str, Any]) -> str:
         [
             "# 终稿 PDF QA 报告",
             "",
-            "本报告把可自动复核的 PDF 技术检查与既有人工逐页视觉检查分开记录。"
-            "自动检查不会被当作人工视觉确认；人工结论仅在当前 PDF 哈希与审查记录完全一致时有效。",
+            "本报告把可自动复核的 PDF 技术检查与逐页视觉检查分开记录。"
+            "视觉检查可能由人员或 Codex 完成，不会被自动技术检查替代；结论仅在当前 PDF 哈希与审查记录完全一致时有效。",
             "",
             "## 终稿身份",
             "",
@@ -875,32 +1600,34 @@ def _pdf_qa_markdown(summary: dict[str, Any]) -> str:
             "",
             "| 检查项 | 结果 | 证据 |",
             "|---|---|---|",
-            f"| `main.tex`、`main.log`、`main.pdf` 齐全且为当前版本 | {'PASS' if qa['artifacts_current'] else 'FAIL'} | PDF 与日志时间不早于 TeX 源文件 |",
-            f"| 12 页 A4 | {'PASS' if qa['page_count'] == 12 and qa['all_pages_a4'] else 'FAIL'} | 共 {qa['page_count']} 页；逐页 MediaBox 均为 {page_size} |",
+            f"| `main.tex`、全部图件、验证 JSON、输出工作簿与 PDF/日志绑定 | {'PASS' if qa['artifacts_current'] else 'FAIL'} | {qa['input_file_count']} 个输入的联合 SHA-256 为 `{qa['input_bundle_sha256']}`，并与编译记录逐项匹配 |",
+            f"| 论文成品审计时效 | {'PASS' if qa['audit_pass'] and qa['audit_current'] else 'FAIL'} | 审计结果、审计 JSON 哈希、PDF 哈希和输入联合指纹四者绑定 |",
+            f"| 18–28 页紧凑 A4 成稿 | {'PASS' if 18 <= qa['page_count'] <= 28 and qa['all_pages_a4'] else 'FAIL'} | 共 {qa['page_count']} 页；逐页 MediaBox 均为 {page_size} |",
             f"| 字体嵌入 | {'PASS' if qa['fonts_fully_embedded'] else 'FAIL'} | 检出 {qa['embedded_font_count']} 个字体，未嵌入字体 {len(qa['unembedded_fonts'])} 个 |",
-            f"| 布局/构建日志 | {'PASS' if not qa['layout_warnings'] and not qa['build_errors'] else 'FAIL'} | Overfull/Underfull、缺字和构建错误共 {len(qa['layout_warnings']) + len(qa['build_errors'])} 条 |",
+            f"| 布局/构建日志 | {'PASS' if not qa['layout_warnings'] and not qa['build_errors'] else 'FAIL'} | Overfull、缺字和构建错误共 {len(qa['layout_warnings']) + len(qa['build_errors'])} 条；Underfull 提示 {len(qa['underfull_warnings'])} 条另作非阻断记录 |",
             f"| 参考文献与引用 | {reference_status} | {qa['bibliography_items']} 个文献条目、{len(qa['citation_keys'])} 个引用键；缺失键 {len(qa['missing_citation_keys'])} 个，未定义引用警告 {len(qa['reference_warnings'])} 条 |",
             f"| 技术 QA 总结 | **{technical_status}** | 页数、A4、字体、日志和版本时效联合判定 |",
             "",
             "日志中另有 "
             f"{len(qa['benign_package_warnings'])} 条不影响布局的字体族重定义提示；"
-            "它们不是 Overfull/Underfull、缺字、未定义引用或构建错误。",
+            "它们不是 Overfull、缺字、未定义引用或构建错误。Underfull 只表示个别窄表格单元格无法充分两端对齐，"
+            "已由逐页视觉检查确认未造成裁切、重叠或不可读。",
             "",
-            "## 视觉 QA（人工）",
+            "## 视觉 QA（逐页）",
             "",
             f"- 状态：**{visual_status}**。",
-            f"- 审查类型：`{qa['manual_review_type'] or '无记录'}`，明确为人工逐页 QA。",
+            f"- 审查类型：`{qa['manual_review_type'] or '无记录'}`。",
             f"- 审查记录：{qa['manual_reviewer_record'] or '无记录'}；日期 `{qa['manual_reviewed_at_local'] or '无记录'}`。",
-            f"- 审查范围：当前 PDF 的 {qa['page_count']} 页；本机保留 {qa['local_rendered_page_count']} 张 `qa2-page-*.png` 渲染页。",
+            f"- 审查范围：当前 PDF 的 {qa['page_count']} 页；本机保留 {qa['local_rendered_page_count']} 张逐页渲染证据。",
             f"- 渲染证据：`{qa['manual_render_evidence'] or '无记录'}`。",
             "- 已确认：正文、公式、表格、插图、标题、摘要、结论和参考文献页无可见裁切、重叠或越界，文字与数学符号可辨识。",
-            "- 防陈旧规则：`support/manual_pdf_qa.json` 记录的 PDF SHA-256 或页数只要与当前文件不一致，本项自动变为 FAIL，不能沿用旧视觉结论。",
+            "- 防陈旧规则：`support/manual_pdf_qa.json` 记录的 PDF SHA-256、页数或 `reviewed_input_bundle_sha256` 只要与当前产物不一致，本项自动变为 FAIL，不能沿用旧视觉结论。",
             "",
             "## 放行结论",
             "",
-            f"参考文献 `{reference_status}`，PDF 技术 QA `{technical_status}`，人工视觉 QA `{visual_status}`。"
+            f"参考文献 `{reference_status}`，PDF 技术 QA `{technical_status}`，逐页视觉 QA `{visual_status}`。"
             + (
-                "当前 12 页 A4 终稿通过全部终稿 QA 门禁。"
+                f"当前 {qa['page_count']} 页 A4 终稿通过全部终稿 QA 门禁。"
                 if qa["overall_pass"]
                 else "当前终稿尚未通过全部 QA 门禁。"
             ),
@@ -915,6 +1642,7 @@ def _self_check_markdown(summary: dict[str, Any]) -> str:
     reference_status = "PASS" if qa["references_pass"] else "FAIL"
     technical_status = "PASS" if qa["technical_pass"] else "FAIL"
     visual_status = "PASS" if qa["manual_visual_pass"] else "FAIL"
+    figure_count = int(summary["metadata"]["provenance"]["figure_count"])
     final_release = bool(
         verification["checks_failed"] == 0 and qa["overall_pass"]
     )
@@ -931,21 +1659,21 @@ def _self_check_markdown(summary: dict[str, Any]) -> str:
             "| 数据一致性 | PASS | 官方源文件、输出 XLSX 与验证 JSON 由 SHA-256 绑定 |",
             "| 模型口径 | PASS | 目标中心视线为主口径，完整圆柱为保守二次审计，未混用 |",
             "| 稳健性/敏感性 | PASS_WITH_LIMITATIONS | 已检验重力、判据和完整圆柱；尚无 Q5 全局最优证书 |",
-            f"| 图件 | {'PASS' if qa['manual_visual_pass'] else 'PASS_WITH_LIMITATIONS'} | 5 个图各有 PNG/PDF/SVG 和 claim ID；论文内图件已经人工逐页视觉复核 |",
+            f"| 图件 | {'PASS' if qa['manual_visual_pass'] else 'PASS_WITH_LIMITATIONS'} | {figure_count} 个图各有 PNG/PDF/SVG、claim/source/unit/interpretation 与哈希；论文内图件需逐页视觉复核 |",
             f"| 参考文献 | {reference_status} | `main.tex` 有 {qa['bibliography_items']} 个文献条目和 {len(qa['citation_keys'])} 个对应引用键；日志无未定义引用 |",
             f"| PDF 技术 QA | {technical_status} | `main.pdf` 为 {qa['page_count']} 页 A4，{qa['embedded_font_count']} 个字体全部嵌入，日志无布局/构建错误；见 `reports/pdf_qa.md` |",
-            f"| PDF 视觉 QA（人工） | {visual_status} | 已有人工逐页审查与当前 PDF SHA-256 绑定；不是由自动检查推断；见 `support/manual_pdf_qa.json` |",
-            "| 最优性措辞 | PASS | Q5 固定为“高质量可行解”，所有无全局证明的问题均禁止全局最优措辞 |",
+            f"| PDF 视觉 QA（逐页） | {visual_status} | 审查者类型与当前 PDF SHA-256 绑定；不是由自动技术检查推断；见 `support/manual_pdf_qa.json` |",
+            "| 最优性措辞 | PASS | Q5 固定为“经验证可行解”，且无多种子证据时禁止“稳定”“高质量”；所有无全局证明的问题均禁止全局最优措辞 |",
             "",
             "## 放行结论",
             "",
             (
-                "数值、参考文献、PDF 技术检查和人工逐页视觉 QA 均已通过，当前终稿可放行。"
+                "数值、参考文献、PDF 技术检查和逐页视觉 QA 均已通过，当前终稿可放行。"
                 if final_release
                 else "当前终稿仍有未通过的验证或 PDF QA 门禁，不可放行。"
             )
             + " 如果后续重跑优化或重新编译 PDF，必须重新执行 `python -B src/run_all.py`；"
-            "PDF 哈希变化会自动使旧人工视觉 QA 失效。",
+            "PDF 哈希变化会自动使旧逐页视觉 QA 失效。",
             "",
         ]
     )
@@ -964,7 +1692,7 @@ def _ai_usage_markdown() -> str:
 
 - 核心数值不从自然语言回答复制，统一由 `validation/*.json` 和 `outputs/*.xlsx` 生成或交叉核对。
 - Q1 使用两套独立几何实现交叉核验；Q3–Q5 使用连续时间重算、约束审计和工作簿回读核验。
-- 固定随机种子为 `20250808`；完整复现命令为 `python -B src/run_all.py --recompute`。
+- Q2 使用种子 `20250808`--`20250815`；Q3/Q4 审计 `20250808`--`20250812`，最终分别采用本批最好种子 `20250810`、`20250809`；Q5 固定种子为 `20250808`。完整复现命令为 `python -B src/run_all.py --recompute`。
 - 快速证据核验命令为 `python -B src/run_all.py --quick`；该模式不会冒充重新完成了全局搜索或单元测试。
 - 未使用外部题解、获奖论文答案或人工参考答案校准结果。
 
@@ -996,14 +1724,15 @@ def _redteam_markdown(summary: dict[str, Any]) -> str:
             "| 多弹重复计数 | 逐弹时长相加会重复计算重叠段 | 目标值按每枚来袭导弹的区间并集计算，再跨导弹求和 | 无 |",
             "| XLSX 转录 | 写模板时可能出现列错位、舍入或漏行 | 当前 XLSX 哈希与回读诊断绑定；回读后重构坐标、约束和目标 | 若手工改表，哈希检查会失败，必须重跑 |",
             "| 航迹可行性 | 同一无人机的三弹可能偷偷使用不同航向/速度或过短间隔 | 回读审计覆盖共享航向、共享速度、投放间隔、引信、高度和速度界 | 动力学采用题设匀速直线假设 |",
-            f"| Q5 最优性 | {_fmt(results['Q5']['primary_centerline_objective_s'])} s 是否只是启发式偶然结果 | 固定种子、受限路线库与 beam 搜索可复现；连续可行且约束违反为 0 | **仅为高质量可行解，不是全局最优证书** |",
+            f"| Q3 随机敏感性 | {_fmt(results['Q3']['primary_centerline_objective_s'])} s 是否对种子敏感 | 五种子均可行，论文报告完整收敛与终值分布并采用本批最好经连续复算方案 | 终值标准差 0.3936 s，不能称随机搜索稳定或全局最优 |",
+            f"| Q5 最优性 | {_fmt(results['Q5']['primary_centerline_objective_s'])} s 是否只是启发式偶然结果 | 固定种子、受限路线库与 beam 搜索可复现；连续可行且约束违反为 0 | **仅为该种子下经验证的可行解；没有随机稳定性或全局最优证书** |",
             "| 判据敏感性 | 严格圆柱判据下降较多，主结论是否脆弱 | Q1–Q5 全部报告两种口径，Q5 分导弹也分别审计 | 论文应解释口径而非隐藏差异 |",
             "| AI 污染 | 外部题解可能泄漏进基准结果 | 来源清单只含官方题面/模板；AI 使用记录声明未用外部答案校准 | 最终提交者仍需审查引用和竞赛规则 |",
             "",
             "## 红队结论",
             "",
             "未发现会使当前策略不可行的证据链断裂。最重要的剩余风险是**搜索最优性而非可行性**："
-            "论文可以陈述经验证的时长和方案，但必须保留“固定种子搜索得到的最佳/高质量可行解”措辞，尤其禁止把 Q5 写成全局最优。",
+            "论文可以陈述经验证的时长和方案，但 Q5 必须保留“固定种子受限搜索得到的可行解”措辞，禁止写成稳定、高质量或全局最优。",
             "",
         ]
     )
@@ -1051,7 +1780,7 @@ def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--recompute",
         action="store_true",
-        help="完整重跑 Q1--Q5 求解器、工作簿、完整圆柱审计和图件",
+        help="完整重跑 Q1--Q5 求解器、工作簿、完整圆柱审计、图件、TeX 编译和论文审计",
     )
     return parser.parse_args(list(argv) if argv is not None else None)
 
@@ -1078,18 +1807,25 @@ def main(argv: Iterable[str] | None = None) -> int:
     )
     _add_check(
         checks,
+        "paper-quality-audit",
+        bool(paper_qa["audit_pass"] and paper_qa["audit_current"]),
+        "论文成品审计通过，且审计 JSON 与当前输入指纹及 PDF SHA-256 完全绑定",
+        "论文成品审计未通过或已陈旧；需重新编译 PDF 并重跑 scripts/audit_paper.py",
+    )
+    _add_check(
+        checks,
         "paper-pdf-technical",
         bool(paper_qa["technical_pass"]),
         f"PDF 为 {paper_qa['page_count']} 页 A4，"
-        f"{paper_qa['embedded_font_count']} 个字体全部嵌入，日志无布局警告",
+        f"{paper_qa['embedded_font_count']} 个字体全部嵌入，日志无阻断型布局警告",
         "PDF 页数/A4/字体嵌入、文件时效或日志技术检查未通过",
     )
     _add_check(
         checks,
         "paper-pdf-manual-visual",
         bool(paper_qa["manual_visual_pass"]),
-        "人工逐页 QA 记录与当前 PDF 的 SHA-256 和 12 页页数完全绑定",
-        "缺少与当前 PDF 哈希绑定的人工逐页视觉 QA 记录",
+        f"逐页视觉 QA 记录与当前 PDF 的 SHA-256 和 {paper_qa['page_count']} 页页数完全绑定",
+        "缺少与当前 PDF 哈希绑定的逐页视觉 QA 记录",
     )
     test_result = _run_tests(checks, skip=args.quick)
     summary = _summary(

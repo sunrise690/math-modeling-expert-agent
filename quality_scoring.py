@@ -6,7 +6,7 @@ from typing import Any
 from urllib.parse import unquote
 
 
-RUBRIC_VERSION = "2026.4"
+RUBRIC_VERSION = "2026.5"
 DEFAULT_QUALITY_THRESHOLD = 82
 NUMERIC_VALUE = r"[-+]?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][-+]?\d+)?"
 ROUTING_TOOL_NAMES = {
@@ -98,10 +98,13 @@ def rubric_spec() -> dict[str, Any]:
             {"id": "optimization_feasibility", "cap": 78, "description": "给出最优解或优化结果，却没有报告可行性或约束违反量。"},
             {"id": "optimization_comparison", "cap": 80, "description": "竞赛整题给出优化结果，却没有数值基线、理论界、最优间隙或独立算法比较。"},
             {"id": "global_optimality", "cap": 76, "description": "声称得到全局最优，却没有给出可验证的全局最优性依据。"},
-            {"id": "stochastic_robustness", "cap": 79, "description": "随机优化给出数值方案，却没有至少 3 次多种子运行、数值离散统计及停止/收敛证据。"},
+            {"id": "stochastic_robustness", "cap": 79, "description": "随机优化给出数值方案，却没有至少 5 次多种子运行、数值离散统计及停止/收敛证据。"},
             {"id": "predictive_validation", "cap": 78, "description": "给出预测结果，却没有结构正确的样本外验证和数值误差指标。"},
             {"id": "mechanistic_consistency", "cap": 80, "description": "机理模型给出数值结果，却没有明确量纲一致性及数值初边值/守恒/收敛校验。"},
             {"id": "abstract_numeric_evidence", "cap": 80, "description": "正式摘要没有为已分列的子问题给出可核对的量化结果。"},
+            {"id": "paper_artifact_audit", "cap": 72, "description": "已经生成完整论文产物，但没有对实际成稿执行论文审计。"},
+            {"id": "paper_visual_evidence", "cap": 78, "description": "完整论文的图谱数量、验证图或正文图解未通过成品审计。"},
+            {"id": "paper_scholarly_structure", "cap": 80, "description": "完整论文的结构、逐问深度、量化摘要、引用或完整性未通过成品审计。"},
             {"id": "artifact_link_integrity", "cap": 70, "description": "回答链接了后端未登记或不存在的任务产物。"},
             {"id": "minimum_content", "cap": 75, "description": "内容短到不足以支撑任务。"},
         ],
@@ -147,15 +150,18 @@ class QualityEvaluator:
             if str(item.get("name", "")) not in ROUTING_TOOL_NAMES | SOURCE_TOOL_NAMES
         ]
         tool_names = {str(item.get("name", "")) for item in successful_tools}
-        artifact_names = {
-            str(item.get("name", ""))
-            for item in artifacts
-            if isinstance(item, dict) and item.get("name")
-        }
+        artifact_records: dict[str, dict[str, Any]] = {}
+
+        def register_artifact(item: Any) -> None:
+            if isinstance(item, dict) and item.get("name"):
+                artifact_records[str(item["name"])] = item
+
         for item in successful_tools:
             for artifact in item.get("artifacts", []) if isinstance(item.get("artifacts"), list) else []:
-                if isinstance(artifact, dict) and artifact.get("name"):
-                    artifact_names.add(str(artifact["name"]))
+                register_artifact(artifact)
+        for artifact in artifacts:
+            register_artifact(artifact)
+        artifact_names = set(artifact_records)
 
         dimensions = [
             self._understanding(mode, prompt, text),
@@ -170,7 +176,15 @@ class QualityEvaluator:
             sum(dimension_map[key].score * weight / 100 for key, weight in weights.items()),
             1,
         )
-        gates = self._gates(mode, text, meta, tool_names, evidence_tools, artifact_names)
+        gates = self._gates(
+            mode,
+            text,
+            meta,
+            tool_names,
+            evidence_tools,
+            artifact_names,
+            artifact_records,
+        )
         active_caps = [int(item["cap"]) for item in gates if not item["passed"]]
         cap = min(active_caps, default=100)
         total = min(uncapped, float(cap))
@@ -278,15 +292,15 @@ class QualityEvaluator:
         )
         for pattern in repeat_patterns:
             for match in re.finditer(pattern, text, re.IGNORECASE):
-                if int(match.group(1)) >= 3 and cls._evidence_is_affirmed(text, match.start(), match.end()):
+                if int(match.group(1)) >= 5 and cls._evidence_is_affirmed(text, match.start(), match.end()):
                     return True
         seed_lists = re.finditer(
-            r"(?:随机)?种子(?:列表)?\s*(?:为|=|:)\s*[\[(]?\s*(\d+(?:\s*[,，]\s*\d+){2,})",
+            r"(?:随机)?种子(?:列表)?\s*(?:为|=|:)\s*[\[(]?\s*(\d+(?:\s*[,，]\s*\d+){4,})",
             text,
             re.IGNORECASE,
         )
         return any(
-            len(re.findall(r"\d+", match.group(1))) >= 3
+            len(re.findall(r"\d+", match.group(1))) >= 5
             and cls._evidence_is_affirmed(text, match.start(), match.end())
             for match in seed_lists
         )
@@ -475,7 +489,7 @@ class QualityEvaluator:
         if headings >= 2:
             score += 14
             evidence.append("使用清楚的层级结构")
-        if 450 <= len(text) <= 12_000:
+        if len(text) >= 450 and (mode == "paper" or len(text) <= 12_000):
             score += 14
             evidence.append("篇幅与完整度较平衡")
         elif len(text) >= 220:
@@ -494,7 +508,7 @@ class QualityEvaluator:
         if mode == "reviewer" and self._has(text, r"位置|风险|修复|建议"):
             score += 12
             evidence.append("审查意见包含定位、风险和修复")
-        if len(text) > 18_000:
+        if len(text) > 18_000 and mode != "paper":
             score -= 10
         return DimensionScore("communication", max(0, min(score, 100)), tuple(evidence))
 
@@ -542,6 +556,7 @@ class QualityEvaluator:
         tool_names: set[str],
         successful_tools: list[dict[str, Any]],
         artifacts: set[str],
+        artifact_records: dict[str, dict[str, Any]],
     ) -> list[dict[str, Any]]:
         requirements = set(meta.get("requirements", []))
         has_uploads = bool(meta.get("uploads"))
@@ -679,6 +694,69 @@ class QualityEvaluator:
             )
         }
         missing_linked_artifacts = linked_artifacts - artifacts
+        audit_output_names: set[str] = set()
+        for item in successful_tools:
+            if item.get("name") != "audit_competition_paper":
+                continue
+            arguments = item.get("arguments", {}) if isinstance(item.get("arguments"), dict) else {}
+            raw_stem = str(arguments.get("filename", "paper-quality-audit"))
+            stem = re.sub(r"[^A-Za-z0-9._-]+", "-", raw_stem).strip("-.") or "paper-quality-audit"
+            audit_output_names.update({f"{stem}.json".lower(), f"{stem}.md".lower()})
+        manuscript_artifacts = {
+            name
+            for name in artifacts
+            if name.lower().endswith((".tex", ".docx", ".md", ".pdf", ".txt"))
+            and name.lower() not in audit_output_names
+        }
+        linked_manuscripts = {
+            name for name in manuscript_artifacts if name in linked_artifacts
+        }
+        audit_targets = linked_manuscripts or manuscript_artifacts
+        paper_audits = [
+            item
+            for item in successful_tools
+            if item.get("name") == "audit_competition_paper" and isinstance(item.get("audit"), dict)
+        ]
+        artifact_records_lower = {name.lower(): record for name, record in artifact_records.items()}
+        target_names_lower = {name.lower() for name in audit_targets}
+        bound_paper_audits: list[dict[str, Any]] = []
+        for item in paper_audits:
+            audit = item["audit"]
+            metrics = audit.get("metrics", {}) if isinstance(audit.get("metrics"), dict) else {}
+            arguments = item.get("arguments", {}) if isinstance(item.get("arguments"), dict) else {}
+            artifact_name = str(metrics.get("artifactName", "")).strip()
+            argument_name = str(arguments.get("artifact_name", "")).strip()
+            audit_hash = str(metrics.get("artifactSha256", "")).strip().lower()
+            current_record = artifact_records_lower.get(artifact_name.lower(), {})
+            current_hash = str(current_record.get("sha256", "")).strip().lower()
+            binding_ok = bool(
+                artifact_name
+                and argument_name.lower() == artifact_name.lower()
+                and artifact_name.lower() in target_names_lower
+                and re.fullmatch(r"[0-9a-f]{64}", audit_hash)
+                and current_hash == audit_hash
+                and metrics.get("fullPaper") is True
+            )
+            if binding_ok:
+                bound_paper_audits.append(audit)
+        latest_paper_audit = bound_paper_audits[-1] if bound_paper_audits else {}
+        audit_gates = {
+            str(item.get("id")): bool(item.get("passed", False))
+            for item in latest_paper_audit.get("gates", [])
+            if isinstance(item, dict)
+        }
+        paper_visual_passed = audit_gates.get("visual_evidence", False)
+        paper_structure_passed = all(
+            audit_gates.get(gate_id, False)
+            for gate_id in (
+                "paper_structure",
+                "quantitative_abstract",
+                "question_depth",
+                "validation_traceability",
+                "scholarly_traceability",
+                "manuscript_integrity",
+            )
+        )
         depth = str(meta.get("depth", ""))
         minimum_characters = 120 if depth == "简要" else 180 if mode in {"paper", "reviewer"} else 220
         gates = [
@@ -736,7 +814,7 @@ class QualityEvaluator:
                 or not stochastic_result_claim
                 or (has_multiple_seed_runs and has_stochastic_dispersion and has_stochastic_convergence),
                 79,
-                "随机优化给出了数值方案，但没有报告至少 3 次多种子独立运行、数值离散统计和停止/收敛证据。",
+                "随机优化给出了数值方案，但没有报告至少 5 次多种子独立运行、数值离散统计和停止/收敛证据。",
             ),
             self._gate(
                 "predictive_validation",
@@ -761,6 +839,24 @@ class QualityEvaluator:
                 or abstract_evidence_count >= abstract_required_count,
                 80,
                 f"正式摘要识别到 {abstract_required_count} 个结果单元，但仅有 {abstract_evidence_count} 个带指标或单位的量化结果。",
+            ),
+            self._gate(
+                "paper_artifact_audit",
+                mode != "paper" or not manuscript_artifacts or bool(bound_paper_audits),
+                72,
+                "已经生成完整论文产物，但缺少与当前 artifact_name、SHA-256 和 full_paper 绑定的成稿审计。",
+            ),
+            self._gate(
+                "paper_visual_evidence",
+                mode != "paper" or not manuscript_artifacts or (bool(bound_paper_audits) and paper_visual_passed),
+                78,
+                "论文成品审计未通过图谱门禁：需要足量的主张图、至少两张验证/对比图，并在正文解释图中结论。",
+            ),
+            self._gate(
+                "paper_scholarly_structure",
+                mode != "paper" or not manuscript_artifacts or (bool(bound_paper_audits) and paper_structure_passed),
+                80,
+                "论文成品审计未通过结构与学术门禁：需补齐逐问论证、量化摘要、验证、正文引用或清理占位内容。",
             ),
             self._gate(
                 "artifact_link_integrity",
