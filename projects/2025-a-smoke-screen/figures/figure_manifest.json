@@ -1,36 +1,53 @@
 {
   "schema_version": 4,
   "run_id": "cumcm-2025a-20260808-r3",
-  "generated_by": "src/generate_figures.py",
+  "generated_by": "src/generate_figures.py orchestrating six src/matlab/render_*.m figure scripts",
+  "matlab_render": {
+    "executed": false,
+    "runtime": "D:\\matlab\\bin\\matlab.exe",
+    "reason": "已通过清单哈希、MATLAB renderer 和依赖哈希校验复用 42 个正式产物",
+    "sources": [
+      "src/matlab/render_q1_event.m",
+      "src/matlab/render_q3_event.m",
+      "src/matlab/render_q4_event.m",
+      "src/matlab/render_core_figures.m",
+      "src/matlab/render_q5_figures.m",
+      "src/matlab/render_cross_audits.m"
+    ]
+  },
   "design_system": {
     "profile": "contest-paper-evidence-first",
-    "palette": "graphite + Okabe-Ito-derived semantic accents",
+    "palette": "slate blue + mineral green + terracotta + neutral evidence rails",
     "title_policy": "paper captions carry titles; panels use A/B/C tags only",
-    "export": "exact physical size; 600 dpi PNG plus editable PDF/SVG",
+    "export": "exact physical size; MATLAB 360 dpi PNG plus editable PDF/SVG",
     "minimum_final_font_pt": 7.0
   },
   "figures": [
     {
       "id": "F1",
-      "claim_id": "C-WORKFLOW",
-      "subquestion": "Q1-Q5",
+      "claim_id": "C-Q1-EVENT",
+      "subquestion": "Q1",
       "files": [
         "figures/modeling_workflow.png",
         "figures/modeling_workflow.pdf",
         "figures/modeling_workflow.svg"
       ],
-      "data_source": "统一模型与验证流程",
-      "axes": "流程节点",
-      "units": "不适用",
-      "caption": "五问共享运动学、连续事件、区间并集与证据审计链路。",
-      "interpretation": "递进问题不是五套孤立模型。",
-      "paper_location": "问题分析与技术路线",
+      "data_source": "validation/q1_q2_independent.json 与有限视线解析几何",
+      "axes": "x-z 轨迹/局部相切几何/任务时刻",
+      "units": "km,m,s",
+      "caption": "Q1 投放、起爆、进入、最近点切换与退出的具体事件故事板。",
+      "interpretation": "1.4351 s 有效区间由两个相切根限定，且中途最近点从线段内部切换到导弹端点。",
+      "paper_location": "问题一结果与检验",
       "figure_intent": {
-        "template": "evidence_pipeline",
-        "reader_takeaway": "递进问题不是五套孤立模型。",
+        "template": "trajectory_event_storyboard",
+        "reader_takeaway": "1.4351 s 有效区间由两个相切根限定，且中途最近点从线段内部切换到导弹端点。",
         "semantic_layers": [
-          "module_dependency",
-          "feedback_loop"
+          "release",
+          "explosion",
+          "entry_root",
+          "nearest_point_switch",
+          "exit_root",
+          "local_geometry"
         ],
         "comparison_semantics": "only like-for-like quantities share an axis",
         "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
@@ -39,13 +56,15 @@
         "final_width_in": 6.2,
         "minimum_font_pt": 7.0,
         "figure_level_title": false,
-        "vector_text_editable": true,
+        "vector_text_editable": false,
+        "vector_text_mode": "outlined_glyph_paths",
         "redundant_encoding": true
       },
+      "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/modeling_workflow.png": "5ecd5e63d7d95c0bd860ca3f93095732e7bd22c17dc1e04dd56740a0ec04d5c2",
-        "figures/modeling_workflow.pdf": "6a86bd1653860e8be726d71e551833960b24791bbe891cccb6dbb6bebb92ffef",
-        "figures/modeling_workflow.svg": "d1f45de42cbb1fea5a16fc79e0cacb7665355beb9f6a682c118d112f78528dae"
+        "figures/modeling_workflow.png": "3f7e5c51566514462ded92f230d9ff70b9cbfa66d1568282a67b90985b803761",
+        "figures/modeling_workflow.pdf": "b99483d81e2cfab4d2dd19655d33e056912472bfcd5988844138b5e4ff68410a",
+        "figures/modeling_workflow.svg": "b56561d118733a2d49f8afbefd84ffa0e2a2447adae3801bd23c3437432b880b"
       }
     },
     {
@@ -79,13 +98,15 @@
         "final_width_in": 6.2,
         "minimum_font_pt": 7.0,
         "figure_level_title": false,
-        "vector_text_editable": true,
+        "vector_text_editable": false,
+        "vector_text_mode": "outlined_glyph_paths",
         "redundant_encoding": true
       },
+      "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/finite_sightline_geometry.png": "d604a0baf950cd9b9824c915ceb9b5c8c76b11f19fddbd76f41e165bb30c46c3",
-        "figures/finite_sightline_geometry.pdf": "f053ee52085790afc4207790ef858cc5a6a6b850065a61ef356f0efb686fe6f1",
-        "figures/finite_sightline_geometry.svg": "8ed4a2094aaffc77d95ea637dc64fa9693097738c91e1120c5562befcfeed304"
+        "figures/finite_sightline_geometry.png": "01692890e3e31ce632f457b65df9e622f1777fbc5a40860bae2f3345ce43f1e8",
+        "figures/finite_sightline_geometry.pdf": "9e94f07f2dd3ccf9a85b7d4120ceca99f2453ba228ee534089046f928cdc5dc6",
+        "figures/finite_sightline_geometry.svg": "7da94b6e247c19f8b952788da387df09bcd629fdb732aca3f6cc1864313bdea9"
       }
     },
     {
@@ -119,13 +140,15 @@
         "final_width_in": 6.2,
         "minimum_font_pt": 7.0,
         "figure_level_title": false,
-        "vector_text_editable": true,
+        "vector_text_editable": false,
+        "vector_text_mode": "outlined_glyph_paths",
         "redundant_encoding": true
       },
+      "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q1_occlusion_intervals.png": "d29fd6724cea0c99db022d42b8cb12668f20d7130739bfaed07ba0103c021e5c",
-        "figures/q1_occlusion_intervals.pdf": "c9b3b1f89190a2e890f10641b79da06368b433dedb39f94928c8bbf7f35ae969",
-        "figures/q1_occlusion_intervals.svg": "1af3a98f25f627265c37bd3d5720255f51e38b3bf57976b4d27329b2de2e3a9e"
+        "figures/q1_occlusion_intervals.png": "5bbb0b86e9463528ddb6d89146ea3d24412fe37a458e8802cd7040ab40109792",
+        "figures/q1_occlusion_intervals.pdf": "ae3a625ed591ce9168e2c73ec9d91d7afbaf1aeecc096b33c67ddd7d339ef5fe",
+        "figures/q1_occlusion_intervals.svg": "b4b9ea021c16a2bea7073e60ec66c2b56615adf3e15eeb17dee57641bd447aa4"
       }
     },
     {
@@ -159,13 +182,15 @@
         "final_width_in": 6.2,
         "minimum_font_pt": 7.0,
         "figure_level_title": false,
-        "vector_text_editable": true,
+        "vector_text_editable": false,
+        "vector_text_mode": "outlined_glyph_paths",
         "redundant_encoding": true
       },
+      "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q2_response_surface.png": "91f1cd6aac295befab64323506ffefd18c7e14fe26fd9616159daf0623b57c7a",
-        "figures/q2_response_surface.pdf": "f9f199922815cd1ad0e901cef0bf83aaf2c6424f5bb5d28c80b884629dd9d118",
-        "figures/q2_response_surface.svg": "d9c9e7f110c069571ddf9caba1ad14266db604853583905bde6dbd6e6653f45d"
+        "figures/q2_response_surface.png": "a17fbe7f857dabdb32aa5d93ec443a5b6bd5dcdfe79fd45efb2fb68fd5f2f767",
+        "figures/q2_response_surface.pdf": "39950967fb0c27a1673baa1007f1c6bdcc782c717dda6f48e723f369f8c8720c",
+        "figures/q2_response_surface.svg": "9cadd3d07dd70c47ff816dc29fa854feda40ff2307a26c08e93fbd300bc34c2b"
       }
     },
     {
@@ -178,9 +203,9 @@
         "figures/q2_multiseed_stability.svg"
       ],
       "data_source": "validation/q2_multiseed.json",
-      "axes": "迭代代数/距终值差/函数评估量",
-      "units": "iteration,s,count",
-      "caption": "8 个独立种子的收敛缺口、中位数/IQR 与函数评估量。",
+      "axes": "迭代代数/距终值差",
+      "units": "iteration,s",
+      "caption": "8 个独立种子的收敛缺口及中位数/IQR。",
       "interpretation": "8 次均可行且终值在数值容差内一致；皮秒级浮点噪声不作为统计分布放大。",
       "paper_location": "问题二稳定性检验",
       "figure_intent": {
@@ -200,13 +225,15 @@
         "final_width_in": 6.2,
         "minimum_font_pt": 7.0,
         "figure_level_title": false,
-        "vector_text_editable": true,
+        "vector_text_editable": false,
+        "vector_text_mode": "outlined_glyph_paths",
         "redundant_encoding": true
       },
+      "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q2_multiseed_stability.png": "5b65a4cc875b6534cb7b51bbff96289c09c246d7010eaebd2993a4d4ee45ffda",
-        "figures/q2_multiseed_stability.pdf": "e59387b7fbb86338c52d36f175d373bfe887421abbf43a08694ab5ae6afbda7d",
-        "figures/q2_multiseed_stability.svg": "f3b37aab082cf492831773a5508c29e15328c06ad907c833704ce66cef6b8cf9"
+        "figures/q2_multiseed_stability.png": "97cbb8e5e57ba82974366a36c162fcfb8783d93081acc1f207ae9b11967da47b",
+        "figures/q2_multiseed_stability.pdf": "263179f4b3f63533815de7fda5272046587ab117bdf1c06ca44d77958b7ee442",
+        "figures/q2_multiseed_stability.svg": "ffd8a8b29858fdfa964ae558ef99efc9dd9e3739f6f8da003899f0dfe78bef22"
       }
     },
     {
@@ -218,18 +245,23 @@
         "figures/q3_interval_union.pdf",
         "figures/q3_interval_union.svg"
       ],
-      "data_source": "validation/q3_q5_independent.json",
-      "axes": "任务时刻/烟幕弹",
-      "units": "s",
-      "caption": "Q3 三弹原始区间及去重并集。",
-      "interpretation": "6.8140 s 单弹和经重叠扣除后形成 6.6311 s 连续并集。",
+      "data_source": "validation/q3_q5_independent.json 与有限视线几何复算",
+      "axes": "投放-起爆-进入-退出事件/接续几何/覆盖数 n(t)",
+      "units": "s,m",
+      "caption": "Q3 三弹事件链、两次物理接续与事件扫描覆盖数阶梯。",
+      "interpretation": "两段短双覆盖消除空窗；单弹时长之和扣除 0.067 s 与 0.115 s 重叠后得到 6.631 s 连续并集。",
       "paper_location": "问题三结果与检验",
       "figure_intent": {
-        "template": "coverage_timeline",
-        "reader_takeaway": "6.8140 s 单弹和经重叠扣除后形成 6.6311 s 连续并集。",
+        "template": "event_storyboard",
+        "reader_takeaway": "两段短双覆盖消除空窗；单弹时长之和扣除 0.067 s 与 0.115 s 重叠后得到 6.631 s 连续并集。",
         "semantic_layers": [
+          "release",
+          "detonation",
+          "entry",
+          "exit",
           "shot_index",
-          "interval",
+          "physical_handoff",
+          "coverage_count",
           "overlap",
           "union"
         ],
@@ -240,13 +272,15 @@
         "final_width_in": 6.2,
         "minimum_font_pt": 7.0,
         "figure_level_title": false,
-        "vector_text_editable": true,
+        "vector_text_editable": false,
+        "vector_text_mode": "outlined_glyph_paths",
         "redundant_encoding": true
       },
+      "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q3_interval_union.png": "8ae3e6dab66b519fc8e771615c582769fade0261dc3af2834c14bc9f8c141169",
-        "figures/q3_interval_union.pdf": "bbcf12eaab47baaccb8454a47c5e44c20e12147c4d72fb8d06fd818b0902d054",
-        "figures/q3_interval_union.svg": "6ea243bed6845e7c3756d232b2f492d24da7b02e3e45644e968c1df982ad6f64"
+        "figures/q3_interval_union.png": "fa2e7b163def4dc2b791e56fed3c093246cb9a8dc90aebd7d570c59d06063d2b",
+        "figures/q3_interval_union.pdf": "ca83c8a1627f2383cf95c3058916fd811567211cc952ffcc21e3770965ce603a",
+        "figures/q3_interval_union.svg": "2d097b99a2793bd1b2d800fac149c6980b25a963676b757c2c08e9f9e29d03b5"
       }
     },
     {
@@ -259,17 +293,20 @@
         "figures/q4_temporal_synergy.svg"
       ],
       "data_source": "validation/q3_q5_independent.json",
-      "axes": "任务时刻/无人机",
+      "axes": "动作事件顺序/覆盖状态接力",
       "units": "s",
-      "caption": "Q4 三机时间窗的互补结构。",
-      "interpretation": "三段互不重叠窗口使并集等于单弹时长之和。",
+      "caption": "Q4 三机动作链、覆盖状态节点与两个接力空窗。",
+      "interpretation": "三段互不重叠窗口使并集等于单弹时长之和，两个状态节点间隔直接显示内部空窗。",
       "paper_location": "问题四结果与检验",
       "figure_intent": {
-        "template": "coverage_timeline",
-        "reader_takeaway": "三段互不重叠窗口使并集等于单弹时长之和。",
+        "template": "event_state_storyboard",
+        "reader_takeaway": "三段互不重叠窗口使并集等于单弹时长之和，两个状态节点间隔直接显示内部空窗。",
         "semantic_layers": [
-          "drone",
-          "interval",
+          "release",
+          "explosion",
+          "entry",
+          "exit",
+          "coverage_state",
           "gap",
           "union"
         ],
@@ -280,13 +317,15 @@
         "final_width_in": 6.2,
         "minimum_font_pt": 7.0,
         "figure_level_title": false,
-        "vector_text_editable": true,
+        "vector_text_editable": false,
+        "vector_text_mode": "outlined_glyph_paths",
         "redundant_encoding": true
       },
+      "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q4_temporal_synergy.png": "faf8c06334cd36616089a1d90b21c5917bf7ee1e0210b07cdf15171d6a8ba772",
-        "figures/q4_temporal_synergy.pdf": "11c6e971c22932c526e01ff9392a39110665919e63005b98fc39c3cd94db74ca",
-        "figures/q4_temporal_synergy.svg": "07e070c0df91e671d3ae51f5fb5e476348fb909037996252121bacc6f5f3d116"
+        "figures/q4_temporal_synergy.png": "1d3bb8c6362b2ba1230fd587a23c7c042748afee42714669b5c0261f480705cd",
+        "figures/q4_temporal_synergy.pdf": "d32e1ddc68555c0b1026e7a30a6b3bcbd81b1d66421a650547ee69a403355c46",
+        "figures/q4_temporal_synergy.svg": "d411aea1b22f0c29d8a5ed39646d24492029e44bb258a236334a1599b3a9f36b"
       }
     },
     {
@@ -320,13 +359,15 @@
         "final_width_in": 6.2,
         "minimum_font_pt": 7.0,
         "figure_level_title": false,
-        "vector_text_editable": true,
+        "vector_text_editable": false,
+        "vector_text_mode": "outlined_glyph_paths",
         "redundant_encoding": true
       },
+      "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/search_quality_diagnostics.png": "3a120f75978f4d1049d16bd89c4dca196b6a5161f04f1a6e089fc63d1d666323",
-        "figures/search_quality_diagnostics.pdf": "17f44e1157e051372a3433e0100c3826d634ab29951ebe6e0b84af6eef01d812",
-        "figures/search_quality_diagnostics.svg": "c572ee19676dabed6376cae8ea5c411795ff474d72554ecef8f8f0f8672fa3f4"
+        "figures/search_quality_diagnostics.png": "6c01ff6499480f0905a176f2c1025ae320df823069754815c88f1f71cf014fbb",
+        "figures/search_quality_diagnostics.pdf": "3b645ee69f03ed3707b35e7d693049a80a132a3751043aec35e50c0fa494186f",
+        "figures/search_quality_diagnostics.svg": "1b02ffda139637657353783d1aba8673f9b32ebc0589afa15126957e2f89d457"
       }
     },
     {
@@ -362,13 +403,15 @@
         "final_width_in": 6.2,
         "minimum_font_pt": 7.0,
         "figure_level_title": false,
-        "vector_text_editable": true,
+        "vector_text_editable": false,
+        "vector_text_mode": "outlined_glyph_paths",
         "redundant_encoding": true
       },
+      "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q5_xy_strategy.png": "c15c64872390410f21d1ed2330e9d3937dff5507fb8e6cb0488ee20660acb446",
-        "figures/q5_xy_strategy.pdf": "557873b02a226d1a438bca98479377b93cd5a0f28abf0ce90337adad9c5c96c1",
-        "figures/q5_xy_strategy.svg": "0d4edad4f38f3a2a0949b41b6dca284911a111421ee10dc059d3e72ac14a898a"
+        "figures/q5_xy_strategy.png": "273ce2993d0fa47525b4bfb5b0856dfd09e45d653883b2a440a3fd90e7d0ad78",
+        "figures/q5_xy_strategy.pdf": "3b1d54a9657d1fbfc0e5d480d65f7206583c1ff9dea118bd4f8466969ef73d64",
+        "figures/q5_xy_strategy.svg": "03ff561edd29568da5f1a1007d9319961a88be22a807b3106771ab8da57179ea"
       }
     },
     {
@@ -381,18 +424,20 @@
         "figures/q5_coverage_gantt.svg"
       ],
       "data_source": "validation/q3_q5_independent.json",
-      "axes": "任务时刻/烟幕弹/并集",
+      "axes": "任务时刻/进入退出事件/覆盖数阶梯",
       "units": "s",
-      "caption": "Q5 的 15 枚烟幕弹、逐导弹并集与最大空窗。",
-      "interpretation": "并集摘要与内部空窗说明当前结果仍非上界；弹序按每机投放时刻生成。",
+      "caption": "Q5 的 15 枚烟幕弹事件弧、逐导弹覆盖数与最大空窗。",
+      "interpretation": "进入--退出事件扫描得到的覆盖数阶梯和内部空窗说明当前结果仍非上界；弹序按每机投放时刻生成。",
       "paper_location": "问题五覆盖结果",
       "figure_intent": {
-        "template": "coverage_timeline",
-        "reader_takeaway": "并集摘要与内部空窗说明当前结果仍非上界；弹序按每机投放时刻生成。",
+        "template": "event_count_storyboard",
+        "reader_takeaway": "进入--退出事件扫描得到的覆盖数阶梯和内部空窗说明当前结果仍非上界；弹序按每机投放时刻生成。",
         "semantic_layers": [
           "shot_index",
           "missile_group",
-          "interval",
+          "entry_event",
+          "exit_event",
+          "coverage_count",
           "union",
           "largest_gap"
         ],
@@ -403,13 +448,15 @@
         "final_width_in": 6.2,
         "minimum_font_pt": 7.0,
         "figure_level_title": false,
-        "vector_text_editable": true,
+        "vector_text_editable": false,
+        "vector_text_mode": "outlined_glyph_paths",
         "redundant_encoding": true
       },
+      "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q5_coverage_gantt.png": "f564e9de66a7ff35ae44a977847f7a75de94dfeb3b29cfec04fadb0c648c743c",
-        "figures/q5_coverage_gantt.pdf": "e3dd33a3b1ce58c1322a2d8492923ad744fc196d1a01c9f0759f93e4b651d84a",
-        "figures/q5_coverage_gantt.svg": "594d711f4de4dbe85a29f55b572d38bc734285fd169732e5474cf5f0ac222edf"
+        "figures/q5_coverage_gantt.png": "4d560d07d5f9abdd06356138f66d98d5171f39fe896b380647330845916e1fc0",
+        "figures/q5_coverage_gantt.pdf": "c8c806c8ea2a59a60489c31f11e08ef464cf72446343a64947dfef127bb6e51b",
+        "figures/q5_coverage_gantt.svg": "09ad5d07dba4f12e508b4806e103120126ccbf419e6b02ba5edf6261c78c8012"
       }
     },
     {
@@ -443,13 +490,15 @@
         "final_width_in": 6.2,
         "minimum_font_pt": 7.0,
         "figure_level_title": false,
-        "vector_text_editable": true,
+        "vector_text_editable": false,
+        "vector_text_mode": "outlined_glyph_paths",
         "redundant_encoding": true
       },
+      "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q5_per_missile_robustness.png": "ae136c7d60f3289ced3d38fa9b33af671cc4e7220d7358b884616a3ad0ed220b",
-        "figures/q5_per_missile_robustness.pdf": "997651ae9ecd4e14730fce0782a6ef2cf496ab1cdec6a2fa161c99862c44f912",
-        "figures/q5_per_missile_robustness.svg": "1b14c6b654e10f150ff6157aafad27176483e77f33cccc4bf5084d5a7c6de246"
+        "figures/q5_per_missile_robustness.png": "59d450e844207acb80c777b356f6ff6033bbe2028d03cb031c41b9702953e799",
+        "figures/q5_per_missile_robustness.pdf": "b2509b7ece819b586732456651772750dbd3f32917c42a20adfb96bab69d4951",
+        "figures/q5_per_missile_robustness.svg": "d3a9687d3af6b4e80564c50ed35c8ec9cbb2eed0f70d080bbd745d53fc0b3abe"
       }
     },
     {
@@ -481,13 +530,15 @@
         "final_width_in": 6.2,
         "minimum_font_pt": 7.0,
         "figure_level_title": false,
-        "vector_text_editable": true,
+        "vector_text_editable": false,
+        "vector_text_mode": "outlined_glyph_paths",
         "redundant_encoding": true
       },
+      "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/criterion_sensitivity.png": "2e569d7c059d9b3f8c15ef36b26805776985190fb713549e4c6e982b0404f1eb",
-        "figures/criterion_sensitivity.pdf": "aadd9fd21dbeea971188d93eb9869bdcfdb2417bb14a9ba7afeb3676bbd6340e",
-        "figures/criterion_sensitivity.svg": "ca1a3b35715a0ba337054a0c70cc26abe36ede7d3810e14d9fb0d7a1bdf7e43d"
+        "figures/criterion_sensitivity.png": "a0eb625c3df3175898dafb6742a95bbeb6070badb1778fe5dd287bdbe3917c95",
+        "figures/criterion_sensitivity.pdf": "ea214222816dde9f943ff16dbf2d9b2f9c458efb649dd420a0e0a689fd45b426",
+        "figures/criterion_sensitivity.svg": "677200064454118bcd97493cd9d4fd6ebb4238f6785cc6124d47ec4833e759ff"
       }
     },
     {
@@ -521,13 +572,15 @@
         "final_width_in": 6.2,
         "minimum_font_pt": 7.0,
         "figure_level_title": false,
-        "vector_text_editable": true,
+        "vector_text_editable": false,
+        "vector_text_mode": "outlined_glyph_paths",
         "redundant_encoding": true
       },
+      "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/time_step_convergence.png": "97049ad95dc2e6d8850cca6b494b2a2e8952e8ce9c65e3321bd3ef8063c545cc",
-        "figures/time_step_convergence.pdf": "75864c4a98968c2ef9fea47bb9c9a752b4cad5586267ae2069023b6172290da3",
-        "figures/time_step_convergence.svg": "f8193841b68008bb0cb747d980f535a1269250c6063aaac9b78994bdbc6f887c"
+        "figures/time_step_convergence.png": "aec8d04319a252558993deeb3b1f3b81760040372ae3149a72b9672b165ffc48",
+        "figures/time_step_convergence.pdf": "4e3a37ffe0bb44e3d969e95ca690b14af7ecb33c96ad82212ea764fac71c178f",
+        "figures/time_step_convergence.svg": "b917516a0de86fab633ce725fc0d7771353026e4797c70a5b929a1dfc973a409"
       }
     },
     {
@@ -562,14 +615,33 @@
         "final_width_in": 6.2,
         "minimum_font_pt": 7.0,
         "figure_level_title": false,
-        "vector_text_editable": true,
+        "vector_text_editable": false,
+        "vector_text_mode": "outlined_glyph_paths",
         "redundant_encoding": true
       },
+      "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q3_q4_multiseed_stability.png": "814afac61b0fd1d9a4743f07b7281c3c0af288156dadc1fc4643b7af0c6644ad",
-        "figures/q3_q4_multiseed_stability.pdf": "5d2a4c645b3935623ccc1f7ce7496e74806a2aa3223ab26117f20471d00ccdaa",
-        "figures/q3_q4_multiseed_stability.svg": "b130601f9eed6ce6e29b9f3ebfc52f81ad2d3f02c2d2cf5408a747f13475154a"
+        "figures/q3_q4_multiseed_stability.png": "3251162b382a7b991dd78fcc79238c1d30f6e88f01e77db481e92ac97d62da3a",
+        "figures/q3_q4_multiseed_stability.pdf": "124b516ec0f36812635848f3c17311b4d6e570783f270beb0f493a9ba0578ad5",
+        "figures/q3_q4_multiseed_stability.svg": "d036109eb56f8e60c9257699ab5d9a95316775f8696ccd522d56e8678e03fe6f"
       }
     }
-  ]
+  ],
+  "matlab_provenance": {
+    "schema_version": 1,
+    "sources_sha256": {
+      "src/matlab/render_q1_event.m": "59caf8aa326e5af30546d5e93db11b168dc011b04acd3dfadfa6427d5c580332",
+      "src/matlab/render_q3_event.m": "287b6772edc719e68a72a13e8d29be80155b21c59bf237bcc323f06dd0291bc2",
+      "src/matlab/render_q4_event.m": "bedc8781d97b52373ee375d28ae79f261406771c76866e2e69d810160340fc77",
+      "src/matlab/render_core_figures.m": "040191566c26629b46d4ad74077f172cadb09cbd61420fb9fc5cff89a0b0bda3",
+      "src/matlab/render_q5_figures.m": "116710698d20813a874e66748f52cfffe4f09330a44ceca076946db83cc94b47",
+      "src/matlab/render_cross_audits.m": "dbb2437360c72c6ef9159df04b3e830fb722780b07508891e534986e6a1a536f"
+    },
+    "inputs_sha256": {
+      "validation/q1_q2_independent.json": "87356ed221129d27784aff9bd90dceb8be4da372b767db4d3db7ccba4cf597c9",
+      "validation/q2_multiseed.json": "ef066c6811eb3d62769c6e015adddbd864b157c5e7b84ab0e53ef9bd12a4a314",
+      "validation/q3_q4_multiseed.json": "b6a789e46ed875ba0eace96a8f5ef594c2289456ae31e62c0e28b468858c1be4",
+      "validation/q3_q5_independent.json": "8dc5fa5a489e7228371a79d0248987032e45b55b6d2b85792c9558c4f86c1baa"
+    }
+  }
 }

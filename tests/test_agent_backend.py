@@ -247,18 +247,28 @@ class AgentBackendTests(unittest.TestCase):
         prompt = build_system_prompt("solver")
         self.assertIn("<expert_skill>", prompt)
         self.assertIn("题目—模型—计算—证据—结论", prompt)
+        self.assertIn("matlab_status", prompt)
+        self.assertIn("run_matlab", prompt)
+        self.assertIn("默认关闭", prompt)
+        self.assertIn("用户明确要求 MATLAB", prompt)
+        enabled_prompt = build_system_prompt("solver", unsandboxed_matlab=True)
+        self.assertIn("操作员已显式启用", enabled_prompt)
 
     def test_settings_loads_scheduler_limits(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             (root / ".env").write_text(
-                "AGENT_MAX_CONCURRENT_RUNS=3\nAGENT_MAX_QUEUED_RUNS=7\n",
+                "AGENT_MAX_CONCURRENT_RUNS=3\nAGENT_MAX_QUEUED_RUNS=7\n"
+                "AGENT_MATLAB_TIMEOUT=73\nAGENT_UNSANDBOXED_MATLAB=1\n",
                 encoding="utf-8",
             )
             settings = AgentSettings.load(root)
             self.assertEqual(settings.max_concurrent_runs, 3)
             self.assertEqual(settings.max_queued_runs, 7)
+            self.assertEqual(settings.matlab_timeout, 73)
+            self.assertTrue(settings.unsandboxed_matlab)
             self.assertEqual(settings.public_dict()["maxConcurrentRuns"], 3)
+            self.assertTrue(settings.public_dict()["unsandboxedMatlab"])
 
     def test_build_prompt_validates_and_deduplicates(self) -> None:
         result = build_prompt(
@@ -387,6 +397,44 @@ class AgentBackendTests(unittest.TestCase):
                 )
             command_text = "\n".join(ImmediateCodexProcess.last_command)
             self.assertNotIn("mcp_servers.math_modeling", command_text)
+
+    def test_codex_mcp_timeout_tracks_matlab_limit_and_keeps_raw_tool_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            settings = AgentSettings(
+                provider="codex-cli",
+                base_url="",
+                api_key="",
+                model="gpt-test",
+                timeout=40,
+                tools_enabled=True,
+                codex_available=True,
+                codex_logged_in=True,
+                project_root=temp_dir,
+                codex_fast_http=False,
+                matlab_timeout=65,
+                unsandboxed_matlab=False,
+            )
+            provider = CodexCliProvider(settings)
+            with patch.object(provider, "_resolve_executable", return_value="C:\\safe\\codex.exe"), patch(
+                "agent_backend.subprocess.Popen",
+                side_effect=ImmediateCodexProcess,
+            ):
+                self.assertEqual(
+                    list(
+                        provider.stream(
+                            "system",
+                            "user",
+                            threading.Event(),
+                            tool_registry=FakeToolRegistry(),
+                            run_id="c" * 32,
+                        )
+                    ),
+                    [],
+                )
+            command_text = "\n".join(ImmediateCodexProcess.last_command)
+            self.assertIn("mcp_servers.math_modeling.tool_timeout_sec=90", command_text)
+            self.assertIn('AGENT_MODELING_BROKER_TIMEOUT="85"', command_text)
+            self.assertIn('AGENT_UNSANDBOXED_MATLAB="0"', command_text)
 
     def test_codex_total_timeout_terminates_runtime(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

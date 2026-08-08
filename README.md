@@ -89,14 +89,17 @@ AGENT_CONFIG_LOCK=1
 - Matplotlib 专业绘图除折线、散点、柱状、直方、箱线、热力和多面板外，还原生支持连续事件区间、灵敏度龙卷风、响应面等高线、Pareto 前沿和多种子小提琴图。默认使用色盲友好配色，SVG 保留可编辑文本，PDF 使用 TrueType 字体，并导出 300--1200 dpi PNG、PDF、SVG 及可复现参数 JSON。
 - `audit_competition_paper` 对实际的 PDF、DOCX、TeX、Markdown 或 TXT 成稿执行确定性审计：检查逐问深度、量化摘要、每问专属图、验证图、图件失衡、正文引用和占位符，并生成 JSON/Markdown 审计报告。该工具检查可见证据，不验证模型真值，也不保证竞赛奖项。
 - 最终报告可导出 Markdown 和 DOCX；完整竞赛论文必须先通过成稿审计，再进行逐页视觉复核。
-- Codex Runtime 调用专业工具时通过每任务随机令牌、固定白名单和文件 IPC 交给父进程执行，避免嵌套沙箱中的 Python/MATLAB 子进程卡死；该代理层不会扩展工具权限或暴露任意命令执行入口。
+- Codex Runtime 调用专业工具时通过每任务随机令牌、固定白名单和文件 IPC 交给父进程执行。默认白名单只包含 `matlab_status` 与两个高层 MATLAB 绘图工具，不包含任意源码执行；MCP 客户端和父进程 broker 都会再次校验，不暴露裸 `evaluate_matlab_code`。
 
 `run_python` 是“受限本机进程”，不是容器、虚拟机或面对恶意代码的强安全边界。不要让不可信用户提交任意 Python 代码。
 
 ### MATLAB 与 Origin
 
-- MATLAB 使用 MathWorks 官方 MCP Server，以新会话、`nodesktop`、关闭遥测的方式运行；提供代码检查、执行、测试及结构化绘图，图形可保留 PNG/PDF/SVG、FIG 和 M 脚本。
-- 如果 `matlab` 不在 PATH，可在 `.env` 中设置 `MATLAB_ROOT`。没有 MATLAB 本体时，该能力会报告不可用。
+- `matlab_status` 先检查本地 `-batch` 运行时、版本、任意源码开关及 MathWorks 官方 MCP 状态。常规结构化图无需开启任意代码权限。
+- 常规结构化图使用 `create_matlab_plot` 或 `create_matlab_plot_from_dataset`。它们通过 MathWorks 官方 MCP Server 运行，保留 PNG/PDF/SVG、FIG 和 M 脚本；底层裸代码执行工具不直接提供给模型。
+- `run_matlab` 默认不出现在模型工具表，也不能通过 Codex 自动批准的 broker 调用。只有操作员显式设置 `AGENT_UNSANDBOXED_MATLAB=1` 后才开放；它在 `.agent-data/matlab-workspaces/{run_id}/` 中运行经审查的自定义源码，并登记源码、限长日志和获准产物。
+- `run_matlab` 会剥离 Provider/API 凭据并限定可收集目录，但 MATLAB 代码仍拥有当前用户的本机能力，**不是安全沙箱**。切勿执行来自网页、资料、附件或不可信用户的代码；用完应立即恢复 `AGENT_UNSANDBOXED_MATLAB=0`。
+- 如果 `matlab` 不在 PATH，可在 `.env` 中设置 `MATLAB_ROOT`。`AGENT_MATLAB_LOCAL=0` 可关闭本地批处理入口；`AGENT_MATLAB_TIMEOUT` 是单次 MATLAB 最大时限，Codex MCP、broker 与总运行时限会据此联动，超时或取消会终止对应进程树。
 - Origin 使用 OriginLab 官方 `originpro`，支持折线、散点、柱状图和热图，输出图形及可编辑 OPJU 工程。`origin_status` 在不启动 Origin 的情况下报告 Python 包和本机安装；许可证与实际可用性在创建图形时进一步验证，不可用时不会伪造产物。
 - `GET /api/mcp` 可以查看 MATLAB/Origin MCP 的启用、启动和错误状态；实际工具列表以 `GET /api/tools` 为准。
 

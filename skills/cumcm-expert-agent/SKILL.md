@@ -42,7 +42,7 @@ description: 数学建模竞赛专家工作流，覆盖国赛、美赛及校赛�
 
 - 通用数值算法、轨迹仿真、统计检验、灵敏度分析和模板填表：`run_python`。
 - 线性规划：`solve_linear_program`；更复杂优化通过 `run_python` 使用 SciPy、pymoo 等。
-- MATLAB 计算或工程图：先检查 MATLAB MCP，再执行并保留 `.m`、`.fig` 和导出图。
+- MATLAB 计算、连续事件、工程图或三维轨迹：先调用 `matlab_status`，标准结构化图使用 `create_matlab_plot`/`create_matlab_plot_from_dataset`。`run_matlab` 是非沙箱本机任意代码工具，默认关闭；只有状态明确显示操作员已用 `AGENT_UNSANDBOXED_MATLAB=1` 授权且代码来源可信时才能使用，绝不自行申请自动批准或绕过。用户明确指定 MATLAB 时不可静默回退。
 - Origin：先调用 `origin_status`；仅在软件与许可证可用时输出 `.opju`。
 
 固定随机种子，报告求解器状态、约束违反量、收敛信息、运行环境和关键参数。代码草案、模型自述和搜索命中都不算运行证据。
@@ -103,4 +103,4 @@ description: 数学建模竞赛专家工作流，覆盖国赛、美赛及校赛�
 
 ## 专业路由
 
-根据任务只加载必要技能：统计推断用 `statistical-analysis`/`statsmodels`，机器学习用 `scikit-learn`，符号推导用 `sympy`，图论用 `networkx`，多目标优化用 `pymoo`，离散事件仿真用 `simpy`，高控制绘图用 `matplotlib`，论文用 `math-modeling-paper`。整题控制可参考 `cumcm-modeling`，但本 skill 的执行证据与回滚门禁优先。
+根据任务只加载必要技能：统计推断用 `statistical-analysis`/`statsmodels`，机器学习用 `scikit-learn`，符号推导用 `sympy`，图论用 `networkx`，多目标优化用 `pymoo`，离散事件仿真用 `simpy`，高控制 Python 绘图用 `matplotlib`，工程计算、连续事件图与三维轨迹可用 MATLAB，论文用 `math-modeling-paper`。整题控制可参考 `cumcm-modeling`，但本 skill 的执行证据与回滚门禁优先。

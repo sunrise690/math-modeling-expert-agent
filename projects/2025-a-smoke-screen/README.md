@@ -19,6 +19,8 @@ python -B src/run_all.py --recompute
 
 `--quick` 与 `--recompute` 互斥，防止用缩小搜索覆盖正式结果。最终运行按多种子审计结果使用 Q3=`20250810`、Q4=`20250809`、Q5=`20250808`；Q2 使用 `20250808`--`20250815` 做独立重复。
 
+14 组正式图全部由 `src/matlab/render_*.m` 生成；Python 只负责调用 MATLAB、检查产物并写入哈希清单，不参与正式绘图。默认流程校验版本库中已经生成并通过视觉复核的 42 个 MATLAB 产物；需要强制重绘时先设置 `CUMCM_FORCE_MATLAB_FIGURES=1`。重绘需要 MATLAB `-batch`；若 `matlab` 不在 PATH，请设置 `MATLAB_ROOT`。MATLAB 不可用或图形客户端异常时不会用 Python 静默改画。
+
 ## 判据与结论边界
 
 - 主评分使用导弹到真目标几何中心的有限视线，Q2--Q5 的优化和模板填报均按此口径。
@@ -31,7 +33,7 @@ python -B src/run_all.py --recompute
 - `src/`：三维运动学、连续事件求根、Q1--Q5 求解、工作簿回读和专业绘图。
 - `outputs/result1.xlsx`、`result2.xlsx`、`result3.xlsx`：按官方模板生成的提交结果。
 - `validation/`：独立几何复算、求根残差、约束和工作簿回读证据。
-- `figures/`：五组 PNG/PDF/SVG 正式图及 claim 绑定清单。
+- `figures/`：14 组 MATLAB 生成的 PNG/PDF/SVG 正式图及 claim 绑定清单；全部绘图源码位于 `src/matlab/`。
 - `reports/summary.json`、`verification_report.md`、`redteam_review.md`：结构化结果与边界审计。
 - `references/claim_evidence_map.md`：论文主张到可重生成证据的映射。
 - `paper/main.tex`、`paper/main.pdf`：正式中文论文及可编译源文件。

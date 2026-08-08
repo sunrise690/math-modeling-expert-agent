@@ -10,6 +10,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import threading
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -25,6 +26,7 @@ SKILL_ROOT = Path.home() / ".codex/skills"
 SOURCE_ROOT = Path(__file__).resolve().parent
 ALLOWED_DATA_EXTENSIONS = {".csv", ".tsv", ".xlsx", ".json"}
 MCP_ARTIFACT_EXTENSIONS = {".csv", ".fig", ".json", ".m", ".mat", ".opju", ".pdf", ".png", ".svg", ".xlsx"}
+MATLAB_ARTIFACT_EXTENSIONS = {".csv", ".fig", ".json", ".m", ".mat", ".pdf", ".png", ".svg", ".txt", ".xlsx"}
 PYTHON_ARTIFACT_EXTENSIONS = {
     ".csv",
     ".docx",
@@ -46,6 +48,9 @@ MAX_DATA_ROWS = 200_000
 MAX_PYTHON_CODE_CHARS = 100_000
 MAX_PYTHON_OUTPUT_CHARS = 32_000
 MAX_PYTHON_ARTIFACT_BYTES = 100 * 1024 * 1024
+MAX_MATLAB_CODE_CHARS = 100_000
+MAX_MATLAB_OUTPUT_CHARS = 32_000
+MAX_MATLAB_ARTIFACT_BYTES = 100 * 1024 * 1024
 PYTHON_PLOT_TYPES = (
     "line",
     "scatter",
@@ -142,10 +147,12 @@ class ToolRegistry:
         self.upload_root = root / ".agent-data/uploads"
         self.mcp_workspace_root = root / ".agent-data/mcp-workspaces"
         self.python_workspace_root = root / ".agent-data/python-workspaces"
+        self.matlab_workspace_root = root / ".agent-data/matlab-workspaces"
         self.artifact_root.mkdir(parents=True, exist_ok=True)
         self.upload_root.mkdir(parents=True, exist_ok=True)
         self.mcp_workspace_root.mkdir(parents=True, exist_ok=True)
         self.python_workspace_root.mkdir(parents=True, exist_ok=True)
+        self.matlab_workspace_root.mkdir(parents=True, exist_ok=True)
         self._env_values = self._read_local_env()
         self.knowledge = KnowledgeBase(root / ".agent-data/knowledge.db", self._knowledge_roots())
         self.mcp = MCPToolManager(self._mcp_configs(), root / ".agent-data/mcp/logs")
@@ -164,7 +171,8 @@ class ToolRegistry:
         return definitions
 
     def _local_definitions(self) -> list[dict[str, Any]]:
-        return [
+        matlab_timeout = self._matlab_timeout_limit()
+        definitions = [
             {
                 "type": "function",
                 "function": {
@@ -312,6 +320,54 @@ class ToolRegistry:
                                 "minimum": 1,
                                 "maximum": 120,
                                 "default": 60,
+                            },
+                        },
+                        "required": ["code"],
+                        "additionalProperties": False,
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "matlab_status",
+                    "description": "Check the local MATLAB batch runtime and official MATLAB MCP availability before choosing MATLAB for computation or figures.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {},
+                        "additionalProperties": False,
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
+                    "name": "run_matlab",
+                    "description": "Run reproducible MATLAB code in the current task workspace. Uploaded files are copied into inputs/; write deliverables to outputs/. The executed .m source, bounded logs, and approved output artifacts are retained. This is a local process, not a security sandbox.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "code": {
+                                "type": "string",
+                                "description": "Complete MATLAB program. Read copied files from inputs/ and write deliverables under outputs/.",
+                                "maxLength": MAX_MATLAB_CODE_CHARS,
+                            },
+                            "input_upload_ids": {
+                                "type": "array",
+                                "items": {"type": "string"},
+                                "maxItems": 10,
+                                "description": "Optional upload IDs to copy into inputs/ before execution.",
+                            },
+                            "timeout_seconds": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": matlab_timeout,
+                                "default": matlab_timeout,
+                            },
+                            "filename": {
+                                "type": "string",
+                                "description": "Stem used for the retained MATLAB source artifact.",
+                                "default": "matlab-analysis",
                             },
                         },
                         "required": ["code"],
@@ -578,15 +634,111 @@ class ToolRegistry:
                 },
             },
         ]
+        if not self._unsandboxed_matlab_enabled():
+            definitions = [
+                definition
+                for definition in definitions
+                if definition.get("function", {}).get("name") != "run_matlab"
+            ]
+        return definitions
+
+    def _matlab_executable(self) -> Path | None:
+        candidates: list[Path] = []
+        configured = self._config_value("MATLAB_ROOT")
+        if configured:
+            configured_path = Path(configured).expanduser()
+            if configured_path.is_file():
+                candidates.append(configured_path)
+            else:
+                candidates.extend(
+                    [
+                        configured_path / "bin/matlab.exe",
+                        configured_path / "bin/matlab",
+                        configured_path / "matlab.exe",
+                        configured_path / "matlab",
+                    ]
+                )
+        discovered = shutil.which("matlab")
+        if discovered:
+            candidates.append(Path(discovered))
+        if os.name == "nt":
+            candidates.append(Path(r"D:\matlab\bin\matlab.exe"))
+            for variable in ("ProgramFiles", "ProgramW6432"):
+                program_files = os.environ.get(variable, "").strip()
+                if program_files:
+                    candidates.extend(
+                        sorted(
+                            (Path(program_files) / "MATLAB").glob("R*/bin/matlab.exe"),
+                            reverse=True,
+                        )
+                    )
+        seen: set[str] = set()
+        for candidate in candidates:
+            try:
+                resolved = candidate.resolve()
+            except OSError:
+                continue
+            key = os.path.normcase(str(resolved))
+            if key in seen:
+                continue
+            seen.add(key)
+            if resolved.is_file():
+                return resolved
+        return None
+
+    @staticmethod
+    def _matlab_version(matlab_root: Path) -> str:
+        version_info = matlab_root / "VersionInfo.xml"
+        if not version_info.is_file():
+            return ""
+        try:
+            text = version_info.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            return ""
+        release_match = re.search(r"<release>\s*([^<]+?)\s*</release>", text, re.IGNORECASE)
+        version_match = re.search(r"<version>\s*([^<]+?)\s*</version>", text, re.IGNORECASE)
+        release = release_match.group(1).strip() if release_match else ""
+        version = version_match.group(1).strip() if version_match else ""
+        if release and version:
+            return f"{release} ({version})"
+        return release or version
+
+    def _matlab_status(self, *, probe_mcp: bool = True) -> dict[str, Any]:
+        executable = self._matlab_executable()
+        local_enabled = self._env_enabled("AGENT_MATLAB_LOCAL", True)
+        root = executable.parent.parent if executable else None
+        mcp_status = next(
+            (item for item in self.mcp.status(probe=probe_mcp) if item.get("name") == "matlab"),
+            {},
+        )
+        available = bool(local_enabled and executable)
+        if not local_enabled:
+            reason = "本地 MATLAB 批处理工具已由 AGENT_MATLAB_LOCAL 禁用"
+        elif executable is None:
+            reason = "未找到 MATLAB；请设置 MATLAB_ROOT 或把 matlab 加入 PATH"
+        else:
+            reason = ""
+        return {
+            "available": available,
+            "executable": str(executable) if executable else "",
+            "root": str(root) if root else "",
+            "version": self._matlab_version(root) if root else "",
+            "batchSupported": available,
+            "localEnabled": local_enabled,
+            "unsandboxedCodeEnabled": self._unsandboxed_matlab_enabled(),
+            "maximumExecutionSeconds": self._matlab_timeout_limit(),
+            "mcpEnabled": bool(mcp_status.get("enabled")),
+            "mcpAvailable": bool(mcp_status.get("available")),
+            "mcpState": str(mcp_status.get("state", "disabled")),
+            "mcpError": str(mcp_status.get("error", "")),
+            "reason": reason,
+        }
 
     def _mcp_configs(self) -> list[MCPServerConfig]:
         mcp_enabled = self._env_enabled("AGENT_MCP", True)
         matlab_binary = self.root / ".agent-data/mcp/matlab-mcp-server-windows-x64.exe"
-        matlab_command = shutil.which("matlab")
-        configured_matlab_root = self._config_value("MATLAB_ROOT")
-        matlab_root = Path(configured_matlab_root).expanduser() if configured_matlab_root else None
-        if matlab_root is None and matlab_command:
-            matlab_root = Path(matlab_command).resolve().parent.parent
+        matlab_executable = self._matlab_executable()
+        matlab_root = matlab_executable.parent.parent if matlab_executable else None
         origin_server = SOURCE_ROOT / "mcp_servers/origin_server.py"
         matlab_args = [
             f"--initial-working-folder={self.mcp_workspace_root}",
@@ -606,8 +758,9 @@ class ToolRegistry:
                 and self._env_enabled("AGENT_MATLAB_MCP", True)
                 and matlab_binary.is_file()
                 and bool(matlab_root),
+                exposed_tools=frozenset({"check_matlab_code", "detect_matlab_toolboxes"}),
                 startup_timeout=20,
-                call_timeout=300,
+                call_timeout=self._matlab_timeout_limit(),
             ),
             MCPServerConfig(
                 name="origin",
@@ -647,6 +800,15 @@ class ToolRegistry:
         if not value:
             return default
         return value.lower() not in {"0", "false", "no", "off"}
+
+    def _unsandboxed_matlab_enabled(self) -> bool:
+        return self._env_enabled("AGENT_UNSANDBOXED_MATLAB", False)
+
+    def _matlab_timeout_limit(self) -> int:
+        try:
+            return max(1, min(600, int(self._config_value("AGENT_MATLAB_TIMEOUT") or "180")))
+        except ValueError:
+            return 180
 
     def _read_local_env(self) -> dict[str, str]:
         path = self.root / ".env"
@@ -739,6 +901,11 @@ class ToolRegistry:
         return definitions
 
     def execute(self, name: str, arguments: dict[str, Any], run_id: str) -> dict[str, Any]:
+        if name == "run_matlab" and not self._unsandboxed_matlab_enabled():
+            raise ToolError(
+                "run_matlab 可执行本机任意 MATLAB 代码且不受沙箱保护；"
+                "仅可由操作员显式设置 AGENT_UNSANDBOXED_MATLAB=1 后启用"
+            )
         handlers = {
             "search_skills": self._search_skills,
             "read_skill": self._read_skill,
@@ -748,6 +915,8 @@ class ToolRegistry:
             "summarize_data": self._summarize_data,
             "inspect_dataset": self._inspect_dataset,
             "run_python": lambda args: self._run_python(args, run_id),
+            "matlab_status": lambda args: self._matlab_status(),
+            "run_matlab": lambda args: self._run_matlab(args, run_id),
             "solve_linear_program": self._solve_linear_program,
             "create_plot": lambda args: self._run_script("plot_figure.py", args, run_id),
             "create_plot_from_dataset": lambda args: self._create_plot_from_dataset(args, run_id),
@@ -825,16 +994,30 @@ class ToolRegistry:
         return target
 
     def delete_artifacts(self, run_id: str) -> None:
-        artifact_dir = self._artifact_dir(run_id).resolve()
-        if artifact_dir.parent != self.artifact_root.resolve():
-            raise ToolError("产物目录无效")
-        if artifact_dir.is_dir():
-            shutil.rmtree(artifact_dir)
-        python_workspace = (self.python_workspace_root / run_id).resolve()
-        if python_workspace.parent != self.python_workspace_root.resolve():
-            raise ToolError("Python 工作区无效")
-        if python_workspace.is_dir():
-            shutil.rmtree(python_workspace)
+        self._artifact_dir(run_id)
+        cleanup_targets = (
+            self._validated_cleanup_target(self.artifact_root, run_id, "产物目录"),
+            self._validated_cleanup_target(self.python_workspace_root, run_id, "Python 工作区"),
+            self._validated_cleanup_target(self.matlab_workspace_root, run_id, "MATLAB 工作区"),
+        )
+        for target in cleanup_targets:
+            if target.is_dir():
+                shutil.rmtree(target)
+
+    @staticmethod
+    def _validated_cleanup_target(root: Path, run_id: str, label: str) -> Path:
+        target = root / run_id
+        is_junction = getattr(target, "is_junction", None)
+        if target.is_symlink() or (callable(is_junction) and is_junction()):
+            raise ToolError(f"{label}无效")
+        try:
+            root_resolved = root.resolve()
+            target_resolved = target.resolve()
+        except OSError as error:
+            raise ToolError(f"{label}无效") from error
+        if target_resolved.parent != root_resolved:
+            raise ToolError(f"{label}无效")
+        return target
 
     def save_upload(self, filename: str, content_type: str, content: bytes) -> dict[str, Any]:
         safe_name = self._safe_filename(filename)
@@ -1587,6 +1770,267 @@ class ToolRegistry:
             "inequalityResidual": [] if not hasattr(result, "ineqlin") else [float(value) for value in result.ineqlin.residual],
             "equalityResidual": [] if not hasattr(result, "eqlin") else [float(value) for value in result.eqlin.residual],
         }
+
+    def _run_matlab(self, arguments: dict[str, Any], run_id: str) -> dict[str, Any]:
+        code = str(arguments.get("code", ""))
+        if not code.strip():
+            raise ToolError("MATLAB 代码不能为空")
+        if len(code) > MAX_MATLAB_CODE_CHARS:
+            raise ToolError(f"MATLAB 代码不能超过 {MAX_MATLAB_CODE_CHARS} 个字符")
+        timeout_limit = self._matlab_timeout_limit()
+        try:
+            timeout = max(1, min(timeout_limit, int(arguments.get("timeout_seconds", timeout_limit))))
+        except (TypeError, ValueError) as error:
+            raise ToolError("timeout_seconds 必须是整数") from error
+        broker_cancel_event = arguments.get("_broker_cancel_event")
+        if broker_cancel_event is not None and not all(
+            callable(getattr(broker_cancel_event, method, None)) for method in ("is_set", "wait")
+        ):
+            raise ToolError("MATLAB 取消信号无效")
+        if broker_cancel_event is not None and broker_cancel_event.is_set():
+            raise ToolError("MATLAB 执行已取消")
+        raw_upload_ids = arguments.get("input_upload_ids", [])
+        if not isinstance(raw_upload_ids, list) or len(raw_upload_ids) > 10:
+            raise ToolError("input_upload_ids 必须是最多 10 个附件 ID 的数组")
+
+        status = self._matlab_status(probe_mcp=False)
+        executable_value = status.get("executable", "")
+        if not status.get("available") or not executable_value:
+            return {
+                "ok": False,
+                "exitCode": -1,
+                "timedOut": False,
+                "elapsedSeconds": 0.0,
+                "stdout": "",
+                "stderr": "",
+                "inputs": [],
+                "workspace": {"inputs": "inputs/", "outputs": "outputs/", "logs": "logs/"},
+                "artifacts": [],
+                "runtime": status,
+                "error": status.get("reason") or "MATLAB 不可用",
+                "isolation": "本机 MATLAB 进程（非容器或虚拟机安全边界）",
+            }
+        executable = Path(str(executable_value))
+
+        workspace = self._matlab_workspace(run_id)
+        input_dir = workspace / "inputs"
+        output_dir = workspace / "outputs"
+        log_dir = workspace / "logs"
+        preferences_dir = workspace / "prefs"
+        temp_dir = workspace / "tmp"
+        for directory in (input_dir, output_dir, log_dir, preferences_dir, temp_dir):
+            directory.mkdir(parents=True, exist_ok=True)
+
+        inputs: list[dict[str, Any]] = []
+        seen_upload_ids: set[str] = set()
+        for raw_upload_id in raw_upload_ids:
+            upload_id = str(raw_upload_id).strip()
+            if not upload_id or upload_id in seen_upload_ids:
+                continue
+            seen_upload_ids.add(upload_id)
+            record = self.get_upload(upload_id)
+            source = self.upload_path(upload_id)
+            target = input_dir / self._safe_filename(str(record["name"]))
+            shutil.copy2(source, target)
+            inputs.append({"uploadId": upload_id, "name": target.name, "relativePath": f"inputs/{target.name}"})
+
+        source_stem = Path(self._safe_filename(str(arguments.get("filename") or "matlab-analysis"))).stem
+        invocation_id = uuid.uuid4().hex[:12]
+        script_path = workspace / f"analysis_{invocation_id}.m"
+        retained_source = output_dir / self._safe_filename(f"{source_stem}.m")
+        script_path.write_text(
+            "% Generated by the mathematical-modeling agent.\n"
+            "set(groot, 'defaultFigureVisible', 'off');\n"
+            + code.rstrip()
+            + "\n",
+            encoding="utf-8",
+        )
+
+        environment = os.environ.copy()
+        for name in list(environment):
+            upper = name.upper()
+            if (
+                upper in {"AGENT_API_KEY", "OPENAI_API_KEY", "CODEX_HOME"}
+                or upper.endswith("_API_KEY")
+                or "PASSWORD" in upper
+                or "SECRET" in upper
+                or "TOKEN" in upper
+                or upper.startswith("AGENT_MODELING_")
+            ):
+                environment.pop(name, None)
+        environment.update(
+            {
+                "MATLAB_PREFDIR": str(preferences_dir),
+                "TEMP": str(temp_dir),
+                "TMP": str(temp_dir),
+                "AGENT_MATLAB_WORKSPACE": str(workspace),
+            }
+        )
+        workspace_literal = str(workspace).replace("'", "''")
+        script_literal = str(script_path).replace("'", "''")
+        batch_code = (
+            f"try, cd('{workspace_literal}'); run('{script_literal}'); "
+            "catch ME, fprintf(2,'%s\\n',getReport(ME,'extended','hyperlinks','off')); exit(1); end; exit(0);"
+        )
+        creation_flags = 0
+        if os.name == "nt":
+            creation_flags = getattr(subprocess, "CREATE_NO_WINDOW", 0) | getattr(
+                subprocess, "CREATE_NEW_PROCESS_GROUP", 0
+            )
+
+        started = datetime.now(timezone.utc)
+        process: subprocess.Popen[bytes] | None = None
+        timed_out = False
+        cancelled = threading.Event()
+        execution_finished = threading.Event()
+        cancellation_thread: threading.Thread | None = None
+        stdout_bytes = b""
+        stderr_bytes = b""
+        try:
+            process = subprocess.Popen(
+                [str(executable), "-batch", batch_code],
+                cwd=workspace,
+                env=environment,
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                shell=False,
+                creationflags=creation_flags,
+            )
+            if broker_cancel_event is not None:
+                def cancel_broker_execution() -> None:
+                    while not execution_finished.wait(0.05):
+                        if not broker_cancel_event.is_set():
+                            continue
+                        if process is not None and process.poll() is None:
+                            cancelled.set()
+                            self._terminate_process_tree(process)
+                        return
+
+                cancellation_thread = threading.Thread(
+                    target=cancel_broker_execution,
+                    daemon=True,
+                    name=f"matlab-cancel-{run_id[:8]}",
+                )
+                cancellation_thread.start()
+            try:
+                stdout_bytes, stderr_bytes = process.communicate(timeout=timeout)
+            except subprocess.TimeoutExpired as error:
+                timed_out = True
+                stdout_bytes = error.stdout or b""
+                stderr_bytes = error.stderr or b""
+                self._terminate_process_tree(process)
+                for drain_timeout in (10, 5):
+                    try:
+                        tail_stdout, tail_stderr = process.communicate(timeout=drain_timeout)
+                        stdout_bytes += tail_stdout or b""
+                        stderr_bytes += tail_stderr or b""
+                        break
+                    except subprocess.TimeoutExpired as drain_error:
+                        stdout_bytes += drain_error.stdout or b""
+                        stderr_bytes += drain_error.stderr or b""
+                        self._terminate_process_tree(process)
+            return_code = -1 if timed_out else int(process.returncode or 0)
+        except OSError as error:
+            return_code = -1
+            stderr_bytes = str(error).encode("utf-8", errors="replace")
+        finally:
+            execution_finished.set()
+            if cancellation_thread is not None:
+                cancellation_thread.join(timeout=0.2)
+
+        shutil.copy2(script_path, retained_source)
+        stdout_full = self._decode_process_output(stdout_bytes)
+        stderr_full = self._decode_process_output(stderr_bytes)
+        bounded_log_chars = MAX_MATLAB_OUTPUT_CHARS * 8
+        log_path = output_dir / self._safe_filename(f"{source_stem}-matlab-log.txt")
+        log_path.write_text(
+            "[stdout]\n"
+            + stdout_full[-bounded_log_chars:]
+            + "\n\n[stderr]\n"
+            + stderr_full[-bounded_log_chars:],
+            encoding="utf-8",
+        )
+        artifacts = self._collect_matlab_artifacts(run_id, output_dir)
+        elapsed = max(0.0, (datetime.now(timezone.utc) - started).total_seconds())
+        was_cancelled = cancelled.is_set()
+        ok = not timed_out and not was_cancelled and return_code == 0
+        result: dict[str, Any] = {
+            "ok": ok,
+            "exitCode": return_code,
+            "timedOut": timed_out,
+            "cancelled": was_cancelled,
+            "elapsedSeconds": round(elapsed, 3),
+            "stdout": stdout_full[-MAX_MATLAB_OUTPUT_CHARS:],
+            "stderr": stderr_full[-MAX_MATLAB_OUTPUT_CHARS:],
+            "inputs": inputs,
+            "workspace": {"inputs": "inputs/", "outputs": "outputs/", "logs": "logs/"},
+            "artifacts": artifacts,
+            "runtime": status,
+            "isolation": "任务工作区与凭据环境剥离的本机 MATLAB 进程（非容器或虚拟机安全边界）",
+        }
+        if was_cancelled:
+            result["error"] = "Codex 或工具代理已结束，MATLAB 进程树已终止"
+        elif timed_out:
+            result["error"] = f"MATLAB 执行超过 {timeout} 秒，已终止进程树"
+        elif return_code != 0:
+            result["error"] = (stderr_full or stdout_full or "MATLAB 执行失败")[-1200:]
+        return result
+
+    def _matlab_workspace(self, run_id: str) -> Path:
+        self._artifact_dir(run_id)
+        workspace = (self.matlab_workspace_root / run_id).resolve()
+        if workspace.parent != self.matlab_workspace_root.resolve():
+            raise ToolError("MATLAB 工作区无效")
+        workspace.mkdir(parents=True, exist_ok=True)
+        return workspace
+
+    def _collect_matlab_artifacts(self, run_id: str, output_dir: Path) -> list[dict[str, str]]:
+        artifact_dir = self._artifact_dir(run_id)
+        artifact_dir.mkdir(parents=True, exist_ok=True)
+        output_root = output_dir.resolve()
+        total = 0
+        for source in sorted(output_dir.rglob("*")):
+            if not source.is_file() or source.is_symlink() or source.suffix.lower() not in MATLAB_ARTIFACT_EXTENSIONS:
+                continue
+            try:
+                resolved = source.resolve()
+                resolved.relative_to(output_root)
+            except (OSError, ValueError):
+                continue
+            size = source.stat().st_size
+            if size > MAX_UPLOAD_BYTES or total + size > MAX_MATLAB_ARTIFACT_BYTES:
+                continue
+            relative = source.relative_to(output_dir).as_posix().replace("/", "__")
+            target = artifact_dir / self._safe_filename(relative)
+            shutil.copy2(source, target)
+            total += size
+        return self.list_artifacts(run_id)
+
+    @staticmethod
+    def _terminate_process_tree(process: subprocess.Popen[Any]) -> None:
+        if process.poll() is not None:
+            return
+        if os.name == "nt":
+            try:
+                result = subprocess.run(
+                    ["taskkill", "/PID", str(process.pid), "/T", "/F"],
+                    stdin=subprocess.DEVNULL,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    timeout=10,
+                    check=False,
+                    shell=False,
+                )
+                if result.returncode == 0 and process.poll() is not None:
+                    return
+            except (OSError, subprocess.TimeoutExpired):
+                pass
+        if process.poll() is None:
+            try:
+                process.kill()
+            except OSError:
+                pass
 
     def _run_python(self, arguments: dict[str, Any], run_id: str) -> dict[str, Any]:
         code = str(arguments.get("code", ""))

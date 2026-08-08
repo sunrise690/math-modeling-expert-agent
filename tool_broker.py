@@ -11,7 +11,7 @@ from typing import Any, Protocol
 
 
 MAX_BROKER_REQUEST_BYTES = 1_000_000
-DEFAULT_BROKER_TIMEOUT = 190.0
+DEFAULT_BROKER_TIMEOUT = 200.0
 BROKER_TOOL_NAMES = frozenset(
     {
         "search_materials",
@@ -21,12 +21,23 @@ BROKER_TOOL_NAMES = frozenset(
         "read_skill_reference",
         "inspect_dataset",
         "run_python",
+        "matlab_status",
         "solve_linear_program",
         "create_plot_from_dataset",
         "create_plot",
+        "create_matlab_plot",
+        "create_matlab_plot_from_dataset",
         "export_report",
     }
 )
+UNSANDBOXED_MATLAB_TOOL_NAME = "run_matlab"
+
+
+def broker_tool_names(*, allow_unsandboxed_matlab: bool = False) -> frozenset[str]:
+    """Return the broker allowlist; arbitrary MATLAB source is opt-in only."""
+    if allow_unsandboxed_matlab:
+        return BROKER_TOOL_NAMES | {UNSANDBOXED_MATLAB_TOOL_NAME}
+    return BROKER_TOOL_NAMES
 
 
 class RegistryProtocol(Protocol):
@@ -60,10 +71,18 @@ def _validated_broker_root(value: Path) -> Path:
 class FileToolBroker:
     """Execute a fixed tool allowlist outside the nested Codex sandbox."""
 
-    def __init__(self, registry: RegistryProtocol, run_id: str, broker_root: Path) -> None:
+    def __init__(
+        self,
+        registry: RegistryProtocol,
+        run_id: str,
+        broker_root: Path,
+        *,
+        allow_unsandboxed_matlab: bool = False,
+    ) -> None:
         self.registry = registry
         self.run_id = _validated_run_id(run_id)
         self.root = _validated_broker_root(broker_root)
+        self.tool_names = broker_tool_names(allow_unsandboxed_matlab=allow_unsandboxed_matlab)
         self.token = secrets.token_urlsafe(32)
         self._stop = threading.Event()
         self._thread = threading.Thread(
@@ -104,9 +123,12 @@ class FileToolBroker:
                 raise ToolBrokerError("工具代理认证失败")
             name = str(payload.get("name", ""))
             arguments = payload.get("arguments")
-            if name not in BROKER_TOOL_NAMES or not isinstance(arguments, dict):
+            if name not in self.tool_names or not isinstance(arguments, dict):
                 raise ToolBrokerError("工具不在代理白名单中")
-            result = self.registry.execute(name, arguments, self.run_id)
+            execution_arguments = dict(arguments)
+            if name == UNSANDBOXED_MATLAB_TOOL_NAME:
+                execution_arguments["_broker_cancel_event"] = self._stop
+            result = self.registry.execute(name, execution_arguments, self.run_id)
             result.setdefault("ok", True)
             response = {"ok": True, "result": result}
         except Exception as error:
@@ -126,9 +148,11 @@ def call_file_tool_broker(
     arguments: dict[str, Any],
     *,
     timeout: float = DEFAULT_BROKER_TIMEOUT,
+    allow_unsandboxed_matlab: bool = False,
 ) -> dict[str, Any]:
     root = _validated_broker_root(broker_root)
-    if name not in BROKER_TOOL_NAMES:
+    allowed_tools = broker_tool_names(allow_unsandboxed_matlab=allow_unsandboxed_matlab)
+    if name not in allowed_tools:
         raise ToolBrokerError("工具不在代理白名单中")
     if not token or not isinstance(arguments, dict):
         raise ToolBrokerError("工具代理参数无效")

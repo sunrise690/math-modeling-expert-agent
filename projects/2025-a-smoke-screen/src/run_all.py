@@ -786,10 +786,15 @@ def _audit_targets_artifact(
 
 
 def _run(
-    command: list[str], *, cwd: Path = ROOT
+    command: list[str],
+    *,
+    cwd: Path = ROOT,
+    env_overrides: dict[str, str] | None = None,
 ) -> subprocess.CompletedProcess[str]:
     environment = os.environ.copy()
     environment["PYTHONDONTWRITEBYTECODE"] = "1"
+    if env_overrides:
+        environment.update(env_overrides)
     print(f"run [{cwd}]:", " ".join(command), flush=True)
     return subprocess.run(
         command,
@@ -878,7 +883,12 @@ def _full_recompute() -> None:
         commands.append([sys.executable, "-B", "src/validate_q3_q4_multiseed.py"])
     commands.append([sys.executable, "-B", "src/generate_figures.py"])
     for command in commands:
-        result = _run(command)
+        env_overrides = (
+            {"CUMCM_FORCE_MATLAB_FIGURES": "1"}
+            if "src/generate_figures.py" in command
+            else None
+        )
+        result = _run(command, env_overrides=env_overrides)
         if result.stdout:
             print(result.stdout.rstrip(), flush=True)
         if result.returncode != 0:
@@ -1200,7 +1210,7 @@ def _verify_artifacts(
     figure_records = figure_manifest.get("figures", [])
     required_figure_fields = {
         "id", "claim_id", "subquestion", "files", "data_source", "axes", "units",
-        "caption", "interpretation", "paper_location", "figure_intent", "visual_qa", "sha256",
+        "caption", "interpretation", "paper_location", "figure_intent", "visual_qa", "renderer", "sha256",
     }
     if int(figure_manifest.get("schema_version", 0)) < 4 or not figure_manifest.get("design_system"):
         malformed_figures.append("manifest:semantic-design-system")
@@ -1215,13 +1225,17 @@ def _verify_artifacts(
         }.issubset(intent):
             malformed_figures.append(f"{figure_id}:intent")
         qa = record.get("visual_qa", {})
+        vector_text_editable = bool(qa.get("vector_text_editable", False)) if isinstance(qa, dict) else False
+        vector_text_mode = str(qa.get("vector_text_mode", "")) if isinstance(qa, dict) else ""
         if (
             not isinstance(qa, dict)
             or float(qa.get("minimum_font_pt", 0.0)) < 7.0
             or not 5.5 <= float(qa.get("final_width_in", 0.0)) <= 7.2
             or bool(qa.get("figure_level_title", True))
-            or not bool(qa.get("vector_text_editable", False))
+            or vector_text_mode not in {"editable_text", "outlined_glyph_paths"}
+            or vector_text_editable != (vector_text_mode == "editable_text")
             or not bool(qa.get("redundant_encoding", False))
+            or not str(record.get("renderer", "")).startswith("MATLAB ")
         ):
             malformed_figures.append(f"{figure_id}:visual-qa")
         required_layers_by_figure = {
@@ -1250,15 +1264,25 @@ def _verify_artifacts(
                 malformed_figures.append(f"{figure_id}:hash:{Path(relative_path).name}")
             if path.suffix.lower() == ".svg":
                 svg = path.read_text(encoding="utf-8", errors="replace")
-                if "<text" not in svg:
-                    malformed_figures.append(f"{figure_id}:svg-text")
+                svg_lower = svg.lower()
+                if vector_text_mode == "editable_text" and "<text" not in svg_lower:
+                    malformed_figures.append(f"{figure_id}:svg-editable-text")
+                if vector_text_mode == "outlined_glyph_paths" and not all(
+                    token in svg_lower for token in ("<svg", "font-family=", "<path")
+                ):
+                    malformed_figures.append(f"{figure_id}:svg-outlined-glyphs")
             if path.suffix.lower() == ".png":
                 try:
                     from PIL import Image
 
                     with Image.open(path) as image:
                         dpi = image.info.get("dpi", (0, 0))
-                        if min(image.size) < 1200 or min(float(item) for item in dpi) < 295:
+                        minimum_width_px = float(qa.get("final_width_in", 0.0)) * 295.0
+                        if (
+                            image.width < minimum_width_px
+                            or image.height < 800
+                            or min(float(item) for item in dpi) < 295
+                        ):
                             malformed_figures.append(f"{figure_id}:png-quality")
                 except Exception as error:
                     malformed_figures.append(f"{figure_id}:png-read:{type(error).__name__}")
@@ -1266,7 +1290,7 @@ def _verify_artifacts(
         checks,
         "figure-manifest",
         len(figure_records) >= 12 and not missing_figures and not malformed_figures,
-        f"{len(figure_records)} 个证据图均登记主张、语义图层、比较边界、最终字号、哈希及 PNG/PDF/SVG；PNG≥300 dpi，SVG 保留文本",
+        f"{len(figure_records)} 个 MATLAB 证据图均登记主张、语义图层、比较边界、最终字号、哈希及 PNG/PDF/SVG；PNG≥300 dpi，SVG 保留矢量字形",
         "图件清单、文件或质量元数据不完整：" + ", ".join(missing_figures + malformed_figures),
     )
     return checks

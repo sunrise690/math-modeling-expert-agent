@@ -1,10 +1,14 @@
 from __future__ import annotations
 
 import io
+import os
+import subprocess
 import tempfile
+import threading
 import unittest
 import uuid
 from pathlib import Path
+from unittest.mock import patch
 
 from agent_tools import ToolError, ToolRegistry
 
@@ -18,6 +22,10 @@ class AgentToolsTests(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.temp_dir.cleanup()
+
+    def _enable_unsandboxed_matlab(self, timeout: int = 180) -> None:
+        self.registry._env_values["AGENT_UNSANDBOXED_MATLAB"] = "1"
+        self.registry._env_values["AGENT_MATLAB_TIMEOUT"] = str(timeout)
 
     def test_searches_installed_modeling_skills(self) -> None:
         result = self.registry.execute("search_skills", {"query": "多目标优化", "limit": 3}, self.run_id)
@@ -178,6 +186,296 @@ class AgentToolsTests(unittest.TestCase):
         self.assertEqual(result["inputs"][0]["relativePath"], "inputs/input.csv")
         self.assertIn("result.csv", {item["name"] for item in result["artifacts"]})
 
+    def test_exposes_high_level_matlab_tools_and_hides_raw_execution(self) -> None:
+        names = {item["function"]["name"] for item in self.registry._local_definitions()}
+        self.assertIn("matlab_status", names)
+        self.assertNotIn("run_matlab", names)
+        with self.assertRaisesRegex(ToolError, "AGENT_UNSANDBOXED_MATLAB"):
+            self.registry.execute("run_matlab", {"code": "disp(1);"}, self.run_id)
+        self._enable_unsandboxed_matlab(timeout=73)
+        enabled_definitions = {
+            item["function"]["name"]: item["function"] for item in self.registry._local_definitions()
+        }
+        self.assertIn("run_matlab", enabled_definitions)
+        timeout_schema = enabled_definitions["run_matlab"]["parameters"]["properties"]["timeout_seconds"]
+        self.assertEqual(timeout_schema["maximum"], 73)
+        self.assertEqual(timeout_schema["default"], 73)
+        matlab_config = self.registry._mcp_configs()[0]
+        self.assertEqual(
+            matlab_config.exposed_tools,
+            frozenset({"check_matlab_code", "detect_matlab_toolboxes"}),
+        )
+        self.assertNotIn("evaluate_matlab_code", matlab_config.exposed_tools)
+
+    def test_matlab_status_reports_configured_runtime(self) -> None:
+        executable = self.root / "MATLAB" / "R2099a" / "bin" / "matlab.exe"
+        executable.parent.mkdir(parents=True)
+        executable.write_bytes(b"stub")
+        (executable.parent.parent / "VersionInfo.xml").write_text(
+            "<MathWorks_version_info><version>99.1</version><release>R2099a</release></MathWorks_version_info>",
+            encoding="utf-8",
+        )
+        with patch.object(self.registry, "_matlab_executable", return_value=executable):
+            status = self.registry._matlab_status(probe_mcp=False)
+        self.assertTrue(status["available"])
+        self.assertEqual(status["version"], "R2099a (99.1)")
+        self.assertEqual(status["executable"], str(executable))
+
+    def test_runs_matlab_with_scrubbed_environment_and_collects_outputs(self) -> None:
+        self._enable_unsandboxed_matlab()
+        executable = self.root / "MATLAB" / "bin" / "matlab.exe"
+        executable.parent.mkdir(parents=True)
+        executable.write_bytes(b"stub")
+        captured: dict[str, object] = {}
+
+        class FakeProcess:
+            pid = 4321
+            returncode = 0
+
+            def communicate(self, timeout=None):
+                return b"matlab-ok\n", b""
+
+            def poll(self):
+                return self.returncode
+
+            def kill(self):
+                self.returncode = -9
+
+        def fake_popen(command, **kwargs):
+            captured["command"] = command
+            captured["environment"] = kwargs["env"]
+            workspace = Path(kwargs["cwd"])
+            (workspace / "outputs" / "result.csv").write_text("x,y\n1,2\n", encoding="utf-8")
+            (workspace / "outputs" / "result.fig").write_bytes(b"figure")
+            return FakeProcess()
+
+        with (
+            patch.object(self.registry, "_matlab_executable", return_value=executable),
+            patch("agent_tools.subprocess.Popen", side_effect=fake_popen),
+            patch.dict(os.environ, {"AGENT_API_KEY": "must-not-leak", "OPENAI_API_KEY": "also-secret"}),
+        ):
+            result = self.registry.execute(
+                "run_matlab",
+                {
+                    "code": "writematrix([1,2], fullfile('outputs','result.csv'));",
+                    "timeout_seconds": 20,
+                    "filename": "matlab-result",
+                },
+                self.run_id,
+            )
+        self.assertTrue(result["ok"], result.get("stderr"))
+        self.assertEqual(result["stdout"].strip(), "matlab-ok")
+        names = {item["name"] for item in result["artifacts"]}
+        self.assertTrue({"result.csv", "result.fig", "matlab-result.m", "matlab-result-matlab-log.txt"} <= names)
+        environment = captured["environment"]
+        self.assertNotIn("AGENT_API_KEY", environment)
+        self.assertNotIn("OPENAI_API_KEY", environment)
+        self.assertEqual(captured["command"][1], "-batch")
+
+    def test_matlab_runner_times_out_and_terminates_process_tree(self) -> None:
+        self._enable_unsandboxed_matlab()
+        executable = self.root / "MATLAB" / "bin" / "matlab.exe"
+        executable.parent.mkdir(parents=True)
+        executable.write_bytes(b"stub")
+
+        class TimeoutProcess:
+            pid = 9876
+            returncode = None
+            calls = 0
+            communicate_timeouts = []
+
+            def communicate(self, timeout=None):
+                self.calls += 1
+                self.communicate_timeouts.append(timeout)
+                if self.calls == 1:
+                    raise subprocess.TimeoutExpired("matlab", timeout, output=b"started")
+                self.returncode = -9
+                return b"", b"terminated"
+
+            def poll(self):
+                return self.returncode
+
+            def kill(self):
+                self.returncode = -9
+
+        process = TimeoutProcess()
+        with (
+            patch.object(self.registry, "_matlab_executable", return_value=executable),
+            patch("agent_tools.subprocess.Popen", return_value=process),
+            patch.object(self.registry, "_terminate_process_tree") as terminate,
+        ):
+            result = self.registry.execute(
+                "run_matlab",
+                {"code": "pause(60);", "timeout_seconds": 1},
+                self.run_id,
+            )
+        self.assertFalse(result["ok"])
+        self.assertTrue(result["timedOut"])
+        terminate.assert_called_once_with(process)
+        self.assertEqual(process.communicate_timeouts, [1, 10])
+
+    def test_matlab_runner_retries_bounded_drain_and_kills_again(self) -> None:
+        self._enable_unsandboxed_matlab()
+        executable = self.root / "MATLAB" / "bin" / "matlab.exe"
+        executable.parent.mkdir(parents=True)
+        executable.write_bytes(b"stub")
+
+        class StubbornProcess:
+            pid = 9877
+            returncode = None
+
+            def __init__(self):
+                self.communicate_timeouts = []
+                self.kill_calls = 0
+
+            def communicate(self, timeout=None):
+                self.communicate_timeouts.append(timeout)
+                raise subprocess.TimeoutExpired("matlab", timeout, output=b"still-running")
+
+            def poll(self):
+                return self.returncode
+
+            def kill(self):
+                self.kill_calls += 1
+
+        process = StubbornProcess()
+        with (
+            patch.object(self.registry, "_matlab_executable", return_value=executable),
+            patch("agent_tools.subprocess.Popen", return_value=process),
+            patch.object(
+                self.registry,
+                "_terminate_process_tree",
+                side_effect=lambda target: target.kill(),
+            ) as terminate,
+        ):
+            result = self.registry.execute(
+                "run_matlab",
+                {"code": "pause(60);", "timeout_seconds": 1},
+                self.run_id,
+            )
+        self.assertFalse(result["ok"])
+        self.assertTrue(result["timedOut"])
+        self.assertEqual(process.communicate_timeouts, [1, 10, 5])
+        self.assertEqual(terminate.call_count, 3)
+        self.assertEqual(process.kill_calls, 3)
+
+    def test_broker_cancellation_terminates_running_matlab(self) -> None:
+        self._enable_unsandboxed_matlab(timeout=30)
+        executable = self.root / "MATLAB" / "bin" / "matlab.exe"
+        executable.parent.mkdir(parents=True)
+        executable.write_bytes(b"stub")
+        broker_cancel = threading.Event()
+
+        class BlockingProcess:
+            pid = 9753
+            returncode = None
+
+            def __init__(self) -> None:
+                self.stopped = threading.Event()
+                self.communicating = threading.Event()
+
+            def communicate(self, timeout=None):
+                self.communicating.set()
+                if not self.stopped.wait(timeout):
+                    raise subprocess.TimeoutExpired("matlab", timeout)
+                return b"", b"cancelled"
+
+            def poll(self):
+                return self.returncode
+
+            def kill(self):
+                self.returncode = -9
+                self.stopped.set()
+
+        process = BlockingProcess()
+        outcome: dict[str, object] = {}
+
+        def execute() -> None:
+            outcome["result"] = self.registry.execute(
+                "run_matlab",
+                {"code": "pause(60);", "_broker_cancel_event": broker_cancel},
+                self.run_id,
+            )
+
+        with (
+            patch.object(self.registry, "_matlab_executable", return_value=executable),
+            patch("agent_tools.subprocess.Popen", return_value=process),
+            patch.object(self.registry, "_terminate_process_tree", side_effect=lambda target: target.kill()) as terminate,
+        ):
+            worker = threading.Thread(target=execute)
+            worker.start()
+            self.assertTrue(process.communicating.wait(1))
+            broker_cancel.set()
+            worker.join(timeout=2)
+        self.assertFalse(worker.is_alive())
+        result = outcome["result"]
+        self.assertFalse(result["ok"])
+        self.assertTrue(result["cancelled"])
+        terminate.assert_called_once_with(process)
+
+    def test_windows_process_tree_kill_falls_back_when_taskkill_does_not_finish_process(self) -> None:
+        class RunningProcess:
+            pid = 2468
+            returncode = None
+
+            def __init__(self):
+                self.kill_calls = 0
+
+            def poll(self):
+                return self.returncode
+
+            def kill(self):
+                self.kill_calls += 1
+                self.returncode = -9
+
+        for taskkill_returncode in (0, 1):
+            with self.subTest(taskkill_returncode=taskkill_returncode):
+                process = RunningProcess()
+                with (
+                    patch("agent_tools.os.name", "nt"),
+                    patch(
+                        "agent_tools.subprocess.run",
+                        return_value=subprocess.CompletedProcess([], taskkill_returncode),
+                    ) as taskkill,
+                ):
+                    self.registry._terminate_process_tree(process)
+                taskkill.assert_called_once()
+                self.assertEqual(process.kill_calls, 1)
+
+    def test_windows_process_tree_kill_returns_after_successful_taskkill_exit(self) -> None:
+        class ExitedProcess:
+            pid = 1357
+            returncode = None
+
+            def __init__(self):
+                self.kill_calls = 0
+
+            def poll(self):
+                return self.returncode
+
+            def kill(self):
+                self.kill_calls += 1
+
+        process = ExitedProcess()
+
+        def successful_taskkill(*args, **kwargs):
+            process.returncode = -1
+            return subprocess.CompletedProcess([], 0)
+
+        with (
+            patch("agent_tools.os.name", "nt"),
+            patch("agent_tools.subprocess.run", side_effect=successful_taskkill),
+        ):
+            self.registry._terminate_process_tree(process)
+        self.assertEqual(process.kill_calls, 0)
+
+    def test_matlab_runner_returns_structured_unavailable_result(self) -> None:
+        self._enable_unsandboxed_matlab()
+        with patch.object(self.registry, "_matlab_executable", return_value=None):
+            result = self.registry.execute("run_matlab", {"code": "disp(1);"}, self.run_id)
+        self.assertFalse(result["ok"])
+        self.assertIn("MATLAB", result["error"])
+
     def test_python_runner_blocks_external_file_reads(self) -> None:
         secret = self.root / "outside-secret.txt"
         secret.write_text("do-not-read", encoding="utf-8")
@@ -217,6 +515,40 @@ class AgentToolsTests(unittest.TestCase):
         self.assertTrue(all(item["url"].startswith(f"/api/artifacts/{self.run_id}/") for item in result["artifacts"]))
         self.registry.delete_artifacts(self.run_id)
         self.assertEqual(self.registry.list_artifacts(self.run_id), [])
+
+    def test_delete_artifacts_removes_python_and_matlab_workspaces(self) -> None:
+        artifact_dir = self.registry._artifact_dir(self.run_id)
+        python_workspace = self.registry._python_workspace(self.run_id)
+        matlab_workspace = self.registry._matlab_workspace(self.run_id)
+        artifact_dir.mkdir(parents=True)
+        (artifact_dir / "result.txt").write_text("artifact", encoding="utf-8")
+        (python_workspace / "state.txt").write_text("python", encoding="utf-8")
+        (matlab_workspace / "state.txt").write_text("matlab", encoding="utf-8")
+
+        self.registry.delete_artifacts(self.run_id)
+
+        self.assertFalse(artifact_dir.exists())
+        self.assertFalse(python_workspace.exists())
+        self.assertFalse(matlab_workspace.exists())
+
+    def test_delete_artifacts_rejects_matlab_workspace_symlink_without_partial_cleanup(self) -> None:
+        artifact_dir = self.registry._artifact_dir(self.run_id)
+        python_workspace = self.registry._python_workspace(self.run_id)
+        artifact_dir.mkdir(parents=True)
+        (artifact_dir / "result.txt").write_text("artifact", encoding="utf-8")
+        (python_workspace / "state.txt").write_text("python", encoding="utf-8")
+        matlab_workspace = self.registry.matlab_workspace_root / self.run_id
+        original_is_symlink = Path.is_symlink
+
+        def report_matlab_symlink(path: Path) -> bool:
+            return path == matlab_workspace or original_is_symlink(path)
+
+        with patch.object(Path, "is_symlink", autospec=True, side_effect=report_matlab_symlink):
+            with self.assertRaisesRegex(ToolError, "MATLAB"):
+                self.registry.delete_artifacts(self.run_id)
+
+        self.assertTrue(artifact_dir.is_dir())
+        self.assertTrue(python_workspace.is_dir())
 
     def test_creates_reproducible_multi_panel_figure_with_uncertainty(self) -> None:
         result = self.registry.execute(

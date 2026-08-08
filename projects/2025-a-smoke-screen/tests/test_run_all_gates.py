@@ -420,12 +420,15 @@ class PaperFreshnessGateTests(unittest.TestCase):
         )
 
     def test_full_recompute_compiles_tex_then_runs_paper_audit(self) -> None:
-        calls: list[tuple[list[str], Path]] = []
+        calls: list[tuple[list[str], Path, dict[str, str] | None]] = []
 
         def fake_run(
-            command: list[str], *, cwd: Path = run_all.ROOT
+            command: list[str],
+            *,
+            cwd: Path = run_all.ROOT,
+            env_overrides: dict[str, str] | None = None,
         ) -> subprocess.CompletedProcess[str]:
-            calls.append((command, cwd))
+            calls.append((command, cwd, env_overrides))
             return subprocess.CompletedProcess(command, 0, stdout="", stderr="")
 
         with (
@@ -435,18 +438,18 @@ class PaperFreshnessGateTests(unittest.TestCase):
         ):
             run_all._full_recompute()
 
-        command_names = [command[0] for command, _cwd in calls]
+        command_names = [command[0] for command, _cwd, _environment in calls]
         latex_index = command_names.index("latexmk")
         audit_index = next(
             index
-            for index, (command, _cwd) in enumerate(calls)
+            for index, (command, _cwd, _environment) in enumerate(calls)
             if any(str(item).endswith("audit_paper.py") for item in command)
         )
         self.assertLess(latex_index, audit_index)
         self.assertEqual(calls[latex_index][1], run_all.PAPER_DIR)
         q3_q5_command = next(
             command
-            for command, _cwd in calls
+            for command, _cwd, _environment in calls
             if "src/solve_q3_q5.py" in command
         )
         self.assertEqual(
@@ -460,6 +463,12 @@ class PaperFreshnessGateTests(unittest.TestCase):
         self.assertEqual(
             q3_q5_command[q3_q5_command.index("--q5-seed") + 1],
             "20250808",
+        )
+        figure_call = next(
+            call for call in calls if "src/generate_figures.py" in call[0]
+        )
+        self.assertEqual(
+            figure_call[2], {"CUMCM_FORCE_MATLAB_FIGURES": "1"}
         )
         build_record.assert_called_once()
         audit_record.assert_called_once()

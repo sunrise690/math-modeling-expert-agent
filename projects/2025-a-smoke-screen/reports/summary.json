@@ -151,16 +151,16 @@
         "problem",
         "stornprice"
       ],
-      "embedded_font_count": 57,
+      "embedded_font_count": 32,
       "fonts_fully_embedded": true,
-      "input_bundle_sha256": "809f1c4447a8d10a33a0791ce94fbf08b02c7eff661708f514b6814ca6b3911c",
+      "input_bundle_sha256": "26f88a7e99ac72213c036ee2848cfd7746940c6c9bc2e8cbbc73e405baa9347f",
       "input_file_count": 53,
       "layout_warnings": [],
-      "local_rendered_page_count": 23,
+      "local_rendered_page_count": 26,
       "log_exists": true,
-      "log_sha256": "9ff9ed6454ba8a7bdacee36cdba2fb1d73c00f2a5dbc27463b54e7d7a8efe535",
+      "log_sha256": "e08c6b4b9b1212aa829dc173d7fe5b5bd61408edb248e650217927d8ba3e4ee2",
       "manual_record_exists": true,
-      "manual_render_evidence": "tmp/final-visual-redesign-20260808-r5/page-01.png ... tmp/final-visual-redesign-20260808-r5/page-23.png；全部页面均由当前最终 PDF 在 140 dpi 下重新渲染",
+      "manual_render_evidence": "support/pdf-render-evidence/page-01.png ... support/pdf-render-evidence/page-26.png；全部页面均由当前最终 PDF 在 140 dpi 下重新渲染并逐页复核，且与上一轮已逐页检查的 26 张渲染图逐像素一致；该证据集随仓库版本化",
       "manual_render_evidence_pass": true,
       "manual_review_type": "codex_page_by_page_visual",
       "manual_reviewed_at_local": "2026-08-08",
@@ -168,8 +168,20 @@
       "manual_visual_pass": true,
       "missing_citation_keys": [],
       "overall_pass": true,
-      "page_count": 23,
+      "page_count": 26,
       "page_sizes_pt": [
+        [
+          595.28,
+          841.89
+        ],
+        [
+          595.28,
+          841.89
+        ],
+        [
+          595.28,
+          841.89
+        ],
         [
           595.28,
           841.89
@@ -265,7 +277,7 @@
       ],
       "pdf_exists": true,
       "pdf_read_error": null,
-      "pdf_sha256": "eb184ca962258c338649831a709c9dbe471f7fdfdf92d9f082e9b65b5744a621",
+      "pdf_sha256": "07b208dd109bd8ad0e403f72a5ea84e15903b2a190496cc79eebc2702f99365d",
       "reference_warnings": [],
       "references_pass": true,
       "technical_pass": true,
@@ -276,7 +288,7 @@
         "Underfull \\hbox (badness 1478) in paragraph at lines 108--108",
         "Underfull \\hbox (badness 10000) in paragraph at lines 108--108",
         "Underfull \\hbox (badness 10000) in paragraph at lines 161--161",
-        "Underfull \\hbox (badness 10000) in paragraph at lines 732--732"
+        "Underfull \\hbox (badness 10000) in paragraph at lines 857--857"
       ],
       "unembedded_fonts": [],
       "unused_bibliography_keys": []
@@ -481,7 +493,7 @@
       },
       {
         "check_id": "figure-manifest",
-        "detail": "14 个证据图均登记主张、语义图层、比较边界、最终字号、哈希及 PNG/PDF/SVG；PNG≥300 dpi，SVG 保留文本",
+        "detail": "14 个 MATLAB 证据图均登记主张、语义图层、比较边界、最终字号、哈希及 PNG/PDF/SVG；PNG≥300 dpi，SVG 保留矢量字形",
         "status": "PASS"
       },
       {
@@ -496,12 +508,12 @@
       },
       {
         "check_id": "paper-pdf-technical",
-        "detail": "PDF 为 23 页 A4，57 个字体全部嵌入，日志无阻断型布局警告",
+        "detail": "PDF 为 26 页 A4，32 个字体全部嵌入，日志无阻断型布局警告",
         "status": "PASS"
       },
       {
         "check_id": "paper-pdf-manual-visual",
-        "detail": "逐页视觉 QA 记录与当前 PDF 的 SHA-256 和 23 页页数完全绑定",
+        "detail": "逐页视觉 QA 记录与当前 PDF 的 SHA-256 和 26 页页数完全绑定",
         "status": "PASS"
       },
       {

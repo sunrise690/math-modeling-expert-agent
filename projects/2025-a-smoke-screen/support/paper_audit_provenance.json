@@ -1,7 +1,7 @@
 {
-  "audit_json_sha256": "aaf08a1987bc2f162bef2354ccc06804ba6f8d985592c63339166ee47c12a98a",
-  "input_bundle_sha256": "809f1c4447a8d10a33a0791ce94fbf08b02c7eff661708f514b6814ca6b3911c",
-  "paper_pdf_sha256": "eb184ca962258c338649831a709c9dbe471f7fdfdf92d9f082e9b65b5744a621",
+  "audit_json_sha256": "97ea381ba072f0477daed409a8cc1d4ffeb7ae0a22c95e51d3fdcdd24095350c",
+  "input_bundle_sha256": "26f88a7e99ac72213c036ee2848cfd7746940c6c9bc2e8cbbc73e405baa9347f",
+  "paper_pdf_sha256": "07b208dd109bd8ad0e403f72a5ea84e15903b2a190496cc79eebc2702f99365d",
   "run_id": "cumcm-2025a-20260808-r3",
   "schema_version": 1
 }
