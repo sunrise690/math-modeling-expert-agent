@@ -151,16 +151,16 @@
         "problem",
         "stornprice"
       ],
-      "embedded_font_count": 32,
+      "embedded_font_count": 30,
       "fonts_fully_embedded": true,
-      "input_bundle_sha256": "f6a036d163cc5f4af82b131c2b5052b1488f22ffcced20c2ac0b7087a0149408",
+      "input_bundle_sha256": "ed378666466f9361ab0386c6b5f9e72a721bd9ed6590fd2a33d9d4a128ac5fad",
       "input_file_count": 53,
       "layout_warnings": [],
-      "local_rendered_page_count": 26,
+      "local_rendered_page_count": 25,
       "log_exists": true,
-      "log_sha256": "c0a4f02b0497e322bfd89a24745b3c486950c2d44efb8e2efbffd2604e04b624",
+      "log_sha256": "85b44b215491868ad6ef75fb196edf0d1f3e5656be8b7143e3c2df849e0901f8",
       "manual_record_exists": true,
-      "manual_render_evidence": "support/pdf-render-evidence/page-01.png ... support/pdf-render-evidence/page-26.png；全部页面均由当前最终 PDF 在 140 dpi 下重新渲染，并通过 4 组联系表与关键原尺寸页面完成逐页复核；该证据集随仓库版本化",
+      "manual_render_evidence": "support/pdf-render-evidence/page-01.png 至 page-25.png；当前 PDF 以 140 dpi 全部重新渲染并逐页检查。",
       "manual_render_evidence_pass": true,
       "manual_review_type": "codex_page_by_page_visual",
       "manual_reviewed_at_local": "2026-08-09",
@@ -168,12 +168,8 @@
       "manual_visual_pass": true,
       "missing_citation_keys": [],
       "overall_pass": true,
-      "page_count": 26,
+      "page_count": 25,
       "page_sizes_pt": [
-        [
-          595.28,
-          841.89
-        ],
         [
           595.28,
           841.89
@@ -277,18 +273,20 @@
       ],
       "pdf_exists": true,
       "pdf_read_error": null,
-      "pdf_sha256": "8d1d00f3c05d65554df84cfb2aa1c2d8db5d2e57174ea377b52a0206a3a907b4",
+      "pdf_sha256": "3137215c259a95421f48c8c0671a35585c518d25faad57196d39c76101415e30",
       "reference_warnings": [],
       "references_pass": true,
       "technical_pass": true,
       "tex_exists": true,
       "underfull_warnings": [
-        "Underfull \\hbox (badness 1478) in paragraph at lines 108--108",
-        "Underfull \\hbox (badness 1478) in paragraph at lines 108--108",
-        "Underfull \\hbox (badness 1478) in paragraph at lines 108--108",
-        "Underfull \\hbox (badness 10000) in paragraph at lines 108--108",
+        "Underfull \\hbox (badness 1478) in paragraph at lines 117--117",
+        "Underfull \\hbox (badness 1478) in paragraph at lines 117--117",
+        "Underfull \\hbox (badness 1478) in paragraph at lines 117--117",
+        "Underfull \\hbox (badness 1478) in paragraph at lines 117--117",
+        "Underfull \\hbox (badness 10000) in paragraph at lines 117--117",
+        "Underfull \\hbox (badness 10000) in paragraph at lines 117--117",
         "Underfull \\hbox (badness 10000) in paragraph at lines 161--161",
-        "Underfull \\hbox (badness 10000) in paragraph at lines 857--857"
+        "Underfull \\hbox (badness 10000) in paragraph at lines 881--881"
       ],
       "unembedded_fonts": [],
       "unused_bibliography_keys": []
@@ -508,12 +506,12 @@
       },
       {
         "check_id": "paper-pdf-technical",
-        "detail": "PDF 为 26 页 A4，32 个字体全部嵌入，日志无阻断型布局警告",
+        "detail": "PDF 为 25 页 A4，30 个字体全部嵌入，日志无阻断型布局警告",
         "status": "PASS"
       },
       {
         "check_id": "paper-pdf-manual-visual",
-        "detail": "逐页视觉 QA 记录与当前 PDF 的 SHA-256 和 26 页页数完全绑定",
+        "detail": "逐页视觉 QA 记录与当前 PDF 的 SHA-256 和 25 页页数完全绑定",
         "status": "PASS"
       },
       {

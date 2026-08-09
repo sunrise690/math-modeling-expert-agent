@@ -84,6 +84,7 @@ class MatlabFigureManifestTests(unittest.TestCase):
                 (root / relative_path).write_bytes(f"artifact-{index}".encode())
             record = {
                 "id": "F1",
+                "role": "paper",
                 "renderer": "MATLAB R2026a",
                 "files": files,
                 "sha256": {

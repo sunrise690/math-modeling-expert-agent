@@ -33,6 +33,10 @@ FIGURE_STEMS = (
     "time_step_convergence",
     "q3_q4_multiseed_stability",
 )
+SUPPORT_FIGURE_STEMS = frozenset(
+    {"search_quality_diagnostics", "q5_per_missile_robustness"}
+)
+PAPER_FIGURE_STEMS = frozenset(FIGURE_STEMS) - SUPPORT_FIGURE_STEMS
 MATLAB_SCRIPTS = (
     "render_q1_event.m",
     "render_q3_event.m",
@@ -142,6 +146,10 @@ def _validate_reusable_manifest(manifest: dict[str, Any]) -> None:
         f"F{index}": figure_files(stem)
         for index, stem in enumerate(FIGURE_STEMS, start=1)
     }
+    expected_role_by_id = {
+        f"F{index}": "support" if stem in SUPPORT_FIGURE_STEMS else "paper"
+        for index, stem in enumerate(FIGURE_STEMS, start=1)
+    }
     records_by_id: dict[str, dict[str, Any]] = {}
     for record in records:
         if not isinstance(record, dict):
@@ -157,6 +165,8 @@ def _validate_reusable_manifest(manifest: dict[str, Any]) -> None:
     problems: list[str] = []
     for figure_id, expected_files in expected_by_id.items():
         record = records_by_id[figure_id]
+        if record.get("role") != expected_role_by_id[figure_id]:
+            problems.append(f"{figure_id}:role")
         if not str(record.get("renderer", "")).startswith("MATLAB "):
             problems.append(f"{figure_id}:renderer")
         files = record.get("files")
@@ -286,7 +296,11 @@ def run_matlab_batch(
     environment: dict[str, str],
     timeout_seconds: int,
 ) -> subprocess.CompletedProcess[str]:
-    command = [str(executable), "-noFigureWindows", "-batch", batch_code]
+    # The render scripts already set all figures invisible.  On Windows,
+    # combining ``-noFigureWindows`` with SVG/PDF export can leave MATLAB
+    # idle without producing an artifact, so use the supported batch mode
+    # alone and keep the explicit per-script timeout below.
+    command = [str(executable), "-batch", batch_code]
     creation_flags = 0
     start_new_session = False
     if os.name == "nt":
@@ -438,21 +452,25 @@ def _updated_manifest(
     )
     manifest["matlab_render"] = matlab_render
     manifest["matlab_provenance"] = provenance
+    manifest["paper_figure_count"] = len(PAPER_FIGURE_STEMS)
+    manifest["support_figure_count"] = len(SUPPORT_FIGURE_STEMS)
 
     records = manifest.get("figures")
     if not isinstance(records, list):
         raise RuntimeError("图件清单缺少 figures 列表")
     expected_by_id = {
-        f"F{index}": figure_files(stem)
+        f"F{index}": (stem, figure_files(stem))
         for index, stem in enumerate(FIGURE_STEMS, start=1)
     }
     for record in records:
         figure_id = str(record.get("id", ""))
-        files = expected_by_id.get(figure_id)
-        if files is None:
+        expected = expected_by_id.get(figure_id)
+        if expected is None:
             raise RuntimeError(f"图件清单包含未知 ID：{figure_id}")
+        stem, files = expected
         if not str(record.get("renderer", "")).startswith("MATLAB "):
             record["renderer"] = "MATLAB R2026a"
+        record["role"] = "support" if stem in SUPPORT_FIGURE_STEMS else "paper"
         record["files"] = files
         record["sha256"] = {
             relative_path: sha256(ROOT / relative_path) for relative_path in files

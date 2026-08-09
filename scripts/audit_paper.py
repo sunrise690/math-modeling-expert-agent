@@ -17,6 +17,35 @@ PLACEHOLDER_PATTERN = re.compile(
 INTERPRETIVE_TERMS = r"表明|说明|原因是|意味着|可见|展示|显示|比较|标出|报告|揭示|反映|对应"
 VALIDATION_TERMS = r"检验|验证|敏感性|稳健性|鲁棒性|残差|误差|收敛|回算|对照|基线|置信区间|扰动"
 NUMERIC_TOKEN = r"[-+]?(?:\d+(?:\.\d+)?|\.\d+)(?:\s*(?:[eE][-+]?\d+|×\s*10\^?\s*[-+]?\d+))?"
+ACADEMIC_STYLE_TERMS: dict[str, str] = {
+    "算法披露": "求解方法",
+    "质量标定": "结果可靠性检验",
+    "主口径": "中心视线判据或基准判据",
+    "保守二次审计": "保守判据复核",
+    "完整圆柱审计": "圆柱整体遮蔽判据复核",
+    "工作簿回读": "结果表反算",
+    "搜索记账": "搜索过程记录",
+    "聊天记录": "计算输出",
+    "终稿策略": "最终方案",
+    "证据链": "模型、计算与验证过程",
+    "向后接口": "与后续问题的联系",
+    "图件主张": "图示结论",
+    "候选包": "候选组合",
+    "路线包": "同航路组合",
+    "投放包": "同航路组合",
+    "保留包": "保留的候选组合",
+    "零平台": "目标函数为零的平台区域",
+    "不直接信任优化器": "根据结果表重新计算约束",
+    "不编造": "说明数据不足及相应分析边界",
+}
+Q_NOTATION_PATTERN = re.compile(r"(?<![A-Za-z0-9_])Q([1-9])(?![A-Za-z0-9_])", re.IGNORECASE)
+CLI_Q_OPTION_PATTERN = re.compile(r"--Q[1-9](?:-[A-Za-z0-9_]+)+", re.IGNORECASE)
+
+
+def _count_q_notation(text: str) -> int:
+    """Count prose-style Q1--Q9 labels while ignoring reproducibility CLI flags."""
+    prose = CLI_Q_OPTION_PATTERN.sub(" ", text)
+    return len(Q_NOTATION_PATTERN.findall(prose))
 
 
 def _read_docx(path: Path) -> tuple[str, dict[str, int]]:
@@ -329,6 +358,15 @@ def _numeric_validation_signals(plain: str) -> int:
     return len(pattern.findall(cleaned))
 
 
+def _academic_style_findings(plain: str) -> list[dict[str, Any]]:
+    findings: list[dict[str, Any]] = []
+    for term, replacement in ACADEMIC_STYLE_TERMS.items():
+        count = plain.count(term)
+        if count:
+            findings.append({"term": term, "count": count, "replacement": replacement})
+    return findings
+
+
 def _metric(name: str, value: Any, target: str) -> dict[str, Any]:
     return {"id": name, "value": value, "target": target}
 
@@ -420,6 +458,9 @@ def audit(source: str, extension: str, extras: dict[str, int], expected_question
     dominant_share = max(figures_by_question.values(), default=0) / max(1, figure_count)
     interpretation_count = _count_figure_interpretations(source, extension, captions, figure_count)
     placeholder_count = len(PLACEHOLDER_PATTERN.findall(source))
+    style_findings = _academic_style_findings(plain)
+    style_finding_count = sum(int(item["count"]) for item in style_findings)
+    q_notation_count = _count_q_notation(plain)
     keyword_present = bool(re.search(r"关键词|关键字|Keywords?", source, re.IGNORECASE))
     reference_present = bool(re.search(r"参考文献|thebibliography|References", source, re.IGNORECASE))
     assumption_present = bool(re.search(r"模型假设|基本假设|假设", source))
@@ -452,7 +493,8 @@ def audit(source: str, extension: str, extras: dict[str, int], expected_question
     )
     scholarship_ok = bibliography_count >= 6 and citation_count >= 6
     abstract_ok = bool(abstract_plain) and numeric_with_unit >= expected and 300 <= len(abstract_plain) <= 1400
-    integrity_ok = placeholder_count == 0
+    language_ok = not full_paper or style_finding_count == 0
+    integrity_ok = placeholder_count == 0 and language_ok
 
     gates = [
         _gate("paper_structure", structure_ok, 16, "摘要、关键词、问题分析、假设、符号、结论和参考文献必须齐全。"),
@@ -466,7 +508,12 @@ def audit(source: str, extension: str, extras: dict[str, int], expected_question
         ),
         _gate("validation_traceability", validation_ok, 16, "验证不能集中为一句总评，需有数值检验并由至少两张诊断图支撑。"),
         _gate("scholarly_traceability", scholarship_ok, 10, "至少 6 条参考文献且在正文中实际引用。"),
-        _gate("manuscript_integrity", integrity_ok, 6, "成稿不得包含 TODO、待补充或占位表达。"),
+        _gate(
+            "manuscript_integrity",
+            integrity_ok,
+            6,
+            "成稿不得包含 TODO、待补充、占位表达或明显的开发/Agent 质检措辞。",
+        ),
     ]
     score = sum(item["weight"] for item in gates if item["passed"])
     issues = [item["message"] for item in gates if not item["passed"]]
@@ -479,6 +526,15 @@ def audit(source: str, extension: str, extras: dict[str, int], expected_question
             advisories.append(f"至少 {missing_interpretation} 张图可能缺少正文中的结论性解释。")
     if expected_questions == 0:
         advisories.append("未显式提供 expected_questions；当前按标题自动推断分问数量。")
+    if style_findings:
+        rendered = "；".join(
+            f"{item['term']}×{item['count']}→{item['replacement']}" for item in style_findings
+        )
+        advisories.append(f"检测到不宜进入竞赛正文的工程化措辞：{rendered}。")
+    if full_paper and q_notation_count:
+        advisories.append(
+            f"正文检测到 {q_notation_count} 处 Q1--Q9 缩写；中文国赛正文宜改为“问题一”--“问题九”，代码或文件名除外。"
+        )
 
     return {
         "passed": all(item["passed"] for item in gates),
@@ -508,6 +564,9 @@ def audit(source: str, extension: str, extras: dict[str, int], expected_question
             "validationNumericSignals": validation_numeric_signals,
             "figureInterpretations": interpretation_count,
             "placeholders": placeholder_count,
+            "academicStyleFindings": style_findings,
+            "academicStyleFindingCount": style_finding_count,
+            "qNotationCount": q_notation_count,
             "minimumFigures": min_figures,
         },
         "limitations": [
@@ -538,6 +597,7 @@ def _markdown_report(audit_result: dict[str, Any], source_name: str) -> str:
 - 图/验证图：{metrics['figures']} / {metrics['validationFigures']}
 - 表/公式：{metrics['tables']} / {metrics['equations']}
 - 正文引用/文献：{metrics['citations']} / {metrics['bibliographyItems']}
+- 工程化措辞命中：{metrics.get('academicStyleFindingCount', 0)}
 
 ## 硬门禁
 

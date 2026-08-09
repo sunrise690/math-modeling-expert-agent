@@ -9,22 +9,22 @@
       {
         "script": "src/matlab/render_q1_event.m",
         "returncode": 0,
-        "stdout_tail": "Q1 MATLAB event storyboard exported.\n  release 1.500000 | explosion 5.100000 | entry 8.013006 | switch 9.418516 | exit 9.448088 s\n  switch-to-exit gap 0.029573 s | centerline duration 1.435082 s\n  PNG 2232 x 1639 px"
+        "stdout_tail": "Q1 MATLAB event storyboard exported.\n  release 1.500000 | explosion 5.100000 | entry 8.013006 | switch 9.418516 | exit 9.448088 s\n  switch-to-exit gap 0.029573 s | centerline duration 1.435082 s\n  PNG 2232 x 1530 px"
       },
       {
         "script": "src/matlab/render_q3_event.m",
         "returncode": 0,
-        "stdout_tail": "Rendered Q3 event evidence:"
+        "stdout_tail": "Rendered Q3 shared-axis event figure:\n  union 6.631110 s | overlaps 0.067481 and 0.115432 s"
       },
       {
         "script": "src/matlab/render_q4_event.m",
         "returncode": 0,
-        "stdout_tail": "Rendered Q4 event evidence:"
+        "stdout_tail": "Rendered Q4 shared-axis event evidence:"
       },
       {
         "script": "src/matlab/render_core_figures.m",
         "returncode": 0,
-        "stdout_tail": "response_surface            2232 x 1217 px\n  F4 response surface: MATLAB max 4.828283 s, validated optimum 4.832502 s.\n  exported q2_multiseed_stability         2232 x 1026 px\n  F5 Q2 multiseed: 8 runs, terminal exact span 3.286e-13 s.\n  exported time_step_convergence          2232 x 1008 px\n  F13 time-step errors Q1/Q2 at dt=0.005: 8.2102e-05 / 0.0025018 s.\n  exported q3_q4_multiseed_stability      2232 x 1279 px\n  F14 Q3/Q4 spans: 0.950990 s / 38.027 ms.\nMATLAB core figure rendering completed."
+        "stdout_tail": "response_surface            2232 x 1602 px\n  F4 response surface: MATLAB max 4.828283 s, validated optimum 4.832502 s.\n  exported q2_multiseed_stability         2232 x 1026 px\n  F5 Q2 multiseed: 8 runs, terminal exact span 3.286e-13 s.\n  exported time_step_convergence          2232 x 1008 px\n  F13 time-step errors Q1/Q2 at dt=0.005: 8.2102e-05 / 0.0025018 s.\n  exported q3_q4_multiseed_stability      2232 x 1279 px\n  F14 Q3/Q4 spans: 0.950990 s / 38.027 ms.\nMATLAB core figure rendering completed."
       },
       {
         "script": "src/matlab/render_q5_figures.m",
@@ -37,7 +37,7 @@
         "stdout_tail": "Rendered MATLAB cross-question audit figures."
       }
     ],
-    "stdout_tail": "Q1 MATLAB event storyboard exported.\n  release 1.500000 | explosion 5.100000 | entry 8.013006 | switch 9.418516 | exit 9.448088 s\n  switch-to-exit gap 0.029573 s | centerline duration 1.435082 s\n  PNG 2232 x 1639 px\nRendered Q3 event evidence:\nRendered Q4 event evidence:\nMATLAB core figure rendering started.\n  exported finite_sightline_geometry      2232 x 1153 px\n  F2 finite sightline: lambda 0.012311, d 7.232594 m, margins 2.767406 / 2.679104 m.\n  exported q1_occlusion_intervals         2232 x 1217 px\n  F3 Q1 roots: center [8.013006057, 9.448088159], full [8.056445490, 9.448088159] s.\n  exported q2_response_surface            2232 x 1217 px\n  F4 response surface: MATLAB max 4.828283 s, validated optimum 4.832502 s.\n  exported q2_multiseed_stability         2232 x 1026 px\n  F5 Q2 multiseed: 8 runs, terminal exact span 3.286e-13 s.\n  exported time_step_convergence          2232 x 1008 px\n  F13 time-step errors Q1/Q2 at dt=0.005: 8.2102e-05 / 0.0025018 s.\n  exported q3_q4_multiseed_stability      2232 x 1279 px\n  F14 Q3/Q4 spans: 0.950990 s / 38.027 ms.\nMATLAB core figure rendering completed.\n\nRendered MATLAB cross-question audit figures."
+    "stdout_tail": "Q1 MATLAB event storyboard exported.\n  release 1.500000 | explosion 5.100000 | entry 8.013006 | switch 9.418516 | exit 9.448088 s\n  switch-to-exit gap 0.029573 s | centerline duration 1.435082 s\n  PNG 2232 x 1530 px\nRendered Q3 shared-axis event figure:\n  union 6.631110 s | overlaps 0.067481 and 0.115432 s\nRendered Q4 shared-axis event evidence:\nMATLAB core figure rendering started.\n  exported finite_sightline_geometry      2232 x 1155 px\n  F2 finite sightline: lambda 0.012311, d 7.232594 m, margins 2.767406 / 2.679104 m.\n  exported q1_occlusion_intervals         2232 x 1217 px\n  F3 Q1 roots: center [8.013006057, 9.448088159], full [8.056445490, 9.448088159] s.\n  exported q2_response_surface            2232 x 1602 px\n  F4 response surface: MATLAB max 4.828283 s, validated optimum 4.832502 s.\n  exported q2_multiseed_stability         2232 x 1026 px\n  F5 Q2 multiseed: 8 runs, terminal exact span 3.286e-13 s.\n  exported time_step_convergence          2232 x 1008 px\n  F13 time-step errors Q1/Q2 at dt=0.005: 8.2102e-05 / 0.0025018 s.\n  exported q3_q4_multiseed_stability      2232 x 1279 px\n  F14 Q3/Q4 spans: 0.950990 s / 38.027 ms.\nMATLAB core figure rendering completed.\n\nRendered MATLAB cross-question audit figures."
   },
   "design_system": {
     "profile": "contest-paper-evidence-first",
@@ -86,10 +86,11 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/modeling_workflow.png": "f239c7904aa9651256811ed3c19729007f4bc539cf7c69fed3f83229f23bd849",
-        "figures/modeling_workflow.pdf": "936f370e9c0285be2d44aa6940da2c9b24c59fa6ad2b9dcccb5c478f1eeb98d8",
-        "figures/modeling_workflow.svg": "e68559407e64c031a9b6be909ddfdddc668388e7aaea3fea28c5d3d805724b81"
-      }
+        "figures/modeling_workflow.png": "f4addb6cec677dee2c5eb3d94003ee4c65ef67f1bc389a7bdd1b0ab2c87ed7ae",
+        "figures/modeling_workflow.pdf": "15d66458359986430915888c3176a0ea2e0aafadd3201c011f0f75c20a23c452",
+        "figures/modeling_workflow.svg": "a978aa0619ff9caa5adcce7c23303513d0e3fa2db0007820315da76277335606"
+      },
+      "role": "paper"
     },
     {
       "id": "F2",
@@ -128,10 +129,11 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/finite_sightline_geometry.png": "fc44351c4e43b24138a65d944eb58ecee0765bdc76ea9d4f853ce981a0a18cf9",
-        "figures/finite_sightline_geometry.pdf": "6b6783bd7c5c962e1cb1dda4ee1e8e5513e13b3bc04d6c488d81bc2fcada56f0",
+        "figures/finite_sightline_geometry.png": "1d99d27626fd3e0d124ccb429c48259f788f12dcc7f5a8b12ce7b583ee554d38",
+        "figures/finite_sightline_geometry.pdf": "0d7b99a40c94d7b3ae248bb57dc0ea2a136913bca9edbc8afe9855d79cced549",
         "figures/finite_sightline_geometry.svg": "7b89b94896442ab68af5431166a915957bffc0615841e67b89e7363f8d838b1b"
-      }
+      },
+      "role": "paper"
     },
     {
       "id": "F3",
@@ -170,10 +172,11 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q1_occlusion_intervals.png": "db8f11de38f37e9f3a8f109829e472fae0ad57a51cc112d3eceaa7a1b8aa55d1",
-        "figures/q1_occlusion_intervals.pdf": "e924102cf8e77b1f8d76f55f364187d9a35c0bf650b4ef4925f3161aee1b7f71",
+        "figures/q1_occlusion_intervals.png": "7d6e49de32974ec2d38a0b1f41aed560d5d4cac0c8abbcca04ea2b0173220bcf",
+        "figures/q1_occlusion_intervals.pdf": "8ca7978e75b0bda4acb39b15c6aa977623a86056f6e45523a1322151fbc04cfe",
         "figures/q1_occlusion_intervals.svg": "d69bb55aaaed43183a60763e184f51eff3c3873e2b1b457fbf0c74dfa1cda5a7"
-      }
+      },
+      "role": "paper"
     },
     {
       "id": "F4",
@@ -212,10 +215,11 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q2_response_surface.png": "11ec748c48eaf245c756adcd4d44d529407d5c8f2ccf84c9ea8e698b5fd17b77",
-        "figures/q2_response_surface.pdf": "d136aa2c3530f2c239799cfe805e72e9e0375e14afb9877477242ddfa19ab249",
-        "figures/q2_response_surface.svg": "c6fb3c9f7174e84c5034af41dcef4c98abf1b7227ae0fe1eea4c9572e71a49b6"
-      }
+        "figures/q2_response_surface.png": "13ba8af396d34a20e79466018b15af41e187b35a936d277073820873aa357e7e",
+        "figures/q2_response_surface.pdf": "cbc4f89011bc029f875c236dcb8c37f20a583fb79aa98f2edf5d61e07904f554",
+        "figures/q2_response_surface.svg": "69e2f6d1315b5134d6320ad13d78102f4d7246d9960659cfa66ab7ac039d9e27"
+      },
+      "role": "paper"
     },
     {
       "id": "F5",
@@ -255,10 +259,11 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q2_multiseed_stability.png": "4694748865d63dc64eedd5d620791f7cda02bc579afb19530970fff7efa07a42",
-        "figures/q2_multiseed_stability.pdf": "69b34a64711b02ae6b35a89c3b913686224381f715c226c1ae08b6649549f237",
+        "figures/q2_multiseed_stability.png": "2f854820d84306399cef1b9dc7f2097b1ad699fefe8d5ca381a64dd69988dbac",
+        "figures/q2_multiseed_stability.pdf": "127e9ee16ecb777da300e17c9eab9e538f0001203c1126576da186e8d126779e",
         "figures/q2_multiseed_stability.svg": "70da773435249f7c4cdf6a946e83683ac4843f5bcf257945005778187bae9bb5"
-      }
+      },
+      "role": "paper"
     },
     {
       "id": "F6",
@@ -302,10 +307,11 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q3_interval_union.png": "5347fd3fae9b78b7f1d731821fed104d77d639101eff011ef6f79ed98caa8833",
-        "figures/q3_interval_union.pdf": "be0648137ece46bdb1602612535b373d904588a8d29881d3921cc83f6ac42691",
-        "figures/q3_interval_union.svg": "6d6ac33c485fa3d4e8e0272178f34bbdc2cc36e328b0b616016e91d3e73f1713"
-      }
+        "figures/q3_interval_union.png": "9634e2e961336c915daa4c98be59528dcc59e0fe3d9cad78f69352db4880d25f",
+        "figures/q3_interval_union.pdf": "0c22f0dcc9fd6e56fea8ef0ae9bd265def326d515ef051d33b7c76dd14f84b96",
+        "figures/q3_interval_union.svg": "2aeaf2316cc4bed2cf146beb04580c64acff298a7e578dc86bfa51851ad7852b"
+      },
+      "role": "paper"
     },
     {
       "id": "F7",
@@ -347,10 +353,11 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q4_temporal_synergy.png": "5f47409c00a1435fbb3fd5e954d183df2780588de71f82ddf18fd2966e50829a",
-        "figures/q4_temporal_synergy.pdf": "5815168305b2ea85b7e27ce86d42ea80f334bed646636c606727f5bb161cdc4c",
-        "figures/q4_temporal_synergy.svg": "0d1f04c8550e8264e27c0e5bbcf7cd0056563b212f1151e335cfcef340e9a612"
-      }
+        "figures/q4_temporal_synergy.png": "9452eb285dc88323d8f7a1dba73031713ddddc8255e8c3fc611818d728fb08b1",
+        "figures/q4_temporal_synergy.pdf": "5cc42a430c0fda089d29c4fe526d6eeccc25ec80defc9cf5d8038d2cec5f3761",
+        "figures/q4_temporal_synergy.svg": "def844b555cdb062cd2f3c06bb0a57d4a18e454c9d193f2008e60a9b63a252c9"
+      },
+      "role": "paper"
     },
     {
       "id": "F8",
@@ -389,10 +396,11 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/search_quality_diagnostics.png": "56e7c9175974205556233aba200568dda2230b32651460d7051a21043cde790f",
-        "figures/search_quality_diagnostics.pdf": "34bc9fc1d4d65a6fcef34fd6d097aa6f791b9eef2c0989465dfa2a038e459e80",
+        "figures/search_quality_diagnostics.png": "cc078d77bb0c2c0fa97a95628483a1b1835e9a256680ccfdfacf1cb9ee543e9a",
+        "figures/search_quality_diagnostics.pdf": "e852cc2e875e9870c904860a2cc9fde495fe94b4e2a9b153a9b07db2e4003869",
         "figures/search_quality_diagnostics.svg": "a6f65f6465c8de72135110941fcac18493ff9cc49152056262b856562f5caf0a"
-      }
+      },
+      "role": "support"
     },
     {
       "id": "F9",
@@ -433,10 +441,11 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q5_xy_strategy.png": "e53360275e013987fe9145c26cd9e8401df82c24987b879018bf59e7844f47fb",
-        "figures/q5_xy_strategy.pdf": "01604fbb82735a0750d0d44c654ad24477a939a5a0ed665677e3c3658903737c",
-        "figures/q5_xy_strategy.svg": "d8100771da9b26e320b74fcc864d0d51cd336d171035193aa0a7425dd7d72489"
-      }
+        "figures/q5_xy_strategy.png": "2ec71ce1a3a8af2423310da1dc223cfe6786b3a267399c1165d2b3191cba4e48",
+        "figures/q5_xy_strategy.pdf": "71e9d96bf43a7331f7a0e56af91a0d2f1c25c122d55c6efb1eefa8ea24608eb6",
+        "figures/q5_xy_strategy.svg": "8379572c99863c9ea6ccab4a1aaeb172073ee9af7c48ce37aee3bd9bbc73dc4e"
+      },
+      "role": "paper"
     },
     {
       "id": "F10",
@@ -478,10 +487,11 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q5_coverage_gantt.png": "ded826569133792e52746bc2c5e4aaf85e097b76f1db5489974a56a1e412ab20",
-        "figures/q5_coverage_gantt.pdf": "652447cdfcbbcf5eb0f0b47b888909857365214dda5974ac96fe563e5d101b8d",
-        "figures/q5_coverage_gantt.svg": "05c2dcdbc01e19a9c22d9b3bfde61092619f51573dad00f8f0fbc9b8efd061cd"
-      }
+        "figures/q5_coverage_gantt.png": "024fb62886ced313bcf767cbe186e718922f263981e4b13a835174e9cf82c22f",
+        "figures/q5_coverage_gantt.pdf": "498d36f01ba15ab8912f135009e40153badefb6c0fae0f06387a2894e3ae9928",
+        "figures/q5_coverage_gantt.svg": "bbdbbc9cbf3feab4f21be56e0b46e4cf1c79e0b303de890ec8c8158b2b6d5f18"
+      },
+      "role": "paper"
     },
     {
       "id": "F11",
@@ -520,10 +530,11 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q5_per_missile_robustness.png": "fc38683ff6da676836dfcd0f07fa444b66f789a6874639972922d812f2d9b1b6",
-        "figures/q5_per_missile_robustness.pdf": "96c9ebf6a0bab95405ca9a491057d22cb60e1bb21f9b475e967b82dec3ad038f",
-        "figures/q5_per_missile_robustness.svg": "07fb7fd68ec6428cf4fa281fd71d96d9695b457d6506aba6c6b0545103430e37"
-      }
+        "figures/q5_per_missile_robustness.png": "433c7f88b8ff6547b3072cb7b50674c818b9c3c4e9bcf04ca21e932f3da0e537",
+        "figures/q5_per_missile_robustness.pdf": "07dd42b535d15cec39292049cde5bcea64639f7121447a4399756eed1f90e63a",
+        "figures/q5_per_missile_robustness.svg": "f7c3977d7d31bb0dc6c2f3682da02f088d2cd20729d5590958e36b527955341b"
+      },
+      "role": "support"
     },
     {
       "id": "F12",
@@ -560,10 +571,11 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/criterion_sensitivity.png": "0ffcb96afe1d3a0eb5caeb09ebcefa7d51de648e0b953c9dfac7c2cb9bb08179",
-        "figures/criterion_sensitivity.pdf": "45b474023dde0d8f7fd1d436ee0fe92258664c9fb34e29b4ab1e0403b75a042b",
-        "figures/criterion_sensitivity.svg": "5a360d978402543a29fa63fe01f56899958b2e37de0027c67b8c49e471680a85"
-      }
+        "figures/criterion_sensitivity.png": "fbe1796b941ebbae3bd97cf60359d8b8767c1ecacb8867065972454b0b93b064",
+        "figures/criterion_sensitivity.pdf": "8e105ae438d041f671adbbd865811eefefdcb7aa63c1f3f95af4975b9df5bf5e",
+        "figures/criterion_sensitivity.svg": "d06ff69a3feaeced5d729761b096464da32168f20d760a75e68707041debfd45"
+      },
+      "role": "paper"
     },
     {
       "id": "F13",
@@ -602,10 +614,11 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/time_step_convergence.png": "2f36562129b13da265961f491c8ec6e98397e6069effb556c628051d3507ab4a",
-        "figures/time_step_convergence.pdf": "993696f1c4c8bb1ea4358b0361376b317d6b806f0dd2d537487dc1b2b0bb40d7",
-        "figures/time_step_convergence.svg": "68d68373a33a283bb881282247c89a3c47e0049695a76152d921b0439049b208"
-      }
+        "figures/time_step_convergence.png": "1c24dafbdbbb2fad89a45f3db52e6502d81f21b324a32d77ca41c31e11c78c94",
+        "figures/time_step_convergence.pdf": "d02054133bd4e69284f585e2b4fbfe27f920b230a2f7d18df325d3ad47605cc3",
+        "figures/time_step_convergence.svg": "adad9ec13a91526b643963a6ccb289230906fb6d24e23e8c5d2b6f3ef2291a73"
+      },
+      "role": "paper"
     },
     {
       "id": "F14",
@@ -645,21 +658,22 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q3_q4_multiseed_stability.png": "ff352594344ccdbb6edeb0b9e95a8b95ae49090e4034d2c6d5d7af34d692fe45",
-        "figures/q3_q4_multiseed_stability.pdf": "7478eb55ef4f423b4c52b994015aa6638c271bc52eefd6c7183790104dc87b5e",
-        "figures/q3_q4_multiseed_stability.svg": "94160371b1c59791ac3c84dde34b8fc5ab0f0813b1bb4d1c9d5bb8d6e0684929"
-      }
+        "figures/q3_q4_multiseed_stability.png": "84eb015e3b2468e0eb8b1757e2c56cbb882b940f33d492543caf890ad49d4349",
+        "figures/q3_q4_multiseed_stability.pdf": "f211ec3c3041939d7defd8899b14f6a786356ffcaf389278a930497607394d22",
+        "figures/q3_q4_multiseed_stability.svg": "d4f6b613832f00b8c659af58e34777a66f4c328de100200af93dde1573d231f7"
+      },
+      "role": "paper"
     }
   ],
   "matlab_provenance": {
     "schema_version": 1,
     "sources_sha256": {
-      "src/matlab/render_q1_event.m": "8afe83717be5c6c16519917e6d94ba82299cbd2bec007fa94c67eb6f4fc6a2e5",
-      "src/matlab/render_q3_event.m": "3aad082d4fc539bad671b309f4f448ecc7a07c2938eb02c022c424ce6796179f",
-      "src/matlab/render_q4_event.m": "08ab472225118ae6cb2534812774dc5af8c8c26d2af3835fe858491cd44b35f7",
-      "src/matlab/render_core_figures.m": "a2c4ee80cf8815cf9bb737232e447e032d9622a7de9f5f52674b2b99d0fbf4d7",
-      "src/matlab/render_q5_figures.m": "3653372a5402eff610b438148fb0bd156bce203aaa4eb97cb4fcf36b3a052e26",
-      "src/matlab/render_cross_audits.m": "038d04b83e634a06316e5829ef3cc974ff1b79cde96dbf827e21f5895228de6c"
+      "src/matlab/render_q1_event.m": "947230226debb157d3873723d8c1909de4d7788bfbce2410a90ab39cebc7b3cf",
+      "src/matlab/render_q3_event.m": "b137557493ec732a7b38e4f73be58ac4a12c33bfec76af75dc55c926bb64e166",
+      "src/matlab/render_q4_event.m": "35cbce132249741167d06ce64adbfd5f4930e83895c3a75e8d481bc17f19c383",
+      "src/matlab/render_core_figures.m": "f904f9dc6908a52331089205d882c6d8309b78bfac8b8bc653ea1f25b9bd68f3",
+      "src/matlab/render_q5_figures.m": "58dc6392d0d0b4568b36b71a2b88535a23a7baa5286c9b26e5b91184525d0288",
+      "src/matlab/render_cross_audits.m": "db691e91edde642d1fc8ea225e279d7cb70af24a4be5d4eb27af7469b82f3faf"
     },
     "inputs_sha256": {
       "validation/q1_q2_independent.json": "87356ed221129d27784aff9bd90dceb8be4da372b767db4d3db7ccba4cf597c9",
@@ -667,5 +681,7 @@
       "validation/q3_q4_multiseed.json": "b6a789e46ed875ba0eace96a8f5ef594c2289456ae31e62c0e28b468858c1be4",
       "validation/q3_q5_independent.json": "8dc5fa5a489e7228371a79d0248987032e45b55b6d2b85792c9558c4f86c1baa"
     }
-  }
+  },
+  "paper_figure_count": 12,
+  "support_figure_count": 2
 }

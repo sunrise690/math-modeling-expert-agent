@@ -1209,7 +1209,7 @@ def _verify_artifacts(
     malformed_figures: list[str] = []
     figure_records = figure_manifest.get("figures", [])
     required_figure_fields = {
-        "id", "claim_id", "subquestion", "files", "data_source", "axes", "units",
+        "id", "role", "claim_id", "subquestion", "files", "data_source", "axes", "units",
         "caption", "interpretation", "paper_location", "figure_intent", "visual_qa", "renderer", "sha256",
     }
     if int(figure_manifest.get("schema_version", 0)) < 4 or not figure_manifest.get("design_system"):
@@ -1218,6 +1218,9 @@ def _verify_artifacts(
         figure_id = str(record.get("id", "?"))
         if not required_figure_fields.issubset(record):
             malformed_figures.append(f"{figure_id}:fields")
+        expected_role = "support" if figure_id in {"F8", "F11"} else "paper"
+        if record.get("role") != expected_role:
+            malformed_figures.append(f"{figure_id}:role")
         intent = record.get("figure_intent", {})
         semantic_layers = set(intent.get("semantic_layers", [])) if isinstance(intent, dict) else set()
         if not isinstance(intent, dict) or not {

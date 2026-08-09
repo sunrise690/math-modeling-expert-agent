@@ -4,6 +4,7 @@ from scripts.audit_paper import (
     _count_equations,
     _count_figure_interpretations,
     _count_figures,
+    _count_q_notation,
     _plain_text,
     _question_blocks,
     _question_index,
@@ -13,6 +14,10 @@ from scripts.audit_paper import (
 
 
 class PaperAuditPdfTextTests(unittest.TestCase):
+    def test_q_notation_ignores_cli_seed_options(self) -> None:
+        source = "正文采用问题三表述；复现实验使用 --q3-seed 20250810 --q4-seed 20250809。Q5 不应出现。"
+        self.assertEqual(_count_q_notation(source), 1)
+
     def test_numbered_pdf_question_headings_keep_full_blocks(self) -> None:
         source = """
 1 问题分析与技术路线
@@ -117,6 +122,22 @@ class PaperAuditPdfTextTests(unittest.TestCase):
         numeric_gate = next(item for item in numeric["gates"] if item["id"] == "validation_traceability")
         self.assertTrue(numeric_gate["passed"])
         self.assertGreaterEqual(numeric["metrics"]["validationNumericSignals"], 2)
+
+    def test_full_paper_flags_agent_and_engineering_prose(self) -> None:
+        source = r"""
+\begin{abstract}问题一得到 1.2 s。\textbf{关键词：}优化；验证\end{abstract}
+\section{问题分析}本文先做算法披露，再用工作簿回读完成证据链。
+\section{模型假设与符号说明}模型假设与主要符号均已定义。
+\section{问题一：模型与结果}主口径下得到可行解。
+\section{结论}结果为 1.2 s。
+\begin{thebibliography}{99}\bibitem{a} A.\end{thebibliography}
+"""
+        result = audit(source, ".tex", {}, expected_questions=1, full_paper=True)
+        self.assertGreaterEqual(result["metrics"]["academicStyleFindingCount"], 4)
+        terms = {item["term"] for item in result["metrics"]["academicStyleFindings"]}
+        self.assertTrue({"算法披露", "工作簿回读", "证据链", "主口径"}.issubset(terms))
+        gate = next(item for item in result["gates"] if item["id"] == "manuscript_integrity")
+        self.assertFalse(gate["passed"])
 
 
 if __name__ == "__main__":

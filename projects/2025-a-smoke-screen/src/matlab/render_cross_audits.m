@@ -166,7 +166,7 @@ questionStyles = {'-', '--', '-.', ':'};
 ax = nexttile(layout, 1);
 hold(ax, 'on');
 indices = [1, 3, 4, 5];
-labels = {'Q1', 'Q3', 'Q4', 'Q5'};
+labels = {'问题一', '问题三', '问题四', '问题五'};
 retentions = 100 * full(indices) ./ center(indices);
 yLimits = [min(retentions) - 5, 104];
 patch(ax, [0.76, 1.24, 1.24, 0.76], [yLimits(1), yLimits(1), yLimits(2), yLimits(2)], ...
@@ -185,10 +185,10 @@ for k = 1:4
         'FontName', fontName, 'FontSize', 7.0, 'Color', questionColors(k, :), ...
         'VerticalAlignment', 'middle');
 end
-xlim(ax, [0.82, 2.58]);
+xlim(ax, [0.82, 2.90]);
 ylim(ax, yLimits);
-set(ax, 'XTick', [1, 2], 'XTickLabel', {'中心口径', '圆柱复算'});
-ylabel(ax, '同策略保留率 / %', 'FontName', fontName);
+set(ax, 'XTick', [1, 2], 'XTickLabel', {'中心判据', '圆柱判据'});
+ylabel(ax, '同方案时长保留率 / %', 'FontName', fontName);
 styleAxis(ax, C, fontName, true);
 panelLabel(ax, 'a', C, fontName);
 hold(ax, 'off');
@@ -226,8 +226,8 @@ for k = 1:3
 end
 xlim(ax, [0.82, 2.70]);
 ylim(ax, yLimits);
-set(ax, 'XTick', [1, 2], 'XTickLabel', {'中心口径', '圆柱复算'});
-ylabel(ax, 'Q5 分导弹并集 / s', 'FontName', fontName);
+set(ax, 'XTick', [1, 2], 'XTickLabel', {'中心判据', '圆柱判据'});
+ylabel(ax, '问题五分导弹并集 / s', 'FontName', fontName);
 styleAxis(ax, C, fontName, true);
 panelLabel(ax, 'b', C, fontName);
 hold(ax, 'off');
@@ -257,13 +257,13 @@ text(ax, 1.5, mean(q2Values), '⋯  独立优化，不连线  ⋯', ...
 xlim(ax, [0.55, 2.45]);
 ylim(ax, yLimits);
 set(ax, 'XTick', [1, 2], 'XTickLabel', {'中心独立最优', '圆柱独立最优'});
-ylabel(ax, 'Q2 独立最优 / s', 'FontName', fontName);
+ylabel(ax, '问题二独立优化时长 / s', 'FontName', fontName);
 styleAxis(ax, C, fontName, true);
 panelLabel(ax, 'c', C, fontName);
 hold(ax, 'off');
 
 annotation(fig, 'textbox', [0.105, 0.945, 0.245, 0.040], ...
-    'String', '● 中心视线口径    □ 完整圆柱口径', 'FontName', fontName, ...
+    'String', '● 中心视线判据    □ 圆柱整体判据', 'FontName', fontName, ...
     'FontSize', 6.6, 'Color', C.ink, 'Interpreter', 'none', ...
     'EdgeColor', 'none', 'FitBoxToText', 'off');
 
