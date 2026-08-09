@@ -1,28 +1,33 @@
 {
+  "appendix_policy": {
+    "paper_format": "searchable native LaTeX source and booktabs tables",
+    "qa_previews": "plain SVG, not embedded",
+    "screenshots_embedded_in_paper": 0
+  },
   "artifacts": [
     {
-      "evidence_type": "verbatim_source_excerpt",
-      "height_px": 1900,
-      "path": "support/appendix-evidence/appendix_code_geometry.png",
-      "sha256": "023fa34aeec5471e3d2ef6a3178ca408bb907fd45fe5ed97071afad2ba023088",
+      "evidence_type": "plain_vector_qa_preview_not_embedded_in_paper",
+      "height_px": 1800,
+      "path": "support/appendix-evidence/appendix_code_geometry.svg",
+      "sha256": "5afe8e57376bf80d149a70c4af4de040a8e1b2da8da538411f303ba78208cc02",
       "sources": [
         {
-          "normalized_excerpt_sha256": "089373d63717b67d0436f851597302c5f83cf6b4ed0670ca6f74efb629c7bb97",
+          "normalized_excerpt_sha256": "51b5db437ae00ccbea4695943b1b83bf7c188a27d4210f465225195403a44f0d",
           "path": "src/geometry_engine.py",
           "selection": {
-            "end": 279,
+            "end": 581,
             "kind": "line_range",
-            "start": 259
+            "start": 553
           },
           "sha256": "fded67a6670f5e777f19c80c716d59eb3a4e72be47e040ddd09016ab2bf1bb7c"
         },
         {
-          "normalized_excerpt_sha256": "d497aea0519d606d070ba49966713e764b8221b382e64cb8e4a77b621f3e9c26",
+          "normalized_excerpt_sha256": "9afaa85e7f41b3c2fccc0205cd7d8b3bd7a1bff0d1eec8e19a2bebcc4de410f7",
           "path": "src/geometry_engine.py",
           "selection": {
-            "end": 571,
+            "end": 704,
             "kind": "line_range",
-            "start": 552
+            "start": 684
           },
           "sha256": "fded67a6670f5e777f19c80c716d59eb3a4e72be47e040ddd09016ab2bf1bb7c"
         }
@@ -30,28 +35,48 @@
       "width_px": 3200
     },
     {
-      "evidence_type": "verbatim_source_excerpt",
-      "height_px": 1900,
-      "path": "support/appendix-evidence/appendix_code_optimizer.png",
-      "sha256": "bc5c7b50f326e14e1ac607700d4f0fe32b9b7607042ae58f99b379c174de0bac",
+      "evidence_type": "plain_vector_qa_preview_not_embedded_in_paper",
+      "height_px": 1800,
+      "path": "support/appendix-evidence/appendix_code_optimizer.svg",
+      "sha256": "f3da1d8fac340b1344e4cab98bcb732260b09a1e49dfe3f1c61078dc38b3af9f",
       "sources": [
         {
-          "normalized_excerpt_sha256": "4b03958e3973a2fd3bead6775299eaedbee1d10b3d7af06cbdfd847623bab508",
+          "normalized_excerpt_sha256": "e27ee44ef14bfdb762c66291b02c98bae9fde6672defe8c7662596abc8a8a205",
           "path": "src/optimizer.py",
           "selection": {
-            "end": 490,
+            "end": 605,
             "kind": "line_range",
-            "start": 470
+            "start": 589
           },
           "sha256": "cfb2180f96eb72004831f0e7e2a466ebdd307f4c149042229bc65b283f62fd8a"
         },
         {
-          "normalized_excerpt_sha256": "94e676c64918549993943e028b1b8799e4b193e182058ef318ca8b98291fda1e",
+          "normalized_excerpt_sha256": "a3eceb03474be0eca5f0f35b986fd188a5cec70fb243036b4816c11d03eb25e5",
           "path": "src/optimizer.py",
           "selection": {
-            "end": 1137,
+            "end": 640,
             "kind": "line_range",
-            "start": 1117
+            "start": 619
+          },
+          "sha256": "cfb2180f96eb72004831f0e7e2a466ebdd307f4c149042229bc65b283f62fd8a"
+        },
+        {
+          "normalized_excerpt_sha256": "7d4dc12dc5b5a27943ffc9158458fdcab742b5d2d5f07268c1540ffdc1d6d3a5",
+          "path": "src/optimizer.py",
+          "selection": {
+            "end": 1164,
+            "kind": "line_range",
+            "start": 1140
+          },
+          "sha256": "cfb2180f96eb72004831f0e7e2a466ebdd307f4c149042229bc65b283f62fd8a"
+        },
+        {
+          "normalized_excerpt_sha256": "665925374fb62e7c1981f2c29ad816d0999abdcc93acc31b38259d0c38c96ef3",
+          "path": "src/optimizer.py",
+          "selection": {
+            "end": 1203,
+            "kind": "line_range",
+            "start": 1185
           },
           "sha256": "cfb2180f96eb72004831f0e7e2a466ebdd307f4c149042229bc65b283f62fd8a"
         }
@@ -59,16 +84,15 @@
       "width_px": 3200
     },
     {
-      "evidence_type": "normalized_workbook_table",
-      "height_px": 1900,
-      "path": "support/appendix-evidence/appendix_data_result12.png",
-      "sha256": "ea4fc9ec244eaf9fdad27eff95c912970ba01318e856074bd8b47acc873b2441",
+      "evidence_type": "plain_vector_qa_preview_not_embedded_in_paper",
+      "height_px": 1800,
+      "path": "support/appendix-evidence/appendix_data_result12.svg",
+      "sha256": "706ee86350c1a5ba0d1305534a2b28c9f31201a962461cf97fe102b30a927bae",
       "sources": [
         {
           "active_row_count_including_header": 4,
           "column_count": 10,
-          "display_precision_decimal_places": 4,
-          "normalized_display_sha256": "3b2f907f682f081de16e4687adc656f9688cc8e17ebc7af1cc3ed9ea67c78247",
+          "normalized_value_sha256": "240f5ea92bf0e5a4d2388b6e14efff67fe186ffcc2e79880c46eaed3570e8d50",
           "path": "outputs/result1.xlsx",
           "selection": "Sheet1!A1:J4",
           "sha256": "9650ff0b39cb00b2b28230196619c74edd985f493805f640646e911d41dda269"
@@ -76,8 +100,7 @@
         {
           "active_row_count_including_header": 4,
           "column_count": 10,
-          "display_precision_decimal_places": 4,
-          "normalized_display_sha256": "bae9f3e887712bd4734d3cf573d166b9e5e335b71d781b68935871dd6180b811",
+          "normalized_value_sha256": "ae73177201fa16047d539c1dd0151d065886e91c8f9a922064c85a0abc064729",
           "path": "outputs/result2.xlsx",
           "selection": "Sheet1!A1:J4",
           "sha256": "7fee8c3eea2f6081768666297aaaf44db2260891992b62a7a9630daf7a3d6062"
@@ -86,76 +109,270 @@
       "width_px": 3200
     },
     {
-      "evidence_type": "normalized_workbook_table",
-      "height_px": 2050,
-      "path": "support/appendix-evidence/appendix_data_result3.png",
-      "sha256": "7bc4d757856935cf4e741b7cf7033a8991a073896c5ace1a8229a1d7c3a5a784",
+      "evidence_type": "plain_vector_qa_preview_not_embedded_in_paper",
+      "height_px": 1800,
+      "path": "support/appendix-evidence/appendix_data_result3.svg",
+      "sha256": "c697de87fc43b015e839a023074d6e41164f0d3af64c89e23ee166fafac2b19f",
       "sources": [
         {
           "active_row_count_including_header": 16,
           "column_count": 12,
-          "display_precision_decimal_places": 4,
-          "normalized_display_sha256": "39ed4d83a8df1e46b8b2108d8a8c9e85a98fd75dbbcaa96093b6d636b4043163",
+          "normalized_value_sha256": "1198a833205d7be0565bc5743770ce4cc9d815abd44d9453573b03314c910fe2",
           "path": "outputs/result3.xlsx",
           "selection": "Sheet1!A1:L16",
           "sha256": "a98a721eb0e72c0011fa98b29295559e0159f59da5b31c2fc3af87d1eff56772"
         }
       ],
-      "width_px": 3600
+      "width_px": 3200
     }
   ],
   "generator": {
     "command": "python -B src/render_appendix_evidence.py",
-    "fonts": {
-      "consola.ttf": "cf00b507b3286870cc5064ebd0633c303f70b491a4af25eec2d32df413db0179",
-      "consolab.ttf": "7e8de70c92a891722bd3fbd623db005caab2bfe267e5dab5be46b95a44e0c7f1",
-      "msyh.ttc": "d79c55e68b1131eea0cc1c47be4f572d964f28c682e143db2ad09c1e4cb07a3f",
-      "msyhbd.ttc": "4508821b3dffe01f0ef5e5326a3e60df705a44633858811f67b6982dce3f6ee6"
-    },
     "libraries": {
-      "Pillow": "12.3.0",
       "openpyxl": "3.1.5"
     },
     "path": "src/render_appendix_evidence.py",
     "python": "3.11.9",
     "requirements_path": "requirements-formal.txt",
-    "requirements_sha256": "4ef5aa1d67be4d42cbcfb6dcb9ec83ed428e2b31ec30809d62a02e283f0fe448",
-    "sha256": "76295d3e4cd13929dc474b2f85fc67fa654b7c9336b80f31aa33a774220d19ff"
+    "requirements_sha256": "b8ab5f2d9dda6dedea8e3f335ef9d2e4ca4816ee9ab420b92b72691afef757ad",
+    "sha256": "b8e3038bc705c0aa56b1ddcd9b644a11b05297a20d6ee02daa57d72facab735c"
   },
-  "producer_dag": [
+  "latex_fragments": [
     {
-      "inputs": [
-        "src/geometry_engine.py",
-        "src/geometry_engine.py"
-      ],
-      "output": "support/appendix-evidence/appendix_code_geometry.png",
-      "producer": "src/render_appendix_evidence.py"
+      "kind": "searchable_latex_file_index",
+      "path": "support/appendix-evidence/appendix_file_rows.tex",
+      "sha256": "f15716d02214099a0a033e291cdfac8d6bf7ad149dcfbe192326d80591f6544d",
+      "sources": [
+        {
+          "path": "src/geometry_engine.py",
+          "sha256": "fded67a6670f5e777f19c80c716d59eb3a4e72be47e040ddd09016ab2bf1bb7c"
+        },
+        {
+          "path": "src/solve_q1_q2.py",
+          "sha256": "02b17de41fd42043d8cac3ed4380638d359b0dc41889059fb801e542fd7bbf77"
+        },
+        {
+          "path": "src/optimizer.py",
+          "sha256": "cfb2180f96eb72004831f0e7e2a466ebdd307f4c149042229bc65b283f62fd8a"
+        },
+        {
+          "path": "src/solve_q3_q5.py",
+          "sha256": "ea46bbb75451b8a34e42ad2c7f97bbe50de2b25fa7dc69cc3ad727de79c5f800"
+        },
+        {
+          "path": "src/validate_q2_multiseed.py",
+          "sha256": "1a5a32e171dd2ca13e09d9c908859a616061bf063d41f08461e743ccf5cefd6a"
+        },
+        {
+          "path": "src/validate_q3_q4_multiseed.py",
+          "sha256": "c5c388b72b96c87d9fc809baf9cc4fbd98bc8edd9c30a1a02bfbdedcf05e49a5"
+        },
+        {
+          "path": "src/run_all.py",
+          "sha256": "d547369172cc3102a13545d29d14abe86f7bc26fb5f2df9a563ee0ef6930ff32"
+        }
+      ]
     },
     {
-      "inputs": [
-        "src/optimizer.py",
-        "src/optimizer.py"
-      ],
-      "output": "support/appendix-evidence/appendix_code_optimizer.png",
-      "producer": "src/render_appendix_evidence.py"
+      "kind": "searchable_latex_source_excerpt",
+      "maximum_display_characters": 105,
+      "path": "support/appendix-evidence/appendix_code_geometry.tex",
+      "sha256": "2911afa7abb691896f608a110e8519a2560c1f2d9a5981665749a3cb84426564",
+      "sources": [
+        {
+          "normalized_excerpt_sha256": "51b5db437ae00ccbea4695943b1b83bf7c188a27d4210f465225195403a44f0d",
+          "path": "src/geometry_engine.py",
+          "selection": {
+            "end": 581,
+            "kind": "line_range",
+            "start": 553
+          },
+          "sha256": "fded67a6670f5e777f19c80c716d59eb3a4e72be47e040ddd09016ab2bf1bb7c"
+        },
+        {
+          "normalized_excerpt_sha256": "9afaa85e7f41b3c2fccc0205cd7d8b3bd7a1bff0d1eec8e19a2bebcc4de410f7",
+          "path": "src/geometry_engine.py",
+          "selection": {
+            "end": 704,
+            "kind": "line_range",
+            "start": 684
+          },
+          "sha256": "fded67a6670f5e777f19c80c716d59eb3a4e72be47e040ddd09016ab2bf1bb7c"
+        }
+      ]
     },
     {
-      "inputs": [
-        "outputs/result1.xlsx",
-        "outputs/result2.xlsx"
-      ],
-      "output": "support/appendix-evidence/appendix_data_result12.png",
-      "producer": "src/render_appendix_evidence.py"
+      "kind": "searchable_latex_source_excerpt",
+      "maximum_display_characters": 91,
+      "path": "support/appendix-evidence/appendix_code_evaluation.tex",
+      "sha256": "aeac698bcc3269b158c92cb20abe69fae87a63c23e2e6a3387a3629990414c34",
+      "sources": [
+        {
+          "normalized_excerpt_sha256": "e27ee44ef14bfdb762c66291b02c98bae9fde6672defe8c7662596abc8a8a205",
+          "path": "src/optimizer.py",
+          "selection": {
+            "end": 605,
+            "kind": "line_range",
+            "start": 589
+          },
+          "sha256": "cfb2180f96eb72004831f0e7e2a466ebdd307f4c149042229bc65b283f62fd8a"
+        },
+        {
+          "normalized_excerpt_sha256": "a3eceb03474be0eca5f0f35b986fd188a5cec70fb243036b4816c11d03eb25e5",
+          "path": "src/optimizer.py",
+          "selection": {
+            "end": 640,
+            "kind": "line_range",
+            "start": 619
+          },
+          "sha256": "cfb2180f96eb72004831f0e7e2a466ebdd307f4c149042229bc65b283f62fd8a"
+        }
+      ]
     },
     {
-      "inputs": [
-        "outputs/result3.xlsx"
-      ],
-      "output": "support/appendix-evidence/appendix_data_result3.png",
-      "producer": "src/render_appendix_evidence.py"
+      "kind": "searchable_latex_source_excerpt",
+      "maximum_display_characters": 109,
+      "path": "support/appendix-evidence/appendix_code_q5.tex",
+      "sha256": "9cd3d9e93359e867d27c4b9cc88925d7bf251ed7da1abccb0c84c0e7f4bde3ef",
+      "sources": [
+        {
+          "normalized_excerpt_sha256": "7d4dc12dc5b5a27943ffc9158458fdcab742b5d2d5f07268c1540ffdc1d6d3a5",
+          "path": "src/optimizer.py",
+          "selection": {
+            "end": 1164,
+            "kind": "line_range",
+            "start": 1140
+          },
+          "sha256": "cfb2180f96eb72004831f0e7e2a466ebdd307f4c149042229bc65b283f62fd8a"
+        },
+        {
+          "normalized_excerpt_sha256": "665925374fb62e7c1981f2c29ad816d0999abdcc93acc31b38259d0c38c96ef3",
+          "path": "src/optimizer.py",
+          "selection": {
+            "end": 1203,
+            "kind": "line_range",
+            "start": 1185
+          },
+          "sha256": "cfb2180f96eb72004831f0e7e2a466ebdd307f4c149042229bc65b283f62fd8a"
+        }
+      ]
+    },
+    {
+      "kind": "searchable_latex_table_rows",
+      "path": "support/appendix-evidence/appendix_result1_rows.tex",
+      "sha256": "bb178498becadc974163339aa3a898ec1dc974745731197235c36838e6cad522",
+      "sources": [
+        {
+          "active_row_count_including_header": 4,
+          "column_count": 10,
+          "normalized_value_sha256": "240f5ea92bf0e5a4d2388b6e14efff67fe186ffcc2e79880c46eaed3570e8d50",
+          "path": "outputs/result1.xlsx",
+          "selection": "Sheet1!A1:J4",
+          "sha256": "9650ff0b39cb00b2b28230196619c74edd985f493805f640646e911d41dda269"
+        }
+      ]
+    },
+    {
+      "kind": "searchable_latex_table_rows",
+      "path": "support/appendix-evidence/appendix_result2_rows.tex",
+      "sha256": "d9bf14424242f7c15dd90bb65b5196d88e973d1518c18159e10d7a0c30c6bde3",
+      "sources": [
+        {
+          "active_row_count_including_header": 4,
+          "column_count": 10,
+          "normalized_value_sha256": "ae73177201fa16047d539c1dd0151d065886e91c8f9a922064c85a0abc064729",
+          "path": "outputs/result2.xlsx",
+          "selection": "Sheet1!A1:J4",
+          "sha256": "7fee8c3eea2f6081768666297aaaf44db2260891992b62a7a9630daf7a3d6062"
+        }
+      ]
+    },
+    {
+      "kind": "searchable_latex_table_rows",
+      "path": "support/appendix-evidence/appendix_result3_rows.tex",
+      "sha256": "f86614e0c546e6d6d7838151974cc1d196b16d2296a344b7f897d35f8b4a7d59",
+      "sources": [
+        {
+          "active_row_count_including_header": 16,
+          "column_count": 12,
+          "normalized_value_sha256": "1198a833205d7be0565bc5743770ce4cc9d815abd44d9453573b03314c910fe2",
+          "path": "outputs/result3.xlsx",
+          "selection": "Sheet1!A1:L16",
+          "sha256": "a98a721eb0e72c0011fa98b29295559e0159f59da5b31c2fc3af87d1eff56772"
+        }
+      ]
+    },
+    {
+      "kind": "searchable_latex_aggregate_rows",
+      "path": "support/appendix-evidence/appendix_union_rows.tex",
+      "sha256": "851eebd8a12110b3ee40c3d66a754b3b18d930538b6c9647665c2a781a46b774",
+      "sources": [
+        {
+          "active_row_count_including_header": 4,
+          "column_count": 10,
+          "normalized_value_sha256": "240f5ea92bf0e5a4d2388b6e14efff67fe186ffcc2e79880c46eaed3570e8d50",
+          "path": "outputs/result1.xlsx",
+          "selection": "Sheet1!A1:J4",
+          "sha256": "9650ff0b39cb00b2b28230196619c74edd985f493805f640646e911d41dda269"
+        },
+        {
+          "active_row_count_including_header": 4,
+          "column_count": 10,
+          "normalized_value_sha256": "ae73177201fa16047d539c1dd0151d065886e91c8f9a922064c85a0abc064729",
+          "path": "outputs/result2.xlsx",
+          "selection": "Sheet1!A1:J4",
+          "sha256": "7fee8c3eea2f6081768666297aaaf44db2260891992b62a7a9630daf7a3d6062"
+        },
+        {
+          "active_row_count_including_header": 16,
+          "column_count": 12,
+          "normalized_value_sha256": "1198a833205d7be0565bc5743770ce4cc9d815abd44d9453573b03314c910fe2",
+          "path": "outputs/result3.xlsx",
+          "selection": "Sheet1!A1:L16",
+          "sha256": "a98a721eb0e72c0011fa98b29295559e0159f59da5b31c2fc3af87d1eff56772"
+        },
+        {
+          "path": "validation/q3_q5_independent.json",
+          "sha256": "8dc5fa5a489e7228371a79d0248987032e45b55b6d2b85792c9558c4f86c1baa"
+        }
+      ]
+    },
+    {
+      "kind": "searchable_latex_validation_rows",
+      "path": "support/appendix-evidence/appendix_objective_rows.tex",
+      "sha256": "8a5f544811c2752f2f1f18281d01d4482a0cb13b910a01453d98bbc49861b261",
+      "sources": [
+        {
+          "path": "validation/q1_q2_independent.json",
+          "sha256": "87356ed221129d27784aff9bd90dceb8be4da372b767db4d3db7ccba4cf597c9"
+        },
+        {
+          "path": "validation/q2_multiseed.json",
+          "sha256": "ef066c6811eb3d62769c6e015adddbd864b157c5e7b84ab0e53ef9bd12a4a314"
+        },
+        {
+          "path": "validation/q3_q5_independent.json",
+          "sha256": "8dc5fa5a489e7228371a79d0248987032e45b55b6d2b85792c9558c4f86c1baa"
+        },
+        {
+          "path": "validation/q3_q4_multiseed.json",
+          "sha256": "b6a789e46ed875ba0eace96a8f5ef594c2289456ae31e62c0e28b468858c1be4"
+        }
+      ]
+    },
+    {
+      "kind": "searchable_latex_validation_rows",
+      "path": "support/appendix-evidence/appendix_recheck_rows.tex",
+      "sha256": "d25f183418ecf17d73953e175fe7cbeb7b3297ccd4c921d1cfdf610bef5fd8cb",
+      "sources": [
+        {
+          "path": "validation/q3_q5_independent.json",
+          "sha256": "8dc5fa5a489e7228371a79d0248987032e45b55b6d2b85792c9558c4f86c1baa"
+        }
+      ]
     }
   ],
-  "schema_version": 1,
+  "schema_version": 2,
   "source_validation": {
     "active_data_rows": {
       "result1.xlsx": 3,
@@ -167,6 +384,7 @@
       "q3_union_not_greater_than_row_sum": true,
       "q4_nonoverlap_sum_matches_union": true,
       "q5_union_not_greater_than_row_sum": true,
+      "roundtrip_errors_within_tolerance": true,
       "workbook_hashes_match_validation": true
     },
     "duration_row_sums_s": {
@@ -181,12 +399,34 @@
     },
     "path": "validation/q3_q5_independent.json",
     "sha256": "8dc5fa5a489e7228371a79d0248987032e45b55b6d2b85792c9558c4f86c1baa",
-    "tolerance_s": 1e-08,
+    "tolerance": 1e-08,
     "workbook_hash_match": {
       "result1.xlsx": true,
       "result2.xlsx": true,
       "result3.xlsx": true
     }
   },
-  "status": "reproducible"
+  "status": "reproducible",
+  "validation_metrics": {
+    "centerline_objectives_s": {
+      "Q1": 1.435082101963717,
+      "Q2": 4.832501802462596,
+      "Q3": 6.631110247634764,
+      "Q4": 15.774625235050912,
+      "Q5": 53.08393916993349
+    },
+    "full_cylinder_objectives_s": {
+      "Q1": 1.3916426682699736,
+      "Q2": 4.588063539778231,
+      "Q3": 6.541337540415638,
+      "Q4": 10.430630286040866,
+      "Q5": 41.35506419398516
+    },
+    "roundtrip_maxima": {
+      "constraint_violation": 0.0,
+      "coordinate_error_m": 5.4569682106375694e-12,
+      "objective_error_s": 1.524824710941175e-11,
+      "row_duration_error_s": 3.241407142695607e-11
+    }
+  }
 }

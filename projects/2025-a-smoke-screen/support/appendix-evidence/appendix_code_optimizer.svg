@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="3200" height="1800" viewBox="0 0 3200 1800">
+<rect width="100%" height="100%" fill="white"/>
+<text x="40" y="45" font-family="Consolas, monospace" font-size="16" fill="#555555" xml:space="preserve">Plain source preview; the paper uses searchable LaTeX, not this QA export.</text>
+<text x="40" y="63" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">程序 B2.1  同机硬约束复核 | src/optimizer.py:589-605 | sha256:cfb2180f96eb7200</text>
+<text x="40" y="81" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 589      for drone_plans in by_drone.values():</text>
+<text x="40" y="99" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 590          reference = drone_plans[0]</text>
+<text x="40" y="117" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 591          for plan in drone_plans[1:]:</text>
+<text x="40" y="135" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 592              violations[&quot;shared_heading&quot;] = max(</text>
+<text x="40" y="153" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 593                  violations[&quot;shared_heading&quot;],</text>
+<text x="40" y="171" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 594                  circular_heading_difference(plan.heading_deg, reference.heading_deg),</text>
+<text x="40" y="189" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 595              )</text>
+<text x="40" y="207" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 596              violations[&quot;shared_speed&quot;] = max(</text>
+<text x="40" y="225" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 597                  violations[&quot;shared_speed&quot;], abs(plan.speed - reference.speed)</text>
+<text x="40" y="243" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 598              )</text>
+<text x="40" y="261" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 599          ordered = sorted(drone_plans, key=lambda plan: plan.release_time)</text>
+<text x="40" y="279" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 600          for left, right in zip(ordered[:-1], ordered[1:]):</text>
+<text x="40" y="297" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 601              violations[&quot;release_gap&quot;] = max(</text>
+<text x="40" y="315" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 602                  violations[&quot;release_gap&quot;],</text>
+<text x="40" y="333" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 603                  MIN_RELEASE_GAP - (right.release_time - left.release_time),</text>
+<text x="40" y="351" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 604              )</text>
+<text x="40" y="369" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 605      return {key: max(0.0, float(value)) for key, value in violations.items()}</text>
+<text x="40" y="387" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"></text>
+<text x="40" y="405" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">程序 B2.2  连续区间精确复算 | src/optimizer.py:619-640 | sha256:cfb2180f96eb7200</text>
+<text x="40" y="423" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 619      individual: list[tuple[tuple[float, float], ...]] = []</text>
+<text x="40" y="441" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 620      by_missile: dict[str, list[tuple[float, float]]] = {</text>
+<text x="40" y="459" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 621          missile_id: [] for missile_id in MISSILES</text>
+<text x="40" y="477" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 622      }</text>
+<text x="40" y="495" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 623      for plan in plans:</text>
+<text x="40" y="513" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 624          intervals = effective_intervals(</text>
+<text x="40" y="531" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 625              MISSILES[plan.missile_id],</text>
+<text x="40" y="549" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 626              plan.cloud(),</text>
+<text x="40" y="567" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 627              DEFAULT_TARGET,</text>
+<text x="40" y="585" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 628              mode=mode,  # type: ignore[arg-type]</text>
+<text x="40" y="603" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 629              evaluator=evaluator,</text>
+<text x="40" y="621" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 630              max_step=max_step,</text>
+<text x="40" y="639" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 631              optimize_full=optimize_full,</text>
+<text x="40" y="657" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 632          )</text>
+<text x="40" y="675" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 633          frozen = tuple((float(left), float(right)) for left, right in intervals)</text>
+<text x="40" y="693" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 634          individual.append(frozen)</text>
+<text x="40" y="711" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 635          by_missile[plan.missile_id].extend(frozen)</text>
+<text x="40" y="729" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 636      union = {</text>
+<text x="40" y="747" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 637          missile_id: tuple(merge_intervals(intervals))</text>
+<text x="40" y="765" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 638          for missile_id, intervals in by_missile.items()</text>
+<text x="40" y="783" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 639      }</text>
+<text x="40" y="801" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"> 640      return tuple(individual), union</text>
+<text x="40" y="819" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"></text>
+<text x="40" y="837" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">程序 B3.1  多无人机有限状态保留 | src/optimizer.py:1140-1164 | sha256:cfb2180f96eb7200</text>
+<text x="40" y="855" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1140      states = [_coverage_state(())]</text>
+<text x="40" y="873" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1141      for drone_id in UAV_INITIALS:</text>
+<text x="40" y="891" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1142          expanded: list[CoverageState] = []</text>
+<text x="40" y="909" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1143          for state in states:</text>
+<text x="40" y="927" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1144              for package in pools[drone_id]:</text>
+<text x="40" y="945" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1145                  expanded.append(_coverage_state((*state.plans, *package.plans)))</text>
+<text x="40" y="963" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1146          expanded.sort(key=_state_rank, reverse=True)</text>
+<text x="40" y="981" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1147          unique: list[CoverageState] = []</text>
+<text x="40" y="999" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1148          seen: set[tuple[tuple[int, ...], tuple[int, int, int]]] = set()</text>
+<text x="40" y="1017" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1149          for state in expanded:</text>
+<text x="40" y="1035" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1150              release_signature = tuple(</text>
+<text x="40" y="1053" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1151                  round(plan.release_time * 2.0) for plan in state.plans</text>
+<text x="40" y="1071" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1152              )</text>
+<text x="40" y="1089" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1153              assignment_signature = tuple(</text>
+<text x="40" y="1107" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1154                  sum(plan.missile_id == missile for plan in state.plans)</text>
+<text x="40" y="1125" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1155                  for missile in MISSILES</text>
+<text x="40" y="1143" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1156              )</text>
+<text x="40" y="1161" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1157              signature = (release_signature, assignment_signature)</text>
+<text x="40" y="1179" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1158              if signature in seen:</text>
+<text x="40" y="1197" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1159                  continue</text>
+<text x="40" y="1215" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1160              seen.add(signature)</text>
+<text x="40" y="1233" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1161              unique.append(state)</text>
+<text x="40" y="1251" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1162              if len(unique) &gt;= (160 if quick else 420):</text>
+<text x="40" y="1269" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1163                  break</text>
+<text x="40" y="1287" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1164          states = unique</text>
+<text x="40" y="1305" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"></text>
+<text x="40" y="1323" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">程序 B3.2  候选方案连续复算与重排 | src/optimizer.py:1185-1203 | sha256:cfb2180f96eb7200</text>
+<text x="40" y="1341" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1185      exact_candidates: list[tuple[float, tuple[BombPlan, ...]]] = []</text>
+<text x="40" y="1359" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1186      for state in all_tasks[: (8 if quick else 24)]:</text>
+<text x="40" y="1377" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1187          _, union = exact_evaluate(state.plans, max_step=0.015)</text>
+<text x="40" y="1395" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1188          exact_candidates.append((coverage_objective(union), state.plans))</text>
+<text x="40" y="1413" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1189      exact_candidates.sort(key=lambda item: item[0], reverse=True)</text>
+<text x="40" y="1431" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1190      final_plans = exact_candidates[0][1]</text>
+<text x="40" y="1449" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1191      diagnostics.fast_final_objective = coverage_objective(</text>
+<text x="40" y="1467" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1192          coverage_intervals(</text>
+<text x="40" y="1485" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1193              final_plans, lambda plan: sampled_centerline_intervals(plan, step=0.04)</text>
+<text x="40" y="1503" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1194          )</text>
+<text x="40" y="1521" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1195      )</text>
+<text x="40" y="1539" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1196      diagnostics.notes.extend(</text>
+<text x="40" y="1557" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1197          [</text>
+<text x="40" y="1575" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1198              &quot;Every selected per-UAV package uses one common heading and speed.&quot;,</text>
+<text x="40" y="1593" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1199              &quot;The restricted package beam jointly assigns bombs to M1/M2/M3 and enforces release gaps.&quot;,</text>
+<text x="40" y="1611" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1200              &quot;Result is a reproducible feasible baseline, not a global optimum certificate.&quot;,</text>
+<text x="40" y="1629" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1201          ]</text>
+<text x="40" y="1647" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1202      )</text>
+<text x="40" y="1665" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve">1203      return _result_from_plans(&quot;Q5&quot;, final_plans, diagnostics, exact_step=0.0075)</text>
+<text x="40" y="1683" font-family="Consolas, monospace" font-size="14" fill="#111111" xml:space="preserve"></text>
+</svg>

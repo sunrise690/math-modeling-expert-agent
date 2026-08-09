@@ -151,14 +151,14 @@
         "problem",
         "stornprice"
       ],
-      "embedded_font_count": 35,
+      "embedded_font_count": 32,
       "fonts_fully_embedded": true,
-      "input_bundle_sha256": "9f5dae55c56841e58dd0d4050b8f6f57e4c2887b7fe84adf3f8e83b7b8a92752",
-      "input_file_count": 60,
+      "input_bundle_sha256": "5923832947c8a6f21738b3674534a98a19abfd85162fbf4e02617c760d28df85",
+      "input_file_count": 70,
       "layout_warnings": [],
       "local_rendered_page_count": 28,
       "log_exists": true,
-      "log_sha256": "ba0bd3f38e72621052a8ba6eda72c757451184a724d87e750e690c560334de68",
+      "log_sha256": "03e871bcc0f37b989aff0c1b63f966940c9b60c084f09926eaa3d4d7512e5e80",
       "manual_record_exists": true,
       "manual_render_evidence": "support/pdf-render-evidence/page-01.png 至 page-28.png；当前 PDF 以 140 dpi 全部重新渲染并逐页检查。",
       "manual_render_evidence_pass": true,
@@ -285,7 +285,7 @@
       ],
       "pdf_exists": true,
       "pdf_read_error": null,
-      "pdf_sha256": "4a60c52f902d994d5648b65fdd23b4cdd4319ebc775f4a6c6619fcdb52f5b77f",
+      "pdf_sha256": "1fb055410eb72830157c12892c27b98f5b6a49d262b72a31198cd961077b693e",
       "reference_warnings": [],
       "references_pass": true,
       "technical_pass": true,
@@ -506,8 +506,13 @@
         "status": "PASS"
       },
       {
+        "check_id": "figure-paper-style-audit",
+        "detail": "正文正式图已按最终 PDF 顺序完成彩色/灰度联系表和人工论文风格复核，审计哈希与当前 PDF 一致",
+        "status": "PASS"
+      },
+      {
         "check_id": "appendix-evidence-manifest",
-        "detail": "4 张附录代码/数据截图均由确定性脚本生成，来源范围、源文件哈希、输出哈希与数值断言一致",
+        "detail": "附录以可检索源码行号、三线结果表和复算摘要排版；零截图入文，来源范围、哈希与数值断言一致",
         "status": "PASS"
       },
       {
@@ -522,7 +527,7 @@
       },
       {
         "check_id": "paper-pdf-technical",
-        "detail": "PDF 为 28 页 A4，35 个字体全部嵌入，日志无阻断型布局警告",
+        "detail": "PDF 为 28 页 A4，32 个字体全部嵌入，日志无阻断型布局警告",
         "status": "PASS"
       },
       {
@@ -537,7 +542,7 @@
       }
     ],
     "checks_failed": 0,
-    "checks_passed": 20,
+    "checks_passed": 21,
     "checks_skipped": 0,
     "paper_pdf_manual_visual_pass": true,
     "paper_pdf_technical_pass": true,

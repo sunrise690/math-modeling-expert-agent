@@ -3,6 +3,5 @@
 numpy==2.4.6
 scipy==1.18.0
 openpyxl==3.1.5
-
-# Appendix evidence renderer; it does not participate in numerical solving.
-pillow==12.3.0
+# Internal paper-order and grayscale contact sheets; never embedded in the paper.
+Pillow==12.3.0

@@ -20,16 +20,16 @@ q1Index = find(contains(q1Fields, '9_80'), 1, 'first');
 assert(~isempty(q1Index), 'Q1 g = 9.80 m/s^2 record is missing.');
 q1 = q12.q1.(q1Fields{q1Index});
 
-% Restrained mineral palette.  Every colour has one semantic role across the
-% paper: blue=primary result, green=alternative criterion, ochre=event or
-% threshold, burgundy=risk/dispersion, grey=guide or individual run.
-palette.paper = hexColor('#FAFAF7');
+% Restrained contest-paper palette.  Black/grey carry structure, one slate
+% blue carries the primary result, ochre marks events/thresholds, and
+% burgundy is reserved for an explicitly conservative criterion.
+palette.paper = hexColor('#FFFFFF');
 palette.ink = hexColor('#1E2A32');
 palette.muted = hexColor('#647078');
 palette.grid = hexColor('#D6DEE1');
-palette.panel = hexColor('#F1F4F2');
+palette.panel = palette.paper;
 palette.primary = hexColor('#2F6079');
-palette.secondary = hexColor('#3D7A70');
+palette.secondary = hexColor('#59636A');
 palette.accent = hexColor('#B5782F');
 palette.wine = hexColor('#8B4E5A');
 palette.primaryLight = blendColor(palette.primary, palette.paper, 0.10);
@@ -305,10 +305,10 @@ function renderQ1RootEvents(q12, q1, outputDir, p)
     plot(ax, exitWindow, exitFull, '--', 'Color', p.secondary, 'LineWidth', 1.20);
     yline(ax, 0, '-', 'Color', p.ink, 'LineWidth', 0.70);
     scatter(ax, centerRoots(2), 0, 34, 'o', 'filled', ...
-        'MarkerFaceColor', p.wine, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.5);
-    xline(ax, centerRoots(2), ':', 'Color', p.wine, 'LineWidth', 0.8);
+        'MarkerFaceColor', p.ink, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.5);
+    xline(ax, centerRoots(2), ':', 'Color', p.ink, 'LineWidth', 0.8);
     text(ax, 0.05, 0.13, sprintf('共同退出 %.4f s', centerRoots(2)), ...
-        'Units', 'normalized', 'Color', p.wine, 'FontName', p.font, ...
+        'Units', 'normalized', 'Color', p.ink, 'FontName', p.font, ...
         'FontSize', 7.0, 'FontWeight', 'bold');
     xlabel(ax, '退出事件 t (s)', 'FontName', p.font, 'FontSize', 7.2);
     ylabel(ax, 'F(t) (m)', 'FontName', p.font, 'FontSize', 7.2);
@@ -341,26 +341,15 @@ function renderQ2Response(q12, outputDir, p)
         end
     end
 
-    headingSliceX = linspace(2.0, 12.0, 71);
-    headingSliceY = zeros(size(headingSliceX));
-    for k = 1:numel(headingSliceX)
-        strategy = makeBoundaryStrategy(headingSliceX(k), optimumTime, gravity, constants);
-        headingSliceY(k) = centerlineDuration(strategy, constants, 0.025);
-    end
-    timeSliceX = linspace(0.35, 1.08, 71);
-    timeSliceY = zeros(size(timeSliceX));
-    for k = 1:numel(timeSliceX)
-        strategy = makeBoundaryStrategy(optimumHeading, timeSliceX(k), gravity, constants);
-        timeSliceY(k) = centerlineDuration(strategy, constants, 0.025);
-    end
-
     assert(abs(max(surface, [], 'all') - optimumDuration) < 0.30, ...
         'MATLAB response surface is inconsistent with the validated optimum.');
 
-    % Academic 2-by-2 composition: the response surface spans the full top
-    % row and the two one-factor slices receive equal, readable width below.
-    fig = publicationFigure(6.20, 4.45, p.paper);
-    ax = axes(fig, 'Position', [0.090, 0.515, 0.795, 0.405]);
+    % One hero evidence only: the surface, 95% boundary and optimum already
+    % contain the two-dimensional sensitivity statement.  Separate one-factor
+    % profiles merely repeat slices through this field and are intentionally
+    % omitted from the manuscript figure.
+    fig = publicationFigure(6.20, 3.75, p.paper);
+    ax = axes(fig, 'Position', [0.090, 0.135, 0.795, 0.790]);
     levels = linspace(0, max(surface, [], 'all') + 0.01, 12);
     contourf(ax, headings, explosionTimes, surface, levels, 'LineStyle', 'none');
     colormap(ax, mutedDurationMap(192));
@@ -384,7 +373,7 @@ function renderQ2Response(q12, outputDir, p)
         sprintf('T* = %.3f s   θ* = %.2f°   tᵉ* = %.3f s', ...
         optimumDuration, optimumHeading, optimumTime), ...
         'Color', p.ink, 'BackgroundColor', p.paper, ...
-        'EdgeColor', p.grid, 'Margin', 2.2, ...
+        'EdgeColor', 'none', 'Margin', 1.2, ...
         'FontName', p.font, 'FontSize', 7.2, 'FontWeight', 'bold', ...
         'VerticalAlignment', 'middle');
     text(ax, 0.955, 0.045, '实线闭合边界：T ≥ 0.95T*', ...
@@ -399,7 +388,7 @@ function renderQ2Response(q12, outputDir, p)
     ylabel(ax, '起爆时刻 tᵉ (s)', 'FontName', p.font, 'FontSize', 7.5);
     styleAxes(ax, p, false);
     cb = colorbar(ax);
-    cb.Position = [0.905, 0.535, 0.014, 0.365];
+    cb.Position = [0.905, 0.175, 0.014, 0.700];
     cb.Color = p.muted;
     cb.FontName = p.font;
     cb.FontSize = 7.0;
@@ -408,55 +397,6 @@ function renderQ2Response(q12, outputDir, p)
     cb.Label.Color = p.muted;
     cb.Label.FontName = p.font;
     cb.Label.FontSize = 7.0;
-    panelLabel(ax, 'a', p, [0.008, 0.985]);
-
-    ax = axes(fig, 'Position', [0.090, 0.115, 0.370, 0.265]);
-    hold(ax, 'on');
-    plot(ax, headingSliceX, headingSliceY, '-', 'Color', p.primary, 'LineWidth', 1.40);
-    yline(ax, plateau, ':', 'Color', p.ink, 'LineWidth', 0.75);
-    xline(ax, optimumHeading, '--', 'Color', p.accent, 'LineWidth', 0.90);
-    scatter(ax, optimumHeading, optimumDuration, 42, 'p', 'filled', ...
-        'MarkerFaceColor', p.accent, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.55);
-    high = headingSliceY >= plateau;
-    if any(high)
-        xBounds = [headingSliceX(find(high, 1, 'first')), headingSliceX(find(high, 1, 'last'))];
-        yBase = min(headingSliceY) + 0.06 * ...
-            (max(headingSliceY) - min(headingSliceY));
-        plot(ax, xBounds, [yBase, yBase], '-', 'Color', p.muted, 'LineWidth', 0.9);
-        scatter(ax, xBounds, [yBase, yBase], 18, '|', 'MarkerEdgeColor', p.muted, ...
-            'LineWidth', 0.9);
-        text(ax, mean(xBounds), yBase + 0.08, sprintf('95%% 平台宽度 %.2f°', diff(xBounds)), ...
-            'Color', p.muted, 'FontName', p.font, 'FontSize', 7.0, ...
-            'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom');
-    end
-    xlabel(ax, 'θ (°)，固定 tᵉ = tᵉ*', 'FontName', p.font, 'FontSize', 7.2);
-    ylabel(ax, 'T (s)', 'FontName', p.font, 'FontSize', 7.2);
-    styleAxes(ax, p, true);
-    panelLabel(ax, 'b', p, [-0.13, 1.08]);
-
-    ax = axes(fig, 'Position', [0.565, 0.115, 0.370, 0.265]);
-    hold(ax, 'on');
-    plot(ax, timeSliceX, timeSliceY, '-', 'Color', p.secondary, 'LineWidth', 1.40);
-    yline(ax, plateau, ':', 'Color', p.ink, 'LineWidth', 0.75);
-    xline(ax, optimumTime, '--', 'Color', p.accent, 'LineWidth', 0.90);
-    scatter(ax, optimumTime, optimumDuration, 42, 'p', 'filled', ...
-        'MarkerFaceColor', p.accent, 'MarkerEdgeColor', p.paper, 'LineWidth', 0.55);
-    high = timeSliceY >= plateau;
-    if any(high)
-        xBounds = [timeSliceX(find(high, 1, 'first')), timeSliceX(find(high, 1, 'last'))];
-        yBase = min(timeSliceY) + 0.06 * ...
-            (max(timeSliceY) - min(timeSliceY));
-        plot(ax, xBounds, [yBase, yBase], '-', 'Color', p.muted, 'LineWidth', 0.9);
-        scatter(ax, xBounds, [yBase, yBase], 18, '|', 'MarkerEdgeColor', p.muted, ...
-            'LineWidth', 0.9);
-        text(ax, mean(xBounds), yBase + 0.08, sprintf('95%% 平台宽度 %.3f s', diff(xBounds)), ...
-            'Color', p.muted, 'FontName', p.font, 'FontSize', 7.0, ...
-            'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom');
-    end
-    xlabel(ax, 'tᵉ (s)，固定 θ = θ*', 'FontName', p.font, 'FontSize', 7.2);
-    ylabel(ax, 'T (s)', 'FontName', p.font, 'FontSize', 7.2);
-    styleAxes(ax, p, true);
-    panelLabel(ax, 'c', p, [-0.13, 1.08]);
 
     % The manuscript-size export must remain readable without enlargement.
     fontObjects = findall(fig, '-property', 'FontSize');
@@ -682,7 +622,7 @@ function renderQ34Seeds(record, outputDir, p)
     panelLabel(ax, 'b', p, [-0.18, 1.06]);
 
     ax = axes(fig, 'Position', [0.735, 0.15, 0.235, 0.32]);
-    endpointDots(ax, q4, true, p, '问题四', p.wine);
+    endpointDots(ax, q4, true, p, '问题四', p.secondary);
     xlabel(ax, '相对中位数偏差 (ms)', 'FontName', p.font, 'FontSize', 7.2);
     panelLabel(ax, 'c', p, [-0.18, 1.06]);
 
@@ -961,7 +901,7 @@ function map = mutedDurationMap(count)
     % offering more tonal separation than a near-grey ramp.  Ochre remains
     % reserved for the optimum marker and therefore never enters the map.
     anchors = [ ...
-        hexColor('#F4F5F1'); ...
+        hexColor('#FFFFFF'); ...
         hexColor('#D8E2E1'); ...
         hexColor('#B7CFCC'); ...
         hexColor('#89AAA9'); ...

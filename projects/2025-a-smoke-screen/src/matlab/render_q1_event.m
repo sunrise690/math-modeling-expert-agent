@@ -45,22 +45,22 @@ assert(abs(exitState.distance - smokeRadius) < 1e-6, ...
 
 % Restrained editorial palette. Object identity is carried primarily by
 % marker/line style; colour is limited to cool structure and warm emphasis.
-paper = hexColor('#FAFAF7');
+paper = hexColor('#FFFFFF');
 ink = hexColor('#1E2A32');
 muted = hexColor('#647078');
 gridColor = hexColor('#D6DEE1');
 primary = hexColor('#2F6079');
-secondary = hexColor('#3D7A70');
+  secondary = hexColor('#59636A');
 warm = hexColor('#B5782F');
-wine = hexColor('#8B4E5A');
+  wine = hexColor('#8B4E5A');
 
 missileColor = ink;
 droneColor = primary;
 bombColor = muted;
-smoke = secondary;
-smokeLight = tintColor(secondary, paper, 0.16);
+  smoke = primary;
+  smokeLight = tintColor(primary, paper, 0.16);
 sightlineColor = muted;
-targetColor = warm;
+  targetColor = ink;
 fontName = 'Microsoft YaHei';
 
 fig = figure( ...
@@ -177,13 +177,13 @@ xMax = exitTime + 0.70;
 plot(axTime, [xMin, xMax], [0, 0], '-', 'Color', gridColor, ...
     'LineWidth', 2.0);
 patch(axTime, [entryTime, exitTime, exitTime, entryTime], ...
-    [-0.13, -0.13, 0.13, 0.13], tintColor(secondary, paper, 0.12), ...
-    'EdgeColor', secondary, 'LineStyle', '--', 'LineWidth', 0.75, ...
+      [-0.13, -0.13, 0.13, 0.13], tintColor(primary, paper, 0.12), ...
+      'EdgeColor', primary, 'LineStyle', '--', 'LineWidth', 0.75, ...
     'FaceAlpha', 0.96);
 
 eventTimes = [releaseTime, explosionTime, entryTime, switchTime, exitTime];
 eventNames = {'投放', '起爆', '进入', '端点切换', '退出'};
-eventColors = [primary; warm; secondary; wine; primary];
+  eventColors = [ink; warm; primary; muted; ink];
 eventMarkers = {'d', 'o', '^', 's', 'v'};
 eventSizes = [36, 46, 42, 34, 42];
 labelX = [releaseTime + 0.24, explosionTime, entryTime - 0.18, ...
@@ -208,7 +208,7 @@ end
 
 text(axTime, (entryTime + exitTime) / 2, 0, ...
     sprintf('%.4f s', exitTime - entryTime), ...
-    'Color', secondary, 'BackgroundColor', paper, 'Margin', 0.8, ...
+      'Color', primary, 'BackgroundColor', paper, 'Margin', 0.8, ...
     'FontName', fontName, 'FontSize', 7.0, ...
     'FontWeight', 'bold', 'HorizontalAlignment', 'center', ...
     'VerticalAlignment', 'middle');

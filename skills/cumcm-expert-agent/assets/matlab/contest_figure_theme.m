@@ -1,44 +1,50 @@
 function T = contest_figure_theme()
-%CONTEST_FIGURE_THEME Restrained semantic theme for contest-paper figures.
-% Visual hierarchy comes from whitespace, value, line style and markers;
-% colour is a sparse redundant cue, never the primary differentiator.
+%CONTEST_FIGURE_THEME Paper-first semantic theme with a hard colour budget.
+% Use neutrals, one primary hue and at most one chosen accent hue.  Visual
+% hierarchy comes from position, value, line style, markers and labels.
 
 T.paper = hexrgb('#FAFAF7');
 T.ink = hexrgb('#1E2A32');
 T.muted = hexrgb('#647078');
 T.grid = hexrgb('#D6DEE1');
-T.panel = hexrgb('#F1F4F2');
+T.panel = T.paper;
+T.referenceBand = tint(T.muted, T.paper, 0.90);
 
-T.blue = hexrgb('#2F6079');
-T.sky = hexrgb('#7795A2');
-T.teal = hexrgb('#3D7A70');
-T.amber = hexrgb('#B5782F');
-T.coral = hexrgb('#8B4E5A');
-T.plum = hexrgb('#73677F');
-T.violet = hexrgb('#665F82');
+T.primary = hexrgb('#2F6079');
+T.accentWarm = hexrgb('#B5782F');
+T.accentRisk = hexrgb('#8B4E5A');
 
-% Entity identity defaults to one neutral colour plus redundant line/marker
-% coding.  This is safe when event/risk colours share the same panel.
+% Compatibility aliases expose semantic colours, not an entity palette.
+T.blue = T.primary;
+T.amber = T.accentWarm;
+T.coral = T.accentRisk;
+
+T.colorBudget.neutralColors = [T.paper; T.ink; T.muted; T.grid; T.referenceBand];
+T.colorBudget.primaryHue = T.primary;
+T.colorBudget.accentChoices = [T.accentWarm; T.accentRisk];
+T.colorBudget.maxChromaticHuesPerFigure = 2;
+T.colorBudget.maxChromaticHuesPerPanel = 2;
+T.colorBudget.maxChromaticHuesWithWaiver = 5;
+T.colorBudget.maxAccentHues = 1;
+T.colorBudget.thirdHueRequiresWaiver = true;
+T.colorBudget.readyMadeEntityPalette = false;
+T.assertColorBudget = @(chromaticHueCount, accentHueCount, hasWaiver) ...
+    assertColorBudget(chromaticHueCount, accentHueCount, hasWaiver, ...
+    T.colorBudget.maxChromaticHuesPerFigure, ...
+    T.colorBudget.maxChromaticHuesWithWaiver, ...
+    T.colorBudget.maxAccentHues);
+
+T.grayscaleGate.required = true;
+T.grayscaleGate.requireFinalPdfReview = true;
+T.grayscaleGate.requireRedundantEncoding = true;
+T.assertGrayscaleEncoding = @(lineStyles, markers, directLabels) ...
+    assertGrayscaleEncoding(lineStyles, markers, directLabels);
+
+% Entity identity is deliberately neutral.  Do not assign a pastel colour
+% to each drone, missile, random seed or algorithm merely for variety.
 T.entityNeutral = repmat(T.muted, 7, 1);
 T.entityLineStyle = {'-', '--', '-.', ':', '-', '--', '-.'};
 T.entityMarker = {'o', 's', '^', 'd', 'v', '>', '<'};
-
-% A restrained 7-colour category palette is available only after an
-% entity_color_waiver passes.  Never use it in a panel containing event,
-% risk, criterion or threshold semantics.
-T.entityCategorical = [ ...
-    hexrgb('#4F6E7B'); ...
-    hexrgb('#627B73'); ...
-    hexrgb('#7A6F62'); ...
-    hexrgb('#6E687B'); ...
-    hexrgb('#7A626A'); ...
-    hexrgb('#5E7186'); ...
-    hexrgb('#77785D')];
-T.entityColorWaiver.required = true;
-T.entityColorWaiver.minCount = 4;
-T.entityColorWaiver.maxCount = 7;
-T.entityColorWaiver.requiresRedundantEncoding = true;
-T.entityColorWaiver.disallowReservedSemanticCoexistence = true;
 
 T.drone = T.entityNeutral(1:5, :);
 T.droneLineStyle = T.entityLineStyle(1:5);
@@ -46,50 +52,36 @@ T.droneMarker = T.entityMarker(1:5);
 T.missile = T.entityNeutral(1:3, :);
 T.missileLineStyle = T.entityLineStyle(1:3);
 T.missileMarker = T.entityMarker(1:3);
-T.criterion = [T.blue; T.coral];
-T.series = [T.blue; T.sky];
+T.series = [T.primary; T.muted];
+T.criterion = [T.primary; T.accentRisk];
 
-% Stable event mappings, with marker-shape redundancy for grayscale output.
+% Stable event mappings use at most two chromatic hues in one figure.
 T.event.release.color = T.ink;
 T.event.release.marker = 'd';
-T.event.detonation.color = T.amber;
+T.event.detonation.color = T.accentWarm;
 T.event.detonation.marker = 'o';
-T.event.entry.color = T.teal;
+T.event.entry.color = T.primary;
 T.event.entry.marker = '^';
-T.event.exit.color = T.blue;
+T.event.exit.color = T.primary;
 T.event.exit.marker = 'v';
 
-% Registry used by figure-level waiver/audit checks.  Category colours
-% must not be repurposed as any of these semantic roles.
-T.semanticReserved.names = { ...
-    'release_or_threshold', 'detonation_or_optimum', 'event_entry', ...
-    'exit_or_primary_criterion', 'risk_or_conservative_criterion'};
-T.semanticReserved.colors = [ ...
-    T.event.release.color; ...
-    T.event.detonation.color; ...
-    T.event.entry.color; ...
-    T.event.exit.color; ...
-    T.coral];
-T.entityColorWaiver.paletteSource = 'T.entityCategorical';
-T.entityColorWaiver.reservedSemanticNames = T.semanticReserved.names;
-assertNoExactColorCollision(T.entityCategorical, T.semanticReserved.colors);
+T.primaryLight = tint(T.primary, T.paper, 0.82);
+T.accentWarmLight = tint(T.accentWarm, T.paper, 0.84);
+T.accentRiskLight = tint(T.accentRisk, T.paper, 0.84);
+T.blueLight = T.primaryLight;
+T.amberLight = T.accentWarmLight;
+T.coralLight = T.accentRiskLight;
 
-T.blueLight = tint(T.blue, T.paper, 0.78);
-T.skyLight = tint(T.sky, T.paper, 0.78);
-T.tealLight = tint(T.teal, T.paper, 0.82);
-T.amberLight = tint(T.amber, T.paper, 0.80);
-T.coralLight = tint(T.coral, T.paper, 0.82);
-T.plumLight = tint(T.plum, T.paper, 0.84);
-T.violetLight = tint(T.violet, T.paper, 0.84);
-
-% Low-chroma ordered map for response surfaces; never substitute jet.
+% Single-hue ordered map for response surfaces; never substitute jet.
 T.sequential = anchoredMap([ ...
     hexrgb('#F4F5F1'); ...
-    hexrgb('#D8E2E1'); ...
-    hexrgb('#B7CFCC'); ...
-    hexrgb('#557F87'); ...
+    hexrgb('#DCE4E5'); ...
+    hexrgb('#AEBFC5'); ...
+    hexrgb('#607F8E'); ...
     hexrgb('#294E63')], 256);
-T.diverging = anchoredMap([T.blue; T.paper; T.coral], 257);
+
+% Use only when direction around a meaningful zero is itself the claim.
+T.diverging = anchoredMap([T.primary; T.paper; T.accentRisk], 257);
 T.font = chooseChineseFont();
 end
 
@@ -113,14 +105,53 @@ rgb = [hex2dec(code(1:2)), hex2dec(code(3:4)), hex2dec(code(5:6))] / 255;
 end
 
 
-function assertNoExactColorCollision(categoryColors, reservedColors)
-for categoryIndex = 1:size(categoryColors, 1)
-    channelDistance = max(abs(reservedColors - categoryColors(categoryIndex, :)), [], 2);
-    assert(all(channelDistance > 1e-12), ...
-        'contest_figure_theme:SemanticColorCollision', ...
-        ['An entity category colour collides with a reserved semantic ', ...
-         'colour. Update entityCategorical before rendering figures.']);
+function passed = assertColorBudget(chromaticHueCount, accentHueCount, ...
+        hasWaiver, defaultLimit, waiverLimit, accentLimit)
+validateattributes(chromaticHueCount, {'numeric'}, ...
+    {'scalar', 'integer', 'nonnegative'});
+validateattributes(accentHueCount, {'numeric'}, ...
+    {'scalar', 'integer', 'nonnegative'});
+assert(islogical(hasWaiver) && isscalar(hasWaiver), ...
+    'contest_figure_theme:InvalidWaiverFlag', ...
+    'hasWaiver must be one logical scalar.');
+if hasWaiver
+    hueLimit = waiverLimit;
+else
+    hueLimit = defaultLimit;
 end
+assert(chromaticHueCount <= hueLimit, ...
+    'contest_figure_theme:ColorBudgetExceeded', ...
+    'The figure exceeds its declared chromatic-hue budget.');
+assert(accentHueCount <= accentLimit, ...
+    'contest_figure_theme:AccentBudgetExceeded', ...
+    'Use at most one accent hue in a figure.');
+passed = true;
+end
+
+
+function passed = assertGrayscaleEncoding(lineStyles, markers, directLabels)
+lineStyles = cellstr(string(lineStyles));
+markers = cellstr(string(markers));
+directLabels = logical(directLabels(:));
+seriesCount = numel(lineStyles);
+assert(numel(markers) == seriesCount && numel(directLabels) == seriesCount, ...
+    'contest_figure_theme:InvalidGrayscaleEncoding', ...
+    'lineStyles, markers and directLabels must describe the same series.');
+for firstIndex = 1:seriesCount
+    for secondIndex = firstIndex + 1:seriesCount
+        hasDifferentLine = ~strcmp(lineStyles{firstIndex}, ...
+            lineStyles{secondIndex});
+        hasDifferentMarker = ~strcmp(markers{firstIndex}, ...
+            markers{secondIndex});
+        bothDirectlyLabelled = directLabels(firstIndex) && ...
+            directLabels(secondIndex);
+        assert(hasDifferentLine || hasDifferentMarker || bothDirectlyLabelled, ...
+            'contest_figure_theme:GrayscaleCollision', ...
+            ['Two series rely on colour alone. Give them different line ', ...
+             'styles/markers or directly label both series.']);
+    end
+end
+passed = true;
 end
 
 

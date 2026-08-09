@@ -45,12 +45,12 @@ assert(abs(sum(diff(intervals, 1, 2)) - sum(overlaps) - unionDuration) < 1e-8, .
 validateHandoff(plans, intervals, 1, 2, payload.model);
 validateHandoff(plans, intervals, 2, 3, payload.model);
 
-C.paper = hexColor('#FAFAF7');
+C.paper = hexColor('#FFFFFF');
 C.ink = hexColor('#1E2A32');
 C.muted = hexColor('#647078');
 C.guide = hexColor('#D6DEE1');
 C.primary = hexColor('#2F6079');
-C.secondary = hexColor('#3D7A70');
+C.secondary = hexColor('#59636A');
 C.warm = hexColor('#B5782F');
 C.wine = hexColor('#8B4E5A');
 C.coolFill = tintColor(C.primary, C.paper, 0.12);
@@ -97,7 +97,7 @@ function drawEventGrid(ax, release, detonate, intervals, xLimits, C, fontName)
 hold(ax, 'on');
 rows = [3, 2, 1];
 lineStyles = {'-', '--', '-.'};
-rowColors = [C.primary; C.secondary; C.wine];
+rowColors = repmat(C.primary, 3, 1);
 
 for k = 1:3
     y = rows(k);
@@ -121,14 +121,14 @@ for k = 1:3
     plot(ax, detonate(k), yDetonate, 'o', 'MarkerSize', 5.2, ...
         'MarkerFaceColor', C.warm, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.7);
     plot(ax, entry, yActive, '^', 'MarkerSize', 5.7, ...
-        'MarkerFaceColor', C.secondary, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.7);
+        'MarkerFaceColor', C.primary, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.7);
     plot(ax, exitTime, yActive, 'v', 'MarkerSize', 5.7, ...
-        'MarkerFaceColor', C.paper, 'MarkerEdgeColor', rowColors(k, :), 'LineWidth', 1.0);
+        'MarkerFaceColor', C.paper, 'MarkerEdgeColor', C.ink, 'LineWidth', 1.0);
 
     labelTime(ax, release(k), yRelease + 0.18, release(k), C.ink, fontName, 'bottom');
     labelTime(ax, detonate(k), yDetonate - 0.18, detonate(k), C.warm, fontName, 'top');
-    labelTime(ax, entry, yActive + 0.19, entry, C.secondary, fontName, 'bottom');
-    labelTime(ax, exitTime, yActive - 0.19, exitTime, rowColors(k, :), fontName, 'top');
+    labelTime(ax, entry, yActive + 0.19, entry, C.primary, fontName, 'bottom');
+    labelTime(ax, exitTime, yActive - 0.19, exitTime, C.ink, fontName, 'top');
 end
 
 text(ax, 0.00, 1.10, 'a', 'Units', 'normalized', ...
@@ -165,7 +165,7 @@ increments = [durations, -overlaps];
 levels = cumsum(increments);
 starts = [0, levels(1:end-1)];
 x = 1:5;
-segmentColors = [C.primary; C.secondary; C.wine; C.warm; C.warm];
+segmentColors = [repmat(C.primary, 3, 1); C.warm; C.warm];
 
 % A bridge chart exposes the set arithmetic without generic filled bars:
 % add the three individual durations, then deduct both positive overlaps.

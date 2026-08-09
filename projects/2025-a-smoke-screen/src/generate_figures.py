@@ -34,7 +34,13 @@ FIGURE_STEMS = (
     "q3_q4_multiseed_stability",
 )
 SUPPORT_FIGURE_STEMS = frozenset(
-    {"search_quality_diagnostics", "q5_per_missile_robustness"}
+    {
+        "q2_multiseed_stability",
+        "search_quality_diagnostics",
+        "q5_per_missile_robustness",
+        "criterion_sensitivity",
+        "q3_q4_multiseed_stability",
+    }
 )
 PAPER_FIGURE_STEMS = frozenset(FIGURE_STEMS) - SUPPORT_FIGURE_STEMS
 MATLAB_SCRIPTS = (

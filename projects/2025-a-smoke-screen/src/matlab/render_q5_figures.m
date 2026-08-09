@@ -326,7 +326,7 @@ function drawUnionEventStrips(ax, q5, plans, shotIndex, C, fontName)
 hold(ax, 'on');
 missiles = {'M1', 'M2', 'M3'};
 rowY = [3, 2, 1];
-rowColors = [C.primary; C.secondary; C.wine];
+    rowColors = repmat(C.primary, 3, 1);
 xMin = 5.5;
 xMax = 42.5;
 for m = 1:3
@@ -346,14 +346,13 @@ for m = 1:3
     idx = find(strcmp({plans.missile_id}, missile));
     for k = 1:numel(idx)
         interval = plans(idx(k)).exact_centerline_intervals(1, :);
-        droneNumber = sscanf(plans(idx(k)).drone_id, 'FY%d');
         xMid = mean(interval);
         plot(ax, [xMid, xMid], [y - 0.16, y + 0.16], '-', ...
-            'Color', C.drone(droneNumber, :), 'LineWidth', 1.1);
+            'Color', C.ink, 'LineWidth', 1.1);
         text(ax, xMid, y + 0.20, sprintf('%d', shotIndex(idx(k))), ...
             'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom', ...
             'FontName', fontName, 'FontSize', 6.8, 'FontWeight', 'bold', ...
-            'Color', C.drone(droneNumber, :), 'Interpreter', 'none');
+            'Color', C.ink, 'Interpreter', 'none');
     end
 
     if size(unionIntervals, 1) > 1
@@ -408,19 +407,6 @@ end
 [~, order] = sort(rawIntervals(:, 1));
 idx = idx(order);
 allIntervals = rawIntervals(order, :);
-
-% Quiet state bands expose the discrete count semantics without turning
-% intervals into long filled bars.
-stateBands = [ ...
-    C.panel; ...
-    mixColor(C.primary, C.paper, 0.018); ...
-    mixColor(C.secondary, C.paper, 0.018)];
-bandEdges = [0.09, 0.45, 0.81, 1.17];
-for level = 1:3
-    patch(ax, [xMin, xMax, xMax, xMin], ...
-        [bandEdges(level), bandEdges(level), bandEdges(level + 1), bandEdges(level + 1)], ...
-        stateBands(level, :), 'EdgeColor', 'none');
-end
 
 % Coverage-count staircase generated only by the discrete event list.
 [stepX, stepN] = eventStep(allIntervals, xMin, xMax);
@@ -607,23 +593,30 @@ end
 
 
 function C = editorialPalette()
-C.paper = hexColor('#FAFAF7');
+C.paper = hexColor('#FFFFFF');
 C.ink = hexColor('#1E2A32');
 C.muted = hexColor('#647078');
 C.grid = hexColor('#D6DEE1');
 C.primary = hexColor('#2F6079');
-C.secondary = hexColor('#3D7A70');
+C.secondary = hexColor('#59636A');
 C.warm = hexColor('#B5782F');
 C.wine = hexColor('#8B4E5A');
-C.violet = hexColor('#665F82');
-C.panel = mixColor(C.grid, C.paper, 0.24);
+C.violet = hexColor('#7F898D');
+C.panel = C.paper;
 C.blueDark = mixColor(C.ink, C.primary, 0.24);
 C.blueSoft = mixColor(C.primary, C.muted, 0.62);
 C.tealSoft = mixColor(C.secondary, C.muted, 0.66);
 C.guide = C.grid;
 C.guideDark = mixColor(C.muted, C.paper, 0.62);
 C.sightline = mixColor(C.muted, C.paper, 0.20);
-C.drone = [C.primary; C.secondary; C.warm; C.wine; C.violet];
+% UAV identity uses a black/grey/single-blue tonal family plus line style and
+% marker shape.  Warm and burgundy are never recycled as category colours.
+C.drone = [ ...
+    C.ink; ...
+    C.primary; ...
+    hexColor('#4B5962'); ...
+    hexColor('#68777E'); ...
+    C.violet];
 C.missile = repmat(C.muted, 3, 1);
 end
 

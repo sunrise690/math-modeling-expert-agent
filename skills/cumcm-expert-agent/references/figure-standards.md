@@ -1,14 +1,73 @@
 # 数模正式图标准
 
+## 零、候选图前置硬门禁
+
+正式图没有数量配额。一个子问题可以没有图，也可以有多张图；不得为了“每问一图”、`Q+2`、版面平衡、图型丰富或展示工作量而造图。提出候选图后，先在主张—证据台账中写 `display_decision`，再决定是否创建 `figure_intent`：
+
+```yaml
+display_decision:
+  candidate_id: q2-optimum-evidence
+  verification_task: 核验最优点是否位于稳定盆地而非孤立尖点
+  visual_relation: 二维参数响应、等值边界与最优点的相对位置
+  simpler_medium_checked: [text, formula, table]
+  information_lost_without_figure: 盆地形状、边界距离和局部平坦度
+  incremental_evidence: 相对既有表格新增最优点附近的空间稳定性证据
+  final_size_readable: true
+  decision: figure              # figure | table | formula | text | support | drop
+```
+
+只有以下各项全部通过，`decision` 才能为 `figure`：
+
+1. **可视关系存在**：读者需要核验空间几何、连续演化、分布、区间交叠、不确定性、网络结构或多变量关系，而不是只读取一个数或一组精确值。
+2. **更简媒介不能无损替代**：若公式、正文或紧凑表格能以相同或更高精度完成核验，则改用该媒介；“图更直观”“更好看”不算信息损失。
+3. **新增证据非零**：相对正文、表格和已有图，候选图必须增加新的关系、尺度、反事实、诊断或不确定性证据；只把同一数值换一种画法则合并或删除。
+4. **最终尺寸可读**：嵌入最终 PDF 后仍能在正常阅读倍率下辨认变量、单位和关键关系；只有全屏放大才可读的图不得进入正文。
+5. **主张可指认**：正文或图注能明确指出读者应核验什么，且图内确有对应图层；“展示结果”“展示过程”不是可检验主张。
+
+每个子图必须单独重复“更简媒介不能替代”和“新增证据非零”两项。任一子图失败就删除或拆到支撑材料，不能用 A/B/C 标签、不同颜色或不同图型为其制造存在理由。流程图同样只在依赖、分支或反馈关系无法用短段落清楚表达时保留。
+
+### 折线图适用性测试
+
+凡用线段连接数据点，必须在 `line_applicability` 中逐项回答；构造线、边界线和解析曲线不属于此测试。以下条件全部满足才能画折线：
+
+1. 横轴或路径顺序具有真实含义，如时间、空间路径、网格尺度、迭代或连续参数；随机种子编号、算法名称、无人机编号和无序方案类别不具有连续顺序。
+2. 相邻点之间的线段代表可解释的连续变化、已知路径或状态保持，而不是制图软件的默认连接。
+3. 点来自同一过程或可配对对象；独立随机运行、独立样本和不同实体的最终值不得连成一条“趋势”。
+4. 缺测、离散事件和不规则采样已如实表达；最佳值只在改进事件发生时变化，应画阶梯而不是平滑斜线。
+5. 结论不依赖两点之间未经计算的插值。只有两个条件时可用哑铃图或配对斜率图，但图注不得把它解释为连续趋势。
+
+测试失败时，按证据改用点图、区间图、ECDF、箱线/小提琴、事件栅格、阶梯、表格或分面。随机种子只比较终值时优先显示全部点和中位数/IQR；若要展示收敛，则每条线必须对应一次真实运行的迭代轨迹，不得按种子编号连接终值。
+
+### 颜色预算
+
+颜色按**色相角色**计数，不按曲线数量计数。纸白、黑、灰和同一色相的明度变化属于中性色/单一色相；单色顺序色图计 1 个色相，发散色图计 2 个色相。
+
+- 一张正式图默认只允许“中性色 + 1 个主色相 + 1 个强调色相”，即整图和任一子图均最多 2 个有彩色相。多面板必须共享这两个色相，不能为每个面板另配一套粉彩色。
+- 颜色只编码论文中稳定的语义角色。实体编号优先用位置、线型、标记和直接标签；不得把蓝、绿、橙、红轮流分给 FY1--FY5、M1--M3 来制造丰富感。
+- 第 3 个及更多色相必须登记 `color_budget_waiver`，说明在分面、直接标签、线型/点型和两色方案下会丢失的具体比较任务。waiver 只允许颜色本身就是核心分类变量且类别需要同屏比较的图；不得用于面板装饰、区分问题编号或复用模板色。超过 5 个需同屏辨认的类别时优先分面或改表。
+- waiver 图仍须有冗余编码，并且不能再叠加风险、最优点、阈值等另一套保留色。连续色条、分类色和事件色不得在同一面板争夺同一视觉通道。
+- 红/绿不得作为唯一的正负或通过/失败编码；大面积淡蓝、淡绿、淡粉底色若不表示数据范围，视为装饰色并计入失败。
+
+`figure_intent` 和 `figure_audit.json` 必须记录实际使用的有彩色相、语义角色、计数和 waiver。若从最终 PDF 取样所得颜色多于声明、同一语义跨图换色，或灰度后无法靠非颜色编码辨认，颜色门禁失败。
+
 ## 先写图的主张
 
-每张图在绘制前以 YAML 或 JSON 定义结构化 `figure_intent`。不得只写一段自由文本；至少包含 `figure_id`、`role`、`claim`、`visual_grammar`、`evidence_signature`、`nearest_figure`、`why_not_merge`、`data_sources`、`axes`、`color_roles`、`entity_color_waiver`、`caption_layers`、`text_location` 和 `exports`。没有主张的图不进入正文；图注声称的最优点、阈值、事件根、并集或不确定性必须在图中真实存在。
+只有 `display_decision.decision: figure` 的候选项才能创建结构化 `figure_intent`。不得只写一段自由文本；至少包含 `figure_id`、`role`、`claim`、`display_decision`、`visual_grammar`、`line_applicability`、`evidence_signature`、`nearest_figure`、`why_not_merge`、`data_sources`、`axes`、`color_budget`、`caption_layers`、`text_location` 和 `exports`。没有主张的图不进入正文；图注声称的最优点、阈值、事件根、并集或不确定性必须在图中真实存在。
 
 ```yaml
 figure_id: fig_q2_landscape
 role: paper                    # paper | support
 claim: 全局最优解位于稳定低值盆地而非孤立尖点
+display_decision:
+  candidate_id: q2-optimum-evidence
+  verification_task: 核验最优点是否位于稳定盆地而非孤立尖点
+  simpler_medium_checked: [text, formula, table]
+  information_lost_without_figure: 盆地形状、边界距离和局部平坦度
+  incremental_evidence: 新增最优点附近的空间稳定性证据
+  final_size_readable: true
+  decision: figure
 visual_grammar: optimization_landscape
+line_applicability: {applies: false, reason: 响应面和等值线不是离散点默认连线}
 evidence_signature:
   sources: [results/q2_grid.csv#sha256:<digest>]
   variables: [objective_s, release_time_s, heading_deg]
@@ -22,8 +81,11 @@ nearest_figure:
 why_not_merge: 两图分别证明可识别性与扰动稳健性；合并后最终栏宽无法读出置信区间
 data_sources: [results/q2_grid.csv]
 axes: {x: release_time_s, y: heading_deg, color: objective_s}
-color_roles: {surface: sequential_value, optimum: event_detonation}
-entity_color_waiver: null
+color_budget:
+  chromatic_hues: [mineral_blue, warm_ochre]
+  hue_count: 2
+  roles: {surface: primary_sequential, optimum: accent}
+  waiver: null
 caption_layers: [surface, optimum, confidence_contour]
 text_location: sec:q2-results
 exports: [figures/q2_landscape.pdf, figures/q2_landscape.png]
@@ -31,7 +93,7 @@ exports: [figures/q2_landscape.pdf, figures/q2_landscape.png]
 
 `visual_grammar` 必须使用全篇统一的规范枚举，例如 `geometry_schematic`、`optimization_landscape`、`event_timeline`、`interval_arithmetic`、`assignment_matrix`、`spatial_trajectory`、`convergence_diagnostic`、`paired_sensitivity`；不得用“图 3 风格”一类临时名称规避比对。`evidence_signature` 由规范化数据源及其内容哈希、变量与单位、样本/场景切片、聚合或变换、直接产出的证据结果组成；字段按键排序后计算 SHA-256。比较重复证据时同时比较规范化字段，不能只比较摘要文字或文件名。
 
-同时写出 panel contract：每个子图提供哪一条不可替代的证据。两个子图若只是在不同外观下重复同一组数值，合并或删除其中一个。多面板图通常控制在 2--3 个子图；超过 3 个时必须证明缩至最终栏宽后每个子图仍可读。
+同时写出 panel contract：每个子图提供哪一条不可替代的证据，并分别记录存在性测试结果。两个子图若只是在不同外观下重复同一组数值，合并或删除其中一个。多面板不是默认版式；只有共享坐标、共享图例或并置比较能降低认知成本时才合并。超过 3 个子图时必须证明每个子图均有独立证据增量，且缩至最终栏宽后仍可读。
 
 完整论文还必须在单图 contract 之上建立按最终 PDF 顺序排列的“主张—视觉语法—证据签名”组合表，并执行跨全文门禁；门禁比较全部 `role: paper` 图，不受是否相邻、是否隔章或是否交替出现影响：
 
@@ -62,7 +124,7 @@ exports: [figures/q2_landscape.pdf, figures/q2_landscape.png]
 - `root_event_zoom`：连续事件函数、阈值线和精化根；传入 `event_times`。
 - `coverage_timeline`：多主体时间窗及自动计算的并集、重叠、内部空档。
 - `optimization_landscape`：二维响应面及 `optimum` 标记，颜色条必须有指标和单位。
-- `convergence_audit`：误差/目标随网格、迭代或种子演化，可设置对数轴与阈值。
+- `convergence_audit`：误差/目标随网格或真实迭代演化，可设置对数轴与阈值；独立种子的终值用点/区间分布，不按种子编号连线。
 - `paired_sensitivity`：基线—扰动配对点与差值，避免被量纲大的问题支配。
 - `trajectory_geometry`：等比例轨迹、关键点、边界/圆/线段等几何图层。
 
@@ -71,7 +133,7 @@ exports: [figures/q2_landscape.pdf, figures/q2_landscape.png]
 
 ## 选择图形
 
-- 时间/路径演化：折线或轨迹图，必要时标注关键事件。
+- 时间/路径演化：先通过折线图适用性测试；连续过程可用折线/轨迹，分段常值状态用阶梯，离散事件用事件栅格或区间。
 - 变量关系：散点 + 合理拟合与不确定性，不用折线制造顺序。
 - 方案比较：排序点图、哑铃图或斜率图，同时显示基线；类别少时不默认用柱状图。
 - 分布与误差：直方图、ECDF、箱线/小提琴图或残差图。
@@ -94,17 +156,29 @@ exports: [figures/q2_landscape.pdf, figures/q2_landscape.png]
 ## MATLAB 语义配色
 
 正式 MATLAB 图先确定整篇的语义映射，再绘制单图。优先复用
-[`assets/matlab/contest_figure_theme.m`](../assets/matlab/contest_figure_theme.m)。国赛论文的层次主要来自线宽、留白、明度、线型、标记与局部标注，不来自增加高饱和颜色。默认采用暖纸白 `#FAFAF7`、深墨 `#1E2A32`、矿物蓝主色 `#2F6079`、矿物绿辅色 `#3D7A70`，暖赭 `#B5782F` 强调关键事件、阈值和最大空档，酒红 `#8B4E5A` 表示风险或离散。大面积底色必须是纸白或 `#F1F4F2` 一类近白中性色。
+[`assets/matlab/contest_figure_theme.m`](../assets/matlab/contest_figure_theme.m)。国赛论文的层次主要来自线宽、留白、明度、线型、标记与局部标注，不来自“低饱和但很多色”的粉彩模板。主题只提供纸白/墨色/灰色、矿物蓝主色，以及暖赭或酒红两种**备选**强调色；一张图至多选其中一种强调色，不能同时把两者当作装饰色。
 
-- 每个单面板最多出现 2 个主数据色；整张多面板图通常不超过 3 个低饱和数据色。若读者第一眼先注意到“配色”而非结论，视为视觉门禁失败。
-- 资源—目标指派、类别空间轨迹等确实需要 4--7 个实体颜色时，必须在 `figure_intent` 和审计 JSON 中登记 `entity_color_waiver`；少于 4 个或多于 7 个实体不得使用此例外。waiver 至少包含 `enabled: true`、`reason`、`entity_count`、`entities`、`palette_source`、`redundant_encoding`、`coexisting_semantic_roles` 和 `reserved_color_conflict: false`。`reason` 必须说明颜色承担的类别比较任务，不能写“更美观”或“更丰富”；每个实体还必须有不同线型、点型或直接标签。
-- `entity_color_waiver` 仅在 `coexisting_semantic_roles: []` 时有效。同一面板一旦出现释放、起爆、进入、退出、风险、主/保守评分或阈值等保留语义，禁止再使用 4--7 色实体类别板；实体统一改用 `T.entityNeutral`，靠 `T.entityLineStyle`、`T.entityMarker` 与直接标签区分，事件继续使用 `T.event.*`。这条规则避免类别色与事件色在同图发生换义或近似色误读。
-- 多实体不再逐实体分配彩虹色。FY1--FY5、M1--M3 默认使用中性蓝灰、实线/虚线/点划线、圆/方/三角等标记和直接标签区分；仅在 waiver 通过且图中没有保留语义色时，才可显式调用 `T.entityCategorical`。不得把 `T.blue`、`T.teal`、`T.amber`、`T.coral` 或 `T.ink` 当作实体编号色。
-- 事件跨图固定：释放=深墨菱形，起爆=暖赭圆，进入=青灰上三角，退出=蓝灰下三角。颜色只是冗余编码，形状与文字必须独立可辨。
-- 口径跨图固定：主评分为蓝灰实线圆点，保守审计为酒红虚线方点，阈值为深墨点划线。
-- 连续值使用近白—浅蓝灰—青灰—深蓝灰的单调色图；最优点另用暖赭标记。禁用 `jet`、彩虹、霓虹黄绿和大跨度紫—绿—黄组合。
-- 面板标题、卡片头、状态带与区间填充不得使用整块饱和色；改用近白填充配窄色条、边线或小标记。
-- 不用颜色单独承担结论；同时固定线型、标记和直接标注，确保灰度输出可辨。
+- 默认实体全部使用 `T.entityNeutral`，靠 `T.entityLineStyle`、`T.entityMarker` 与直接标签区分。主题不提供现成 5--7 色实体板，防止把实体编号自动映射成一排柔和色。
+- 事件跨图固定：释放用深墨菱形，起爆用所选强调色圆点，进入与退出共用矿物蓝并分别使用上/下三角。颜色是冗余编码，形状与文字必须独立可辨。
+- 口径比较固定：主评分为矿物蓝实线圆点；保守或风险口径才选酒红虚线方点。若图中已经使用暖赭表示最优点/事件，则不得再加入酒红，除非 `color_budget_waiver` 通过。
+- 连续值优先使用同一主色相的单调顺序色图；最优点可用所选强调色。仅当零点两侧方向本身是结论时使用两色发散图。禁用 `jet`、彩虹、霓虹黄绿和大跨度紫—绿—黄组合。
+- 坐标区与面板默认保持纸白。只有置信区间、容差区、可行域等数据语义范围才能填浅色；不得为每个子图铺不同淡色底、卡片头或状态带。
+- MATLAB 脚本在导出前统计实际有彩色相并调用 `T.assertColorBudget(hueCount, accentCount, hasWaiver)`；同时调用 `T.assertGrayscaleEncoding(lineStyles, markers, directLabels)` 检查每对序列都有非颜色冗余编码。任一断言失败不得导出正式图；通过后仍须生成灰度版并在最终 PDF 尺寸下人工复核。超预算时先删色、改线型/点型或分面，不得仅把颜色调淡后宣称合格。
+
+## 人工论文风格检查
+
+自动 lint 不能替代人工判断。完成排版后，必须对**实际最终 PDF**做一次非自动化视觉检查，并在 `figure_audit.json` 的 `human_paper_style_review` 中记录评阅者、PDF SHA-256、检查时间、结论和具体问题。至少同时查看整篇页面联系表、100% 正常阅读倍率下的关键页和关键图灰度版。
+
+以下各项必须全部为 `PASS`：
+
+1. 页面首先像连续的学术论文，而不是演示文稿、数据驾驶舱、产品报告或“证据海报”；标题、图、表与正文形成普通论文层级。
+2. 没有重复的圆角容器、卡片头、状态条、图标、胶囊标签、渐变背景、每面板一色或大块粉彩底色；非数据边框和背景不成为联系表中的第一视觉层。
+3. 每张图和每个子图都能说出独立的核验任务；仅为填满页面、对齐网格或展示工作量的面板已经删除。
+4. 折线、颜色和坐标尺度均通过对应硬门禁；图注不靠“蓝线/红点”才能理解，灰度下仍可辨。
+5. 图嵌入正文后仍可读，且相邻两页没有机械重复同一 3 面板模板、同一粉彩配色或相同装饰结构。
+6. 附录中的代码、表格和复现证据保持论文排版，不是整页截图墙；内部审计联系表、哈希清单和 UI 预览不得回流正文或附录。
+
+任一项失败就回到媒介选择、布局或绘图脚本修改。不得用“低饱和”“风格统一”“信息量大”覆盖人工风格否决。
 
 ## 视觉迭代门禁
 
@@ -119,12 +193,13 @@ exports: [figures/q2_landscape.pdf, figures/q2_landscape.png]
 7. 在最终 PDF 页面而非单张 PNG 中检查视觉质量；单图可读但嵌入正文后文字小于 7 pt、剖面过窄或标签相撞，仍判为失败。
 8. 将“正文正式图”和“支撑诊断图”分开管理。未进入正文、与现有图重复或只有开发统计意义的图不得混入正式图清单。
 9. 检查图题与实际面板数量一致，A/B/C 的每个说明都必须对应真实子图；更改布局后同步改正文、图题和图清单。
+10. 逐图复核存在性、折线适用性和颜色预算，并完成 `human_paper_style_review`；任何自动审计通过都不能覆盖人工 `FAIL`。
 
 每轮门禁还必须生成可追溯审计包，默认置于 `support/figure-audit/`：
 
-- `figure-contact-sheet.png`：只使用本轮正式导出文件，按最终 PDF 的 `paper_order` 排列，并在缩略图下标出 `figure_id`、`visual_grammar` 和主张短句。
+- `figure-contact-sheet.png`：只使用本轮正式导出文件，按最终 PDF 的 `paper_order` 排列，并在缩略图下标出 `figure_id`、`visual_grammar` 和主张短句；它只用于内部审计，不进入论文正文或附录。
 - `figure-contact-sheet-gray.png`：与彩色联系表同尺寸、同顺序、同源文件的灰度版；不得另行手工调整图层。
-- `figure_audit.json`：至少记录 `schema_version`、`paper_order`、`figures[]`、`contact_sheets`、`manuscript`、`status` 和 `reviewed_at`。每个 `figures[]` 条目必须包含 `figure_id`、`role`、`visual_grammar`、规范化 `evidence_signature` 及其 SHA-256、`nearest_figure`、`why_not_merge`、`color_roles`、`entity_color_waiver`，以及每个 PNG/PDF/SVG 的相对路径和 SHA-256；两张联系表与最终论文 PDF 也必须记录路径和 SHA-256。
+- `figure_audit.json`：至少记录 `schema_version`、`paper_order`、`figures[]`、`contact_sheets`、`manuscript`、`human_paper_style_review`、`status` 和 `reviewed_at`。每个 `figures[]` 条目必须包含 `figure_id`、`role`、`display_decision`、`visual_grammar`、`line_applicability`、规范化 `evidence_signature` 及其 SHA-256、`nearest_figure`、`why_not_merge`、`color_budget`、panel contract，以及每个 PNG/PDF/SVG 的相对路径和 SHA-256；两张联系表与最终论文 PDF 也必须记录路径和 SHA-256。
 - `figure_audit.json.sha256`：记录审计 JSON 自身的 SHA-256。`paper_order` 同时计算规范化列表哈希，保证联系表顺序与正文顺序一致。
 
 只要正式图文件、`paper_order`、联系表或最终 PDF 任一哈希变化，既有审计立即视为 `stale`，必须从当前导出物重建联系表、重算全部哈希并重新执行跨全文重复语法/证据门禁；不得手改 JSON 的 `status: pass`。

@@ -35,11 +35,9 @@ fig = figure('Visible', 'off', 'Color', C.paper, 'Renderer', 'painters', ...
     'Units', 'inches', 'Position', [0.5, 0.5, 6.20, 3.70], ...
     'PaperPositionMode', 'auto');
 layout = tiledlayout(fig, 2, 3, 'TileSpacing', 'compact', 'Padding', 'compact');
-colors = [C.primary; C.secondary; C.blueDark];
+colors = [C.ink; C.muted; C.primary];
 questionStyles = {'-', '--', '-.'};
 questionMarkers = {'o', 's', '^'};
-stageFills = [C.panel; mixColor(C.primary, C.paper, 0.025); ...
-    mixColor(C.secondary, C.paper, 0.025)];
 
 for k = 1:3
     ax = nexttile(layout, k);
@@ -48,11 +46,6 @@ for k = 1:3
     hold(ax, 'on');
     yPad = max(1.0, 0.09 * (max(ratio) - min(ratio)));
     yLimits = [min(ratio) - yPad, max(ratio) + 5.0 * yPad];
-    for stage = 1:3
-        patch(ax, [stage-0.27, stage+0.27, stage+0.27, stage-0.27], ...
-            [yLimits(1), yLimits(1), yLimits(2), yLimits(2)], ...
-            stageFills(stage, :), 'EdgeColor', 'none');
-    end
     plot(ax, 1:3, ratio, questionStyles{k}, ...
         'Color', colors(k, :), 'LineWidth', 1.55);
     scatter(ax, 1, ratio(1), 34, C.paper, 'o', 'MarkerEdgeColor', colors(k, :), 'LineWidth', 1.1);
@@ -94,13 +87,6 @@ end
 ax = nexttile(layout, 4, [1, 3]);
 hold(ax, 'on');
 stageLabels = {'生成候选', '评估航路', '保留包'};
-stageBandColors = [C.panel; mixColor(C.primary, C.paper, 0.025); ...
-    mixColor(C.secondary, C.paper, 0.025)];
-for col = 1:3
-    patch(ax, [col-0.31, col+0.31, col+0.31, col-0.31], ...
-        [0.46, 0.46, 3.44, 3.44], stageBandColors(col, :), ...
-        'EdgeColor', 'none');
-end
 logCounts = log10(max(counts, 1));
 logRange = max(logCounts(:)) - min(logCounts(:));
 if logRange < eps
@@ -156,23 +142,20 @@ full = [q1.full_cylinder.duration_s, ...
     q35.full_cylinder_secondary_audit.Q5.objective];
 
 fig = figure('Visible', 'off', 'Color', C.paper, 'Renderer', 'painters', ...
-    'Units', 'inches', 'Position', [0.5, 0.5, 6.20, 3.10], ...
+    'Units', 'inches', 'Position', [0.5, 0.5, 6.20, 3.55], ...
     'PaperPositionMode', 'auto');
-layout = tiledlayout(fig, 1, 3, 'TileSpacing', 'compact', 'Padding', 'compact');
-questionColors = [C.blueDark; C.primary; C.secondary; C.blueSoft];
+questionColors = repmat(C.muted, 4, 1);
 questionStyles = {'-', '--', '-.', ':'};
 
-% A: same-strategy retention slopes. Q2 is excluded because it is re-optimized.
-ax = nexttile(layout, 1);
+% A is the hero evidence: the same submitted strategies lose very different
+% fractions under the conservative cylinder criterion.  B and C are compact
+% supporting audits, not three dashboard-style panels of equal weight.
+ax = axes(fig, 'Position', [0.075, 0.145, 0.535, 0.78]);
 hold(ax, 'on');
 indices = [1, 3, 4, 5];
 labels = {'问题一', '问题三', '问题四', '问题五'};
 retentions = 100 * full(indices) ./ center(indices);
 yLimits = [min(retentions) - 5, 104];
-patch(ax, [0.76, 1.24, 1.24, 0.76], [yLimits(1), yLimits(1), yLimits(2), yLimits(2)], ...
-    mixColor(C.primary, C.paper, 0.025), 'EdgeColor', 'none');
-patch(ax, [1.76, 2.24, 2.24, 1.76], [yLimits(1), yLimits(1), yLimits(2), yLimits(2)], ...
-    mixColor(C.wine, C.paper, 0.025), 'EdgeColor', 'none');
 for k = 1:4
     retention = retentions(k);
     plot(ax, [1, 2], [100, retention], questionStyles{k}, ...
@@ -194,10 +177,10 @@ panelLabel(ax, 'a', C, fontName);
 hold(ax, 'off');
 
 % B: Q5 per-missile paired audit.
-ax = nexttile(layout, 2);
+ax = axes(fig, 'Position', [0.705, 0.585, 0.265, 0.33]);
 hold(ax, 'on');
 missiles = {'M1', 'M2', 'M3'};
-missileColors = [C.primary; C.secondary; C.blueDark];
+missileColors = repmat(C.muted, 3, 1);
 missileStyles = {'-', '--', '-.'};
 allValues = [];
 for k = 1:3
@@ -206,10 +189,6 @@ for k = 1:3
     allValues = [allValues, centerValue, fullValue]; %#ok<AGROW>
 end
 yLimits = [min(allValues) - 1.2, max(allValues) + 1.2];
-patch(ax, [0.76, 1.24, 1.24, 0.76], [yLimits(1), yLimits(1), yLimits(2), yLimits(2)], ...
-    mixColor(C.primary, C.paper, 0.025), 'EdgeColor', 'none');
-patch(ax, [1.76, 2.24, 2.24, 1.76], [yLimits(1), yLimits(1), yLimits(2), yLimits(2)], ...
-    mixColor(C.wine, C.paper, 0.025), 'EdgeColor', 'none');
 for k = 1:3
     centerValue = q35.results.Q5.exact_centerline_duration_by_missile.(missiles{k});
     fullValue = q35.full_cylinder_secondary_audit.Q5.duration_by_missile.(missiles{k});
@@ -224,7 +203,7 @@ for k = 1:3
         'FontName', fontName, 'FontSize', 7.0, 'Color', missileColors(k, :), ...
         'VerticalAlignment', 'middle');
 end
-xlim(ax, [0.82, 2.70]);
+xlim(ax, [0.82, 2.82]);
 ylim(ax, yLimits);
 set(ax, 'XTick', [1, 2], 'XTickLabel', {'中心判据', '圆柱判据'});
 ylabel(ax, '问题五分导弹并集 / s', 'FontName', fontName);
@@ -233,14 +212,10 @@ panelLabel(ax, 'b', C, fontName);
 hold(ax, 'off');
 
 % C: Q2 uses two independent optimizations and must not be connected.
-ax = nexttile(layout, 3);
+ax = axes(fig, 'Position', [0.705, 0.145, 0.265, 0.30]);
 hold(ax, 'on');
 q2Values = [center(2), full(2)];
 yLimits = [min(q2Values) - 0.18, max(q2Values) + 0.18];
-patch(ax, [0.58, 1.42, 1.42, 0.58], [yLimits(1), yLimits(1), yLimits(2), yLimits(2)], ...
-    mixColor(C.primary, C.paper, 0.025), 'EdgeColor', 'none');
-patch(ax, [1.58, 2.42, 2.42, 1.58], [yLimits(1), yLimits(1), yLimits(2), yLimits(2)], ...
-    mixColor(C.wine, C.paper, 0.025), 'EdgeColor', 'none');
 scatter(ax, 1, q2Values(1), 46, C.primary, 'o', 'filled', ...
     'MarkerEdgeColor', C.paper, 'LineWidth', 0.6);
 scatter(ax, 2, q2Values(2), 48, C.paper, 's', ...
@@ -262,9 +237,9 @@ styleAxis(ax, C, fontName, true);
 panelLabel(ax, 'c', C, fontName);
 hold(ax, 'off');
 
-annotation(fig, 'textbox', [0.105, 0.945, 0.245, 0.040], ...
-    'String', '● 中心视线判据    □ 圆柱整体判据', 'FontName', fontName, ...
-    'FontSize', 6.6, 'Color', C.ink, 'Interpreter', 'none', ...
+annotation(fig, 'textbox', [0.105, 0.947, 0.245, 0.038], ...
+    'String', '● 中心判据    □ 圆柱判据', 'FontName', fontName, ...
+    'FontSize', 7.0, 'Color', C.ink, 'Interpreter', 'none', ...
     'EdgeColor', 'none', 'FitBoxToText', 'off');
 
 exportFigure(fig, outDir, 'criterion_sensitivity', C.paper);
@@ -317,15 +292,15 @@ end
 
 
 function C = palette()
-C.paper = hexColor('#FAFAF7');
+C.paper = hexColor('#FFFFFF');
 C.ink = hexColor('#1E2A32');
 C.muted = hexColor('#647078');
 C.grid = hexColor('#D6DEE1');
 C.primary = hexColor('#2F6079');
-C.secondary = hexColor('#3D7A70');
+C.secondary = hexColor('#59636A');
 C.warm = hexColor('#B5782F');
 C.wine = hexColor('#8B4E5A');
-C.panel = mixColor(C.grid, C.paper, 0.24);
+C.panel = C.paper;
 C.blueDark = mixColor(C.ink, C.primary, 0.24);
 C.blueSoft = mixColor(C.primary, C.muted, 0.62);
 C.guide = C.grid;

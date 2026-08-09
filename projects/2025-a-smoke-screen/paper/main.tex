@@ -393,7 +393,7 @@ a_{ikj}=1&\Longrightarrow t_{ik}^e\leq T_j.
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.96\textwidth]{q1_occlusion_intervals.pdf}
-\caption{\captiontitle{问题一零点邻域的遮蔽裕度与有效区间。}A 给出两种判据的裕度曲线及进入、退出边界，B 表示圆柱整体遮蔽判据相对中心视线判据的进入延迟 $0.0434$ s，C 放大两种判据的共同退出边界。}
+\caption{\captiontitle{问题一零点邻域的遮蔽裕度与连续边界检验。}A 给出两种判据的裕度曲线及进入、退出边界，B 表示圆柱整体遮蔽判据相对中心视线判据的进入延迟 $0.0434$ s，C 放大两种判据的共同退出边界。}
 \label{fig:q1-intervals}
 \end{figure}
 
@@ -418,7 +418,7 @@ a_{ikj}=1&\Longrightarrow t_{ik}^e\leq T_j.
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.96\textwidth]{q2_response_surface.pdf}
-\caption{\captiontitle{问题二目标函数响应面及正交剖面。}速度为 $140$ m/s且即时投放；闭合曲线表示目标值达到该截面最大值 $95\%$ 的等值边界，星形标记为连续精化所得方案。}
+\caption{\captiontitle{问题二目标函数响应面与高值域。}速度为 $140$ m/s且即时投放；闭合曲线表示目标值达到该截面最大值 $95\%$ 的等值边界，星形标记为连续精化所得方案。}
 \label{fig:q2-surface}
 \end{figure}
 
@@ -461,20 +461,13 @@ a_{ikj}=1&\Longrightarrow t_{ik}^e\leq T_j.
 \bm p^e=(17899.129,12.015,1797.507)\ \text{m}.
 \]
 
-最优候选位于速度上界 $v=140$ m/s 和即时投放边界 $t^r=0$。从图\ref{fig:q2-surface}的剖面可见，高值区域沿速度增大方向延伸，并在最优航向附近形成窄带。较大的水平速度使起爆点在有限时间内到达更靠近 M1--目标视线的位置；即时投放则把无人机初始水平速度完整传递给烟幕弹。该解释与局部响应面一致，但不作为目标函数关于速度或投放时刻全局单调的证明。
+最优候选位于速度上界 $v=140$ m/s 和即时投放边界 $t^r=0$。图\ref{fig:q2-surface}的等值结构表明，高值区域在最优航向和起爆时刻附近形成窄带。较大的水平速度使起爆点在有限时间内到达更靠近 M1--目标视线的位置；即时投放则把无人机初始水平速度完整传递给烟幕弹。该解释与局部响应面一致，但不作为目标函数关于速度或投放时刻全局单调的证明。
 
 若以圆柱整体遮蔽时长为独立优化目标，所得候选解位于 $\tau=0$ 的可行域边界，有效时长为 $4.588064$ s。固定 $\tau=0.02$ s 后重新精化，得到 $4.588063$ s，仅减少 $1.96\times10^{-7}$ s。上述结果来自两种判据下分别进行的优化，不能解释为同一投放策略在判据改变前后的时长差异。
 
 \subsection{结果检验}
 
-\textbf{稳定性结论：}8 次独立搜索均得到可行解，连续精化后的最终目标值极差为 $\bm{3.3\times10^{-13}\ \mathrm{s}}$，最大约束违反量为 0。图\ref{fig:q2-multiseed}显示各次试验的迄今最优值缺口、中位数和四分位带。结果表明，在当前参数化、搜索范围和精化流程下，8 次试验得到的最终目标值一致；这一数值一致性不能替代全局最优性证明。
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=0.96\textwidth]{q2_multiseed_stability.pdf}
-\caption{\captiontitle{问题二在 8 组随机种子下的收敛缺口。}灰线表示各次试验的迄今最优值轨迹，蓝线和浅蓝色带分别表示中位数和四分位距（IQR）；8 次试验均可行，最终目标值极差为 $3.3\times10^{-13}$ s。}
-\label{fig:q2-multiseed}
-\end{figure}
+\textbf{稳定性结论：}8 次独立搜索均得到可行解，连续精化后的最终目标值按六位小数均为 $4.832502$ s，极差为 $\bm{3.3\times10^{-13}\ \mathrm{s}}$，最大约束违反量为 0。终值已经可以由这三个统计量完整表达，故不再用种子编号或重复收敛曲线制造额外趋势；完整逐次记录保留在验证文件中。这一数值一致性不能替代全局最优性证明。
 
 \section{问题三：FY1 三弹协同投放}
 
@@ -556,7 +549,7 @@ I_1=[4.807671,11.438782]\ \text{s},\qquad \bm{D_1=6.631110\ \mathrm{s}}.
 I_1^{\mathrm{cyl}}=[4.889896,7.411929]\cup[7.419477,11.438782]\ \text{s},
 \qquad D_1^{\mathrm{cyl}}=6.541338\ \text{s},
 \]
-较中心视线判据下降 $1.35\%$。三次投放均满足至少 $1$ s 的间隔，并通过表\ref{tab:numerical-audit}所列的结果表反算检验。五组随机种子均得到可行解，但最终目标值极差为 $0.9510$ s，表明当前搜索仍受随机初值影响。因此选取五次试验中目标值最大的可行方案，并用连续求根重新计算其有效区间。收敛轨迹与最终结果分布见图\ref{fig:q34-multiseed}。
+较中心视线判据下降 $1.35\%$。三次投放均满足至少 $1$ s 的间隔，并通过表\ref{tab:numerical-audit}所列的结果表反算检验。五组随机种子均得到可行解，但最终目标值极差为 $0.9510$ s，表明当前搜索仍受随机初值影响。因此选取五次试验中目标值最大的可行方案，并用连续求根重新计算其有效区间；五次终值及迭代记录保留在验证文件中，不把独立种子按编号连接为趋势。
 
 \section{问题四：三机单弹协同投放}
 
@@ -623,14 +616,7 @@ g_r=\alpha_{r+1}-\beta_r>0.
 
 \subsection{结果检验}
 
-按圆柱整体遮蔽判据复核后，总时长为 $10.430630$ s，较中心视线判据下降 $33.88\%$。该现象与 FY3 后期烟幕靠近地面的几何特征一致：此时目标圆柱上下边缘对应的最不利视线更难同时进入半径 $10$ m 的烟幕球。方案通过表\ref{tab:numerical-audit}所列的结果表反算检验；五组随机种子均得到可行解，最终目标值极差为 $38$ ms。图\ref{fig:q34-multiseed}显示多数试验停留在相近目标值，仅一组试验取得小幅改进，因此现有结果不能作为全局最优性证明。
-
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=0.98\textwidth]{q3_q4_multiseed_stability.pdf}
-\caption{\captiontitle{问题三和问题四的多种子收敛轨迹及终值分布。}阶梯线按实际改进事件前向保持，右侧分别给出两问的最终目标值及其极差。}
-\label{fig:q34-multiseed}
-\end{figure}
+按圆柱整体遮蔽判据复核后，总时长为 $10.430630$ s，较中心视线判据下降 $33.88\%$。该现象与 FY3 后期烟幕靠近地面的几何特征一致：此时目标圆柱上下边缘对应的最不利视线更难同时进入半径 $10$ m 的烟幕球。方案通过表\ref{tab:numerical-audit}所列的结果表反算检验；五组随机种子均得到可行解，最终目标值极差为 $38$ ms，明显小于问题三的 $0.9510$ s。该差异用终值极差即可核验，完整轨迹留作支撑材料；现有结果仍不能作为全局最优性证明。
 
 \section{问题五：五机多弹多目标协同优化}
 
@@ -752,7 +738,7 @@ FY5&120&130&3$\to$M2&19.977&21.063&2.6383\\
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\textwidth]{q5_xy_strategy.pdf}
-\caption{\captiontitle{问题五投放策略的全局与局部平面几何。}线型和颜色区分无人机，空心菱形和实心圆分别表示投放点与起爆点；右侧为 M1--M3 局部放大图。}
+\caption{\captiontitle{问题五投放策略的全局与局部平面几何。}线型、标记和直接标签区分无人机，空心菱形和实心圆分别表示投放点与起爆点；下方为 M1--M3 局部放大图。}
 \label{fig:q5-xy}
 \end{figure}
 
@@ -786,7 +772,7 @@ M3 & 13.8049 & 11.2263 & 18.68\\
 
 \subsection{结果检验}
 
-相同投放方案按圆柱整体遮蔽判据复核后，三枚导弹的有效遮蔽时长均低于中心视线判据所得结果。图\ref{fig:criterion-sensitivity}同时给出 M1--M3 的配对差异和各问题对遮蔽判据的敏感程度；两种判据下三枚导弹的有效时长排序保持不变。
+相同投放方案按圆柱整体遮蔽判据复核后，三枚导弹的有效遮蔽时长均低于中心视线判据所得结果。表\ref{tab:q5-duration}给出 M1--M3 的配对差异，表\ref{tab:criterion-sensitivity}汇总各问题对遮蔽判据的敏感程度；两种判据下三枚导弹的有效时长排序保持不变。
 
 该方案通过表\ref{tab:numerical-audit}所列的结果表反算、连续边界和全部约束检验。由于尚未构造全局上界，也未穷尽连续航路，本文将其表述为在当前候选航路集下得到的可行方案，不作全局最优性判断。
 
@@ -826,14 +812,25 @@ M3 & 13.8049 & 11.2263 & 18.68\\
 
 \subsection{遮蔽判据敏感性}
 
-图\ref{fig:criterion-sensitivity}比较两种遮蔽判据下的结果。在同一投放策略下，问题一、三、四和五采用圆柱整体遮蔽判据后，目标值分别下降 $3.03\%$、$1.35\%$、$33.88\%$ 和 $22.09\%$。问题二的两个结果分别来自以两种判据为目标的独立优化，因此不能解释为同一策略在判据改变前后的损失。
+表\ref{tab:criterion-sensitivity}比较两种遮蔽判据下的结果。问题一、三、四和五保持投放策略不变，可计算同一方案的时长下降率；问题二则分别以两种判据独立优化，两个目标值不能解释为同一策略的前后损失。
 
-\begin{figure}[!htbp]
+\begin{table}[!htbp]
 \centering
-\includegraphics[width=0.98\textwidth]{criterion_sensitivity.pdf}
-\caption{\captiontitle{两种遮蔽判据下的结果比较。}A 表示问题一、三、四、五在同一策略下的时长保留率，B 表示问题五按导弹分组的配对结果，C 表示问题二在两种判据下分别优化得到的目标值。}
-\label{fig:criterion-sensitivity}
-\end{figure}
+\caption{两种遮蔽判据下的结果比较}
+\label{tab:criterion-sensitivity}
+\small
+\begin{tabular}{ccccc}
+\toprule
+\thead{问题} & \thead{比较方式} & \thead{中心视线/s} & \thead{圆柱整体/s} & \thead{下降率/\%}\\
+\midrule
+一 & 同一策略 & 1.4351 & 1.3916 & 3.03\\
+二 & 分别优化 & 4.8325 & 4.5881 & 不作配对解释\\
+三 & 同一策略 & 6.6311 & 6.5413 & 1.35\\
+四 & 同一策略 & 15.7746 & 10.4306 & 33.88\\
+五 & 同一策略 & 53.0839 & 41.3551 & 22.09\\
+\bottomrule
+\end{tabular}
+\end{table}
 
 上述比较仅反映遮蔽几何判据选择带来的结果差异，不包含风、烟幕浓度衰减或定位误差的影响。圆柱整体遮蔽判据下的结果均不高于中心视线判据所得结果，其中问题四和问题五的时长分别下降 $33.88\%$ 和 $22.09\%$，变化幅度较大。
 
@@ -877,87 +874,151 @@ M3 & 13.8049 & 11.2263 & 18.68\\
 \end{thebibliography}
 
 \clearpage
-\section*{附录 A：复现清单与验证摘要}
-\addcontentsline{toc}{section}{附录 A：复现清单与验证摘要}
+\section*{附录 A：程序文件与复现说明}
+\addcontentsline{toc}{section}{附录 A：程序文件与复现说明}
+
+电子材料以本项目目录为根目录。官方题面和结果表模板保存在 \texttt{source/}，求解程序只将模板副本写入 \texttt{outputs/}，不修改原文件。表~\ref{tab:appendix-file-index} 给出主要程序、核心代码位置及当前文件哈希前缀；其余辅助函数、数据类和测试见对应源文件全文。
 
 \begin{table}[H]
 \centering
-\caption{输入文件、主要程序与输出结果}
+\caption{主要程序文件及核心代码定位}
+\label{tab:appendix-file-index}
 \footnotesize
-\begin{tabularx}{\textwidth}{p{2.0cm}YY}
+\begin{tabular}{p{2.9cm}p{6.0cm}p{3.0cm}p{2.2cm}}
 \toprule
-\thead{类别} & \thead{文件/命令} & \thead{用途}\\
+\thead{用途} & \thead{文件} & \thead{核心行号} & \thead{SHA-256 前缀}\\
 \midrule
-官方输入 & \texttt{source/A题.pdf}，\texttt{source/result1--3.xlsx} & 题面、初始条件与提交字段\\
-正式依赖 & \texttt{requirements-formal.txt} & 锁定生成正式数值产物的 Python 数值依赖\\
-问题一、二 & \texttt{python -B src/solve\_q1\_q2.py} & 连续几何、单弹搜索与两种遮蔽判据计算\\
-多种子试验 & \texttt{validate\_q2\_multiseed.py}，\texttt{validate\_q3\_q4\_multiseed.py} & 问题二 8 组、问题三和四各 5 组随机种子试验\\
-问题三至五 & \texttt{python -B src/solve\_q3\_q5.py --q3-seed 20250810 --q4-seed 20250809 --q5-seed 20250808} & 候选航路、组合搜索、有限状态搜索与连续求根\\
-绘图 & \texttt{src/generate\_figures.py}，\texttt{src/matlab/render\_*.m} & MATLAB 生成 14 组 PDF、PNG 和 SVG 图\\
-附录证据 & \texttt{python -B src/render\_appendix\_evidence.py} & 从正式源码和结果工作簿确定性生成截图及 \texttt{manifest.json}\\
-结果检验 & \texttt{validation/*.json}，\texttt{tests/*.py} & 连续边界、重复试验、结果表反算与约束检验\\
-提交结果 & \texttt{outputs/result1--3.xlsx} & 问题三至问题五的投放方案\\
-\bottomrule
-\end{tabularx}
+\input{../support/appendix-evidence/appendix_file_rows.tex}
+\end{tabular}
 \end{table}
 
 \begin{table}[H]
 \centering
-\caption{正式计算环境与核心验证结果}
+\caption{运行环境与复现命令}
+\label{tab:appendix-commands}
 \footnotesize
 \begin{tabularx}{\textwidth}{p{3.2cm}Y}
 \toprule
-\thead{项目} & \thead{记录值}\\
+\thead{项目} & \thead{环境或命令}\\
 \midrule
-正式运行环境 & Python 3.14.5，NumPy 2.4.6，SciPy 1.18.0，openpyxl 3.1.5；绘图为 MATLAB R2026a\\
-中心视线结果 & 问题一至五依次为 $1.435082$、$4.832502$、$6.631110$、$15.774625$、$53.083939$ s\\
-圆柱整体复核 & 问题一至五依次为 $1.391643$、$4.588064$、$6.541338$、$10.430630$、$41.355064$ s\\
-多种子极差 & 问题二 $3.286\times10^{-13}$ s，问题三 $0.950990$ s，问题四 $0.038027$ s；问题五尚无多种子证据\\
-结果表回读 & 最大坐标、单行时长和目标误差分别为 $5.457\times10^{-12}$ m、$3.241\times10^{-11}$ s、$1.525\times10^{-11}$ s，最大约束违反量为 0\\
+正式数值环境 & CPython 3.14.5，NumPy 2.4.6，SciPy 1.18.0，openpyxl 3.1.5；版本记录见 \texttt{requirements-formal.txt} 与验证 JSON\\
+图件环境 & MATLAB R2026a；入口为 \texttt{python -B src/generate\_figures.py}，底层脚本位于 \texttt{src/matlab/}\\
+问题一、二 & \texttt{python -B src/solve\_q1\_q2.py}\\
+问题三至五 & \texttt{python -B src/solve\_q3\_q5.py --q3-seed 20250810 --q4-seed 20250809 --q5-seed 20250808}\\
+随机性试验 & \texttt{python -B src/validate\_q2\_multiseed.py}；\texttt{python -B src/validate\_q3\_q4\_multiseed.py}\\
+附录生成 & \texttt{python -B src/render\_appendix\_evidence.py}；输出 \texttt{support/appendix-evidence/*.tex} 与 \texttt{manifest.json}\\
+快速核验 & \texttt{python -B src/run\_all.py --quick}\\
+完整核验 & \texttt{python -B src/run\_all.py}；单元测试为 \texttt{python -B -m unittest discover -s tests -v}\\
+论文编译 & 进入 \texttt{paper/} 后执行 \texttt{latexmk -xelatex main.tex}\\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-完整代码与测试文件作为电子材料随附；后续截图仅展示决定性实现。截图清单记录生成器、源文件范围、源文件哈希、规范化内容哈希和图片哈希，源文件或结果表改变后旧截图自动失效。\texttt{validation/q1\_independent.json} 为冻结的独立几何交叉核验产物，不将其宣称为当前一键流程可重生文件。若求解器、结果表或依赖版本发生变化，应重新计算坐标、区间、约束与目标，不得继续引用旧结果。
+\clearpage
+\section*{附录 B：核心程序}
+\addcontentsline{toc}{section}{附录 B：核心程序}
 
-\begin{landscape}
-\section*{附录 B：关键程序截图}
-\addcontentsline{toc}{section}{附录 B：关键程序截图}
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.89\linewidth]{appendix_code_geometry.png}
-\caption{\captiontitle{有限视线几何与 Brent 连续求根的核心代码。}截图从 \texttt{src/geometry\_engine.py} 指定行段逐行生成，保留真实行号、相对路径和 SHA-256 前缀。}
-\label{fig:appendix-code-geometry}
-\end{figure}
-\end{landscape}
+完整源程序随电子材料提交。以下列出直接决定连续时长、硬约束和问题五组合搜索结果的代码；行号和哈希由附录生成器从当前源文件写入，不以图片代替代码。
 
-\begin{landscape}
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.975\linewidth]{appendix_code_optimizer.png}
-\caption{\captiontitle{同航路候选组合与问题五有限状态搜索入口。}左侧显示共享航向、速度的候选筛选，右侧显示可行性声明、诊断记录和候选池入口。}
-\label{fig:appendix-code-optimizer}
-\end{figure}
-\end{landscape}
+\input{../support/appendix-evidence/appendix_code_geometry.tex}
 
-\begin{landscape}
-\section*{附录 C：重要结果数据截图}
-\addcontentsline{toc}{section}{附录 C：重要结果数据截图}
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.89\linewidth]{appendix_data_result12.png}
-\caption{\captiontitle{问题三和问题四的提交工作表截图。}问题三的三行时长之和为 $6.814024$ s，去重并集为 $6.631110$ s；问题四三段互不重叠，和与并集均为 $15.774625$ s。}
-\label{fig:appendix-data-result12}
-\end{figure}
-\end{landscape}
+\clearpage
+\input{../support/appendix-evidence/appendix_code_evaluation.tex}
 
-\begin{landscape}
-\begin{figure}[H]
+\clearpage
+\input{../support/appendix-evidence/appendix_code_q5.tex}
+
+\clearpage
+\section*{附录 C：结果表与校验摘要}
+\addcontentsline{toc}{section}{附录 C：结果表与校验摘要}
+
+表~\ref{tab:appendix-objectives} 汇总两种遮蔽判据下的目标值及现有随机性证据。问题三至问题五均报告为已连续复算的可行方案；问题五没有多种子统计或全局最优性证书。
+
+\begin{table}[H]
 \centering
-\includegraphics[width=0.975\linewidth]{appendix_data_result3.png}
-\caption{\captiontitle{问题五 15 枚烟幕弹的完整提交数据截图。}单行时长之和为 $55.040904$ s，按导弹去重后的总目标为 $53.083939$ s；M1、M2、M3 的并集时长分别为 $22.907800$、$16.371286$、$13.804852$ s。}
-\label{fig:appendix-data-result3}
-\end{figure}
+\caption{五问目标值与重复性复核}
+\label{tab:appendix-objectives}
+\footnotesize
+\begin{tabular}{c c c p{4.2cm} p{3.3cm}}
+\toprule
+\thead{问题} & \thead{中心视线/s} & \thead{圆柱整体/s} & \thead{重复计算} & \thead{结果性质}\\
+\midrule
+\input{../support/appendix-evidence/appendix_objective_rows.tex}
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{输出工作簿行数、单行时长和与并集目标}
+\label{tab:appendix-union-summary}
+\footnotesize
+\begin{tabular}{p{2.6cm}c c c c p{4.0cm}}
+\toprule
+\thead{工作簿} & \thead{问题} & \thead{有效行} & \thead{单行和/s} & \thead{并集/s} & \thead{计时说明}\\
+\midrule
+\input{../support/appendix-evidence/appendix_union_rows.tex}
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{问题三提交表有效记录（坐标单位：m）}
+\label{tab:appendix-result1}
+\scriptsize
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{c c c c c c}
+\toprule
+\thead{弹号} & \thead{航向角/$^\circ$} & \thead{速度/(m/s)} & \thead{投放点 $(x,y,z)$} & \thead{起爆点 $(x,y,z)$} & \thead{单弹时长/s}\\
+\midrule
+\input{../support/appendix-evidence/appendix_result1_rows.tex}
+\end{tabular}}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{问题四提交表有效记录（坐标单位：m）}
+\label{tab:appendix-result2}
+\scriptsize
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{c c c c c c}
+\toprule
+\thead{无人机} & \thead{航向角/$^\circ$} & \thead{速度/(m/s)} & \thead{投放点 $(x,y,z)$} & \thead{起爆点 $(x,y,z)$} & \thead{单弹时长/s}\\
+\midrule
+\input{../support/appendix-evidence/appendix_result2_rows.tex}
+\end{tabular}}
+\end{table}
+
+\clearpage
+\begin{landscape}
+\begin{table}[H]
+\centering
+\caption{问题五提交表的 15 条有效记录（坐标单位：m）}
+\label{tab:appendix-result3}
+\scriptsize
+\renewcommand{\arraystretch}{0.82}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{c c c c c c c c}
+\toprule
+\thead{无人机} & \thead{弹号} & \thead{导弹} & \thead{航向角/$^\circ$} & \thead{速度/(m/s)} & \thead{投放点 $(x,y,z)$} & \thead{起爆点 $(x,y,z)$} & \thead{单弹时长/s}\\
+\midrule
+\input{../support/appendix-evidence/appendix_result3_rows.tex}
+\end{tabular}}
+\end{table}
+
+问题五各单弹时长之和为 $55.040904$ s；按导弹分别合并重叠区间后，M1、M2、M3 的并集时长为 $22.907800$、$16.371286$、$13.804852$ s，总目标为 $53.083939$ s。
+
+\begin{table}[H]
+\centering
+\caption{结果表反算与约束复核}
+\label{tab:appendix-roundtrip}
+\scriptsize
+\begin{tabular}{c c c c c c}
+\toprule
+\thead{硬约束违反量} & \thead{坐标误差/m} & \thead{单行时长误差/s} & \thead{目标值误差/s} & \thead{容差} & \thead{结论}\\
+\midrule
+\input{../support/appendix-evidence/appendix_recheck_rows.tex}
+\end{tabular}
+\end{table}
 \end{landscape}
 
 \end{document}

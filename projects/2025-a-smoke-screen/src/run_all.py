@@ -47,11 +47,15 @@ PAPER_AUDIT_JSON_PATH = VALIDATION_DIR / "paper-quality-audit.json"
 PAPER_AUDIT_PROVENANCE_PATH = SUPPORT_DIR / "paper_audit_provenance.json"
 APPENDIX_EVIDENCE_DIR = SUPPORT_DIR / "appendix-evidence"
 APPENDIX_EVIDENCE_MANIFEST_PATH = APPENDIX_EVIDENCE_DIR / "manifest.json"
+FIGURE_AUDIT_DIR = SUPPORT_DIR / "figure-audit"
+FIGURE_AUDIT_PATH = FIGURE_AUDIT_DIR / "figure_audit.json"
+FIGURE_AUDIT_HASH_PATH = FIGURE_AUDIT_DIR / "figure_audit.json.sha256"
 
 SEED = 20_250_808
 RECOMPUTE_SEEDS = {"Q3": 20_250_810, "Q4": 20_250_809, "Q5": 20_250_808}
 NUMERIC_TOLERANCE = 1.0e-8
 VISUAL_REVIEW_TYPES = {"human_page_by_page", "codex_page_by_page_visual"}
+SUPPORT_FIGURE_IDS = {"F5", "F8", "F11", "F12", "F14"}
 
 
 @dataclass(frozen=True)
@@ -139,7 +143,7 @@ def _record_matches(record: Any, expected: dict[str, Any]) -> bool:
 
 
 def _appendix_evidence_errors() -> list[str]:
-    """Validate the screenshot producer chain without trusting file presence."""
+    """Validate typeset appendix evidence and its non-embedded QA previews."""
 
     if not APPENDIX_EVIDENCE_MANIFEST_PATH.is_file():
         return ["manifest:missing"]
@@ -153,6 +157,23 @@ def _appendix_evidence_errors() -> list[str]:
         errors.append("manifest:schema")
     if manifest.get("status") != "reproducible":
         errors.append("manifest:status")
+
+    policy = manifest.get("appendix_policy", {})
+    if (
+        not isinstance(policy, dict)
+        or int(policy.get("screenshots_embedded_in_paper", -1)) != 0
+        or "searchable" not in str(policy.get("paper_format", "")).lower()
+        or "not embedded" not in str(policy.get("qa_previews", "")).lower()
+    ):
+        errors.append("appendix-policy")
+    if PAPER_TEX_PATH.is_file():
+        paper_tex = PAPER_TEX_PATH.read_text(encoding="utf-8", errors="replace")
+        if re.search(
+            r"\\includegraphics[^\n]*(?:appendix-evidence|appendix_(?:code|data))",
+            paper_tex,
+            flags=re.IGNORECASE,
+        ):
+            errors.append("appendix-policy:embedded-preview")
 
     generator = manifest.get("generator", {})
     if not isinstance(generator, dict):
@@ -202,6 +223,9 @@ def _appendix_evidence_errors() -> list[str]:
             not artifact.is_file()
             or len(expected_hash) != 64
             or _sha256(artifact) != expected_hash
+            or artifact.suffix.lower() != ".svg"
+            or record.get("evidence_type")
+            != "plain_vector_qa_preview_not_embedded_in_paper"
             or int(record.get("width_px", 0)) < 3000
             or int(record.get("height_px", 0)) < 1700
         ):
@@ -223,6 +247,163 @@ def _appendix_evidence_errors() -> list[str]:
                 or not source_record.get("selection")
             ):
                 errors.append(f"source-hash:{source_record.get('path', '?')}")
+
+    latex_fragments = manifest.get("latex_fragments", [])
+    if not isinstance(latex_fragments, list) or len(latex_fragments) < 8:
+        errors.append("latex-fragments:count")
+        latex_fragments = []
+    for record in latex_fragments:
+        if not isinstance(record, dict):
+            errors.append("latex-fragment:record")
+            continue
+        relative = str(record.get("path", ""))
+        fragment = ROOT / relative
+        expected_hash = str(record.get("sha256", ""))
+        if (
+            not fragment.is_file()
+            or fragment.suffix.lower() != ".tex"
+            or len(expected_hash) != 64
+            or _sha256(fragment) != expected_hash
+            or not str(record.get("kind", "")).startswith("searchable_latex_")
+        ):
+            errors.append(f"latex-fragment:{relative or '?'}")
+        sources = record.get("sources", [])
+        if not isinstance(sources, list) or not sources:
+            errors.append(f"latex-fragment-sources:{relative or '?'}")
+            continue
+        for source_record in sources:
+            if not isinstance(source_record, dict):
+                errors.append(f"latex-source-record:{relative or '?'}")
+                continue
+            source_path = ROOT / str(source_record.get("path", ""))
+            source_hash = str(source_record.get("sha256", ""))
+            if (
+                not source_path.is_file()
+                or len(source_hash) != 64
+                or _sha256(source_path) != source_hash
+            ):
+                errors.append(f"latex-source-hash:{source_record.get('path', '?')}")
+    return errors
+
+
+def _figure_audit_errors(figure_manifest: dict[str, Any]) -> list[str]:
+    """Validate the current-PDF color/grayscale contact-sheet review bundle."""
+
+    if not FIGURE_AUDIT_PATH.is_file():
+        return ["audit:missing"]
+    try:
+        audit = _load_json(FIGURE_AUDIT_PATH)
+    except (OSError, ValueError, TypeError) as error:
+        return [f"audit:read:{type(error).__name__}"]
+    errors: list[str] = []
+    if int(audit.get("schema_version", 0)) < 1:
+        errors.append("audit:schema")
+    if audit.get("status") != "pass":
+        errors.append("audit:status")
+
+    generator = audit.get("generator", {})
+    if not isinstance(generator, dict):
+        errors.append("generator:record")
+    else:
+        generator_path = ROOT / str(generator.get("path", ""))
+        generator_hash = str(generator.get("sha256", ""))
+        if (
+            not generator_path.is_file()
+            or len(generator_hash) != 64
+            or _sha256(generator_path) != generator_hash
+            or not generator.get("command")
+        ):
+            errors.append("generator:hash")
+
+    expected_order = [str(item) for item in figure_manifest.get("paper_order", [])]
+    if audit.get("paper_order") != expected_order:
+        errors.append("paper-order")
+    expected_paper_ids = {
+        str(record.get("id"))
+        for record in figure_manifest.get("figures", [])
+        if isinstance(record, dict) and record.get("role") == "paper"
+    }
+    if set(expected_order) != expected_paper_ids or len(expected_order) != len(set(expected_order)):
+        errors.append("paper-role-order")
+
+    manifest_by_id = {
+        str(record.get("id")): record
+        for record in figure_manifest.get("figures", [])
+        if isinstance(record, dict)
+    }
+    audited_figures = audit.get("figures", [])
+    if (
+        not isinstance(audited_figures, list)
+        or [str(record.get("figure_id")) for record in audited_figures if isinstance(record, dict)]
+        != expected_order
+        or len(audited_figures) != len(expected_order)
+    ):
+        errors.append("figures:order")
+        audited_figures = []
+    for audit_record in audited_figures:
+        if not isinstance(audit_record, dict):
+            errors.append("figures:record")
+            continue
+        figure_id = str(audit_record.get("figure_id", ""))
+        manifest_record = manifest_by_id.get(figure_id, {})
+        expected_artifacts = manifest_record.get("sha256", {})
+        if audit_record.get("role") != "paper" or not isinstance(expected_artifacts, dict):
+            errors.append(f"figure:{figure_id or '?'}:role")
+            continue
+        if audit_record.get("artifacts") != expected_artifacts:
+            errors.append(f"figure:{figure_id}:artifacts")
+            continue
+        for relative, expected_hash in expected_artifacts.items():
+            artifact = ROOT / str(relative)
+            if (
+                not artifact.is_file()
+                or len(str(expected_hash)) != 64
+                or _sha256(artifact) != str(expected_hash)
+            ):
+                errors.append(f"figure:{figure_id}:hash:{Path(relative).name}")
+
+    manuscript = audit.get("manuscript", {})
+    if (
+        not isinstance(manuscript, dict)
+        or manuscript.get("path") != "paper/main.pdf"
+        or not PAPER_PDF_PATH.is_file()
+        or manuscript.get("sha256") != _sha256(PAPER_PDF_PATH)
+    ):
+        errors.append("manuscript:hash")
+
+    sheets = audit.get("contact_sheets", {})
+    if not isinstance(sheets, dict):
+        errors.append("contact-sheets:record")
+    else:
+        for name in ("color", "grayscale"):
+            record = sheets.get(name, {})
+            path = ROOT / str(record.get("path", "")) if isinstance(record, dict) else ROOT
+            expected_hash = str(record.get("sha256", "")) if isinstance(record, dict) else ""
+            if (
+                not path.is_file()
+                or path.suffix.lower() != ".png"
+                or len(expected_hash) != 64
+                or _sha256(path) != expected_hash
+            ):
+                errors.append(f"contact-sheet:{name}")
+
+    review = audit.get("human_paper_style_review", {})
+    if (
+        not isinstance(review, dict)
+        or review.get("status") != "PASS"
+        or review.get("review_type") not in VISUAL_REVIEW_TYPES
+        or review.get("reviewed_pdf_sha256") != manuscript.get("sha256")
+    ):
+        errors.append("human-review")
+
+    if not FIGURE_AUDIT_HASH_PATH.is_file():
+        errors.append("audit-hash:missing")
+    else:
+        recorded_hash = FIGURE_AUDIT_HASH_PATH.read_text(
+            encoding="ascii", errors="replace"
+        ).strip().split(maxsplit=1)[0]
+        if recorded_hash != _sha256(FIGURE_AUDIT_PATH):
+            errors.append("audit-hash:mismatch")
     return errors
 
 
@@ -1014,6 +1195,16 @@ def _full_recompute() -> None:
         )
     _write_paper_build_provenance(compile_command)
 
+    figure_audit_result = _run(
+        [sys.executable, "-B", "src/render_figure_audit.py"]
+    )
+    if figure_audit_result.stdout:
+        print(figure_audit_result.stdout.rstrip(), flush=True)
+    if figure_audit_result.returncode != 0:
+        if figure_audit_result.stderr:
+            print(figure_audit_result.stderr.rstrip(), file=sys.stderr, flush=True)
+        raise RuntimeError("最终 PDF 图件联系表与灰度审计包生成失败")
+
     repository_root = ROOT.parents[1]
     audit_command = [
         sys.executable,
@@ -1317,7 +1508,7 @@ def _verify_artifacts(
         figure_id = str(record.get("id", "?"))
         if not required_figure_fields.issubset(record):
             malformed_figures.append(f"{figure_id}:fields")
-        expected_role = "support" if figure_id in {"F8", "F11"} else "paper"
+        expected_role = "support" if figure_id in SUPPORT_FIGURE_IDS else "paper"
         if record.get("role") != expected_role:
             malformed_figures.append(f"{figure_id}:role")
         intent = record.get("figure_intent", {})
@@ -1396,12 +1587,21 @@ def _verify_artifacts(
         "图件清单、文件或质量元数据不完整：" + ", ".join(missing_figures + malformed_figures),
     )
 
+    figure_audit_errors = _figure_audit_errors(figure_manifest)
+    _add_check(
+        checks,
+        "figure-paper-style-audit",
+        not figure_audit_errors,
+        "正文正式图已按最终 PDF 顺序完成彩色/灰度联系表和人工论文风格复核，审计哈希与当前 PDF 一致",
+        "最终 PDF 图件审计缺失或已陈旧：" + ", ".join(figure_audit_errors),
+    )
+
     appendix_errors = _appendix_evidence_errors()
     _add_check(
         checks,
         "appendix-evidence-manifest",
         not appendix_errors,
-        "4 张附录代码/数据截图均由确定性脚本生成，来源范围、源文件哈希、输出哈希与数值断言一致",
+        "附录以可检索源码行号、三线结果表和复算摘要排版；零截图入文，来源范围、哈希与数值断言一致",
         "附录证据链不完整或已陈旧：" + ", ".join(appendix_errors),
     )
     return checks

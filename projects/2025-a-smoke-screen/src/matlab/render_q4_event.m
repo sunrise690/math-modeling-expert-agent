@@ -45,12 +45,12 @@ assert(abs(unionDuration - q4.exact_centerline_objective) < 1e-8, ...
 
 % A colourblind-aware editorial palette. Event type uses shape as well as
 % colour, while UAV identity uses line style, so grayscale remains legible.
-C.paper = hexColor('#FAFAF7');
+C.paper = hexColor('#FFFFFF');
 C.ink = hexColor('#1E2A32');
 C.muted = hexColor('#647078');
 C.guide = hexColor('#D6DEE1');
 C.primary = hexColor('#2F6079');
-C.secondary = hexColor('#3D7A70');
+C.secondary = hexColor('#59636A');
 C.warm = hexColor('#B5782F');
 C.wine = hexColor('#8B4E5A');
 C.activeFill = tintColor(C.primary, C.paper, 0.13);
@@ -98,7 +98,7 @@ function drawEventGrid(ax, release, detonate, intervals, durations, ...
 hold(ax, 'on');
 rows = [3, 2, 1];
 lineStyles = {'-', '--', '-.'};
-rowColors = [C.primary; C.secondary; C.wine];
+rowColors = repmat(C.primary, 3, 1);
 
 for k = 1:3
     y = rows(k);
@@ -124,14 +124,14 @@ for k = 1:3
     plot(ax, detonate(k), yDetonate, 'o', 'MarkerSize', 5.2, ...
         'MarkerFaceColor', C.warm, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.7);
     plot(ax, entry, yActive, '^', 'MarkerSize', 5.7, ...
-        'MarkerFaceColor', C.secondary, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.7);
+        'MarkerFaceColor', C.primary, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.7);
     plot(ax, exitTime, yActive, 'v', 'MarkerSize', 5.7, ...
-        'MarkerFaceColor', C.paper, 'MarkerEdgeColor', C.primary, 'LineWidth', 1.0);
+        'MarkerFaceColor', C.paper, 'MarkerEdgeColor', C.ink, 'LineWidth', 1.0);
 
     labelTime(ax, release(k), yRelease + 0.26, release(k), C.ink, fontName, 'bottom');
     labelTime(ax, detonate(k), yDetonate - 0.18, detonate(k), C.warm, fontName, 'top');
-    labelTime(ax, entry, yActive + 0.12, entry, C.secondary, fontName, 'bottom');
-    labelTime(ax, exitTime, yActive - 0.19, exitTime, C.primary, fontName, 'top');
+    labelTime(ax, entry, yActive + 0.12, entry, C.primary, fontName, 'bottom');
+    labelTime(ax, exitTime, yActive - 0.19, exitTime, C.ink, fontName, 'top');
 
     durationX = intervals(k, 1) + 0.70 * durations(k);
     text(ax, durationX, yActive + 0.30, ...
@@ -170,7 +170,7 @@ end
 function drawGapComposition(ax, intervals, gaps, unionDuration, ...
         xLimits, C, fontName)
 hold(ax, 'on');
-rowColors = [C.primary; C.secondary; C.wine];
+rowColors = repmat(C.primary, 3, 1);
 y = 0.62;
 
 plot(ax, [0, 46], [y, y], '-', 'Color', C.guide, 'LineWidth', 0.85);

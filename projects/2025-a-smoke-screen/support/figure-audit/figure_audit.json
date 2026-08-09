@@ -1,0 +1,379 @@
+{
+  "contact_sheets": {
+    "color": {
+      "path": "support/figure-audit/figure-contact-sheet.png",
+      "sha256": "c44de841b5555e46fe93f9bce9e3f41f646fae5476b8c6382983bf7ef3067d4e"
+    },
+    "grayscale": {
+      "path": "support/figure-audit/figure-contact-sheet-gray.png",
+      "sha256": "0e00bdd7cfb1c6c800ae6d2396e68cb4dbc206b8a584ce41f72eddc2907b6e8f"
+    }
+  },
+  "figures": [
+    {
+      "artifacts": {
+        "figures/finite_sightline_geometry.pdf": "4030dc831886d6f7b14321f704014dc3fd1effe10c0e4d850c8bd1c553beb39f",
+        "figures/finite_sightline_geometry.png": "38e7d8a59c13d55520f79ce312611039ac0a5e59987bd6a45061505513881c3f",
+        "figures/finite_sightline_geometry.svg": "d91855015a77cf73ed9033daafd16b0fbfef91d8001bab3df8595712282d2289"
+      },
+      "claim": "遮蔽由球心到有限线段的距离而非无限直线距离决定。",
+      "color_budget": {
+        "recorded": false
+      },
+      "display_decision": {
+        "decision": "figure"
+      },
+      "evidence_signature": {
+        "data_source": "题面常数与 src/solve_q1_q2.py",
+        "semantic_layers": [
+          "finite_segment",
+          "nearest_point",
+          "smoke_radius",
+          "criterion_margin"
+        ]
+      },
+      "figure_id": "F2",
+      "line_applicability": {
+        "recorded": false
+      },
+      "nearest_figure": null,
+      "panel_contract": [
+        "finite_segment",
+        "nearest_point",
+        "smoke_radius",
+        "criterion_margin"
+      ],
+      "role": "paper",
+      "visual_grammar": "trajectory_geometry",
+      "why_not_merge": null
+    },
+    {
+      "artifacts": {
+        "figures/modeling_workflow.pdf": "b33e348b8ba8183330624543e3938aa45813ddaae81fd134758bf158e6160c95",
+        "figures/modeling_workflow.png": "ee40e2ea3d2fc853a9281b97a7686515f45ced53fa78f95e698899b7d2ada31d",
+        "figures/modeling_workflow.svg": "3b5ecbada27fd48172cc77607189d2fc9f106aca95d82ada2dff1fef73e7a6ac"
+      },
+      "claim": "1.4351 s 有效区间由两个相切根限定，且中途最近点从线段内部切换到导弹端点。",
+      "color_budget": {
+        "recorded": false
+      },
+      "display_decision": {
+        "decision": "figure"
+      },
+      "evidence_signature": {
+        "data_source": "validation/q1_q2_independent.json 与有限视线解析几何",
+        "semantic_layers": [
+          "release",
+          "explosion",
+          "entry_root",
+          "nearest_point_switch",
+          "exit_root",
+          "local_geometry"
+        ]
+      },
+      "figure_id": "F1",
+      "line_applicability": {
+        "recorded": false
+      },
+      "nearest_figure": null,
+      "panel_contract": [
+        "release",
+        "explosion",
+        "entry_root",
+        "nearest_point_switch",
+        "exit_root",
+        "local_geometry"
+      ],
+      "role": "paper",
+      "visual_grammar": "trajectory_event_storyboard",
+      "why_not_merge": null
+    },
+    {
+      "artifacts": {
+        "figures/q1_occlusion_intervals.pdf": "95059bd9d7de80fd40223537e1c8d67e1aa42513377f090ab4474834362e4386",
+        "figures/q1_occlusion_intervals.png": "9ead04549744115ea7aa7068a480e0ae181a565caf966fa70265ef45a3045b38",
+        "figures/q1_occlusion_intervals.svg": "957b07c56aa8463c29f0ea6de1dae2b1d2ae3f281fc79e662fc3a6ead3de8cad"
+      },
+      "claim": "口径差异主要来自进入边界。",
+      "color_budget": {
+        "recorded": false
+      },
+      "display_decision": {
+        "decision": "figure"
+      },
+      "evidence_signature": {
+        "data_source": "validation/q1_q2_independent.json",
+        "semantic_layers": [
+          "zero_crossing",
+          "interval",
+          "entry_delay",
+          "duration_delta"
+        ]
+      },
+      "figure_id": "F3",
+      "line_applicability": {
+        "recorded": false
+      },
+      "nearest_figure": null,
+      "panel_contract": [
+        "zero_crossing",
+        "interval",
+        "entry_delay",
+        "duration_delta"
+      ],
+      "role": "paper",
+      "visual_grammar": "root_event_zoom",
+      "why_not_merge": null
+    },
+    {
+      "artifacts": {
+        "figures/q2_response_surface.pdf": "d22fc72ade4435f25380921500ce841e977cac9bd42a49b557e2d343331d16f6",
+        "figures/q2_response_surface.png": "b413977192a59ca59beac2052add97a4faf0aa7afbe65b4437e9b93a7e4f7114",
+        "figures/q2_response_surface.svg": "51ddf1a986acace49a14926a2ac3327ed03fb2df5e1a3de56db5ec00d545f5ba"
+      },
+      "claim": "目标面具有零平台与狭窄高值区，支持全局候选后连续精化。",
+      "color_budget": {
+        "recorded": false
+      },
+      "display_decision": {
+        "decision": "figure"
+      },
+      "evidence_signature": {
+        "data_source": "src/solve_q1_q2.py 受控二维复算",
+        "semantic_layers": [
+          "response_surface",
+          "optimum",
+          "high_value_band"
+        ]
+      },
+      "figure_id": "F4",
+      "line_applicability": {
+        "recorded": false
+      },
+      "nearest_figure": null,
+      "panel_contract": [
+        "response_surface",
+        "optimum",
+        "high_value_band"
+      ],
+      "role": "paper",
+      "visual_grammar": "optimization_landscape",
+      "why_not_merge": null
+    },
+    {
+      "artifacts": {
+        "figures/q3_interval_union.pdf": "6e9b26084bcbd8179ac492297eb233768b180906e36409e6fd74f72fd2a0ad28",
+        "figures/q3_interval_union.png": "0d515741a663da6fe655ca6a48e7e2bbccbcf5c1e7a587c69b340f98d484468d",
+        "figures/q3_interval_union.svg": "568a20bb521c10211aac58e567b51ac1c929652abd58d328657552a78e45890f"
+      },
+      "claim": "两段短双覆盖消除空窗；单弹时长之和扣除 0.067 s 与 0.115 s 重叠后得到 6.631 s 连续并集。",
+      "color_budget": {
+        "recorded": false
+      },
+      "display_decision": {
+        "decision": "figure"
+      },
+      "evidence_signature": "Q3:three_single_durations-two_pairwise_overlaps=one_union",
+      "figure_id": "F6",
+      "line_applicability": {
+        "recorded": false
+      },
+      "nearest_figure": "F7",
+      "panel_contract": [
+        "release",
+        "detonation",
+        "entry",
+        "exit",
+        "shot_index",
+        "interval_arithmetic",
+        "overlap",
+        "union"
+      ],
+      "role": "paper",
+      "visual_grammar": "event_grid + signed_interval_arithmetic_bridge",
+      "why_not_merge": "F6 证明重叠区间的容斥算术；F7 证明互不重叠区间的活动/空窗组成，所需推断不同。"
+    },
+    {
+      "artifacts": {
+        "figures/q4_temporal_synergy.pdf": "31d64c29f00654c96f96a34e768787add03c3316f3de33e5e6589df8e3784098",
+        "figures/q4_temporal_synergy.png": "d68288a93e17823861627d8928a4f2877ecc4242ccd148419f6f754ab0f2450b",
+        "figures/q4_temporal_synergy.svg": "64da2d350571017cb13a12c968805bb804ba4f58279dcd4d59af0a4c0a241e36"
+      },
+      "claim": "三段互不重叠窗口使并集等于单弹时长之和，两个状态节点间隔直接显示内部空窗。",
+      "color_budget": {
+        "recorded": false
+      },
+      "display_decision": {
+        "decision": "figure"
+      },
+      "evidence_signature": "Q4:three_disjoint_intervals+two_internal_gaps=mission_span",
+      "figure_id": "F7",
+      "line_applicability": {
+        "recorded": false
+      },
+      "nearest_figure": "F6",
+      "panel_contract": [
+        "release",
+        "explosion",
+        "entry",
+        "exit",
+        "active_gap_composition",
+        "gap",
+        "union"
+      ],
+      "role": "paper",
+      "visual_grammar": "event_grid + proportional_active_gap_composition_strip",
+      "why_not_merge": "F7 的证据是互不重叠区间及两个空窗的真实时间组成，不重复 F6 的容斥减法。"
+    },
+    {
+      "artifacts": {
+        "figures/q5_xy_strategy.pdf": "737a1d8e18fb2f4ab970a1f52855b34e8d3c7a6a5e3c525aec1ffffa64132271",
+        "figures/q5_xy_strategy.png": "3fea64bc7d727495b6eda1eec2d217f5059f06f5625882d64445c0ee05edeb22",
+        "figures/q5_xy_strategy.svg": "cb89b8c9036a93db01f357260bbda758ea89f45824f265b96cc8db96ad25ea34"
+      },
+      "claim": "同机三弹共享航向与速度，且投放层与起爆层均被显式绘制。",
+      "color_budget": {
+        "recorded": false
+      },
+      "display_decision": {
+        "decision": "figure"
+      },
+      "evidence_signature": {
+        "data_source": "validation/q3_q5_independent.json",
+        "semantic_layers": [
+          "drone_start",
+          "route",
+          "release_position",
+          "explosion_position",
+          "shot_index",
+          "missile_assignment"
+        ]
+      },
+      "figure_id": "F9",
+      "line_applicability": {
+        "recorded": false
+      },
+      "nearest_figure": null,
+      "panel_contract": [
+        "drone_start",
+        "route",
+        "release_position",
+        "explosion_position",
+        "shot_index",
+        "missile_assignment"
+      ],
+      "role": "paper",
+      "visual_grammar": "trajectory_geometry",
+      "why_not_merge": null
+    },
+    {
+      "artifacts": {
+        "figures/q5_coverage_gantt.pdf": "9a0e182b385f468e62a0bc48c14d8c3e5a07e25f3aae9b9e10b1cc42731f923b",
+        "figures/q5_coverage_gantt.png": "0ef18857b712ae6d3643b6ca2a5d7744d77284620188178f09a0e71485305bc1",
+        "figures/q5_coverage_gantt.svg": "4304246be1cd658a81d845fe7ac4bb22f3bcd1edcfd5d293c9b61d67e0b82190"
+      },
+      "claim": "指派矩阵给出 15 枚烟幕弹的资源归属；区间并集事件带定位每枚导弹的最大内部空窗。",
+      "color_budget": {
+        "recorded": false
+      },
+      "display_decision": {
+        "decision": "figure"
+      },
+      "evidence_signature": "Q5:15_shot_assignment+three_missile_unions+largest_internal_gaps",
+      "figure_id": "F10",
+      "line_applicability": {
+        "recorded": false
+      },
+      "nearest_figure": "F7",
+      "panel_contract": [
+        "shot_index",
+        "missile_group",
+        "entry_event",
+        "exit_event",
+        "assignment_matrix",
+        "union",
+        "largest_gap"
+      ],
+      "role": "paper",
+      "visual_grammar": "resource_target_assignment_matrix + grouped_union_event_strips",
+      "why_not_merge": "F10 同时回答跨五机资源指派与三目标覆盖结构；F7 仅回答单目标三机的时间组成。"
+    },
+    {
+      "artifacts": {
+        "figures/time_step_convergence.pdf": "c80f53cb2125418138a5c21ad4ae2c40c50d601b401db02ca6656d60f3c8de05",
+        "figures/time_step_convergence.png": "bb07d4a82e8ecd68601e50c5d8e2c8d87fbabf46b5dfabcb06f9c23adad77bc3",
+        "figures/time_step_convergence.svg": "687973cc6db01a8af2fb43528132c08ced221411395ee1ae4f9e0387708fade4"
+      },
+      "claim": "根精化消除了把采样分辨率直接当作报告精度的风险。",
+      "color_budget": {
+        "recorded": false
+      },
+      "display_decision": {
+        "decision": "figure"
+      },
+      "evidence_signature": {
+        "data_source": "validation/q1_q2_independent.json 与受控步长复算",
+        "semantic_layers": [
+          "step_size",
+          "absolute_error",
+          "reference_order",
+          "tolerance_band"
+        ]
+      },
+      "figure_id": "F13",
+      "line_applicability": {
+        "recorded": false
+      },
+      "nearest_figure": null,
+      "panel_contract": [
+        "step_size",
+        "absolute_error",
+        "reference_order",
+        "tolerance_band"
+      ],
+      "role": "paper",
+      "visual_grammar": "convergence_audit",
+      "why_not_merge": null
+    }
+  ],
+  "generated_at_utc": "2026-08-09T12:20:29+00:00",
+  "generator": {
+    "command": "python -B src/render_figure_audit.py",
+    "path": "src/render_figure_audit.py",
+    "sha256": "12e25f6f2c3590f47c1c0c91ff827ee22226425fbc239b25fa39cbb4d4ee324f"
+  },
+  "human_paper_style_review": {
+    "required_checks": [
+      "continuous-paper-not-dashboard",
+      "no-decorative-cards-or-pastel-panels",
+      "each-panel-adds-unique-evidence",
+      "line-and-color-gates-pass-in-grayscale",
+      "readable-at-final-pdf-size",
+      "appendix-is-typeset-evidence-not-screenshot-wall"
+    ],
+    "review_type": "codex_page_by_page_visual",
+    "reviewed_at_local": "2026-08-09",
+    "reviewed_pdf_sha256": "1fb055410eb72830157c12892c27b98f5b6a49d262b72a31198cd961077b693e",
+    "reviewer_record": "Codex 主任务逐页视觉检查",
+    "status": "PASS"
+  },
+  "manuscript": {
+    "path": "paper/main.pdf",
+    "sha256": "1fb055410eb72830157c12892c27b98f5b6a49d262b72a31198cd961077b693e"
+  },
+  "paper_order": [
+    "F2",
+    "F1",
+    "F3",
+    "F4",
+    "F6",
+    "F7",
+    "F9",
+    "F10",
+    "F13"
+  ],
+  "paper_order_sha256": "860562718782b8acfbde45ecb35f1c426b6f2a9c4c798d5509dc4425f9d77aec",
+  "schema_version": 1,
+  "scope": "internal QA only; never include contact sheets in the manuscript or appendix",
+  "status": "pass"
+}
