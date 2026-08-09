@@ -2,9 +2,9 @@ function render_q5_figures()
 %RENDER_Q5_FIGURES Render the three Q5 evidence figures in MATLAB.
 %
 % The script reads the independently reproduced Q5 result directly from
-% validation/q3_q5_independent.json.  It intentionally avoids bars and
-% Gantt strips: time coverage is encoded by entry/exit event nodes, event
-% arcs, an event-driven coverage-count staircase, and explicit gap arrows.
+% validation/q3_q5_independent.json.  Allocation is encoded as a labelled
+% UAV--missile matrix, while temporal evidence uses exact union segments and
+% entry/exit markers.  No generic dashboard cards or decorative bars are used.
 
 scriptDir = fileparts(mfilename('fullpath'));
 projectDir = fileparts(fileparts(scriptDir));
@@ -259,38 +259,137 @@ end
 
 
 function renderCoverageEvents(q5, plans, shotIndex, outDir, C, fontName)
-% Event arcs replace conventional Gantt bars.  Each panel discloses the
-% exact entry/exit events and the coverage-count state they induce.
+% The left panel is a resource--target assignment matrix; the right panel
+% is a compact event strip for the verified union of each missile.  This
+% separates allocation evidence from temporal evidence and avoids a third
+% repetition of the coverage-count staircase used in earlier questions.
 fig = figure('Visible', 'off', 'Color', C.paper, 'Renderer', 'painters', ...
-    'Units', 'inches', 'Position', [0.5, 0.5, 6.20, 4.60], ...
+    'Units', 'inches', 'Position', [0.5, 0.5, 6.20, 4.30], ...
     'PaperPositionMode', 'auto');
-ax = [ ...
-    axes(fig, 'Position', [0.105, 0.690, 0.855, 0.205]), ...
-    axes(fig, 'Position', [0.105, 0.395, 0.855, 0.205]), ...
-    axes(fig, 'Position', [0.105, 0.100, 0.855, 0.205])];
-
-missiles = {'M1', 'M2', 'M3'};
-xMin = 5.5;
-xMax = 42.5;
-for m = 1:3
-    drawMissileEvents(ax(m), q5, plans, shotIndex, missiles{m}, ...
-        xMin, xMax, C, fontName, char('a' + m - 1));
-    if m < 3
-        set(ax(m), 'XTickLabel', []);
-    else
-        xlabel(ax(m), '任务时刻 / s', 'FontName', fontName, ...
-            'FontSize', 8.2, 'Color', C.ink);
-    end
-end
-
-annotation(fig, 'textbox', [0.100, 0.942, 0.860, 0.035], ...
-    'String', '▷入  ◁出  |  FY1○  FY2□  FY3△  FY4◇  FY5▽  |  数字=弹序  |  蓝线=n_j(t)  橙色↔=空窗', ...
-    'HorizontalAlignment', 'left', 'VerticalAlignment', 'middle', ...
-    'FontName', fontName, 'FontSize', 7.0, 'Color', C.muted, ...
-    'Interpreter', 'none', 'EdgeColor', 'none', 'FitBoxToText', 'off');
+axMatrix = axes(fig, 'Position', [0.075, 0.155, 0.285, 0.720]);
+axUnion = axes(fig, 'Position', [0.455, 0.155, 0.505, 0.720]);
+drawAllocationMatrix(axMatrix, plans, shotIndex, C, fontName);
+drawUnionEventStrips(axUnion, q5, plans, shotIndex, C, fontName);
 
 exportFigure(fig, outDir, 'q5_coverage_gantt', C.paper);
 close(fig);
+end
+
+
+function drawAllocationMatrix(ax, plans, shotIndex, C, fontName)
+hold(ax, 'on');
+missiles = {'M1', 'M2', 'M3'};
+maxCount = 3;
+for drone = 1:5
+    droneId = sprintf('FY%d', drone);
+    for missile = 1:3
+        mask = strcmp({plans.drone_id}, droneId) & ...
+            strcmp({plans.missile_id}, missiles{missile});
+        indices = find(mask);
+        count = numel(indices);
+        if count == 0
+            fillColor = C.paper;
+            label = '—';
+        else
+            fillColor = mixColor(C.primary, C.paper, 0.16 + 0.18 * count / maxCount);
+            numbers = sort(shotIndex(indices));
+            label = strjoin(arrayfun(@num2str, numbers, 'UniformOutput', false), ',');
+        end
+        y = 6 - drone;
+        rectangle(ax, 'Position', [missile - 0.5, y - 0.5, 1, 1], ...
+            'FaceColor', fillColor, 'EdgeColor', C.grid, 'LineWidth', 0.8);
+        text(ax, missile, y, label, 'HorizontalAlignment', 'center', ...
+            'VerticalAlignment', 'middle', 'FontName', fontName, ...
+            'FontSize', 8.0, 'FontWeight', 'bold', ...
+            'Color', C.ink, 'Interpreter', 'none');
+    end
+end
+
+text(ax, -0.11, 1.07, 'a', 'Units', 'normalized', ...
+    'FontName', 'Arial', 'FontSize', 9.2, 'FontWeight', 'bold', 'Color', C.ink);
+text(ax, 0.50, 1.07, '无人机—导弹指派矩阵', 'Units', 'normalized', ...
+    'HorizontalAlignment', 'center', 'FontName', fontName, ...
+    'FontSize', 8.5, 'FontWeight', 'bold', 'Color', C.ink, 'Interpreter', 'none');
+xlim(ax, [0.5, 3.5]);
+ylim(ax, [0.5, 5.5]);
+set(ax, 'XTick', 1:3, 'XTickLabel', missiles, ...
+    'YTick', 1:5, 'YTickLabel', {'FY5', 'FY4', 'FY3', 'FY2', 'FY1'}, ...
+    'XAxisLocation', 'top', 'FontName', fontName, 'FontSize', 7.5, ...
+    'XColor', C.muted, 'YColor', C.muted, 'TickLength', [0, 0], ...
+    'Color', C.paper, 'Box', 'off');
+pbaspect(ax, [3, 5, 1]);
+hold(ax, 'off');
+end
+
+
+function drawUnionEventStrips(ax, q5, plans, shotIndex, C, fontName)
+hold(ax, 'on');
+missiles = {'M1', 'M2', 'M3'};
+rowY = [3, 2, 1];
+rowColors = [C.primary; C.secondary; C.wine];
+xMin = 5.5;
+xMax = 42.5;
+for m = 1:3
+    y = rowY(m);
+    missile = missiles{m};
+    plot(ax, [xMin, xMax], [y, y], '-', 'Color', C.guide, 'LineWidth', 0.8);
+    unionIntervals = q5.exact_centerline_union.(missile);
+    for k = 1:size(unionIntervals, 1)
+        interval = unionIntervals(k, :);
+        plot(ax, interval, [y, y], '-', 'Color', rowColors(m, :), 'LineWidth', 5.0);
+        plot(ax, interval(1), y, '>', 'MarkerSize', 5.2, ...
+            'MarkerFaceColor', C.paper, 'MarkerEdgeColor', rowColors(m, :), 'LineWidth', 0.9);
+        plot(ax, interval(2), y, '<', 'MarkerSize', 5.2, ...
+            'MarkerFaceColor', rowColors(m, :), 'MarkerEdgeColor', C.paper, 'LineWidth', 0.6);
+    end
+
+    idx = find(strcmp({plans.missile_id}, missile));
+    for k = 1:numel(idx)
+        interval = plans(idx(k)).exact_centerline_intervals(1, :);
+        droneNumber = sscanf(plans(idx(k)).drone_id, 'FY%d');
+        xMid = mean(interval);
+        plot(ax, [xMid, xMid], [y - 0.16, y + 0.16], '-', ...
+            'Color', C.drone(droneNumber, :), 'LineWidth', 1.1);
+        text(ax, xMid, y + 0.20, sprintf('%d', shotIndex(idx(k))), ...
+            'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom', ...
+            'FontName', fontName, 'FontSize', 6.8, 'FontWeight', 'bold', ...
+            'Color', C.drone(droneNumber, :), 'Interpreter', 'none');
+    end
+
+    if size(unionIntervals, 1) > 1
+        gaps = [unionIntervals(1:end-1, 2), unionIntervals(2:end, 1)];
+        [gapLength, gapIndex] = max(gaps(:, 2) - gaps(:, 1));
+        gap = gaps(gapIndex, :);
+        plot(ax, gap, [y - 0.28, y - 0.28], '--', 'Color', C.warm, 'LineWidth', 1.1);
+        text(ax, mean(gap), y - 0.34, sprintf('%.2f s', gapLength), ...
+            'HorizontalAlignment', 'center', 'VerticalAlignment', 'top', ...
+            'FontName', fontName, 'FontSize', 6.9, 'FontWeight', 'bold', ...
+            'Color', C.warm, 'Interpreter', 'none');
+    end
+    duration = q5.exact_centerline_duration_by_missile.(missile);
+    text(ax, xMax + 0.35, y, sprintf('%.3f s', duration), ...
+        'HorizontalAlignment', 'left', 'VerticalAlignment', 'middle', ...
+        'FontName', fontName, 'FontSize', 7.2, 'FontWeight', 'bold', ...
+        'Color', rowColors(m, :), 'Interpreter', 'none');
+end
+
+text(ax, -0.06, 1.07, 'b', 'Units', 'normalized', ...
+    'FontName', 'Arial', 'FontSize', 9.2, 'FontWeight', 'bold', 'Color', C.ink);
+text(ax, 0.50, 1.07, '各导弹的区间并集与进出事件', 'Units', 'normalized', ...
+    'HorizontalAlignment', 'center', 'FontName', fontName, ...
+    'FontSize', 8.5, 'FontWeight', 'bold', 'Color', C.ink, 'Interpreter', 'none');
+xlim(ax, [xMin, xMax + 2.8]);
+ylim(ax, [0.45, 3.55]);
+xlabel(ax, '任务时刻 / s', 'FontName', fontName, 'FontSize', 8.2, 'Color', C.ink);
+set(ax, 'XTick', 5:5:45, 'YTick', [1, 2, 3], 'YTickLabel', {'M3', 'M2', 'M1'}, ...
+    'FontName', fontName, 'FontSize', 7.4, 'TickDir', 'out', ...
+    'TickLength', [0.010, 0.010], 'XColor', C.muted, ...
+    'YColor', C.muted, 'Color', C.paper, 'Box', 'off');
+ax.XGrid = 'on';
+ax.GridColor = C.grid;
+ax.GridAlpha = 0.42;
+ax.LineWidth = 0.65;
+hold(ax, 'off');
 end
 
 
@@ -508,14 +607,15 @@ end
 
 
 function C = editorialPalette()
-C.paper = hexColor('#FFFFFF');
-C.ink = hexColor('#25313A');
-C.muted = hexColor('#66737C');
-C.grid = hexColor('#DCE2E5');
-C.primary = hexColor('#3E6F8F');
-C.secondary = hexColor('#5F8375');
-C.warm = hexColor('#C1844F');
-C.wine = hexColor('#9B5B64');
+C.paper = hexColor('#FAFAF7');
+C.ink = hexColor('#1E2A32');
+C.muted = hexColor('#647078');
+C.grid = hexColor('#D6DEE1');
+C.primary = hexColor('#2F6079');
+C.secondary = hexColor('#3D7A70');
+C.warm = hexColor('#B5782F');
+C.wine = hexColor('#8B4E5A');
+C.violet = hexColor('#665F82');
 C.panel = mixColor(C.grid, C.paper, 0.24);
 C.blueDark = mixColor(C.ink, C.primary, 0.24);
 C.blueSoft = mixColor(C.primary, C.muted, 0.62);
@@ -523,7 +623,7 @@ C.tealSoft = mixColor(C.secondary, C.muted, 0.66);
 C.guide = C.grid;
 C.guideDark = mixColor(C.muted, C.paper, 0.62);
 C.sightline = mixColor(C.muted, C.paper, 0.20);
-C.drone = [C.primary; C.blueDark; C.blueSoft; C.secondary; C.tealSoft];
+C.drone = [C.primary; C.secondary; C.warm; C.wine; C.violet];
 C.missile = repmat(C.muted, 3, 1);
 end
 

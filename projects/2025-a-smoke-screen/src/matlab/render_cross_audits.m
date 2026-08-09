@@ -317,14 +317,14 @@ end
 
 
 function C = palette()
-C.paper = hexColor('#FCFBF7');
-C.ink = hexColor('#25313A');
-C.muted = hexColor('#66737C');
-C.grid = hexColor('#DCE2E5');
-C.primary = hexColor('#3E6F8F');
-C.secondary = hexColor('#5F8375');
-C.warm = hexColor('#C1844F');
-C.wine = hexColor('#9B5B64');
+C.paper = hexColor('#FAFAF7');
+C.ink = hexColor('#1E2A32');
+C.muted = hexColor('#647078');
+C.grid = hexColor('#D6DEE1');
+C.primary = hexColor('#2F6079');
+C.secondary = hexColor('#3D7A70');
+C.warm = hexColor('#B5782F');
+C.wine = hexColor('#8B4E5A');
 C.panel = mixColor(C.grid, C.paper, 0.24);
 C.blueDark = mixColor(C.ink, C.primary, 0.24);
 C.blueSoft = mixColor(C.primary, C.muted, 0.62);

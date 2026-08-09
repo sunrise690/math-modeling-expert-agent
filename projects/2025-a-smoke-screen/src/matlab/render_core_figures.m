@@ -20,17 +20,18 @@ q1Index = find(contains(q1Fields, '9_80'), 1, 'first');
 assert(~isempty(q1Index), 'Q1 g = 9.80 m/s^2 record is missing.');
 q1 = q12.q1.(q1Fields{q1Index});
 
-% Restrained competition-paper palette.  Large areas use near-white tints;
-% saturated warm colour is reserved for the optimum or a decisive event.
-palette.paper = hexColor('#FBFBF8');
-palette.ink = hexColor('#25313A');
-palette.muted = hexColor('#66737C');
-palette.grid = hexColor('#DCE2E5');
-palette.panel = hexColor('#F5F7F6');
-palette.primary = hexColor('#3E6F8F');
-palette.secondary = hexColor('#5F8375');
-palette.accent = hexColor('#C1844F');
-palette.wine = hexColor('#9B5B64');
+% Restrained mineral palette.  Every colour has one semantic role across the
+% paper: blue=primary result, green=alternative criterion, ochre=event or
+% threshold, burgundy=risk/dispersion, grey=guide or individual run.
+palette.paper = hexColor('#FAFAF7');
+palette.ink = hexColor('#1E2A32');
+palette.muted = hexColor('#647078');
+palette.grid = hexColor('#D6DEE1');
+palette.panel = hexColor('#F1F4F2');
+palette.primary = hexColor('#2F6079');
+palette.secondary = hexColor('#3D7A70');
+palette.accent = hexColor('#B5782F');
+palette.wine = hexColor('#8B4E5A');
 palette.primaryLight = blendColor(palette.primary, palette.paper, 0.10);
 palette.secondaryLight = blendColor(palette.secondary, palette.paper, 0.09);
 palette.accentLight = blendColor(palette.accent, palette.paper, 0.09);
@@ -956,16 +957,16 @@ function exportTriple(fig, outputDir, stem, p)
 end
 
 function map = mutedDurationMap(count)
-    % Low-saturation blue-grey anchors with monotone lightness.  The map
-    % communicates order without introducing yellow-green or purple bands;
-    % the warm ochre is therefore reserved for the optimum marker.
+    % A monotone blue-to-petrol map keeps the response surface ordered while
+    % offering more tonal separation than a near-grey ramp.  Ochre remains
+    % reserved for the optimum marker and therefore never enters the map.
     anchors = [ ...
-        hexColor('#F3F5F3'); ...
-        hexColor('#D9E1E2'); ...
-        hexColor('#BCCBCD'); ...
-        hexColor('#91AAB1'); ...
-        hexColor('#667F8C'); ...
-        hexColor('#3E5D70') ...
+        hexColor('#F4F5F1'); ...
+        hexColor('#D8E2E1'); ...
+        hexColor('#B7CFCC'); ...
+        hexColor('#89AAA9'); ...
+        hexColor('#557F87'); ...
+        hexColor('#294E63') ...
     ];
     anchorX = linspace(0, 1, size(anchors, 1));
     sampleX = linspace(0, 1, count);

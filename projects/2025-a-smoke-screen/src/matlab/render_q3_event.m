@@ -45,16 +45,16 @@ assert(abs(sum(diff(intervals, 1, 2)) - sum(overlaps) - unionDuration) < 1e-8, .
 validateHandoff(plans, intervals, 1, 2, payload.model);
 validateHandoff(plans, intervals, 2, 3, payload.model);
 
-C.paper = [1, 1, 1];
-C.ink = hexColor('#25313A');
-C.muted = hexColor('#6C787F');
-C.guide = hexColor('#DDE3E3');
-C.primary = hexColor('#3E6F8F');
-C.secondary = hexColor('#5F8375');
-C.warm = hexColor('#C1844F');
-C.wine = hexColor('#9B5B64');
-C.coolFill = tintColor(C.primary, C.paper, 0.075);
-C.warmFill = tintColor(C.warm, C.paper, 0.105);
+C.paper = hexColor('#FAFAF7');
+C.ink = hexColor('#1E2A32');
+C.muted = hexColor('#647078');
+C.guide = hexColor('#D6DEE1');
+C.primary = hexColor('#2F6079');
+C.secondary = hexColor('#3D7A70');
+C.warm = hexColor('#B5782F');
+C.wine = hexColor('#8B4E5A');
+C.coolFill = tintColor(C.primary, C.paper, 0.12);
+C.warmFill = tintColor(C.warm, C.paper, 0.15);
 
 fontName = chooseChineseFont();
 fig = figure('Visible', 'off', 'Color', C.paper, ...
@@ -62,13 +62,12 @@ fig = figure('Visible', 'off', 'Color', C.paper, ...
     'PaperPositionMode', 'auto');
 
 axEvents = axes(fig, 'Position', [0.105, 0.575, 0.855, 0.325]);
-axCount = axes(fig, 'Position', [0.105, 0.125, 0.855, 0.315]);
+axAccount = axes(fig, 'Position', [0.105, 0.115, 0.855, 0.330]);
 xLimits = [-0.60, 12.05];
 
 drawEventGrid(axEvents, release, detonate, intervals, xLimits, C, fontName);
-drawCoverageCount(axCount, intervals, unionInterval, unionDuration, ...
-    overlaps, xLimits, C, fontName);
-linkaxes([axEvents, axCount], 'x');
+drawIntervalAccounting(axAccount, intervals, unionInterval, unionDuration, ...
+    overlaps, C, fontName);
 
 pngPath = fullfile(outDir, 'q3_interval_union.png');
 pdfPath = fullfile(outDir, 'q3_interval_union.pdf');
@@ -152,6 +151,78 @@ set(ax, 'XTick', 0:2:12, 'XTickLabel', [], ...
     'YColor', C.muted, 'Color', C.paper, 'Box', 'off');
 ax.LineWidth = 0.65;
 ax.XGrid = 'on';
+ax.GridColor = C.guide;
+ax.GridAlpha = 0.50;
+hold(ax, 'off');
+end
+
+
+function drawIntervalAccounting(ax, intervals, unionInterval, unionDuration, ...
+        overlaps, C, fontName)
+hold(ax, 'on');
+durations = diff(intervals, 1, 2).';
+increments = [durations, -overlaps];
+levels = cumsum(increments);
+starts = [0, levels(1:end-1)];
+x = 1:5;
+segmentColors = [C.primary; C.secondary; C.wine; C.warm; C.warm];
+
+% A bridge chart exposes the set arithmetic without generic filled bars:
+% add the three individual durations, then deduct both positive overlaps.
+for k = 1:5
+    plot(ax, [x(k), x(k)], [starts(k), levels(k)], '-', ...
+        'Color', segmentColors(k, :), 'LineWidth', 5.2);
+    plot(ax, x(k), levels(k), 'o', 'MarkerSize', 4.8, ...
+        'MarkerFaceColor', C.paper, 'MarkerEdgeColor', segmentColors(k, :), ...
+        'LineWidth', 0.9);
+    if k < 5
+        plot(ax, [x(k), x(k + 1)], [levels(k), levels(k)], ':', ...
+            'Color', C.guide, 'LineWidth', 0.85);
+    end
+    if increments(k) >= 0
+        valueLabel = sprintf('+%.3f', increments(k));
+        vertical = 'bottom';
+        yLabel = max(starts(k), levels(k)) + 0.12;
+    else
+        valueLabel = sprintf('%.3f', increments(k));
+        vertical = 'top';
+        yLabel = min(starts(k), levels(k)) - 0.12;
+    end
+    text(ax, x(k), yLabel, valueLabel, ...
+        'HorizontalAlignment', 'center', 'VerticalAlignment', vertical, ...
+        'FontName', fontName, 'FontSize', 7.2, 'FontWeight', 'bold', ...
+        'Color', segmentColors(k, :), 'Interpreter', 'none');
+end
+
+plot(ax, [5.65, 5.65], [0, unionDuration], '-', ...
+    'Color', C.ink, 'LineWidth', 6.0);
+plot(ax, 5.65, unionDuration, 'd', 'MarkerSize', 5.4, ...
+    'MarkerFaceColor', C.primary, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.7);
+text(ax, 5.65, unionDuration + 0.12, sprintf('D_1 = %.3f s', unionDuration), ...
+    'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom', ...
+    'FontName', fontName, 'FontSize', 7.5, 'FontWeight', 'bold', ...
+    'Color', C.primary, 'Interpreter', 'tex');
+text(ax, 5.65, -0.20, sprintf('[%.3f, %.3f] s', unionInterval(1), unionInterval(2)), ...
+    'HorizontalAlignment', 'center', 'VerticalAlignment', 'top', ...
+    'FontName', fontName, 'FontSize', 7.0, 'Color', C.muted, 'Interpreter', 'none');
+
+text(ax, 0.00, 1.10, 'b', 'Units', 'normalized', ...
+    'FontName', 'Arial', 'FontSize', 9.2, 'FontWeight', 'bold', 'Color', C.ink);
+text(ax, 0.50, 1.10, '区间算术：单弹时长之和减去两段交叠', ...
+    'Units', 'normalized', 'HorizontalAlignment', 'center', ...
+    'FontName', fontName, 'FontSize', 8.4, 'FontWeight', 'bold', ...
+    'Color', C.ink, 'Interpreter', 'none');
+
+xlim(ax, [0.55, 6.10]);
+ylim(ax, [-0.45, max(levels) + 0.85]);
+ylabel(ax, '累计时长 / s', 'FontName', fontName, 'FontSize', 8.0, 'Color', C.ink);
+set(ax, 'XTick', [1, 2, 3, 4, 5, 5.65], ...
+    'XTickLabel', {'|I_1|', '|I_2|', '|I_3|', '-O_{12}', '-O_{23}', '并集'}, ...
+    'FontName', fontName, 'FontSize', 7.2, 'TickDir', 'out', ...
+    'TickLength', [0.010, 0.010], 'XColor', C.muted, ...
+    'YColor', C.muted, 'Color', C.paper, 'Box', 'off');
+ax.LineWidth = 0.65;
+ax.YGrid = 'on';
 ax.GridColor = C.guide;
 ax.GridAlpha = 0.50;
 hold(ax, 'off');

@@ -45,6 +45,8 @@ PAPER_BUILD_PROVENANCE_PATH = SUPPORT_DIR / "paper_build_provenance.json"
 PAPER_AUDIT_SPEC_PATH = VALIDATION_DIR / "paper_audit_spec.json"
 PAPER_AUDIT_JSON_PATH = VALIDATION_DIR / "paper-quality-audit.json"
 PAPER_AUDIT_PROVENANCE_PATH = SUPPORT_DIR / "paper_audit_provenance.json"
+APPENDIX_EVIDENCE_DIR = SUPPORT_DIR / "appendix-evidence"
+APPENDIX_EVIDENCE_MANIFEST_PATH = APPENDIX_EVIDENCE_DIR / "manifest.json"
 
 SEED = 20_250_808
 RECOMPUTE_SEEDS = {"Q3": 20_250_810, "Q4": 20_250_809, "Q5": 20_250_808}
@@ -110,6 +112,9 @@ def _paper_input_files() -> list[Path]:
         *[path for path in (ROOT / "figures").rglob("*") if path.is_file()],
         *validation_inputs,
         *[path for path in (ROOT / "outputs").glob("*.xlsx") if path.is_file()],
+        ROOT / "src" / "render_appendix_evidence.py",
+        ROOT / "requirements-formal.txt",
+        *[path for path in APPENDIX_EVIDENCE_DIR.rglob("*") if path.is_file()],
     ]
 
 
@@ -131,6 +136,94 @@ def _record_matches(record: Any, expected: dict[str, Any]) -> bool:
     return isinstance(record, dict) and all(
         record.get(key) == value for key, value in expected.items()
     )
+
+
+def _appendix_evidence_errors() -> list[str]:
+    """Validate the screenshot producer chain without trusting file presence."""
+
+    if not APPENDIX_EVIDENCE_MANIFEST_PATH.is_file():
+        return ["manifest:missing"]
+    try:
+        manifest = _load_json(APPENDIX_EVIDENCE_MANIFEST_PATH)
+    except (OSError, ValueError, TypeError) as error:
+        return [f"manifest:read:{type(error).__name__}"]
+
+    errors: list[str] = []
+    if int(manifest.get("schema_version", 0)) < 1:
+        errors.append("manifest:schema")
+    if manifest.get("status") != "reproducible":
+        errors.append("manifest:status")
+
+    generator = manifest.get("generator", {})
+    if not isinstance(generator, dict):
+        errors.append("generator:record")
+    else:
+        for field in ("path", "sha256", "command", "requirements_path", "requirements_sha256"):
+            if not generator.get(field):
+                errors.append(f"generator:{field}")
+        for path_field, hash_field in (
+            ("path", "sha256"),
+            ("requirements_path", "requirements_sha256"),
+        ):
+            source = ROOT / str(generator.get(path_field, ""))
+            expected = str(generator.get(hash_field, ""))
+            if not source.is_file() or len(expected) != 64 or _sha256(source) != expected:
+                errors.append(f"generator:hash:{path_field}")
+
+    source_validation = manifest.get("source_validation", {})
+    if not isinstance(source_validation, dict):
+        errors.append("source-validation:record")
+    else:
+        validation_path = ROOT / str(source_validation.get("path", ""))
+        validation_hash = str(source_validation.get("sha256", ""))
+        if (
+            not validation_path.is_file()
+            or len(validation_hash) != 64
+            or _sha256(validation_path) != validation_hash
+        ):
+            errors.append("source-validation:hash")
+        for group in ("workbook_hash_match", "claim_checks"):
+            checks = source_validation.get(group, {})
+            if not isinstance(checks, dict) or not checks or not all(checks.values()):
+                errors.append(f"source-validation:{group}")
+
+    artifacts = manifest.get("artifacts", [])
+    if not isinstance(artifacts, list) or len(artifacts) < 4:
+        errors.append("artifacts:count")
+        artifacts = []
+    for record in artifacts:
+        if not isinstance(record, dict):
+            errors.append("artifact:record")
+            continue
+        relative = str(record.get("path", ""))
+        artifact = ROOT / relative
+        expected_hash = str(record.get("sha256", ""))
+        if (
+            not artifact.is_file()
+            or len(expected_hash) != 64
+            or _sha256(artifact) != expected_hash
+            or int(record.get("width_px", 0)) < 3000
+            or int(record.get("height_px", 0)) < 1700
+        ):
+            errors.append(f"artifact:{relative or '?'}")
+        sources = record.get("sources", [])
+        if not isinstance(sources, list) or not sources:
+            errors.append(f"artifact-sources:{relative or '?'}")
+            continue
+        for source_record in sources:
+            if not isinstance(source_record, dict):
+                errors.append(f"source-record:{relative or '?'}")
+                continue
+            source_path = ROOT / str(source_record.get("path", ""))
+            source_hash = str(source_record.get("sha256", ""))
+            if (
+                not source_path.is_file()
+                or len(source_hash) != 64
+                or _sha256(source_path) != source_hash
+                or not source_record.get("selection")
+            ):
+                errors.append(f"source-hash:{source_record.get('path', '?')}")
+    return errors
 
 
 def _q5_claim_respects_boundary(claim: Any, disclaimer: Any) -> bool:
@@ -881,7 +974,12 @@ def _full_recompute() -> None:
     q3_q4_validator = ROOT / "src" / "validate_q3_q4_multiseed.py"
     if q3_q4_validator.is_file():
         commands.append([sys.executable, "-B", "src/validate_q3_q4_multiseed.py"])
-    commands.append([sys.executable, "-B", "src/generate_figures.py"])
+    commands.extend(
+        [
+            [sys.executable, "-B", "src/generate_figures.py"],
+            [sys.executable, "-B", "src/render_appendix_evidence.py"],
+        ]
+    )
     for command in commands:
         env_overrides = (
             {"CUMCM_FORCE_MATLAB_FIGURES": "1"}
@@ -952,6 +1050,7 @@ def _load_artifacts() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], d
         Q2_MULTISEED_PATH,
         Q3_Q4_MULTISEED_PATH,
         FIGURE_MANIFEST_PATH,
+        APPENDIX_EVIDENCE_MANIFEST_PATH,
     )
     missing = [path.relative_to(ROOT).as_posix() for path in required if not path.is_file()]
     if missing:
@@ -1295,6 +1394,15 @@ def _verify_artifacts(
         len(figure_records) >= 12 and not missing_figures and not malformed_figures,
         f"{len(figure_records)} 个 MATLAB 证据图均登记主张、语义图层、比较边界、最终字号、哈希及 PNG/PDF/SVG；PNG≥300 dpi，SVG 保留矢量字形",
         "图件清单、文件或质量元数据不完整：" + ", ".join(missing_figures + malformed_figures),
+    )
+
+    appendix_errors = _appendix_evidence_errors()
+    _add_check(
+        checks,
+        "appendix-evidence-manifest",
+        not appendix_errors,
+        "4 张附录代码/数据截图均由确定性脚本生成，来源范围、源文件哈希、输出哈希与数值断言一致",
+        "附录证据链不完整或已陈旧：" + ", ".join(appendix_errors),
     )
     return checks
 

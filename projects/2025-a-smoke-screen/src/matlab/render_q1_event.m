@@ -45,20 +45,20 @@ assert(abs(exitState.distance - smokeRadius) < 1e-6, ...
 
 % Restrained editorial palette. Object identity is carried primarily by
 % marker/line style; colour is limited to cool structure and warm emphasis.
-paper = hexColor('#FCFBF8');
-ink = hexColor('#25313A');
-muted = hexColor('#6C787F');
-gridColor = hexColor('#DDE3E3');
-primary = hexColor('#3E6F8F');
-secondary = hexColor('#5F8375');
-warm = hexColor('#C1844F');
-wine = hexColor('#9B5B64');
+paper = hexColor('#FAFAF7');
+ink = hexColor('#1E2A32');
+muted = hexColor('#647078');
+gridColor = hexColor('#D6DEE1');
+primary = hexColor('#2F6079');
+secondary = hexColor('#3D7A70');
+warm = hexColor('#B5782F');
+wine = hexColor('#8B4E5A');
 
 missileColor = ink;
 droneColor = primary;
 bombColor = muted;
 smoke = secondary;
-smokeLight = tintColor(secondary, paper, 0.10);
+smokeLight = tintColor(secondary, paper, 0.16);
 sightlineColor = muted;
 targetColor = warm;
 fontName = 'Microsoft YaHei';

@@ -1,0 +1,192 @@
+{
+  "artifacts": [
+    {
+      "evidence_type": "verbatim_source_excerpt",
+      "height_px": 1900,
+      "path": "support/appendix-evidence/appendix_code_geometry.png",
+      "sha256": "023fa34aeec5471e3d2ef6a3178ca408bb907fd45fe5ed97071afad2ba023088",
+      "sources": [
+        {
+          "normalized_excerpt_sha256": "089373d63717b67d0436f851597302c5f83cf6b4ed0670ca6f74efb629c7bb97",
+          "path": "src/geometry_engine.py",
+          "selection": {
+            "end": 279,
+            "kind": "line_range",
+            "start": 259
+          },
+          "sha256": "fded67a6670f5e777f19c80c716d59eb3a4e72be47e040ddd09016ab2bf1bb7c"
+        },
+        {
+          "normalized_excerpt_sha256": "d497aea0519d606d070ba49966713e764b8221b382e64cb8e4a77b621f3e9c26",
+          "path": "src/geometry_engine.py",
+          "selection": {
+            "end": 571,
+            "kind": "line_range",
+            "start": 552
+          },
+          "sha256": "fded67a6670f5e777f19c80c716d59eb3a4e72be47e040ddd09016ab2bf1bb7c"
+        }
+      ],
+      "width_px": 3200
+    },
+    {
+      "evidence_type": "verbatim_source_excerpt",
+      "height_px": 1900,
+      "path": "support/appendix-evidence/appendix_code_optimizer.png",
+      "sha256": "bc5c7b50f326e14e1ac607700d4f0fe32b9b7607042ae58f99b379c174de0bac",
+      "sources": [
+        {
+          "normalized_excerpt_sha256": "4b03958e3973a2fd3bead6775299eaedbee1d10b3d7af06cbdfd847623bab508",
+          "path": "src/optimizer.py",
+          "selection": {
+            "end": 490,
+            "kind": "line_range",
+            "start": 470
+          },
+          "sha256": "cfb2180f96eb72004831f0e7e2a466ebdd307f4c149042229bc65b283f62fd8a"
+        },
+        {
+          "normalized_excerpt_sha256": "94e676c64918549993943e028b1b8799e4b193e182058ef318ca8b98291fda1e",
+          "path": "src/optimizer.py",
+          "selection": {
+            "end": 1137,
+            "kind": "line_range",
+            "start": 1117
+          },
+          "sha256": "cfb2180f96eb72004831f0e7e2a466ebdd307f4c149042229bc65b283f62fd8a"
+        }
+      ],
+      "width_px": 3200
+    },
+    {
+      "evidence_type": "normalized_workbook_table",
+      "height_px": 1900,
+      "path": "support/appendix-evidence/appendix_data_result12.png",
+      "sha256": "ea4fc9ec244eaf9fdad27eff95c912970ba01318e856074bd8b47acc873b2441",
+      "sources": [
+        {
+          "active_row_count_including_header": 4,
+          "column_count": 10,
+          "display_precision_decimal_places": 4,
+          "normalized_display_sha256": "3b2f907f682f081de16e4687adc656f9688cc8e17ebc7af1cc3ed9ea67c78247",
+          "path": "outputs/result1.xlsx",
+          "selection": "Sheet1!A1:J4",
+          "sha256": "9650ff0b39cb00b2b28230196619c74edd985f493805f640646e911d41dda269"
+        },
+        {
+          "active_row_count_including_header": 4,
+          "column_count": 10,
+          "display_precision_decimal_places": 4,
+          "normalized_display_sha256": "bae9f3e887712bd4734d3cf573d166b9e5e335b71d781b68935871dd6180b811",
+          "path": "outputs/result2.xlsx",
+          "selection": "Sheet1!A1:J4",
+          "sha256": "7fee8c3eea2f6081768666297aaaf44db2260891992b62a7a9630daf7a3d6062"
+        }
+      ],
+      "width_px": 3200
+    },
+    {
+      "evidence_type": "normalized_workbook_table",
+      "height_px": 2050,
+      "path": "support/appendix-evidence/appendix_data_result3.png",
+      "sha256": "7bc4d757856935cf4e741b7cf7033a8991a073896c5ace1a8229a1d7c3a5a784",
+      "sources": [
+        {
+          "active_row_count_including_header": 16,
+          "column_count": 12,
+          "display_precision_decimal_places": 4,
+          "normalized_display_sha256": "39ed4d83a8df1e46b8b2108d8a8c9e85a98fd75dbbcaa96093b6d636b4043163",
+          "path": "outputs/result3.xlsx",
+          "selection": "Sheet1!A1:L16",
+          "sha256": "a98a721eb0e72c0011fa98b29295559e0159f59da5b31c2fc3af87d1eff56772"
+        }
+      ],
+      "width_px": 3600
+    }
+  ],
+  "generator": {
+    "command": "python -B src/render_appendix_evidence.py",
+    "fonts": {
+      "consola.ttf": "cf00b507b3286870cc5064ebd0633c303f70b491a4af25eec2d32df413db0179",
+      "consolab.ttf": "7e8de70c92a891722bd3fbd623db005caab2bfe267e5dab5be46b95a44e0c7f1",
+      "msyh.ttc": "d79c55e68b1131eea0cc1c47be4f572d964f28c682e143db2ad09c1e4cb07a3f",
+      "msyhbd.ttc": "4508821b3dffe01f0ef5e5326a3e60df705a44633858811f67b6982dce3f6ee6"
+    },
+    "libraries": {
+      "Pillow": "12.3.0",
+      "openpyxl": "3.1.5"
+    },
+    "path": "src/render_appendix_evidence.py",
+    "python": "3.11.9",
+    "requirements_path": "requirements-formal.txt",
+    "requirements_sha256": "4ef5aa1d67be4d42cbcfb6dcb9ec83ed428e2b31ec30809d62a02e283f0fe448",
+    "sha256": "76295d3e4cd13929dc474b2f85fc67fa654b7c9336b80f31aa33a774220d19ff"
+  },
+  "producer_dag": [
+    {
+      "inputs": [
+        "src/geometry_engine.py",
+        "src/geometry_engine.py"
+      ],
+      "output": "support/appendix-evidence/appendix_code_geometry.png",
+      "producer": "src/render_appendix_evidence.py"
+    },
+    {
+      "inputs": [
+        "src/optimizer.py",
+        "src/optimizer.py"
+      ],
+      "output": "support/appendix-evidence/appendix_code_optimizer.png",
+      "producer": "src/render_appendix_evidence.py"
+    },
+    {
+      "inputs": [
+        "outputs/result1.xlsx",
+        "outputs/result2.xlsx"
+      ],
+      "output": "support/appendix-evidence/appendix_data_result12.png",
+      "producer": "src/render_appendix_evidence.py"
+    },
+    {
+      "inputs": [
+        "outputs/result3.xlsx"
+      ],
+      "output": "support/appendix-evidence/appendix_data_result3.png",
+      "producer": "src/render_appendix_evidence.py"
+    }
+  ],
+  "schema_version": 1,
+  "source_validation": {
+    "active_data_rows": {
+      "result1.xlsx": 3,
+      "result2.xlsx": 3,
+      "result3.xlsx": 15
+    },
+    "claim_checks": {
+      "active_row_counts_match_submission_scope": true,
+      "q3_union_not_greater_than_row_sum": true,
+      "q4_nonoverlap_sum_matches_union": true,
+      "q5_union_not_greater_than_row_sum": true,
+      "workbook_hashes_match_validation": true
+    },
+    "duration_row_sums_s": {
+      "result1.xlsx": 6.814024156044969,
+      "result2.xlsx": 15.774625235050912,
+      "result3.xlsx": 55.04090442142083
+    },
+    "exact_union_objectives_s": {
+      "Q3": 6.631110247634764,
+      "Q4": 15.774625235050912,
+      "Q5": 53.08393916993349
+    },
+    "path": "validation/q3_q5_independent.json",
+    "sha256": "8dc5fa5a489e7228371a79d0248987032e45b55b6d2b85792c9558c4f86c1baa",
+    "tolerance_s": 1e-08,
+    "workbook_hash_match": {
+      "result1.xlsx": true,
+      "result2.xlsx": true,
+      "result3.xlsx": true
+    }
+  },
+  "status": "reproducible"
+}

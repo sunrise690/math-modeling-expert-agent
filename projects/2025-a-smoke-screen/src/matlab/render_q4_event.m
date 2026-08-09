@@ -45,16 +45,16 @@ assert(abs(unionDuration - q4.exact_centerline_objective) < 1e-8, ...
 
 % A colourblind-aware editorial palette. Event type uses shape as well as
 % colour, while UAV identity uses line style, so grayscale remains legible.
-C.paper = [1, 1, 1];
-C.ink = hexColor('#24313B');
-C.muted = hexColor('#68757E');
-C.guide = hexColor('#D9E0E2');
-C.primary = hexColor('#2F6F9F');
-C.secondary = hexColor('#3C8D7B');
-C.warm = hexColor('#D08B37');
-C.wine = hexColor('#A6546A');
-C.activeFill = tintColor(C.primary, C.paper, 0.085);
-C.gapFill = tintColor(C.warm, C.paper, 0.070);
+C.paper = hexColor('#FAFAF7');
+C.ink = hexColor('#1E2A32');
+C.muted = hexColor('#647078');
+C.guide = hexColor('#D6DEE1');
+C.primary = hexColor('#2F6079');
+C.secondary = hexColor('#3D7A70');
+C.warm = hexColor('#B5782F');
+C.wine = hexColor('#8B4E5A');
+C.activeFill = tintColor(C.primary, C.paper, 0.13);
+C.gapFill = tintColor(C.warm, C.paper, 0.16);
 
 fontName = chooseChineseFont();
 fig = figure('Visible', 'off', 'Color', C.paper, ...
@@ -62,14 +62,14 @@ fig = figure('Visible', 'off', 'Color', C.paper, ...
     'PaperPositionMode', 'auto');
 
 axEvents = axes(fig, 'Position', [0.105, 0.575, 0.855, 0.325]);
-axCount = axes(fig, 'Position', [0.105, 0.125, 0.855, 0.315]);
+axComposition = axes(fig, 'Position', [0.105, 0.125, 0.855, 0.315]);
 xLimits = [-1.25, 47.0];
 
 drawEventGrid(axEvents, release, detonate, intervals, durations, ...
     xLimits, C, fontName);
-drawCoverageCount(axCount, intervals, gaps, unionDuration, ...
+drawGapComposition(axComposition, intervals, gaps, unionDuration, ...
     xLimits, C, fontName);
-linkaxes([axEvents, axCount], 'x');
+linkaxes([axEvents, axComposition], 'x');
 
 pngPath = fullfile(outDir, 'q4_temporal_synergy.png');
 pdfPath = fullfile(outDir, 'q4_temporal_synergy.pdf');
@@ -159,6 +159,71 @@ set(ax, 'XTick', 0:5:45, 'XTickLabel', [], ...
     'FontName', fontName, 'FontSize', 7.2, 'TickDir', 'out', ...
     'TickLength', [0.010, 0.010], 'XColor', C.muted, ...
     'YColor', C.ink, 'Color', C.paper, 'Box', 'off');
+ax.LineWidth = 0.65;
+ax.XGrid = 'on';
+ax.GridColor = C.guide;
+ax.GridAlpha = 0.50;
+hold(ax, 'off');
+end
+
+
+function drawGapComposition(ax, intervals, gaps, unionDuration, ...
+        xLimits, C, fontName)
+hold(ax, 'on');
+rowColors = [C.primary; C.secondary; C.wine];
+y = 0.62;
+
+plot(ax, [0, 46], [y, y], '-', 'Color', C.guide, 'LineWidth', 0.85);
+for k = 1:3
+    entry = intervals(k, 1);
+    exitTime = intervals(k, 2);
+    plot(ax, [entry, exitTime], [y, y], '-', ...
+        'Color', rowColors(k, :), 'LineWidth', 5.4);
+    plot(ax, entry, y, '>', 'MarkerSize', 5.5, ...
+        'MarkerFaceColor', C.paper, 'MarkerEdgeColor', rowColors(k, :), ...
+        'LineWidth', 0.95);
+    plot(ax, exitTime, y, '<', 'MarkerSize', 5.5, ...
+        'MarkerFaceColor', rowColors(k, :), 'MarkerEdgeColor', C.paper, ...
+        'LineWidth', 0.65);
+    text(ax, mean(intervals(k, :)), y + 0.26, ...
+        sprintf('I_%d  %.3f s', k, diff(intervals(k, :))), ...
+        'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom', ...
+        'FontName', fontName, 'FontSize', 7.3, 'FontWeight', 'bold', ...
+        'Color', rowColors(k, :), 'Interpreter', 'tex');
+end
+
+for k = 1:2
+    xLeft = intervals(k, 2);
+    xRight = intervals(k + 1, 1);
+    plot(ax, [xLeft, xRight], [y, y], '--', ...
+        'Color', C.warm, 'LineWidth', 1.35);
+    drawDoubleArrow(ax, xLeft, xRight, y - 0.28, C.warm);
+    text(ax, mean([xLeft, xRight]), y - 0.39, ...
+        sprintf('g_%d = %.3f s', k, gaps(k)), ...
+        'HorizontalAlignment', 'center', 'VerticalAlignment', 'top', ...
+        'FontName', fontName, 'FontSize', 7.2, 'FontWeight', 'bold', ...
+        'Color', C.warm, 'Interpreter', 'tex');
+end
+
+text(ax, 0.00, 1.10, 'b', 'Units', 'normalized', ...
+    'FontName', 'Arial', 'FontSize', 9.2, 'FontWeight', 'bold', 'Color', C.ink);
+text(ax, 0.50, 1.10, '时间组成带：有效窗口与内部空窗分解', ...
+    'Units', 'normalized', 'HorizontalAlignment', 'center', ...
+    'FontName', fontName, 'FontSize', 8.4, 'FontWeight', 'bold', ...
+    'Color', C.ink, 'Interpreter', 'none');
+text(ax, 0.995, 1.10, ...
+    sprintf('D_1 = |I_1| + |I_2| + |I_3| = %.3f s', unionDuration), ...
+    'Units', 'normalized', 'HorizontalAlignment', 'right', ...
+    'FontName', fontName, 'FontSize', 7.2, 'FontWeight', 'bold', ...
+    'Color', C.primary, 'Interpreter', 'tex');
+
+xlim(ax, xLimits);
+ylim(ax, [-0.05, 1.12]);
+xlabel(ax, '任务时刻  t / s', 'FontName', fontName, 'FontSize', 8.0, 'Color', C.ink);
+set(ax, 'XTick', 0:5:45, 'YTick', [], ...
+    'FontName', fontName, 'FontSize', 7.2, 'TickDir', 'out', ...
+    'TickLength', [0.010, 0.010], 'XColor', C.muted, ...
+    'YColor', C.muted, 'Color', C.paper, 'Box', 'off');
 ax.LineWidth = 0.65;
 ax.XGrid = 'on';
 ax.GridColor = C.guide;

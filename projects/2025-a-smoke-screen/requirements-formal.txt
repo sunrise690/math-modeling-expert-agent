@@ -1,0 +1,8 @@
+# Exact numerical dependencies recorded in validation/q3_q5_independent.json.
+# The formal artifacts were generated with CPython 3.14.5.
+numpy==2.4.6
+scipy==1.18.0
+openpyxl==3.1.5
+
+# Appendix evidence renderer; it does not participate in numerical solving.
+pillow==12.3.0
