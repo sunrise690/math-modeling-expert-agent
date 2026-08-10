@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "palette_id": "editorial-denim-clay-v1",
+  "roles": {
+    "paper": "#FFFFFF",
+    "ink": "#252A30",
+    "muted": "#687078",
+    "secondary": "#6D767E",
+    "grid": "#E6EAED",
+    "primary": "#3F6688",
+    "clay": "#AD5D45",
+    "risk": "#76536B"
+  },
+  "semantics": {
+    "primary": "validated evidence, active intervals and accepted results",
+    "clay": "negative quantities only: delay, overlap deduction and uncovered gap",
+    "risk": "conservative criterion or risk comparison only",
+    "secondary": "neutral reference events and supporting structure"
+  },
+  "sequential": [
+    "#F7F8FA",
+    "#E6ECF1",
+    "#C7D6E2",
+    "#94AEC4",
+    "#6284A1",
+    "#365D7D"
+  ],
+  "constraints": {
+    "minimum_text_contrast_on_paper": 4.5,
+    "maximum_grid_contrast_on_paper": 1.3,
+    "maximum_chromatic_hues_per_figure": 2,
+    "maximum_accent_hues_per_figure": 1,
+    "require_redundant_encoding": true,
+    "require_monotone_sequential_luminance": true
+  }
+}

@@ -593,15 +593,7 @@ end
 
 
 function C = editorialPalette()
-C.paper = hexColor('#FFFFFF');
-C.ink = hexColor('#1E2A32');
-C.muted = hexColor('#647078');
-C.grid = hexColor('#D6DEE1');
-C.primary = hexColor('#2F6079');
-C.secondary = hexColor('#59636A');
-C.warm = hexColor('#B5782F');
-C.wine = hexColor('#8B4E5A');
-C.violet = hexColor('#7F898D');
+C = contest_palette();
 C.panel = C.paper;
 C.blueDark = mixColor(C.ink, C.primary, 0.24);
 C.blueSoft = mixColor(C.primary, C.muted, 0.62);
@@ -609,14 +601,9 @@ C.tealSoft = mixColor(C.secondary, C.muted, 0.66);
 C.guide = C.grid;
 C.guideDark = mixColor(C.muted, C.paper, 0.62);
 C.sightline = mixColor(C.muted, C.paper, 0.20);
-% UAV identity uses a black/grey/single-blue tonal family plus line style and
-% marker shape.  Warm and burgundy are never recycled as category colours.
-C.drone = [ ...
-    C.ink; ...
-    C.primary; ...
-    hexColor('#4B5962'); ...
-    hexColor('#68777E'); ...
-    C.violet];
+% Equal-status UAVs share one editorial blue. Identity is carried by line
+% style, marker shape and direct labels rather than unequal lightness.
+C.drone = repmat(C.primary, 5, 1);
 C.missile = repmat(C.muted, 3, 1);
 end
 

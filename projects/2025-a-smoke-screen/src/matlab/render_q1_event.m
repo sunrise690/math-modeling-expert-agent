@@ -44,15 +44,13 @@ assert(abs(exitState.distance - smokeRadius) < 1e-6, ...
     'Exit state is not tangent to the missile endpoint.');
 
 % Restrained editorial palette. Object identity is carried primarily by
-% marker/line style; colour is limited to cool structure and warm emphasis.
-paper = hexColor('#FFFFFF');
-ink = hexColor('#1E2A32');
-muted = hexColor('#647078');
-gridColor = hexColor('#D6DEE1');
-primary = hexColor('#2F6079');
-  secondary = hexColor('#59636A');
-warm = hexColor('#B5782F');
-  wine = hexColor('#8B4E5A');
+% marker/line style; colour is limited to cool structure and one accent.
+C = contest_palette();
+paper = C.paper;
+ink = C.ink;
+muted = C.muted;
+gridColor = C.grid;
+primary = C.primary;
 
 missileColor = ink;
 droneColor = primary;
@@ -134,7 +132,7 @@ scatter(axMain, releasePosition(1) / 1000, releasePosition(3) / 1000, ...
     34, 'd', 'filled', 'MarkerFaceColor', primary, 'MarkerEdgeColor', paper, ...
     'LineWidth', 0.70);
 scatter(axMain, explosionPosition(1) / 1000, explosionPosition(3) / 1000, ...
-    54, 'o', 'filled', 'MarkerFaceColor', warm, 'MarkerEdgeColor', paper, ...
+    54, 'o', 'filled', 'MarkerFaceColor', ink, 'MarkerEdgeColor', paper, ...
     'LineWidth', 0.55);
 
 % Direct object labels replace a legend; exact event times are centralised
@@ -146,7 +144,7 @@ text(axMain, 17.79, 1.817, 'FY1', 'Color', droneColor, ...
     'FontName', fontName, 'FontSize', 7.2, 'FontWeight', 'bold');
 text(axMain, explosionPosition(1) / 1000 - 0.04, ...
     explosionPosition(3) / 1000 - 0.020, '起爆', ...
-    'Color', warm, 'FontName', fontName, 'FontSize', 7.0, ...
+    'Color', ink, 'FontName', fontName, 'FontSize', 7.0, ...
     'HorizontalAlignment', 'center');
 text(axMain, smokePath(round(end / 2), 1) / 1000 + 0.08, ...
     smokePath(round(end / 2), 3) / 1000, '烟幕中心', ...
@@ -166,7 +164,7 @@ panelLabel(axMain, 'A', fontName, ink, [-0.085, 1.035]);
 %% B. One finite-sightline geometry panel at the decisive endpoint switch.
 axGeometry = axes(fig, 'Position', [0.690, 0.380, 0.275, 0.515]);
 drawFiniteGeometry(axGeometry, switchState, smokeRadius, switchTime, ...
-    fontName, paper, ink, muted, smoke, smokeLight, warm, targetColor);
+    fontName, paper, ink, muted, smoke, smokeLight, primary, targetColor);
 panelLabel(axGeometry, 'B', fontName, ink, [-0.10, 1.03]);
 
 %% C. Shared five-event time axis; every exact time appears only here.
@@ -183,7 +181,7 @@ patch(axTime, [entryTime, exitTime, exitTime, entryTime], ...
 
 eventTimes = [releaseTime, explosionTime, entryTime, switchTime, exitTime];
 eventNames = {'投放', '起爆', '进入', '端点切换', '退出'};
-  eventColors = [ink; warm; primary; muted; ink];
+  eventColors = [ink; ink; primary; muted; ink];
 eventMarkers = {'d', 'o', '^', 's', 'v'};
 eventSizes = [36, 46, 42, 34, 42];
 labelX = [releaseTime + 0.24, explosionTime, entryTime - 0.18, ...

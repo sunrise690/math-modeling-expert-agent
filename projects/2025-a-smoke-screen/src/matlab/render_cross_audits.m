@@ -50,7 +50,7 @@ for k = 1:3
         'Color', colors(k, :), 'LineWidth', 1.55);
     scatter(ax, 1, ratio(1), 34, C.paper, 'o', 'MarkerEdgeColor', colors(k, :), 'LineWidth', 1.1);
     scatter(ax, 2, ratio(2), 34, C.paper, 'd', 'MarkerEdgeColor', colors(k, :), 'LineWidth', 1.1);
-    scatter(ax, 3, ratio(3), 40, C.warm, questionMarkers{k}, ...
+    scatter(ax, 3, ratio(3), 40, C.primary, questionMarkers{k}, ...
         'filled', 'MarkerEdgeColor', C.paper, 'LineWidth', 0.7);
     for j = 1:3
         horizontal = 'center';
@@ -292,14 +292,7 @@ end
 
 
 function C = palette()
-C.paper = hexColor('#FFFFFF');
-C.ink = hexColor('#1E2A32');
-C.muted = hexColor('#647078');
-C.grid = hexColor('#D6DEE1');
-C.primary = hexColor('#2F6079');
-C.secondary = hexColor('#59636A');
-C.warm = hexColor('#B5782F');
-C.wine = hexColor('#8B4E5A');
+C = contest_palette();
 C.panel = C.paper;
 C.blueDark = mixColor(C.ink, C.primary, 0.24);
 C.blueSoft = mixColor(C.primary, C.muted, 0.62);

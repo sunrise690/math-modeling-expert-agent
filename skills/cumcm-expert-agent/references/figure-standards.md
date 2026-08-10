@@ -82,9 +82,9 @@ why_not_merge: 两图分别证明可识别性与扰动稳健性；合并后最�
 data_sources: [results/q2_grid.csv]
 axes: {x: release_time_s, y: heading_deg, color: objective_s}
 color_budget:
-  chromatic_hues: [mineral_blue, warm_ochre]
-  hue_count: 2
-  roles: {surface: primary_sequential, optimum: accent}
+  chromatic_hues: [editorial_denim]
+  hue_count: 1
+  roles: {surface: primary_sequential, optimum: neutral_outline}
   waiver: null
 caption_layers: [surface, optimum, confidence_contour]
 text_location: sec:q2-results
@@ -156,14 +156,15 @@ exports: [figures/q2_landscape.pdf, figures/q2_landscape.png]
 ## MATLAB 语义配色
 
 正式 MATLAB 图先确定整篇的语义映射，再绘制单图。优先复用
-[`assets/matlab/contest_figure_theme.m`](../assets/matlab/contest_figure_theme.m)。国赛论文的层次主要来自线宽、留白、明度、线型、标记与局部标注，不来自“低饱和但很多色”的粉彩模板。主题只提供纸白/墨色/灰色、矿物蓝主色，以及暖赭或酒红两种**备选**强调色；一张图至多选其中一种强调色，不能同时把两者当作装饰色。
+[`assets/matlab/contest_figure_theme.m`](../assets/matlab/contest_figure_theme.m)。国赛论文的层次主要来自线宽、留白、明度、线型、标记与局部标注，不来自“低饱和但很多色”的粉彩模板。默认色板为纸白 `#FFFFFF`、墨色 `#252A30`、正文灰 `#687078`、编辑蓝 `#3F6688`、陶土色 `#AD5D45` 与风险灰紫 `#76536B`。编辑蓝承载经验证的主要证据；陶土色只表示延后、重叠扣除和未覆盖空窗；灰紫只表示保守口径或风险比较。单图最多使用一个强调色，不得把强调色当作装饰。
 
 - 默认实体全部使用 `T.entityNeutral`，靠 `T.entityLineStyle`、`T.entityMarker` 与直接标签区分。主题不提供现成 5--7 色实体板，防止把实体编号自动映射成一排柔和色。
-- 事件跨图固定：释放用深墨菱形，起爆用所选强调色圆点，进入与退出共用矿物蓝并分别使用上/下三角。颜色是冗余编码，形状与文字必须独立可辨。
-- 口径比较固定：主评分为矿物蓝实线圆点；保守或风险口径才选酒红虚线方点。若图中已经使用暖赭表示最优点/事件，则不得再加入酒红，除非 `color_budget_waiver` 通过。
-- 连续值优先使用同一主色相的单调顺序色图；最优点可用所选强调色。仅当零点两侧方向本身是结论时使用两色发散图。禁用 `jet`、彩虹、霓虹黄绿和大跨度紫—绿—黄组合。
+- 事件跨图固定：释放用深墨菱形，起爆用中性灰圆点，进入用编辑蓝上三角，退出用白底墨边下三角。普通事件不占用强调色；形状与文字必须独立可辨。
+- 口径比较固定：主评分为编辑蓝实线圆点；保守或风险口径才使用灰紫虚线方点。陶土色不得表示最优点、一般事件、实体编号或普通收敛阈值。
+- 连续值优先使用同一编辑蓝相的单调顺序色图；最优点默认使用白底墨边标记。仅当零点两侧方向本身是结论时使用两色发散图。禁用 `jet`、彩虹、霓虹黄绿和大跨度紫—绿—黄组合。
 - 坐标区与面板默认保持纸白。只有置信区间、容差区、可行域等数据语义范围才能填浅色；不得为每个子图铺不同淡色底、卡片头或状态带。
 - MATLAB 脚本在导出前统计实际有彩色相并调用 `T.assertColorBudget(hueCount, accentCount, hasWaiver)`；同时调用 `T.assertGrayscaleEncoding(lineStyles, markers, directLabels)` 检查每对序列都有非颜色冗余编码。任一断言失败不得导出正式图；通过后仍须生成灰度版并在最终 PDF 尺寸下人工复核。超预算时先删色、改线型/点型或分面，不得仅把颜色调淡后宣称合格。
+- 自动门禁至少验证：纸面是精确纯白；所有可能承载正文的颜色与纸白的 WCAG 对比度不低于 4.5；网格与纸白对比度不高于 1.3；顺序色图的 CIELAB 明度严格单调且跨度足够。通过无障碍门禁不等于审美通过，仍须在彩色联系表、灰度联系表与最终 PDF 栏宽下比较整套图是否发灰、发脏或抢夺正文层级。
 
 ## 人工论文风格检查
 

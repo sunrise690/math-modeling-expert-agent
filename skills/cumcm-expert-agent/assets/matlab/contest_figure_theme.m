@@ -3,16 +3,17 @@ function T = contest_figure_theme()
 % Use neutrals, one primary hue and at most one chosen accent hue.  Visual
 % hierarchy comes from position, value, line style, markers and labels.
 
-T.paper = hexrgb('#FAFAF7');
-T.ink = hexrgb('#1E2A32');
-T.muted = hexrgb('#647078');
-T.grid = hexrgb('#D6DEE1');
+T.paper = hexrgb('#FFFFFF');
+T.ink = hexrgb('#252A30');
+T.muted = hexrgb('#687078');
+T.secondary = hexrgb('#6D767E');
+T.grid = hexrgb('#E6EAED');
 T.panel = T.paper;
 T.referenceBand = tint(T.muted, T.paper, 0.90);
 
-T.primary = hexrgb('#2F6079');
-T.accentWarm = hexrgb('#B5782F');
-T.accentRisk = hexrgb('#8B4E5A');
+T.primary = hexrgb('#3F6688');
+T.accentWarm = hexrgb('#AD5D45');
+T.accentRisk = hexrgb('#76536B');
 
 % Compatibility aliases expose semantic colours, not an entity palette.
 T.blue = T.primary;
@@ -58,7 +59,7 @@ T.criterion = [T.primary; T.accentRisk];
 % Stable event mappings use at most two chromatic hues in one figure.
 T.event.release.color = T.ink;
 T.event.release.marker = 'd';
-T.event.detonation.color = T.accentWarm;
+T.event.detonation.color = T.secondary;
 T.event.detonation.marker = 'o';
 T.event.entry.color = T.primary;
 T.event.entry.marker = '^';
@@ -74,11 +75,12 @@ T.coralLight = T.accentRiskLight;
 
 % Single-hue ordered map for response surfaces; never substitute jet.
 T.sequential = anchoredMap([ ...
-    hexrgb('#F4F5F1'); ...
-    hexrgb('#DCE4E5'); ...
-    hexrgb('#AEBFC5'); ...
-    hexrgb('#607F8E'); ...
-    hexrgb('#294E63')], 256);
+    hexrgb('#F7F8FA'); ...
+    hexrgb('#E6ECF1'); ...
+    hexrgb('#C7D6E2'); ...
+    hexrgb('#94AEC4'); ...
+    hexrgb('#6284A1'); ...
+    hexrgb('#365D7D')], 256);
 
 % Use only when direction around a meaningful zero is itself the claim.
 T.diverging = anchoredMap([T.primary; T.paper; T.accentRisk], 257);

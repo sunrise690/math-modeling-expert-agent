@@ -1,28 +1,53 @@
 {
   "schema_version": 5,
   "run_id": "cumcm-2025a-20260808-r3",
-  "generated_by": "src/generate_figures.py orchestrating six src/matlab/render_*.m figure scripts",
+  "generated_by": "src/generate_figures.py orchestrating six MATLAB renderers and one canonical palette",
   "matlab_render": {
-    "executed": false,
+    "executed": true,
     "runtime": "D:\\matlab\\bin\\matlab.exe",
-    "reason": "已通过清单哈希、MATLAB renderer 和依赖哈希校验复用 42 个正式产物",
-    "sources": [
-      "src/matlab/render_q1_event.m",
-      "src/matlab/render_q3_event.m",
-      "src/matlab/render_q4_event.m",
-      "src/matlab/render_core_figures.m",
-      "src/matlab/render_q5_figures.m",
-      "src/matlab/render_cross_audits.m"
-    ]
+    "scripts": [
+      {
+        "script": "src/matlab/render_q1_event.m",
+        "returncode": 0,
+        "stdout_tail": "Q1 MATLAB event storyboard exported.\n  release 1.500000 | explosion 5.100000 | entry 8.013006 | switch 9.418516 | exit 9.448088 s\n  switch-to-exit gap 0.029573 s | centerline duration 1.435082 s\n  PNG 2232 x 1530 px"
+      },
+      {
+        "script": "src/matlab/render_q3_event.m",
+        "returncode": 0,
+        "stdout_tail": "Rendered Q3 shared-axis event figure:\n  union 6.631110 s | overlaps 0.067481 and 0.115432 s"
+      },
+      {
+        "script": "src/matlab/render_q4_event.m",
+        "returncode": 0,
+        "stdout_tail": "Rendered Q4 shared-axis event evidence:"
+      },
+      {
+        "script": "src/matlab/render_core_figures.m",
+        "returncode": 0,
+        "stdout_tail": "response_surface            2232 x 1350 px\n  F4 response surface: MATLAB max 4.828283 s, validated optimum 4.832502 s.\n  exported q2_multiseed_stability         2232 x 1026 px\n  F5 Q2 multiseed: 8 runs, terminal exact span 3.286e-13 s.\n  exported time_step_convergence          2232 x 1008 px\n  F13 time-step errors Q1/Q2 at dt=0.005: 8.2102e-05 / 0.0025018 s.\n  exported q3_q4_multiseed_stability      2232 x 1279 px\n  F14 Q3/Q4 spans: 0.950990 s / 38.027 ms.\nMATLAB core figure rendering completed."
+      },
+      {
+        "script": "src/matlab/render_q5_figures.m",
+        "returncode": 0,
+        "stdout_tail": ""
+      },
+      {
+        "script": "src/matlab/render_cross_audits.m",
+        "returncode": 0,
+        "stdout_tail": "Rendered MATLAB cross-question audit figures."
+      }
+    ],
+    "stdout_tail": "Q1 MATLAB event storyboard exported.\n  release 1.500000 | explosion 5.100000 | entry 8.013006 | switch 9.418516 | exit 9.448088 s\n  switch-to-exit gap 0.029573 s | centerline duration 1.435082 s\n  PNG 2232 x 1530 px\nRendered Q3 shared-axis event figure:\n  union 6.631110 s | overlaps 0.067481 and 0.115432 s\nRendered Q4 shared-axis event evidence:\nMATLAB core figure rendering started.\n  exported finite_sightline_geometry      2232 x 1155 px\n  F2 finite sightline: lambda 0.012311, d 7.232594 m, margins 2.767406 / 2.679104 m.\n  exported q1_occlusion_intervals         2232 x 1217 px\n  F3 Q1 roots: center [8.013006057, 9.448088159], full [8.056445490, 9.448088159] s.\n  exported q2_response_surface            2232 x 1350 px\n  F4 response surface: MATLAB max 4.828283 s, validated optimum 4.832502 s.\n  exported q2_multiseed_stability         2232 x 1026 px\n  F5 Q2 multiseed: 8 runs, terminal exact span 3.286e-13 s.\n  exported time_step_convergence          2232 x 1008 px\n  F13 time-step errors Q1/Q2 at dt=0.005: 8.2102e-05 / 0.0025018 s.\n  exported q3_q4_multiseed_stability      2232 x 1279 px\n  F14 Q3/Q4 spans: 0.950990 s / 38.027 ms.\nMATLAB core figure rendering completed.\n\nRendered MATLAB cross-question audit figures."
   },
   "design_system": {
     "profile": "contest-paper-evidence-first",
-    "palette": "pure white background; graphite ink/neutral grey + one slate blue; ochre only for events, thresholds, overlap deductions and gaps; burgundy only for the conservative criterion",
+    "palette": "exact white paper; charcoal and neutral grey structure; editorial denim blue for validated evidence; clay only for delay, overlap deductions and uncovered gaps; muted plum only for conservative-risk comparisons",
     "entity_identity": "line style + marker shape + direct label; no rotating categorical hue palette",
     "panel_policy": "one hero evidence; a panel survives only when covering it weakens the stated conclusion; no decorative bands, cards or equal-weight dashboard tiles",
     "title_policy": "paper captions carry titles; panels use A/B/C tags only",
     "export": "exact physical size; MATLAB 360 dpi PNG plus editable PDF/SVG",
-    "minimum_final_font_pt": 7.0
+    "minimum_final_font_pt": 7.0,
+    "palette_source": "src/matlab/palette_spec.json"
   },
   "paper_order": [
     "F2",
@@ -227,7 +252,18 @@
           "local_geometry"
         ],
         "comparison_semantics": "only like-for-like quantities share an axis",
-        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论",
+        "color_budget": {
+          "recorded": true,
+          "chromatic_hues": [
+            "editorial_denim"
+          ],
+          "hue_count": 1,
+          "accent_count": 0,
+          "semantic_only": true,
+          "redundant_encoding_required": true,
+          "source": "src/matlab/palette_spec.json"
+        }
       },
       "visual_qa": {
         "final_width_in": 6.2,
@@ -239,9 +275,9 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/modeling_workflow.png": "ee40e2ea3d2fc853a9281b97a7686515f45ced53fa78f95e698899b7d2ada31d",
-        "figures/modeling_workflow.pdf": "b33e348b8ba8183330624543e3938aa45813ddaae81fd134758bf158e6160c95",
-        "figures/modeling_workflow.svg": "3b5ecbada27fd48172cc77607189d2fc9f106aca95d82ada2dff1fef73e7a6ac"
+        "figures/modeling_workflow.png": "c32302c5197ab029fffb0fbae8f7a6cf6aba7cc81a1074ab3af2392648338d0a",
+        "figures/modeling_workflow.pdf": "f2d349b13efcfd2dca5ad332f5a27d2db2d6e5300648e3075e3373e8340f60dc",
+        "figures/modeling_workflow.svg": "588613620ef7d8d9b003a4a5aa4029d8afd919c98e13becf2d2d9b87a6b1d5d8"
       },
       "role": "paper"
     },
@@ -270,7 +306,18 @@
           "criterion_margin"
         ],
         "comparison_semantics": "only like-for-like quantities share an axis",
-        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论",
+        "color_budget": {
+          "recorded": true,
+          "chromatic_hues": [
+            "editorial_denim"
+          ],
+          "hue_count": 1,
+          "accent_count": 0,
+          "semantic_only": true,
+          "redundant_encoding_required": true,
+          "source": "src/matlab/palette_spec.json"
+        }
       },
       "visual_qa": {
         "final_width_in": 6.2,
@@ -282,9 +329,9 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/finite_sightline_geometry.png": "38e7d8a59c13d55520f79ce312611039ac0a5e59987bd6a45061505513881c3f",
-        "figures/finite_sightline_geometry.pdf": "4030dc831886d6f7b14321f704014dc3fd1effe10c0e4d850c8bd1c553beb39f",
-        "figures/finite_sightline_geometry.svg": "d91855015a77cf73ed9033daafd16b0fbfef91d8001bab3df8595712282d2289"
+        "figures/finite_sightline_geometry.png": "5e899b8e35e9400ebac00aff1d09cbeb1e3ea80203c664b52e80f55d3e4cd0ae",
+        "figures/finite_sightline_geometry.pdf": "23cd5638be2f27ebe1dc888dc264f958ff6bfc3b9d11b4d8716e5443194e7def",
+        "figures/finite_sightline_geometry.svg": "496feff615f5b18ef92a6a5479c550a2de8966d379564054ae3831332debec4c"
       },
       "role": "paper"
     },
@@ -313,7 +360,19 @@
           "duration_delta"
         ],
         "comparison_semantics": "only like-for-like quantities share an axis",
-        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论",
+        "color_budget": {
+          "recorded": true,
+          "chromatic_hues": [
+            "editorial_denim",
+            "negative_clay"
+          ],
+          "hue_count": 2,
+          "accent_count": 1,
+          "semantic_only": true,
+          "redundant_encoding_required": true,
+          "source": "src/matlab/palette_spec.json"
+        }
       },
       "visual_qa": {
         "final_width_in": 6.2,
@@ -325,9 +384,9 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q1_occlusion_intervals.png": "9ead04549744115ea7aa7068a480e0ae181a565caf966fa70265ef45a3045b38",
-        "figures/q1_occlusion_intervals.pdf": "95059bd9d7de80fd40223537e1c8d67e1aa42513377f090ab4474834362e4386",
-        "figures/q1_occlusion_intervals.svg": "957b07c56aa8463c29f0ea6de1dae2b1d2ae3f281fc79e662fc3a6ead3de8cad"
+        "figures/q1_occlusion_intervals.png": "fe6546f6395f2ecae530895d00130f0c50bf454b5f54a1871d092f058be354ab",
+        "figures/q1_occlusion_intervals.pdf": "78a9c912e81252afc3f2ad842fdef728b61dad59976a13579fd16f0cd16b7420",
+        "figures/q1_occlusion_intervals.svg": "4b4091c32cf2bd7c3dfd9c6e6a9c6c4d93c9b94cf0c2058dcf15361caed5da7c"
       },
       "role": "paper"
     },
@@ -355,7 +414,18 @@
           "high_value_band"
         ],
         "comparison_semantics": "only like-for-like quantities share an axis",
-        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论",
+        "color_budget": {
+          "recorded": true,
+          "chromatic_hues": [
+            "editorial_denim_sequential"
+          ],
+          "hue_count": 1,
+          "accent_count": 0,
+          "semantic_only": true,
+          "redundant_encoding_required": true,
+          "source": "src/matlab/palette_spec.json"
+        }
       },
       "visual_qa": {
         "final_width_in": 6.2,
@@ -367,9 +437,9 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q2_response_surface.png": "b413977192a59ca59beac2052add97a4faf0aa7afbe65b4437e9b93a7e4f7114",
-        "figures/q2_response_surface.pdf": "d22fc72ade4435f25380921500ce841e977cac9bd42a49b557e2d343331d16f6",
-        "figures/q2_response_surface.svg": "51ddf1a986acace49a14926a2ac3327ed03fb2df5e1a3de56db5ec00d545f5ba"
+        "figures/q2_response_surface.png": "0ff13525c4196576e1f8e9e9ae65e29189147912aa9b9f93119695ce723557cd",
+        "figures/q2_response_surface.pdf": "e07bdfd0e368a43211bb6ae629bfaed9c37c1cc2ed24262126d5a9aae8fece54",
+        "figures/q2_response_surface.svg": "256354e4c6a23220001a48d81be442c2f8ccfdd6bedd8371945397cd1da0f15a"
       },
       "role": "paper"
     },
@@ -399,7 +469,18 @@
           "feasibility"
         ],
         "comparison_semantics": "only like-for-like quantities share an axis",
-        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论",
+        "color_budget": {
+          "recorded": true,
+          "chromatic_hues": [
+            "editorial_denim"
+          ],
+          "hue_count": 1,
+          "accent_count": 0,
+          "semantic_only": true,
+          "redundant_encoding_required": true,
+          "source": "src/matlab/palette_spec.json"
+        }
       },
       "visual_qa": {
         "final_width_in": 6.2,
@@ -411,9 +492,9 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q2_multiseed_stability.png": "bb6fb0c489bc8dcfb7a6cff910801568cdeeb01eb28746bd3b927ecb2b66df8a",
-        "figures/q2_multiseed_stability.pdf": "9a8ecfcbd7c83d6fe4d8069f3efb1f78d88f20e92623b30d754d539853ea98e8",
-        "figures/q2_multiseed_stability.svg": "ceb054d6124cd17380579a6ee9b4ad7a915936286ddac89cbeffda2be0731d53"
+        "figures/q2_multiseed_stability.png": "83ca03b899a37b17890c8901b6b7e2722bf0d89f490fbb2dc1b3f307a40ffc9c",
+        "figures/q2_multiseed_stability.pdf": "8d73a6af7a03aa8e794437231d566f2bd316438e06ada1a0983e44aef5b00959",
+        "figures/q2_multiseed_stability.svg": "0542eb2633ebfc5fdbeb5107f4d68e1033dcbcea7c4ffbb25616d740c859c897"
       },
       "role": "support"
     },
@@ -451,7 +532,19 @@
           "union"
         ],
         "comparison_semantics": "only like-for-like quantities share an axis",
-        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论",
+        "color_budget": {
+          "recorded": true,
+          "chromatic_hues": [
+            "editorial_denim",
+            "negative_clay"
+          ],
+          "hue_count": 2,
+          "accent_count": 1,
+          "semantic_only": true,
+          "redundant_encoding_required": true,
+          "source": "src/matlab/palette_spec.json"
+        }
       },
       "visual_qa": {
         "final_width_in": 6.2,
@@ -463,9 +556,9 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q3_interval_union.png": "0d515741a663da6fe655ca6a48e7e2bbccbcf5c1e7a587c69b340f98d484468d",
-        "figures/q3_interval_union.pdf": "6e9b26084bcbd8179ac492297eb233768b180906e36409e6fd74f72fd2a0ad28",
-        "figures/q3_interval_union.svg": "568a20bb521c10211aac58e567b51ac1c929652abd58d328657552a78e45890f"
+        "figures/q3_interval_union.png": "faa795eb3b3c507cbf65e096c5869ee471d5c48aacf3003c73b04664918c6b49",
+        "figures/q3_interval_union.pdf": "b374fddbfc20fcae81e88cfebfbd706d1a1785f5e2194661d82de3dcb9987e2e",
+        "figures/q3_interval_union.svg": "bcd7ead4e9ece2b676ec8f675b749500388a95d9bc7c58929ba82fcc11f27bc0"
       },
       "role": "paper"
     },
@@ -502,7 +595,19 @@
           "union"
         ],
         "comparison_semantics": "only like-for-like quantities share an axis",
-        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论",
+        "color_budget": {
+          "recorded": true,
+          "chromatic_hues": [
+            "editorial_denim",
+            "negative_clay"
+          ],
+          "hue_count": 2,
+          "accent_count": 1,
+          "semantic_only": true,
+          "redundant_encoding_required": true,
+          "source": "src/matlab/palette_spec.json"
+        }
       },
       "visual_qa": {
         "final_width_in": 6.2,
@@ -514,9 +619,9 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q4_temporal_synergy.png": "d68288a93e17823861627d8928a4f2877ecc4242ccd148419f6f754ab0f2450b",
-        "figures/q4_temporal_synergy.pdf": "31d64c29f00654c96f96a34e768787add03c3316f3de33e5e6589df8e3784098",
-        "figures/q4_temporal_synergy.svg": "64da2d350571017cb13a12c968805bb804ba4f58279dcd4d59af0a4c0a241e36"
+        "figures/q4_temporal_synergy.png": "adeeff34c181ae4cb8de09c7719045578d1d7dd91b6928bf2f3285cad41aa85a",
+        "figures/q4_temporal_synergy.pdf": "9ea21ed7c5bd75371f94cdb92ee3be4303557a91e1229275b0e84711dbd13543",
+        "figures/q4_temporal_synergy.svg": "9e87535c465257522ef426a0feaeb2af481c3b008af18fa280e9eb56fe2550e6"
       },
       "role": "paper"
     },
@@ -545,7 +650,18 @@
           "search_accounting"
         ],
         "comparison_semantics": "only like-for-like quantities share an axis",
-        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论",
+        "color_budget": {
+          "recorded": true,
+          "chromatic_hues": [
+            "editorial_denim"
+          ],
+          "hue_count": 1,
+          "accent_count": 0,
+          "semantic_only": true,
+          "redundant_encoding_required": true,
+          "source": "src/matlab/palette_spec.json"
+        }
       },
       "visual_qa": {
         "final_width_in": 6.2,
@@ -557,9 +673,9 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/search_quality_diagnostics.png": "efee5628df4d4c38d1fb3a0a5ed66f9536848e462472175d9a0e860422fbb48c",
-        "figures/search_quality_diagnostics.pdf": "a25b309bc47f71b7bc05618f87964a4ea29d1f2f5b99882802777138d37cbff3",
-        "figures/search_quality_diagnostics.svg": "7f15dd1dd8d4fa1a17fb238c1fcfb8e2837da775fd109371020698a616090530"
+        "figures/search_quality_diagnostics.png": "487bb9ea6a73d3302567c36b6d0b15cf2b2bff009f5c3a0273f0a7694eafacc1",
+        "figures/search_quality_diagnostics.pdf": "5c5fbbe335bcf4239c75fac44111029eef92a35df1a4f5d1f118a873cf17228b",
+        "figures/search_quality_diagnostics.svg": "f147e07306dc2392d813214dbed45f2d4027065c4b58e16c32898823ab0f80ec"
       },
       "role": "support"
     },
@@ -590,7 +706,18 @@
           "missile_assignment"
         ],
         "comparison_semantics": "only like-for-like quantities share an axis",
-        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论",
+        "color_budget": {
+          "recorded": true,
+          "chromatic_hues": [
+            "editorial_denim"
+          ],
+          "hue_count": 1,
+          "accent_count": 0,
+          "semantic_only": true,
+          "redundant_encoding_required": true,
+          "source": "src/matlab/palette_spec.json"
+        }
       },
       "visual_qa": {
         "final_width_in": 6.2,
@@ -602,9 +729,9 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q5_xy_strategy.png": "3fea64bc7d727495b6eda1eec2d217f5059f06f5625882d64445c0ee05edeb22",
-        "figures/q5_xy_strategy.pdf": "737a1d8e18fb2f4ab970a1f52855b34e8d3c7a6a5e3c525aec1ffffa64132271",
-        "figures/q5_xy_strategy.svg": "cb89b8c9036a93db01f357260bbda758ea89f45824f265b96cc8db96ad25ea34"
+        "figures/q5_xy_strategy.png": "5e49bcaaa5786fb2e25761d86d8eb3f30b1e66ffe49006349581cbe1378e9226",
+        "figures/q5_xy_strategy.pdf": "9cc2da908c95fe95d731556c3827b173b5592cee8583e5073fbfc33499ee2cde",
+        "figures/q5_xy_strategy.svg": "3b1cc3170a6d779525058ef723bc88778855e1f7f88bfb0542ddab6c61b3edc5"
       },
       "role": "paper"
     },
@@ -641,7 +768,19 @@
           "largest_gap"
         ],
         "comparison_semantics": "only like-for-like quantities share an axis",
-        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论",
+        "color_budget": {
+          "recorded": true,
+          "chromatic_hues": [
+            "editorial_denim",
+            "negative_clay"
+          ],
+          "hue_count": 2,
+          "accent_count": 1,
+          "semantic_only": true,
+          "redundant_encoding_required": true,
+          "source": "src/matlab/palette_spec.json"
+        }
       },
       "visual_qa": {
         "final_width_in": 6.2,
@@ -653,9 +792,9 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q5_coverage_gantt.png": "0ef18857b712ae6d3643b6ca2a5d7744d77284620188178f09a0e71485305bc1",
-        "figures/q5_coverage_gantt.pdf": "9a0e182b385f468e62a0bc48c14d8c3e5a07e25f3aae9b9e10b1cc42731f923b",
-        "figures/q5_coverage_gantt.svg": "4304246be1cd658a81d845fe7ac4bb22f3bcd1edcfd5d293c9b61d67e0b82190"
+        "figures/q5_coverage_gantt.png": "54d3c58f7c51cafd1a47d8adba39908636f0bf1c3c2df9841e650ccf78f9de23",
+        "figures/q5_coverage_gantt.pdf": "4c8df13332998cd90dab5e775232eba072c522be2b025a2b1b133081120b2043",
+        "figures/q5_coverage_gantt.svg": "4f94d6e7214067fb6e8a285457808ffd4f20dbed4383cb96f3a15e7b7f488e2b"
       },
       "role": "paper"
     },
@@ -684,7 +823,19 @@
           "total"
         ],
         "comparison_semantics": "only like-for-like quantities share an axis",
-        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论",
+        "color_budget": {
+          "recorded": true,
+          "chromatic_hues": [
+            "editorial_denim",
+            "risk_plum"
+          ],
+          "hue_count": 2,
+          "accent_count": 1,
+          "semantic_only": true,
+          "redundant_encoding_required": true,
+          "source": "src/matlab/palette_spec.json"
+        }
       },
       "visual_qa": {
         "final_width_in": 6.2,
@@ -696,9 +847,9 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q5_per_missile_robustness.png": "9d8bfbec6409b27f73065cc3cebbf85c11937d795bb46ecb9621ade5f526c821",
-        "figures/q5_per_missile_robustness.pdf": "a877864e696128b6bae44dd960e3777b8eba1e9068374ca4d761991492612b12",
-        "figures/q5_per_missile_robustness.svg": "2fc27d920961ac248f3128720da51d53f9405c4039c450c71e10022f36d3a824"
+        "figures/q5_per_missile_robustness.png": "b618507e93711aeaff98b8fe3db9fe029b7c45e2a55457a5dda6fe12431dae51",
+        "figures/q5_per_missile_robustness.pdf": "8207381d4d25d9aa65a208fb53398d07de285596238436953838b4557f7fcfc5",
+        "figures/q5_per_missile_robustness.svg": "d1a6c128754b6d954d6e4599ba5cda10e5103669ea00b55eb87fac1d1027c83c"
       },
       "role": "support"
     },
@@ -725,7 +876,19 @@
           "independent_optimization_boundary"
         ],
         "comparison_semantics": "only like-for-like quantities share an axis",
-        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论",
+        "color_budget": {
+          "recorded": true,
+          "chromatic_hues": [
+            "editorial_denim",
+            "risk_plum"
+          ],
+          "hue_count": 2,
+          "accent_count": 1,
+          "semantic_only": true,
+          "redundant_encoding_required": true,
+          "source": "src/matlab/palette_spec.json"
+        }
       },
       "visual_qa": {
         "final_width_in": 6.2,
@@ -737,9 +900,9 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/criterion_sensitivity.png": "08e74eb8e6d86a52e4c6bc1598e9d910f79a401cc43b517403b10b0c0e6e0f9a",
-        "figures/criterion_sensitivity.pdf": "8b3fac963d4a5f2023e10caeea4a89ed0cb1bcdc7072ab630b71b02ea318fe2b",
-        "figures/criterion_sensitivity.svg": "aabdc9df3c94796ce825b2c6bbce5815f86cdad40b512c9d279491138c031e55"
+        "figures/criterion_sensitivity.png": "428eb565f98979c8e8d3639f6343d2cb124281f0d2d884399a9b792eb044c37a",
+        "figures/criterion_sensitivity.pdf": "5533470bfe9975b24b57fc8eaa604d56d2457ca3331fd49c899efd1a3109e8b6",
+        "figures/criterion_sensitivity.svg": "2ed9335494a6325bd7a45c144246e8513893d0d52e2b9ae2a2b97e92f4791850"
       },
       "role": "support"
     },
@@ -768,7 +931,18 @@
           "tolerance_band"
         ],
         "comparison_semantics": "only like-for-like quantities share an axis",
-        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论",
+        "color_budget": {
+          "recorded": true,
+          "chromatic_hues": [
+            "editorial_denim"
+          ],
+          "hue_count": 1,
+          "accent_count": 0,
+          "semantic_only": true,
+          "redundant_encoding_required": true,
+          "source": "src/matlab/palette_spec.json"
+        }
       },
       "visual_qa": {
         "final_width_in": 6.2,
@@ -780,9 +954,9 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/time_step_convergence.png": "bb07d4a82e8ecd68601e50c5d8e2c8d87fbabf46b5dfabcb06f9c23adad77bc3",
-        "figures/time_step_convergence.pdf": "c80f53cb2125418138a5c21ad4ae2c40c50d601b401db02ca6656d60f3c8de05",
-        "figures/time_step_convergence.svg": "687973cc6db01a8af2fb43528132c08ced221411395ee1ae4f9e0387708fade4"
+        "figures/time_step_convergence.png": "ea77ee29bfdc94b081abc8b0f8d03c5183c21ba44a6aa0e7b8845cb761fb10e7",
+        "figures/time_step_convergence.pdf": "564fff4f20aa738e8b44ba946f410b06c8397330a10297e937f5e4ef5c4c7507",
+        "figures/time_step_convergence.svg": "9983270226c79ae77375323b47ced027bdffba387a7a4e72935ad56f344f1896"
       },
       "role": "paper"
     },
@@ -812,7 +986,18 @@
           "sample_size"
         ],
         "comparison_semantics": "only like-for-like quantities share an axis",
-        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论"
+        "cannot_infer": "图中证据不构成未声明的全局最优、现实随机鲁棒性或因果结论",
+        "color_budget": {
+          "recorded": true,
+          "chromatic_hues": [
+            "editorial_denim"
+          ],
+          "hue_count": 1,
+          "accent_count": 0,
+          "semantic_only": true,
+          "redundant_encoding_required": true,
+          "source": "src/matlab/palette_spec.json"
+        }
       },
       "visual_qa": {
         "final_width_in": 6.2,
@@ -824,9 +1009,9 @@
       },
       "renderer": "MATLAB R2026a",
       "sha256": {
-        "figures/q3_q4_multiseed_stability.png": "5caaa322c758e48324db35e0ae21c7333ea6152372da2963120124b9c5e3de27",
-        "figures/q3_q4_multiseed_stability.pdf": "7117831061178fd472ceb9711b67f4a90db2b14310d72cf7d94cfaf6d1ba59bd",
-        "figures/q3_q4_multiseed_stability.svg": "594cf0e3a763a4316bcff97e7a4e8bb0dfc589fbcd4f4283e4d13622a1c53200"
+        "figures/q3_q4_multiseed_stability.png": "01d3e0cdfe6ac96e54b900e81523cf0a371e63b7a1eb9c351d95c31819d5b687",
+        "figures/q3_q4_multiseed_stability.pdf": "a327046c15418ad030a9b0805c03eca2e86fa81e130debe37558fe5be9d0e717",
+        "figures/q3_q4_multiseed_stability.svg": "aae5820129955bc6c5a466eb1de7de65f3bfddd14cf1ca2802b9c9e312ccbb1d"
       },
       "role": "support"
     }
@@ -834,12 +1019,14 @@
   "matlab_provenance": {
     "schema_version": 1,
     "sources_sha256": {
-      "src/matlab/render_q1_event.m": "466e1648bc35852cfda517433b3d5be5c4ef020384f246461b535b7572d2098f",
-      "src/matlab/render_q3_event.m": "b92478f28b1df1388b4a49ffe6c5d527447fd967e376ee79781eb3eb29aeb509",
-      "src/matlab/render_q4_event.m": "431b8467784de152e3e49c3ac0d02cca4410c95846b8392b03623acd19eade0c",
-      "src/matlab/render_core_figures.m": "ad6876f1d6e8e86783d17c6528a3ca2c3b1c0bf5662988e11872b04d21e45d0f",
-      "src/matlab/render_q5_figures.m": "b751be3e7b27763cc6bf5db05e5a5d1eebfb8194ad3d850f05fdc51e2a2e2544",
-      "src/matlab/render_cross_audits.m": "99aef394be640ababb5ec0217edd2ab15f98e74789dfe98f21ad95da88fe3271"
+      "src/matlab/render_q1_event.m": "00c01e19ca702ec85c58ddd2f14dee45194f789bda45854c9e48387fb2b1697c",
+      "src/matlab/render_q3_event.m": "10fcb117bc94cca2fc133fccba13ac0f903a75462499d069ea78cacce683340c",
+      "src/matlab/render_q4_event.m": "9aa5af56a8f40e8503f3e6dff1e41269d2f6edfd297e1806725ec01c57f72d8f",
+      "src/matlab/render_core_figures.m": "42772cf7fc10675fb7ed1a1acc7f46c17186658de5ffd7dbd95b8459b9a31a6d",
+      "src/matlab/render_q5_figures.m": "ed185ea25cb91b2f66a3ce1c3d21161e59c14f7c0698f6d2a4e9e9e6a9e4ba0f",
+      "src/matlab/render_cross_audits.m": "032fec1c9401ff6bd8e4066b05c889dd3c8e215c87275d9a6b0c504c636a36b4",
+      "src/matlab/contest_palette.m": "1c82897cc64657670e1d765ee5c64913cbdcf72056b9ee8a6b3df8d4b50a0990",
+      "src/matlab/palette_spec.json": "a3b19fd7a32ef44ed7735752f84c9eea141060a8cea807b13e36339d4d3526b5"
     },
     "inputs_sha256": {
       "validation/q1_q2_independent.json": "87356ed221129d27784aff9bd90dceb8be4da372b767db4d3db7ccba4cf597c9",

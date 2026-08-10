@@ -51,6 +51,32 @@ MATLAB_SCRIPTS = (
     "render_q5_figures.m",
     "render_cross_audits.m",
 )
+MATLAB_SHARED_SOURCES = (
+    "contest_palette.m",
+    "palette_spec.json",
+)
+MATLAB_PROVENANCE_SOURCES = MATLAB_SCRIPTS + MATLAB_SHARED_SOURCES
+PALETTE_DESCRIPTION = (
+    "exact white paper; charcoal and neutral grey structure; editorial denim blue "
+    "for validated evidence; clay only for delay, overlap deductions and uncovered "
+    "gaps; muted plum only for conservative-risk comparisons"
+)
+FIGURE_COLOR_BUDGETS = {
+    "modeling_workflow": ("editorial_denim",),
+    "finite_sightline_geometry": ("editorial_denim",),
+    "q1_occlusion_intervals": ("editorial_denim", "negative_clay"),
+    "q2_response_surface": ("editorial_denim_sequential",),
+    "q2_multiseed_stability": ("editorial_denim",),
+    "q3_interval_union": ("editorial_denim", "negative_clay"),
+    "q4_temporal_synergy": ("editorial_denim", "negative_clay"),
+    "search_quality_diagnostics": ("editorial_denim",),
+    "q5_xy_strategy": ("editorial_denim",),
+    "q5_coverage_gantt": ("editorial_denim", "negative_clay"),
+    "q5_per_missile_robustness": ("editorial_denim", "risk_plum"),
+    "criterion_sensitivity": ("editorial_denim", "risk_plum"),
+    "time_step_convergence": ("editorial_denim",),
+    "q3_q4_multiseed_stability": ("editorial_denim",),
+}
 VALIDATION_INPUTS = (
     "q1_q2_independent.json",
     "q2_multiseed.json",
@@ -127,7 +153,7 @@ def _load_manifest() -> dict[str, Any]:
 
 
 def _dependency_provenance() -> dict[str, Any]:
-    scripts = [MATLAB_SCRIPT_DIR / name for name in MATLAB_SCRIPTS]
+    scripts = [MATLAB_SCRIPT_DIR / name for name in MATLAB_PROVENANCE_SOURCES]
     inputs = [ROOT / "validation" / name for name in VALIDATION_INPUTS]
     _required_files(scripts, label=" MATLAB 绘图脚本")
     _required_files(inputs, label=" MATLAB 绘图输入")
@@ -441,7 +467,7 @@ def _reuse_checked_in_artifacts(
         "executed": False,
         "runtime": str(executable) if executable else "checked-in MATLAB artifacts",
         "reason": "已通过清单哈希、MATLAB renderer 和依赖哈希校验复用 42 个正式产物",
-        "sources": [f"src/matlab/{name}" for name in MATLAB_SCRIPTS],
+        "sources": [f"src/matlab/{name}" for name in MATLAB_PROVENANCE_SOURCES],
     }
 
 
@@ -454,12 +480,17 @@ def _updated_manifest(
     manifest["schema_version"] = max(4, int(manifest.get("schema_version", 0)))
     manifest["run_id"] = RUN_ID
     manifest["generated_by"] = (
-        "src/generate_figures.py orchestrating six src/matlab/render_*.m figure scripts"
+        "src/generate_figures.py orchestrating six MATLAB renderers and one canonical palette"
     )
     manifest["matlab_render"] = matlab_render
     manifest["matlab_provenance"] = provenance
     manifest["paper_figure_count"] = len(PAPER_FIGURE_STEMS)
     manifest["support_figure_count"] = len(SUPPORT_FIGURE_STEMS)
+    design_system = manifest.setdefault("design_system", {})
+    if not isinstance(design_system, dict):
+        raise RuntimeError("图件清单 design_system 必须为对象")
+    design_system["palette"] = PALETTE_DESCRIPTION
+    design_system["palette_source"] = "src/matlab/palette_spec.json"
 
     records = manifest.get("figures")
     if not isinstance(records, list):
@@ -477,6 +508,21 @@ def _updated_manifest(
         if not str(record.get("renderer", "")).startswith("MATLAB "):
             record["renderer"] = "MATLAB R2026a"
         record["role"] = "support" if stem in SUPPORT_FIGURE_STEMS else "paper"
+        intent = record.setdefault("figure_intent", {})
+        if not isinstance(intent, dict):
+            raise RuntimeError(f"{figure_id} 的 figure_intent 必须为对象")
+        hues = FIGURE_COLOR_BUDGETS[stem]
+        intent["color_budget"] = {
+            "recorded": True,
+            "chromatic_hues": list(hues),
+            "hue_count": len(hues),
+            "accent_count": sum(
+                hue in {"negative_clay", "risk_plum"} for hue in hues
+            ),
+            "semantic_only": True,
+            "redundant_encoding_required": True,
+            "source": "src/matlab/palette_spec.json",
+        }
         record["files"] = files
         record["sha256"] = {
             relative_path: sha256(ROOT / relative_path) for relative_path in files

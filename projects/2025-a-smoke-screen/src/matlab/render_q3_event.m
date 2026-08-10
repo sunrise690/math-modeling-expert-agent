@@ -45,14 +45,7 @@ assert(abs(sum(diff(intervals, 1, 2)) - sum(overlaps) - unionDuration) < 1e-8, .
 validateHandoff(plans, intervals, 1, 2, payload.model);
 validateHandoff(plans, intervals, 2, 3, payload.model);
 
-C.paper = hexColor('#FFFFFF');
-C.ink = hexColor('#1E2A32');
-C.muted = hexColor('#647078');
-C.guide = hexColor('#D6DEE1');
-C.primary = hexColor('#2F6079');
-C.secondary = hexColor('#59636A');
-C.warm = hexColor('#B5782F');
-C.wine = hexColor('#8B4E5A');
+C = contest_palette();
 C.coolFill = tintColor(C.primary, C.paper, 0.12);
 C.warmFill = tintColor(C.warm, C.paper, 0.15);
 
@@ -119,16 +112,16 @@ for k = 1:3
     plot(ax, release(k), yRelease, 'd', 'MarkerSize', 5.3, ...
         'MarkerFaceColor', C.paper, 'MarkerEdgeColor', C.ink, 'LineWidth', 1.0);
     plot(ax, detonate(k), yDetonate, 'o', 'MarkerSize', 5.2, ...
-        'MarkerFaceColor', C.warm, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.7);
+        'MarkerFaceColor', C.secondary, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.7);
     plot(ax, entry, yActive, '^', 'MarkerSize', 5.7, ...
         'MarkerFaceColor', C.primary, 'MarkerEdgeColor', C.paper, 'LineWidth', 0.7);
     plot(ax, exitTime, yActive, 'v', 'MarkerSize', 5.7, ...
         'MarkerFaceColor', C.paper, 'MarkerEdgeColor', C.ink, 'LineWidth', 1.0);
 
-    labelTime(ax, release(k), yRelease + 0.18, release(k), C.ink, fontName, 'bottom');
-    labelTime(ax, detonate(k), yDetonate - 0.18, detonate(k), C.warm, fontName, 'top');
-    labelTime(ax, entry, yActive + 0.19, entry, C.primary, fontName, 'bottom');
-    labelTime(ax, exitTime, yActive - 0.19, exitTime, C.ink, fontName, 'top');
+    labelTime(ax, release(k), yRelease + 0.18, release(k), C.ink, fontName, C.paper, 'bottom');
+    labelTime(ax, detonate(k), yDetonate - 0.18, detonate(k), C.secondary, fontName, C.paper, 'top');
+    labelTime(ax, entry, yActive + 0.19, entry, C.primary, fontName, C.paper, 'bottom');
+    labelTime(ax, exitTime, yActive - 0.19, exitTime, C.ink, fontName, C.paper, 'top');
 end
 
 text(ax, 0.00, 1.10, 'a', 'Units', 'normalized', ...
@@ -322,11 +315,11 @@ quiver(ax, x0, y0, dx, dy, 0, 'Color', color, ...
 end
 
 
-function labelTime(ax, x, y, value, color, fontName, verticalAlignment)
+function labelTime(ax, x, y, value, color, fontName, paper, verticalAlignment)
 text(ax, x, y, sprintf('%.3f', value), ...
     'HorizontalAlignment', 'center', 'VerticalAlignment', verticalAlignment, ...
     'FontName', fontName, 'FontSize', 7.0, 'Color', color, ...
-    'BackgroundColor', [1, 1, 1], 'Margin', 0.5, 'Interpreter', 'none', ...
+    'BackgroundColor', paper, 'Margin', 0.5, 'Interpreter', 'none', ...
     'Clipping', 'off');
 end
 
