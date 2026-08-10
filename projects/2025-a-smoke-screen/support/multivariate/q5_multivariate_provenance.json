@@ -1,0 +1,141 @@
+{
+  "artifacts": {
+    "support/multivariate/q5_multivariate_structure.opju": "c681df5f2bd70bfb7bc7885e89c235696d10d16a8bb219e282de6984319778e8",
+    "support/multivariate/q5_multivariate_structure.pdf": "c57be39bffd9f4c7e57a12b449dd44cbc6ad9cce9d34b573f5de5b2107f2de6b",
+    "support/multivariate/q5_multivariate_structure.png": "0432b5f8a54d2a54ea69dfa63e42269aa3fb8949f33e7c2c51eaf255b5d20938",
+    "support/multivariate/q5_multivariate_structure.svg": "cc9c8400365243185089d6348b60eb3213e8d95ccd50af95d062635003e43cb9"
+  },
+  "capability_snapshot": {
+    "path": "support/multivariate/origin_capability_snapshot.json",
+    "sha256": "f8adc6d87e8eb722bd3cdb7a77fe1f2944fc89fc705deec89393b5fc6a36cdd6"
+  },
+  "command": [
+    "python",
+    "-B",
+    "src/origin/render_q5_multivariate.py"
+  ],
+  "derived_data": {
+    "support/multivariate/editorial_standardized_diverging.pal": "74ae98105a9cb6d38b0603218665c21c56f8177df21202ef05ad25e1bfb84d49",
+    "support/multivariate/q5_multivariate_features.csv": "641987fb28583294dce4d12c2c6dde9cba30014c6693f3894aa0dd9139181e76",
+    "support/multivariate/q5_multivariate_standardization.csv": "3af25e18256b4b6f4d47c82216922aede7153cb6119cc947b4788222da67ab2b",
+    "support/multivariate/q5_multivariate_weighted_z.csv": "3eb1f311fe7176c08a8c6ca3763b94b351d4dfec92b9d8d1e69839f3a52fee47",
+    "support/multivariate/q5_pca_loadings.csv": "5ac5702183f5c8c3a297d7b00b3e55cca401dfcd014bf43d9b53f18026484616",
+    "support/multivariate/q5_pca_scores.csv": "dfc7b3c60fed77c5a01b5414e8b9a7fc3d0d63528dbe26090e096af775ddfeb4"
+  },
+  "execution": {
+    "external_automation": true,
+    "hidden_session": true,
+    "origin_exit_requested": true,
+    "origin_exit_verified": true,
+    "project_roundtrip_verified": true,
+    "remaining_new_origin_pids": [],
+    "required_exports_completed": [
+      "png",
+      "pdf",
+      "svg",
+      "opju"
+    ],
+    "run_completed_ns": 1786371480837591000,
+    "run_started_ns": 1786371454748819600
+  },
+  "explained_variance_ratio": [
+    0.42750992444818536,
+    0.2446216588525577,
+    0.18110468024340304,
+    0.08445779004948714,
+    0.03640896922639894,
+    0.02110103057593985,
+    0.003233167215687555,
+    0.0014776559037721077,
+    8.512348456835477e-05
+  ],
+  "export_parameters": {
+    "opju": {
+      "editable": true,
+      "roundtrip_required": true
+    },
+    "pdf": {
+      "font_mode": "outlined_compact",
+      "origin_tree": "tr2.PDF.Fonts",
+      "outline_mode": 0,
+      "truetype": false
+    },
+    "png": {
+      "dpi": 360,
+      "width_px": 2232
+    },
+    "svg": {
+      "size_factor_percent": 100,
+      "text_mode": "editable_text"
+    }
+  },
+  "graph_contract": {
+    "base_template": "blank origin graph",
+    "mode": "scripted_page",
+    "path": "support/multivariate/q5_multivariate_figure_contract.json",
+    "sha256": "e00c41745afae71eb576e0ab3b83342dbe36d2f0f824acd199ada46406b4d38e"
+  },
+  "input": "validation/q3_q5_independent.json",
+  "input_sha256": "b0a96ea77a502bb835d32fe37bdf569260b0c893d7aa2ee2187e760ad47df288",
+  "limitations": [
+    "descriptive analysis of 15 jointly selected final plans, not independent replicates",
+    "PC1 and PC2 do not retain all nine-dimensional variation",
+    "PCA point separation is descriptive and must not be interpreted as natural clustering",
+    "does not establish global optimality, multi-seed stability or real-world robustness"
+  ],
+  "numpy": "2.4.6",
+  "origin_executable": "D:\\Origin2024\\Origin64.exe",
+  "origin_executable_sha256": "df30d220e5307cd901d9a6091b55f9000c4ec283012380414013e50e5d4b50f4",
+  "origin_version": "10.100178",
+  "originext_version": "1.2.5",
+  "originpro_version": "1.1.15",
+  "palette_spec": "src/matlab/palette_spec.json",
+  "palette_spec_sha256": "7814ec89133c144d5e60b01eae7299f146c1d070dc71325de918719331340611",
+  "preprocessing": {
+    "circular_heading_group": [
+      "heading_cos",
+      "heading_sin"
+    ],
+    "circular_heading_scaling": "centered cos/sin block divided by sqrt(trace(sample covariance)); total group sample variance = 1",
+    "features": [
+      "heading_cos",
+      "heading_sin",
+      "speed",
+      "release_time",
+      "fuse_delay",
+      "coverage_centroid",
+      "centerline_duration",
+      "unique_contribution_ratio",
+      "criterion_retention_ratio"
+    ],
+    "heading_group_scale": 0.8074489029839036,
+    "loading_definition": "Pearson correlation between each weighted feature and each standardized PC score",
+    "observations": 15,
+    "pca": "SVD of the same weighted standardized matrix; deterministic sign anchors",
+    "row_order": "fixed UAV identifier and within-UAV shot sequence; no clustering",
+    "standardization": "sample z-score (ddof=1) for scalar features"
+  },
+  "python": "3.11.9",
+  "renderer_backend": "originpro",
+  "row_order": [
+    "FY1-1",
+    "FY1-2",
+    "FY1-3",
+    "FY2-1",
+    "FY2-2",
+    "FY2-3",
+    "FY3-1",
+    "FY3-2",
+    "FY3-3",
+    "FY4-1",
+    "FY4-2",
+    "FY4-3",
+    "FY5-1",
+    "FY5-2",
+    "FY5-3"
+  ],
+  "run_id": "origin-1786371454748819600",
+  "schema_version": 2,
+  "source": "src/origin/render_q5_multivariate.py",
+  "source_sha256": "76a3231a3e8eb7890967e2a401d8967f5c75ff0ed805affc169682986a8e9858"
+}

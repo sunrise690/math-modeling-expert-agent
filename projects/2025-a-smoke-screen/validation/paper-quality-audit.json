@@ -51,7 +51,7 @@
     "正文检测到 9 处 Q1--Q9 缩写；中文国赛正文宜改为“问题一”--“问题九”，代码或文件名除外。"
   ],
   "metrics": {
-    "characters": 33900,
+    "characters": 34213,
     "pages": 28,
     "sections": 13,
     "questions": 5,
@@ -60,7 +60,7 @@
       "2": 2347,
       "3": 2206,
       "4": 1766,
-      "5": 5547
+      "5": 5846
     },
     "abstractCharacters": 845,
     "abstractNumericResults": 9,
@@ -76,10 +76,10 @@
     "questionsWithoutFigure": [],
     "dominantQuestionFigureShare": 0.3333333333333333,
     "tables": 23,
-    "equations": 41,
+    "equations": 42,
     "citations": 6,
     "bibliographyItems": 142,
-    "validationSignals": 62,
+    "validationSignals": 63,
     "validationNumericSignals": 26,
     "figureInterpretations": 9,
     "placeholders": 0,
@@ -88,7 +88,7 @@
     "qNotationCount": 9,
     "minimumFigures": 8,
     "artifactName": "main.pdf",
-    "artifactSha256": "133db65ac29e16efa38b2f2679fc340cd107c22c641000dee96729749d52d828",
+    "artifactSha256": "26d6d8350c474d2b75e72b2829516cfe2c5cd6503a6f4c199bbd10a73492c32c",
     "fullPaper": true,
     "expectedQuestions": 5
   },

@@ -52,7 +52,7 @@ display_decision:
 
 ## 先写图的主张
 
-只有 `display_decision.decision: figure` 的候选项才能创建结构化 `figure_intent`。不得只写一段自由文本；至少包含 `figure_id`、`role`、`claim`、`display_decision`、`visual_grammar`、`line_applicability`、`evidence_signature`、`nearest_figure`、`why_not_merge`、`data_sources`、`axes`、`color_budget`、`caption_layers`、`text_location` 和 `exports`。没有主张的图不进入正文；图注声称的最优点、阈值、事件根、并集或不确定性必须在图中真实存在。
+只有 `display_decision.decision: figure` 的候选项才能创建结构化 `figure_intent`。不得只写一段自由文本；至少包含 `figure_id`、`role`、`claim`、`display_decision`、`visual_grammar`、`line_applicability`、`evidence_signature`、`nearest_figure`、`why_not_merge`、`data_sources`、`axes`、`color_budget`、`caption_layers`、`text_location`、`renderer_contract` 和 `exports`。没有主张的图不进入正文；图注声称的最优点、阈值、事件根、并集或不确定性必须在图中真实存在。
 
 ```yaml
 figure_id: fig_q2_landscape
@@ -88,7 +88,12 @@ color_budget:
   waiver: null
 caption_layers: [surface, optimum, confidence_contour]
 text_location: sec:q2-results
-exports: [figures/q2_landscape.pdf, figures/q2_landscape.png]
+renderer_contract:
+  backend: origin
+  capability_check: support/origin/capability.json#sha256:<digest>
+  sources: [src/origin/render_q2_landscape.py, support/origin/q2_landscape.csv]
+  editable_project: figures/q2_landscape.opju
+exports: [figures/q2_landscape.png, figures/q2_landscape.pdf, figures/q2_landscape.svg]
 ```
 
 `visual_grammar` 必须使用全篇统一的规范枚举，例如 `geometry_schematic`、`optimization_landscape`、`event_timeline`、`interval_arithmetic`、`assignment_matrix`、`spatial_trajectory`、`convergence_diagnostic`、`paired_sensitivity`；不得用“图 3 风格”一类临时名称规避比对。`evidence_signature` 由规范化数据源及其内容哈希、变量与单位、样本/场景切片、聚合或变换、直接产出的证据结果组成；字段按键排序后计算 SHA-256。比较重复证据时同时比较规范化字段，不能只比较摘要文字或文件名。
@@ -143,6 +148,19 @@ exports: [figures/q2_landscape.pdf, figures/q2_landscape.png]
 
 小于 10 个样本时优先显示全部点；少于 5 个样本禁止用箱线图。若全部波动不超过数值容差，报告“在容差内一致”，不得截断纵轴放大成有意义的分布差异。
 
+## 高维与联合选择数据
+
+高维图先定义分析矩阵，后选择降维或图形。不得把软件默认 PCA、聚类或三维投影当作“高级图”直接输出。
+
+1. 建立一份规范特征矩阵，逐列记录变量含义、单位、缺失处理、异常值处理、变换和标准化参数。连续量默认使用 z-score；偏态或强异常值变量可使用稳健标准化，但必须记录中位数和尺度，不能在不同图中切换口径。
+2. 角度、航向、相位和时刻环量等圆周变量不得把原始角度当普通线性变量。使用 `cos(theta)` 与 `sin(theta)` 成对编码，在特征选择、载荷解释、置换重要度和图注中始终作为一个语义组；两列共享 `sqrt(trace(sample covariance))` 等对角度原点旋转不变的组尺度，使组总样本方差为 1。禁止分别 z-score 后再除以 `sqrt(2)`，因为该做法会随角度零点改变距离和 PCA 谱。
+3. 正式高维证据优先展示标准化矩阵本身，例如按有意义的目标值或方案顺序排列的矩阵热图、带直接标签的小倍图或成对关系图。色条说明标准化口径；不得用未经论证的树状聚类重排制造分组印象。
+4. PCA 仅作为标准化矩阵的辅助投影。必须报告每个展示主成分及累计解释方差、载荷或贡献、样本数和预处理；二维累计解释不足以支撑主张时，不得用 PC1--PC2 平面替代原始空间。PCA 分离只说明投影方向上的差异，不能单独证明类别、因果关系或稳健性。
+5. 当联合选择数据只有 15 条方案或样本时，允许描述距离、排序、载荷、方案差异和局部邻近，不得声称存在“自然聚类”“潜在类别”或稳定群落。若确需探索算法划分，必须另做重采样稳定性和外部判据验证，并在正文称为“算法划分”，不得把探索结果升级为数据生成机制。
+6. 禁止雷达图：面积、角度和轴顺序会扭曲跨变量比较。禁止只为增加维度感而画 3D 散点、3D 柱或透视曲面。禁止所有样本叠成不可追踪线束的意大利面式平行坐标；若必须检查单个方案路径，则筛选有明确语义的少量代表方案并直接标注，其余使用标准化矩阵、分面点图或小倍图。
+
+`figure_intent` 对高维图还须在 `evidence_signature.transform` 中登记矩阵版本、标准化方式、圆周变量组和降维参数。若使用 PCA，`caption_layers` 必须包含 `explained_variance` 与 `loadings_or_contributions`；只有投影散点而没有这些辅证时，图形门禁失败。
+
 ## 版式与质检
 
 - 正文已有完整图注时，图内不重复超大总标题；多面板使用简短 A/B 标签。
@@ -152,6 +170,24 @@ exports: [figures/q2_landscape.pdf, figures/q2_landscape.png]
 - 主数据线通常取 1.2--1.6 pt，坐标轴和辅助线取 0.5--0.9 pt；强调线不超过 1.8 pt。刻度控制在 4--7 个，避免把数值逐点写在图上。
 - 图的留白用于分组和视线引导，不为“卡片感”预留大块空区。局部图应共享坐标范围或明确给出断轴/局部范围，不得用非连续位置暗示连续几何关系。
 - LaTeX/Word 中使用图浮动与合理缩放，避免强制定位造成半页空白。逐页检查图、图注与首次解释是否相邻。
+
+## 渲染引擎与可复现产物
+
+先按证据关系选后端，再做能力检查；不得先看哪个软件可用就反向制造图形。
+
+- MATLAB 优先承担连续事件函数与验根、几何构造、等比例轨迹、覆盖区间/并集/空档、调度阶梯和需要精确图层控制的时序图。
+- Origin 可主动承担来自规范数据表的统计比较、标准化高维矩阵、分布/残差、PCA 辅证、响应面、等高线和数据驱动多面板图，不要求用户先点名。选择前必须用 `origin_status` 检查安装、许可证、自动化接口和版本，并用同一自动化路径验证 PNG/PDF/SVG 均可无交互导出；缺一项即判该次 Origin 后端不可用。
+- Matplotlib 用于探索、独立诊断和 Origin/MATLAB 不适配的静态统计图。不得为同一主张无意义地重复三个引擎，也不得在某一引擎失败后保留原 `renderer` 标签、偷偷换引擎生成同名文件。后端变更必须更新 `renderer_contract`、说明原因并重新执行整套图件审计；用户限定后端时只报告阻塞，不得替换。
+
+每张正式 Origin 图必须由项目内脚本重建，并保存同一次运行的最小闭包：
+
+1. 已执行的外部 Python/LabTalk 脚本及项目内模板或主题；
+2. 由验证结果确定性派生的规范 CSV/JSON，含列定义、单位、行顺序和内容 SHA-256；
+3. 可编辑 `.opju`，以及正文使用的 PNG、PDF、SVG；PNG 至少 300 dpi，PDF/SVG 必须经过矢量、字体模式和标签碰撞检查；保存后须由同一受控 Origin 会话重开 `.opju`，核对目标图页、图层、工作表、绘图对象数量及关键数据摘要；
+4. 能识别 Origin 产品版本/build、可执行文件或运行时、Python/自动化包版本、导出参数、脚本/模板/数据/OPJU/三格式产物 SHA-256 的机器清单；
+5. 能证明本轮文件全部刷新、Origin 正常退出且没有许可证或模态对话框阻断的运行日志。
+
+`.opju` 是可编辑审计产物，不是唯一来源；不得依赖用户目录中的未入库模板、GUI 上次导出设置或手工拖动后未脚本化的状态。复用既有 Origin 图时，脚本、模板、派生数据、版本和产物哈希必须全部匹配；任一上游变化即标记 `stale` 并整批重绘。
 
 ## MATLAB 语义配色
 

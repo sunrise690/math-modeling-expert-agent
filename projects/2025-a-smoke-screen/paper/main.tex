@@ -692,44 +692,26 @@ J(\mathcal S')&=J(\mathcal S)+\Delta J(c\mid\mathcal S).
 
 \subsection{求解结果与空间分析}
 
-表\ref{tab:q5-strategy}列出 15 枚烟幕弹的主要时序决策，完整投放点和起爆点见题目要求的结果表。当前方案中每架无人机均投放三枚烟幕弹，这是所求可行方案的资源配置结果，并不构成对全局最优解资源使用方式的判断。
+表\ref{tab:q5-strategy}按航路汇总五架无人机的主要决策，15 枚烟幕弹的逐弹时序、投放点和起爆点见题目要求的结果表及附录。当前方案中每架无人机均投放三枚烟幕弹，这是所求可行方案的资源配置结果，并不构成对全局最优解资源使用方式的判断。
 
-\begingroup
-\scriptsize
-\setlength{\tabcolsep}{5pt}
-\begin{longtable}{ccccccc}
-\caption{问题五分层搜索得到的可行投放策略}\label{tab:q5-strategy}\\
+\begin{table}[!htbp]
+\centering
+\caption{问题五分层搜索得到的五条可行航路}
+\label{tab:q5-strategy}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{ccccccc}
 \toprule
-\thead{无人机} & \thead{$\theta/^\circ$} & \thead{$v$/(m/s)} & \thead{弹$\to$目标} & \thead{$t^r$/s} & \thead{$t^e$/s} & \thead{单弹时长/s}\\
+\thead{无人机} & \thead{$\theta/^\circ$} & \thead{$v$/(m/s)} & \thead{弹序对应目标} & \thead{$t^r$ 范围/s} & \thead{$\tau$ 范围/s} & \thead{$\sum_i d_i$/s}\\
 \midrule
-\endfirsthead
-\multicolumn{7}{c}{\textbf{续表\thetable}}\\
-\toprule
-\thead{无人机} & \thead{$\theta/^\circ$} & \thead{$v$/(m/s)} & \thead{弹$\to$目标} & \thead{$t^r$/s} & \thead{$t^e$/s} & \thead{单弹时长/s}\\
-\midrule
-\endhead
-\midrule
-\multicolumn{7}{r}{续下页}\\
-\endfoot
+FY1 & 180 & 130 & M1/M1/M1 & 0.104--5.156 & 2.959--5.656 & 5.8779\\
+FY2 & 250 & 110 & M2/M1/M3 & 5.045--10.766 & 4.517--7.000 & 13.2971\\
+FY3 & 130 & 130 & M3/M1/M2 & 22.029--24.294 & 8.019--8.267 & 13.7783\\
+FY4 & 230 & 140 & M2/M1/M3 & 3.170--8.348 & 12.143--13.183 & 12.5820\\
+FY5 & 120 & 130 & M3/M1/M2 & 12.406--19.977 & 1.085--4.295 & 9.5057\\
 \bottomrule
-\endlastfoot
-FY1&180&130&1$\to$M1&0.104&3.063&2.3092\\
-FY1&180&130&2$\to$M1&2.676&7.313&2.2692\\
-FY1&180&130&3$\to$M1&5.156&10.813&1.2996\\
-FY2&250&110&1$\to$M2&5.045&9.563&4.6893\\
-FY2&250&110&2$\to$M1&6.063&13.063&4.8458\\
-FY2&250&110&3$\to$M3&10.766&17.063&3.7620\\
-FY3&130&130&1$\to$M3&22.029&30.063&4.4498\\
-FY3&130&130&2$\to$M1&23.046&31.313&4.8297\\
-FY3&130&130&3$\to$M2&24.294&32.313&4.4988\\
-FY4&230&140&1$\to$M2&3.170&15.313&4.5449\\
-FY4&230&140&2$\to$M1&4.880&18.063&4.7915\\
-FY4&230&140&3$\to$M3&8.348&21.313&3.2456\\
-FY5&120&130&1$\to$M3&12.406&14.313&3.8861\\
-FY5&120&130&2$\to$M1&13.517&17.813&2.9813\\
-FY5&120&130&3$\to$M2&19.977&21.063&2.6383\\
-\end{longtable}
-\endgroup
+\end{tabular}
+\end{table}
 
 图\ref{fig:q5-xy}显示投放点和起爆点的平面关系。同一架无人机的水平位移方向一致，是共享航向、共享速度约束的直接几何结果；图只用于平面解释，完整三维坐标仍以结果表为准。
 
@@ -761,12 +743,23 @@ M3 & 13.8049 & 11.2263 & 18.68\\
 \end{tabular}
 \end{table}
 
-中心视线判据下的总目标值为 $\bm{53.083939\ \mathrm{s}}$，即三枚导弹各自遮蔽区间并集长度之和。图\ref{fig:q5-gantt}通过指派矩阵与进入、退出事件显示区间合并过程。M1 的覆盖由多个时间段衔接而成，M2、M3 仍存在内部空窗，这些空窗给出了进一步改进可能关注的时间位置，但其长度不等同于可达到的目标增量。
+中心视线判据下的总目标值为 $\bm{53.083939\ \mathrm{s}}$，即三枚导弹各自遮蔽区间并集长度之和。为同时审查单弹决策、并集贡献和几何判据敏感性，设第 $i$ 枚烟幕弹的中心视线有效区间为 $I_{i\ell}=[a_{i\ell},b_{i\ell}]$，目标导弹 $m$ 的区间并集为 $\mathcal U_m$，删除该弹后的并集为 $\mathcal U_{m,-i}$。由区间测度直接得到
+\begin{equation}
+\begin{aligned}
+d_i&=\sum_{\ell}(b_{i\ell}-a_{i\ell}),
+&t_i^c&=\frac{1}{d_i}\sum_{\ell}\frac{a_{i\ell}+b_{i\ell}}{2}(b_{i\ell}-a_{i\ell}),\\
+u_i&=\frac{|\mathcal U_m|-|\mathcal U_{m,-i}|}{d_i},
+&r_i&=\frac{d_i^{\mathrm{full}}}{d_i^{\mathrm{center}}},
+\qquad z_{ij}=\frac{x_{ij}-\bar x_j}{s_j}.
+\end{aligned}
+\label{eq:q5-role-metrics}
+\end{equation}
+其中 $u_i$ 是相对于当前其余 14 枚弹的条件唯一贡献率，$r_i$ 是圆柱整体判据相对中心视线判据的时长保留率，$z_{ij}$ 仅用于消除七个指标的量纲。图\ref{fig:q5-gantt}左侧按无人机和弹序固定排列 $v,t^r,\tau,t^c,d_i,u_i,r_i$，不对联合选择产生的 15 条记录作聚类推断；右侧则显示进入、退出事件和精确并集。矩阵表明，\textbf{11/15 枚烟幕弹满足 $u_i=1$}，即其有效区间在当前方案中未被同目标其他烟幕弹替代；FY3 三枚弹的 $r_i$ 仅为 \textbf{$49.5\%$--$52.7\%$}，是完整圆柱判据下最敏感的航路组。该结论描述当前可行方案的内部结构，不等同于全局最优性或样本总体规律。M2、M3 的内部空窗只给出后续改进应关注的时间位置，其长度也不等同于可达到的目标增量。
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\textwidth]{q5_coverage_gantt.pdf}
-\caption{\captiontitle{问题五的无人机—导弹指派与区间并集。}左图格内数字为各无人机指派给 M1--M3 的烟幕弹序号；右图以进入、退出事件给出三枚导弹的精确区间并集，暖色虚线标出最大内部空窗。}
+\caption{\captiontitle{问题五的逐弹多维角色与区间并集。}左图为 15 次投放在七个指标上的列内标准化矩阵，行标签同时给出无人机、弹序和目标；右图以进入、退出事件给出三枚导弹的精确区间并集，陶土色虚线标出最大内部空窗。}
 \label{fig:q5-gantt}
 \end{figure}
 

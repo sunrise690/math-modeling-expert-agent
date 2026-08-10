@@ -2,9 +2,9 @@ function render_q5_figures()
 %RENDER_Q5_FIGURES Render the three Q5 evidence figures in MATLAB.
 %
 % The script reads the independently reproduced Q5 result directly from
-% validation/q3_q5_independent.json.  Allocation is encoded as a labelled
-% UAV--missile matrix, while temporal evidence uses exact union segments and
-% entry/exit markers.  No generic dashboard cards or decorative bars are used.
+% validation/q3_q5_independent.json.  The Q5 summary couples a fixed-order,
+% seven-variable shot-role matrix with exact union segments and entry/exit
+% markers.  No generic dashboard cards or decorative bars are used.
 
 scriptDir = fileparts(mfilename('fullpath'));
 projectDir = fileparts(fileparts(scriptDir));
@@ -27,7 +27,7 @@ fontName = chooseChineseFont();
 shotIndex = computeShotIndex(plans);
 
 renderXYStrategy(plans, shotIndex, outDir, C, fontName);
-renderCoverageEvents(q5, plans, shotIndex, outDir, C, fontName);
+renderCoverageEvents(q5, fullAudit, plans, shotIndex, outDir, C, fontName);
 renderPairedAudit(q5, fullAudit, outDir, C, fontName);
 
 fprintf('Rendered Q5 MATLAB figures in %s\n', outDir);
@@ -258,17 +258,17 @@ end
 end
 
 
-function renderCoverageEvents(q5, plans, shotIndex, outDir, C, fontName)
-% The left panel is a resource--target assignment matrix; the right panel
-% is a compact event strip for the verified union of each missile.  This
-% separates allocation evidence from temporal evidence and avoids a third
-% repetition of the coverage-count staircase used in earlier questions.
+function renderCoverageEvents(q5, fullAudit, plans, shotIndex, outDir, C, fontName)
+% The left panel is a fixed-order, high-dimensional role matrix for all
+% selected shots; the right panel is the verified union event strip.  The
+% two panels connect decision roles to temporal consequences without
+% treating the 15 jointly selected records as independent observations.
 fig = figure('Visible', 'off', 'Color', C.paper, 'Renderer', 'painters', ...
     'Units', 'inches', 'Position', [0.5, 0.5, 6.20, 4.30], ...
     'PaperPositionMode', 'auto');
-axMatrix = axes(fig, 'Position', [0.075, 0.155, 0.285, 0.720]);
-axUnion = axes(fig, 'Position', [0.455, 0.155, 0.505, 0.720]);
-drawAllocationMatrix(axMatrix, plans, shotIndex, C, fontName);
+axMatrix = axes(fig, 'Position', [0.115, 0.170, 0.305, 0.700]);
+axUnion = axes(fig, 'Position', [0.505, 0.155, 0.455, 0.720]);
+drawMultivariateMatrix(axMatrix, q5, fullAudit, plans, shotIndex, C, fontName);
 drawUnionEventStrips(axUnion, q5, plans, shotIndex, C, fontName);
 
 exportFigure(fig, outDir, 'q5_coverage_gantt', C.paper);
@@ -276,49 +276,150 @@ close(fig);
 end
 
 
-function drawAllocationMatrix(ax, plans, shotIndex, C, fontName)
-hold(ax, 'on');
-missiles = {'M1', 'M2', 'M3'};
-maxCount = 3;
-for drone = 1:5
-    droneId = sprintf('FY%d', drone);
-    for missile = 1:3
-        mask = strcmp({plans.drone_id}, droneId) & ...
-            strcmp({plans.missile_id}, missiles{missile});
-        indices = find(mask);
-        count = numel(indices);
-        if count == 0
-            fillColor = C.paper;
-            label = '—';
-        else
-            fillColor = mixColor(C.primary, C.paper, 0.16 + 0.18 * count / maxCount);
-            numbers = sort(shotIndex(indices));
-            label = strjoin(arrayfun(@num2str, numbers, 'UniformOutput', false), ',');
-        end
-        y = 6 - drone;
-        rectangle(ax, 'Position', [missile - 0.5, y - 0.5, 1, 1], ...
-            'FaceColor', fillColor, 'EdgeColor', C.grid, 'LineWidth', 0.8);
-        text(ax, missile, y, label, 'HorizontalAlignment', 'center', ...
-            'VerticalAlignment', 'middle', 'FontName', fontName, ...
-            'FontSize', 8.0, 'FontWeight', 'bold', ...
-            'Color', C.ink, 'Interpreter', 'none');
-    end
+function drawMultivariateMatrix(ax, q5, fullAudit, plans, shotIndex, C, fontName)
+% Each row is one selected shot.  Rows remain in UAV/shot order because
+% same-UAV route constraints mechanically induce similarity; clustering
+% them would imply an unsupported population structure.
+nPlans = numel(plans);
+assert(nPlans == 15 && numel(fullAudit.individual_durations) == nPlans, ...
+    'The multivariate panel requires 15 aligned centerline/full-cylinder records.');
+
+droneNumber = zeros(nPlans, 1);
+for i = 1:nPlans
+    droneNumber(i) = sscanf(plans(i).drone_id, 'FY%d');
+end
+[~, order] = sortrows([droneNumber, shotIndex(:)], [1, 2]);
+
+raw = zeros(nPlans, 7);
+rowLabels = cell(nPlans, 1);
+fullDurations = reshape(fullAudit.individual_durations, [], 1);
+for row = 1:nPlans
+    i = order(row);
+    plan = plans(i);
+    intervals = normaliseIntervals(plan.exact_centerline_intervals);
+    lengths = intervals(:, 2) - intervals(:, 1);
+    duration = sum(lengths);
+    timeCentroid = sum(mean(intervals, 2) .* lengths) / duration;
+
+    sameMissile = find(strcmp({plans.missile_id}, plan.missile_id));
+    allIntervals = collectIntervals(plans, sameMissile);
+    withoutIntervals = collectIntervals(plans, sameMissile(sameMissile ~= i));
+    unionLength = intervalUnionLength(allIntervals);
+    withoutLength = intervalUnionLength(withoutIntervals);
+    referenceLength = q5.exact_centerline_duration_by_missile.(plan.missile_id);
+    assert(abs(unionLength - referenceLength) < 5e-7, ...
+        'Leave-one-out union is inconsistent with the verified Q5 duration.');
+    uniqueRatio = (unionLength - withoutLength) / max(duration, eps);
+    uniqueRatio = min(1, max(0, uniqueRatio));
+    retentionRatio = fullDurations(i) / max(duration, eps);
+
+    raw(row, :) = [plan.speed, plan.release_time, plan.fuse_delay, ...
+        timeCentroid, duration, uniqueRatio, retentionRatio];
+    rowLabels{row} = sprintf('%s-%d \\rightarrow %s', ...
+        plan.drone_id, shotIndex(i), plan.missile_id);
 end
 
-text(ax, -0.11, 1.07, 'a', 'Units', 'normalized', ...
+columnMean = mean(raw, 1);
+columnStd = std(raw, 0, 1);
+assert(all(columnStd > 1e-12), 'Every displayed feature must vary across the 15 shots.');
+z = (raw - columnMean) ./ columnStd;
+displayLimit = 2.5;
+
+imagesc(ax, max(-displayLimit, min(displayLimit, z)));
+colormap(ax, interpolateSequential(C.sequentialAnchors, 256));
+caxis(ax, [-displayLimit, displayLimit]);
+hold(ax, 'on');
+for boundary = [3.5, 6.5, 9.5, 12.5]
+    plot(ax, [0.5, 7.5], [boundary, boundary], '-', ...
+        'Color', C.paper, 'LineWidth', 1.15);
+end
+plot(ax, [5.5, 5.5], [0.5, 15.5], '-', ...
+    'Color', C.paper, 'LineWidth', 1.20);
+
+text(ax, -0.23, 1.075, 'a', 'Units', 'normalized', ...
     'FontName', 'Arial', 'FontSize', 9.2, 'FontWeight', 'bold', 'Color', C.ink);
-text(ax, 0.50, 1.07, '无人机—导弹指派矩阵', 'Units', 'normalized', ...
+text(ax, 0.50, 1.075, '逐弹七维角色矩阵', 'Units', 'normalized', ...
     'HorizontalAlignment', 'center', 'FontName', fontName, ...
     'FontSize', 8.5, 'FontWeight', 'bold', 'Color', C.ink, 'Interpreter', 'none');
-xlim(ax, [0.5, 3.5]);
-ylim(ax, [0.5, 5.5]);
-set(ax, 'XTick', 1:3, 'XTickLabel', missiles, ...
-    'YTick', 1:5, 'YTickLabel', {'FY5', 'FY4', 'FY3', 'FY2', 'FY1'}, ...
-    'XAxisLocation', 'top', 'FontName', fontName, 'FontSize', 7.5, ...
+
+xLabels = {'v', 't^r', '\tau', 't^c', 'd_i', 'u_i', 'r_i'};
+set(ax, 'XTick', 1:7, 'XTickLabel', xLabels, ...
+    'YTick', 1:nPlans, 'YTickLabel', rowLabels, ...
+    'XAxisLocation', 'top', 'YDir', 'reverse', ...
+    'TickLabelInterpreter', 'tex', 'FontName', fontName, 'FontSize', 6.4, ...
     'XColor', C.muted, 'YColor', C.muted, 'TickLength', [0, 0], ...
-    'Color', C.paper, 'Box', 'off');
-pbaspect(ax, [3, 5, 1]);
+    'Color', C.paper, 'Box', 'off', 'Layer', 'top');
+xlim(ax, [0.5, 7.5]);
+ylim(ax, [0.5, nPlans + 0.5]);
+
+matrixPosition = ax.Position;
+cb = colorbar(ax, 'southoutside');
+ax.Position = matrixPosition;
+cb.Position = [0.145, 0.095, 0.245, 0.018];
+cb.Ticks = [-2, 0, 2];
+cb.TickLabels = {'-2', '0', '2'};
+cb.FontName = fontName;
+cb.FontSize = 6.4;
+cb.Color = C.muted;
+cb.Box = 'off';
+cb.Label.String = '列内 z 分数';
+cb.Label.FontName = fontName;
+cb.Label.FontSize = 6.8;
+cb.Label.Color = C.muted;
 hold(ax, 'off');
+end
+
+
+function intervals = normaliseIntervals(intervals)
+if isempty(intervals)
+    intervals = zeros(0, 2);
+elseif isvector(intervals)
+    assert(numel(intervals) == 2, 'An interval vector must have exactly two endpoints.');
+    intervals = reshape(intervals, 1, 2);
+else
+    assert(size(intervals, 2) == 2, 'Intervals must be an n-by-2 matrix.');
+end
+end
+
+
+function intervals = collectIntervals(plans, indices)
+intervals = zeros(0, 2);
+for index = reshape(indices, 1, [])
+    intervals = [intervals; normaliseIntervals(plans(index).exact_centerline_intervals)]; %#ok<AGROW>
+end
+end
+
+
+function total = intervalUnionLength(intervals)
+intervals = normaliseIntervals(intervals);
+if isempty(intervals)
+    total = 0;
+    return;
+end
+intervals = sortrows(intervals, [1, 2]);
+current = intervals(1, :);
+total = 0;
+for i = 2:size(intervals, 1)
+    candidate = intervals(i, :);
+    if candidate(1) <= current(2) + 1e-10
+        current(2) = max(current(2), candidate(2));
+    else
+        total = total + current(2) - current(1);
+        current = candidate;
+    end
+end
+total = total + current(2) - current(1);
+end
+
+
+function cmap = interpolateSequential(anchors, count)
+anchorX = linspace(0, 1, size(anchors, 1));
+queryX = linspace(0, 1, count);
+cmap = zeros(count, 3);
+for channel = 1:3
+    cmap(:, channel) = interp1(anchorX, anchors(:, channel), queryX, 'pchip');
+end
+cmap = max(0, min(1, cmap));
 end
 
 

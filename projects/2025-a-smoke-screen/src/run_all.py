@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
 import json
 import math
@@ -17,6 +18,7 @@ import re
 import statistics
 import subprocess
 import sys
+import xml.etree.ElementTree as ET
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable
@@ -50,6 +52,9 @@ APPENDIX_EVIDENCE_MANIFEST_PATH = APPENDIX_EVIDENCE_DIR / "manifest.json"
 FIGURE_AUDIT_DIR = SUPPORT_DIR / "figure-audit"
 FIGURE_AUDIT_PATH = FIGURE_AUDIT_DIR / "figure_audit.json"
 FIGURE_AUDIT_HASH_PATH = FIGURE_AUDIT_DIR / "figure_audit.json.sha256"
+ORIGIN_SUPPORT_DIR = SUPPORT_DIR / "multivariate"
+ORIGIN_RUN_PATH = ORIGIN_SUPPORT_DIR / "q5_multivariate_run.json"
+ORIGIN_PROVENANCE_PATH = ORIGIN_SUPPORT_DIR / "q5_multivariate_provenance.json"
 
 SEED = 20_250_808
 RECOMPUTE_SEEDS = {"Q3": 20_250_810, "Q4": 20_250_809, "Q5": 20_250_808}
@@ -1134,6 +1139,657 @@ def _write_paper_audit_provenance() -> None:
     )
 
 
+def _origin_multivariate_errors(root: Path = ROOT) -> list[str]:
+    """Audit the complete Origin support-figure closure without launching Origin."""
+
+    import numpy as np
+
+    root = root.resolve()
+    support_dir = root / "support" / "multivariate"
+    run_path = support_dir / "q5_multivariate_run.json"
+    provenance_path = support_dir / "q5_multivariate_provenance.json"
+    capability_path = support_dir / "origin_capability_snapshot.json"
+    contract_path = support_dir / "q5_multivariate_figure_contract.json"
+    source_path = root / "src" / "origin" / "render_q5_multivariate.py"
+    input_path = root / "validation" / "q3_q5_independent.json"
+    palette_spec_path = root / "src" / "matlab" / "palette_spec.json"
+    errors: list[str] = []
+
+    expected_derived = {
+        "support/multivariate/editorial_standardized_diverging.pal",
+        "support/multivariate/q5_multivariate_features.csv",
+        "support/multivariate/q5_multivariate_standardization.csv",
+        "support/multivariate/q5_multivariate_weighted_z.csv",
+        "support/multivariate/q5_pca_loadings.csv",
+        "support/multivariate/q5_pca_scores.csv",
+    }
+    expected_artifacts = {
+        "support/multivariate/q5_multivariate_structure.png",
+        "support/multivariate/q5_multivariate_structure.pdf",
+        "support/multivariate/q5_multivariate_structure.svg",
+        "support/multivariate/q5_multivariate_structure.opju",
+    }
+    expected_closure = expected_derived | expected_artifacts | {
+        "support/multivariate/origin_capability_snapshot.json",
+        "support/multivariate/q5_multivariate_figure_contract.json",
+        "support/multivariate/q5_multivariate_provenance.json",
+        "support/multivariate/q5_multivariate_run.json",
+    }
+    required_external = {source_path, input_path, palette_spec_path}
+    missing = [
+        path.relative_to(root).as_posix()
+        for path in [
+            run_path,
+            provenance_path,
+            capability_path,
+            contract_path,
+            *sorted(required_external, key=lambda item: item.as_posix()),
+            *[root / relative for relative in sorted(expected_derived | expected_artifacts)],
+        ]
+        if not path.is_file()
+    ]
+    if missing:
+        return [f"missing:{relative}" for relative in missing]
+
+    actual_closure: set[str] = set()
+    for path in support_dir.rglob("*"):
+        if not path.is_file():
+            continue
+        try:
+            path.resolve().relative_to(root)
+        except ValueError:
+            errors.append(f"path-escape:{path.name}")
+            continue
+        actual_closure.add(path.relative_to(root).as_posix())
+    for relative in sorted(expected_closure - actual_closure):
+        errors.append(f"closure-missing:{relative}")
+    for relative in sorted(actual_closure - expected_closure):
+        errors.append(f"closure-extra:{relative}")
+
+    try:
+        run = json.loads(run_path.read_text(encoding="utf-8"))
+        provenance = json.loads(provenance_path.read_text(encoding="utf-8"))
+        capability = json.loads(capability_path.read_text(encoding="utf-8"))
+        contract = json.loads(contract_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError, TypeError) as error:
+        return [*errors, f"metadata-read:{type(error).__name__}"]
+
+    for label, payload, minimum_schema in (
+        ("run", run, 2),
+        ("provenance", provenance, 2),
+        ("capability", capability, 2),
+        ("contract", contract, 1),
+    ):
+        if not isinstance(payload, dict):
+            errors.append(f"{label}:record")
+        elif int(payload.get("schema_version", 0)) < minimum_schema:
+            errors.append(f"{label}:schema")
+    if errors and not all(isinstance(item, dict) for item in (run, provenance, capability, contract)):
+        return errors
+
+    run_id = str(provenance.get("run_id", ""))
+    if not run_id or run_id != run.get("run_id") or run_id != capability.get("run_id"):
+        errors.append("run-id")
+    if run.get("status") != "pass" or capability.get("status") != "pass":
+        errors.append("status")
+    if run.get("command") not in (None, ["python", "-B", "src/origin/render_q5_multivariate.py"]):
+        errors.append("run:command")
+    if provenance.get("command") != ["python", "-B", "src/origin/render_q5_multivariate.py"]:
+        errors.append("provenance:command")
+
+    def check_hash(label: str, path: Path, recorded: Any) -> None:
+        try:
+            actual = _sha256(path)
+        except OSError as error:
+            errors.append(f"{label}:read:{type(error).__name__}")
+            return
+        if not isinstance(recorded, str) or recorded.lower() != actual:
+            errors.append(f"{label}:hash")
+
+    if run.get("provenance") != provenance_path.relative_to(root).as_posix():
+        errors.append("run:provenance-path")
+    check_hash("run:provenance", provenance_path, run.get("provenance_sha256"))
+    if run.get("capability_snapshot") != capability_path.relative_to(root).as_posix():
+        errors.append("run:capability-path")
+    check_hash("run:capability", capability_path, run.get("capability_snapshot_sha256"))
+
+    source_rel = source_path.relative_to(root).as_posix()
+    input_rel = input_path.relative_to(root).as_posix()
+    palette_spec_rel = palette_spec_path.relative_to(root).as_posix()
+    for label, path, expected_relative, path_value, hash_value in (
+        ("source", source_path, source_rel, provenance.get("source"), provenance.get("source_sha256")),
+        ("input", input_path, input_rel, provenance.get("input"), provenance.get("input_sha256")),
+        (
+            "palette-spec",
+            palette_spec_path,
+            palette_spec_rel,
+            provenance.get("palette_spec"),
+            provenance.get("palette_spec_sha256"),
+        ),
+    ):
+        if path_value != expected_relative:
+            errors.append(f"{label}:path")
+        check_hash(label, path, hash_value)
+
+    graph_record = provenance.get("graph_contract", {})
+    if not isinstance(graph_record, dict):
+        errors.append("graph-contract:record")
+    else:
+        if graph_record.get("path") != contract_path.relative_to(root).as_posix():
+            errors.append("graph-contract:path")
+        check_hash("graph-contract", contract_path, graph_record.get("sha256"))
+        if graph_record.get("mode") != "scripted_page" or graph_record.get("base_template") != "blank origin graph":
+            errors.append("graph-contract:page-source")
+
+    capability_record = provenance.get("capability_snapshot", {})
+    if not isinstance(capability_record, dict):
+        errors.append("capability:record")
+    else:
+        if capability_record.get("path") != capability_path.relative_to(root).as_posix():
+            errors.append("capability:path")
+        check_hash("capability", capability_path, capability_record.get("sha256"))
+
+    for label, expected_paths in (
+        ("derived", expected_derived),
+        ("artifacts", expected_artifacts),
+    ):
+        record = provenance.get("derived_data" if label == "derived" else "artifacts", {})
+        if not isinstance(record, dict):
+            errors.append(f"{label}:record")
+            continue
+        if set(record) != expected_paths:
+            errors.append(f"{label}:paths")
+        for relative in sorted(expected_paths):
+            check_hash(f"{label}:{Path(relative).name}", root / relative, record.get(relative))
+
+    versions_match = bool(
+        run.get("renderer") == capability.get("renderer")
+        and run.get("renderer") == f"OriginPro {provenance.get('origin_version', '')}"
+        and run.get("originpro_version") == provenance.get("originpro_version") == capability.get("originpro_version")
+        and run.get("originext_version") == provenance.get("originext_version") == capability.get("originext_version")
+        and provenance.get("python") == capability.get("python")
+        and provenance.get("origin_executable") == capability.get("origin_executable")
+        and provenance.get("origin_executable_sha256") == capability.get("origin_executable_sha256")
+    )
+    if not versions_match:
+        errors.append("capability:versions")
+    if not re.fullmatch(r"[0-9a-f]{64}", str(capability.get("origin_executable_sha256", ""))):
+        errors.append("capability:executable-hash")
+    recorded_executable = Path(str(capability.get("origin_executable", "")))
+    if recorded_executable.is_file() and _sha256(recorded_executable) != capability.get(
+        "origin_executable_sha256"
+    ):
+        errors.append("capability:live-executable-hash")
+
+    required_exports = ["png", "pdf", "svg", "opju"]
+    origin_status = capability.get("origin_status", {})
+    capability_flags = bool(
+        isinstance(origin_status, dict)
+        and origin_status.get("available") is True
+        and origin_status.get("originpro_installed") is True
+        and origin_status.get("originpro_version") == capability.get("originpro_version")
+        and capability.get("external_automation") is True
+        and capability.get("hidden_session") is True
+        and capability.get("license_session_verified_by_render") is True
+        and capability.get("scripted_page_verified") is True
+        and capability.get("required_exports_completed") == required_exports
+        and capability.get("project_save_verified") is True
+        and capability.get("project_roundtrip_verified") is True
+        and capability.get("project_roundtrip")
+        == {
+            "graph_pages": 1,
+            "graph_layers": 3,
+            "layer_plot_counts": [1, 3, 0],
+            "matrix_shape": [15, 9],
+            "score_shape": [15, 2],
+            "loading_shape": [9, 2],
+        }
+        and capability.get("modal_dialog_blocked") is False
+        and capability.get("origin_exit_requested") is True
+        and capability.get("origin_exit_verified") is True
+        and capability.get("remaining_new_origin_pids") == []
+        and capability.get("origin_pids_before") == capability.get("origin_pids_after")
+        and bool(capability.get("origin_pids_launched"))
+        and not set(capability.get("origin_pids_launched", []))
+        .intersection(capability.get("origin_pids_after", []))
+    )
+    if not capability_flags:
+        errors.append("capability:execution")
+    execution = provenance.get("execution", {})
+    if not isinstance(execution, dict) or not (
+        execution.get("external_automation") is True
+        and execution.get("hidden_session") is True
+        and execution.get("origin_exit_requested") is True
+        and execution.get("origin_exit_verified") is True
+        and execution.get("project_roundtrip_verified") is True
+        and execution.get("remaining_new_origin_pids") == []
+        and execution.get("required_exports_completed") == required_exports
+        and int(execution.get("run_started_ns", 0)) > 0
+        and int(execution.get("run_completed_ns", 0)) >= int(execution.get("run_started_ns", 0))
+    ):
+        errors.append("provenance:execution")
+    if not (
+        run.get("external_automation") is True
+        and run.get("hidden_session") is True
+        and run.get("origin_exit_verified") is True
+        and run.get("project_roundtrip_verified") is True
+        and run.get("remaining_new_origin_pids") == []
+        and run.get("export_formats") == required_exports
+    ):
+        errors.append("run:execution")
+
+    scale = contract.get("matrix_scale", {})
+    geometry = contract.get("panel_geometry_percent", {})
+    exports = contract.get("exports", {})
+    expected_levels = np.linspace(-2.5, 2.5, 11)
+    try:
+        geometry_valid = set(geometry) == {"A", "B", "C"}
+        for panel in geometry.values():
+            left = float(panel["left"])
+            top = float(panel["top"])
+            width = float(panel["width"])
+            height = float(panel["height"])
+            geometry_valid &= left >= 0.0 and top >= 0.0 and width > 0.0 and height > 0.0
+            geometry_valid &= left + width <= 100.0 and top + height <= 100.0
+        geometry_valid &= float(geometry["A"]["left"]) + float(geometry["A"]["width"]) < float(geometry["B"]["left"])
+        geometry_valid &= float(geometry["B"]["top"]) + float(geometry["B"]["height"]) < float(geometry["C"]["top"])
+    except (KeyError, TypeError, ValueError):
+        geometry_valid = False
+    try:
+        scale_valid = bool(
+            scale.get("kind") == "diverging"
+            and float(scale.get("center")) == 0.0
+            and np.allclose(np.asarray(scale.get("limits"), dtype=float), [-2.5, 2.5])
+            and np.allclose(np.asarray(scale.get("levels"), dtype=float), expected_levels)
+            and scale.get("color_scale_required") is True
+            and scale.get("label") == "weighted z"
+        )
+    except (TypeError, ValueError):
+        scale_valid = False
+    export_valid = bool(
+        isinstance(exports, dict)
+        and exports.get("png") == {"width_px": 2232, "dpi": 360}
+        and exports.get("pdf")
+        == {
+            "font_mode": "outlined_compact",
+            "truetype": False,
+            "outline_mode": 0,
+            "origin_tree": "tr2.PDF.Fonts",
+        }
+        and exports.get("svg") == {"text_mode": "editable_text", "size_factor_percent": 100}
+        and exports.get("opju") == {"editable": True, "roundtrip_required": True}
+        and provenance.get("export_parameters") == exports
+    )
+    if not (
+        contract.get("page_definition") == "script_defined_from_blank_origin_graph"
+        and contract.get("matrix_plot_type_id") == 220
+        and contract.get("matrix_plot_type") == "Origin matrix image"
+        and contract.get("font") == "Arial"
+        and geometry_valid
+        and scale_valid
+        and export_valid
+    ):
+        errors.append("graph-contract:semantics")
+
+    feature_keys = (
+        "heading_cos",
+        "heading_sin",
+        "speed",
+        "release_time",
+        "fuse_delay",
+        "coverage_centroid",
+        "centerline_duration",
+        "unique_contribution_ratio",
+        "criterion_retention_ratio",
+    )
+    feature_units = ("1", "1", "m/s", "s", "s", "s", "s", "1", "1")
+
+    def union_length(intervals: Iterable[Iterable[float]]) -> float:
+        ordered = sorted((float(a), float(b)) for a, b in intervals if float(b) > float(a))
+        if not ordered:
+            return 0.0
+        start, end = ordered[0]
+        total = 0.0
+        for left, right in ordered[1:]:
+            if left <= end:
+                end = max(end, right)
+            else:
+                total += end - start
+                start, end = left, right
+        return total + end - start
+
+    try:
+        validation = json.loads(input_path.read_text(encoding="utf-8"))
+        q5 = validation["results"]["Q5"]
+        plans = list(q5["plans"])
+        full_durations = list(validation["full_cylinder_secondary_audit"]["Q5"]["individual_durations"])
+        if len(plans) != 15 or len(full_durations) != 15:
+            raise ValueError("expected 15 plans")
+        per_missile_union = {
+            str(missile): union_length(intervals)
+            for missile, intervals in q5["exact_centerline_union"].items()
+        }
+        expected_rows: list[dict[str, Any]] = []
+        raw_values: list[list[float]] = []
+        shot_count: dict[str, int] = {}
+        for index, (plan, full_duration) in enumerate(zip(plans, full_durations, strict=True)):
+            drone = str(plan["drone_id"])
+            missile = str(plan["missile_id"])
+            shot_count[drone] = shot_count.get(drone, 0) + 1
+            shot_index = shot_count[drone]
+            intervals = [[float(a), float(b)] for a, b in plan["exact_centerline_intervals"]]
+            duration = float(plan["exact_centerline_duration"])
+            interval_duration = sum(right - left for left, right in intervals)
+            if interval_duration <= 0.0 or duration <= 0.0:
+                raise ValueError("non-positive interval duration")
+            centroid = sum(
+                0.5 * (left + right) * (right - left) for left, right in intervals
+            ) / interval_duration
+            without = [
+                interval
+                for other_index, other in enumerate(plans)
+                if other_index != index and str(other["missile_id"]) == missile
+                for interval in other["exact_centerline_intervals"]
+            ]
+            unique_ratio = (per_missile_union[missile] - union_length(without)) / duration
+            theta = math.radians(float(plan["heading_deg"]))
+            raw_values.append(
+                [
+                    math.cos(theta),
+                    math.sin(theta),
+                    float(plan["speed"]),
+                    float(plan["release_time"]),
+                    float(plan["fuse_delay"]),
+                    centroid,
+                    duration,
+                    unique_ratio,
+                    float(full_duration) / duration,
+                ]
+            )
+            expected_rows.append(
+                {
+                    "row_id": f"{drone}-{shot_index}",
+                    "drone_id": drone,
+                    "shot_index": shot_index,
+                    "missile_id": missile,
+                }
+            )
+        expected_raw = np.asarray(raw_values, dtype=float)
+        means = expected_raw.mean(axis=0)
+        raw_stds = expected_raw.std(axis=0, ddof=1)
+        heading_scale = math.sqrt(float(np.trace(np.cov(expected_raw[:, :2], rowvar=False, ddof=1))))
+        applied_scales = raw_stds.copy()
+        applied_scales[:2] = heading_scale
+        expected_weighted_z = (expected_raw - means) / applied_scales
+        u, singular, vt = np.linalg.svd(expected_weighted_z, full_matrices=False)
+        eigenvalues = singular**2 / (len(expected_rows) - 1)
+        explained = eigenvalues / eigenvalues.sum()
+        for component, anchor_feature in ((0, 5), (1, 2)):
+            if vt[component, anchor_feature] < 0.0:
+                u[:, component] *= -1.0
+                vt[component, :] *= -1.0
+        expected_scores = u[:, :2] * math.sqrt(len(expected_rows) - 1)
+        weighted_stds = expected_weighted_z.std(axis=0, ddof=1)
+        expected_loadings = vt[:2, :].T * np.sqrt(eigenvalues[:2]) / weighted_stds[:, None]
+    except (KeyError, OSError, TypeError, ValueError, ZeroDivisionError, np.linalg.LinAlgError) as error:
+        errors.append(f"numeric-recompute:{type(error).__name__}")
+        expected_rows = []
+
+    def read_csv(relative: str) -> tuple[list[str], list[dict[str, str]]] | None:
+        try:
+            with (root / relative).open("r", encoding="utf-8-sig", newline="") as handle:
+                reader = csv.DictReader(handle)
+                if reader.fieldnames is None:
+                    raise ValueError("missing header")
+                return list(reader.fieldnames), list(reader)
+        except (OSError, ValueError, csv.Error) as error:
+            errors.append(f"csv:{Path(relative).name}:{type(error).__name__}")
+            return None
+
+    def metadata_matches(rows: list[dict[str, str]]) -> bool:
+        try:
+            return len(rows) == len(expected_rows) and all(
+                row["row_id"] == expected["row_id"]
+                and row["drone_id"] == expected["drone_id"]
+                and int(row["shot_index"]) == expected["shot_index"]
+                and row["missile_id"] == expected["missile_id"]
+                for row, expected in zip(rows, expected_rows, strict=True)
+            ) and len({row["row_id"] for row in rows}) == len(rows)
+        except (KeyError, TypeError, ValueError):
+            return False
+
+    def numeric_matrix(rows: list[dict[str, str]], columns: Iterable[str]) -> np.ndarray | None:
+        try:
+            values = np.asarray([[float(row[column]) for column in columns] for row in rows], dtype=float)
+        except (KeyError, TypeError, ValueError):
+            return None
+        return values if np.all(np.isfinite(values)) else None
+
+    if expected_rows:
+        raw_csv = read_csv("support/multivariate/q5_multivariate_features.csv")
+        weighted_csv = read_csv("support/multivariate/q5_multivariate_weighted_z.csv")
+        scaling_csv = read_csv("support/multivariate/q5_multivariate_standardization.csv")
+        scores_csv = read_csv("support/multivariate/q5_pca_scores.csv")
+        loadings_csv = read_csv("support/multivariate/q5_pca_loadings.csv")
+        if raw_csv is not None:
+            header, rows = raw_csv
+            values = numeric_matrix(rows, feature_keys)
+            if header != ["row_id", "drone_id", "shot_index", "missile_id", *feature_keys] or not metadata_matches(rows):
+                errors.append("numeric:raw-metadata")
+            if values is None or values.shape != expected_raw.shape or not np.allclose(values, expected_raw, rtol=1.0e-9, atol=1.0e-10):
+                errors.append("numeric:raw-values")
+        if weighted_csv is not None:
+            header, rows = weighted_csv
+            weighted_columns = [f"weighted_z_{key}" for key in feature_keys]
+            values = numeric_matrix(rows, weighted_columns)
+            if header != ["row_id", "drone_id", "shot_index", "missile_id", *weighted_columns] or not metadata_matches(rows):
+                errors.append("numeric:weighted-z-metadata")
+            if values is None or values.shape != expected_weighted_z.shape or not np.allclose(values, expected_weighted_z, rtol=1.0e-9, atol=1.0e-10):
+                errors.append("numeric:weighted-z-values")
+        if scaling_csv is not None:
+            header, rows = scaling_csv
+            expected_header = [
+                "feature",
+                "unit",
+                "sample_mean",
+                "raw_sample_std_ddof1",
+                "applied_scale",
+                "semantic_group",
+                "group_total_sample_variance",
+            ]
+            values = numeric_matrix(
+                rows,
+                ("sample_mean", "raw_sample_std_ddof1", "applied_scale", "group_total_sample_variance"),
+            )
+            labels_valid = len(rows) == len(feature_keys) and all(
+                row.get("feature") == feature
+                and row.get("unit") == unit
+                and row.get("semantic_group") == ("heading_direction" if index < 2 else feature)
+                for index, (row, feature, unit) in enumerate(zip(rows, feature_keys, feature_units, strict=True))
+            )
+            expected_scaling = np.column_stack(
+                (means, raw_stds, applied_scales, np.ones(len(feature_keys)))
+            )
+            if header != expected_header or not labels_valid:
+                errors.append("numeric:scaling-metadata")
+            if values is None or values.shape != expected_scaling.shape or not np.allclose(values, expected_scaling, rtol=1.0e-9, atol=1.0e-10):
+                errors.append("numeric:scaling-values")
+        if scores_csv is not None:
+            header, rows = scores_csv
+            score_columns = ["pc1_standardized_score", "pc2_standardized_score"]
+            values = numeric_matrix(rows, score_columns)
+            if header != ["row_id", "drone_id", "shot_index", "missile_id", *score_columns] or not metadata_matches(rows):
+                errors.append("numeric:scores-metadata")
+            if values is None or values.shape != expected_scores.shape or not np.allclose(values, expected_scores, rtol=1.0e-9, atol=1.0e-10):
+                errors.append("numeric:scores-values")
+            elif not np.allclose(np.cov(values, rowvar=False, ddof=1), np.eye(2), rtol=1.0e-9, atol=1.0e-10):
+                errors.append("numeric:scores-covariance")
+        if loadings_csv is not None:
+            header, rows = loadings_csv
+            values = numeric_matrix(rows, ("pc1_correlation", "pc2_correlation"))
+            labels_valid = len(rows) == len(feature_keys) and all(
+                row.get("feature") == feature and row.get("unit") == unit
+                for row, feature, unit in zip(rows, feature_keys, feature_units, strict=True)
+            )
+            if header != ["feature", "unit", "pc1_correlation", "pc2_correlation"] or not labels_valid:
+                errors.append("numeric:loadings-metadata")
+            if values is None or values.shape != expected_loadings.shape or not np.allclose(values, expected_loadings, rtol=1.0e-9, atol=1.0e-10):
+                errors.append("numeric:loadings-values")
+            elif np.max(np.abs(values)) > 1.0 + 1.0e-10:
+                errors.append("numeric:loadings-range")
+
+        group_variance = float(expected_weighted_z[:, :2].var(axis=0, ddof=1).sum())
+        centered_heading = expected_raw[:, :2] - expected_raw[:, :2].mean(axis=0)
+        angle = math.radians(37.0)
+        rotation = np.asarray([[math.cos(angle), -math.sin(angle)], [math.sin(angle), math.cos(angle)]])
+        rotated = centered_heading @ rotation.T / heading_scale
+        original = centered_heading / heading_scale
+        original_distances = np.linalg.norm(original[:, None, :] - original[None, :, :], axis=2)
+        rotated_distances = np.linalg.norm(rotated[:, None, :] - rotated[None, :, :], axis=2)
+        rotated_matrix = expected_weighted_z.copy()
+        rotated_matrix[:, :2] = rotated
+        rotated_singular = np.linalg.svd(rotated_matrix, compute_uv=False)
+        if not (
+            abs(group_variance - 1.0) <= 1.0e-10
+            and np.allclose(original_distances, rotated_distances, rtol=1.0e-12, atol=1.0e-12)
+            and np.allclose(singular, rotated_singular, rtol=1.0e-12, atol=1.0e-12)
+        ):
+            errors.append("numeric:circular-rotation-invariance")
+        preprocessing = provenance.get("preprocessing", {})
+        if not isinstance(preprocessing, dict) or not (
+            preprocessing.get("observations") == 15
+            and preprocessing.get("features") == list(feature_keys)
+            and preprocessing.get("circular_heading_group") == ["heading_cos", "heading_sin"]
+            and "sqrt(trace(sample covariance))" in str(preprocessing.get("circular_heading_scaling", ""))
+            and _close(float(preprocessing.get("heading_group_scale", math.nan)), heading_scale)
+            and provenance.get("row_order") == [row["row_id"] for row in expected_rows]
+        ):
+            errors.append("numeric:preprocessing-record")
+        try:
+            recorded_explained = np.asarray(provenance.get("explained_variance_ratio"), dtype=float)
+        except (TypeError, ValueError):
+            recorded_explained = np.asarray([], dtype=float)
+        if recorded_explained.shape != explained.shape or not np.allclose(recorded_explained, explained, rtol=1.0e-9, atol=1.0e-10):
+            errors.append("numeric:explained-variance")
+        elif not (
+            np.all(recorded_explained >= 0.0)
+            and np.all(np.diff(recorded_explained) <= 1.0e-12)
+            and abs(float(recorded_explained.sum()) - 1.0) <= 1.0e-10
+        ):
+            errors.append("numeric:explained-invariants")
+
+    png_path = root / "support/multivariate/q5_multivariate_structure.png"
+    try:
+        from PIL import Image
+
+        with Image.open(png_path) as image:
+            dpi = image.info.get("dpi", (0.0, 0.0))
+            if image.width != 2232 or image.height < 1200 or min(float(value) for value in dpi) < 359.0:
+                errors.append("artifact:png-quality")
+            pixels = np.asarray(image.convert("RGB"), dtype=np.uint8)
+            nonwhite_fraction = float(np.mean(np.any(pixels < 248, axis=2)))
+            if not 0.08 <= nonwhite_fraction <= 0.85 or float(pixels.std()) < 15.0:
+                errors.append("artifact:png-content")
+    except Exception as error:
+        errors.append(f"artifact:png-read:{type(error).__name__}")
+
+    pdf_path = root / "support/multivariate/q5_multivariate_structure.pdf"
+    try:
+        from pypdf import PdfReader
+
+        reader = PdfReader(pdf_path)
+        if len(reader.pages) != 1:
+            errors.append("artifact:pdf-pages")
+        else:
+            page = reader.pages[0]
+            embedded, unembedded = page._get_fonts()
+            if not embedded or unembedded:
+                errors.append("artifact:pdf-font-closure")
+            resources = page["/Resources"].get_object()
+            font_table = resources.get("/Font", {}).get_object()
+            outlined_fonts = []
+            for font_reference in font_table.values():
+                font = font_reference.get_object()
+                outlined_fonts.append(
+                    font.get("/Subtype") == "/Type3"
+                    and "/CharProcs" in font
+                    and "/ToUnicode" not in font
+                )
+            if not outlined_fonts or not all(outlined_fonts):
+                errors.append("artifact:pdf-outline-contract")
+            contents = page.get_contents()
+            content_bytes = contents.get_data() if contents is not None else b""
+            if len(content_bytes) < 1000:
+                errors.append("artifact:pdf-vector-content")
+    except Exception as error:
+        errors.append(f"artifact:pdf-read:{type(error).__name__}")
+
+    svg_path = root / "support/multivariate/q5_multivariate_structure.svg"
+    try:
+        svg_text = svg_path.read_text(encoding="utf-8")
+        tree = ET.fromstring(svg_text)
+        text_nodes = [element for element in tree.iter() if element.tag.rsplit("}", 1)[-1] == "text"]
+        visible_text = " ".join("".join(element.itertext()) for element in text_nodes)
+        if len(text_nodes) < 20 or "font-family" not in svg_text.lower():
+            errors.append("artifact:svg-editable-text")
+        for phrase in ("Nine-feature signature", "PCA score map", "Correlation loadings", "weighted z"):
+            if phrase not in visible_text:
+                errors.append(f"artifact:svg-text:{phrase}")
+        vector_nodes = sum(
+            1
+            for element in tree.iter()
+            if element.tag.rsplit("}", 1)[-1] in {"path", "polyline", "polygon", "line"}
+        )
+        if vector_nodes < 80:
+            errors.append("artifact:svg-vector-content")
+        loading_labels: dict[str, tuple[float, float, float]] = {}
+        feature_labels = {"cosT", "sinT", "v", "t_r", "tau", "t_c", "d", "u", "r"}
+        for element in text_nodes:
+            label = "".join(element.itertext()).strip()
+            try:
+                x_value = float(element.get("x", "nan"))
+                y_value = float(element.get("y", "nan"))
+                font_size = float(element.get("font-size", "nan"))
+            except ValueError:
+                continue
+            if label in feature_labels and x_value > 4000 and all(
+                math.isfinite(value) for value in (x_value, y_value, font_size)
+            ):
+                loading_labels[label] = (x_value, y_value, font_size)
+        if set(loading_labels) != feature_labels:
+            errors.append("artifact:svg-loading-labels")
+        else:
+            rectangles: dict[str, tuple[float, float, float, float]] = {}
+            for label, (x_value, y_value, font_size) in loading_labels.items():
+                rectangles[label] = (
+                    x_value,
+                    y_value - font_size,
+                    x_value + 0.62 * font_size * len(label),
+                    y_value + 0.18 * font_size,
+                )
+            labels = sorted(rectangles)
+            for index, left_label in enumerate(labels):
+                left = rectangles[left_label]
+                for right_label in labels[index + 1 :]:
+                    right = rectangles[right_label]
+                    if (
+                        min(left[2], right[2]) - max(left[0], right[0]) > 2.0
+                        and min(left[3], right[3]) - max(left[1], right[1]) > 2.0
+                    ):
+                        errors.append("artifact:svg-label-overlap")
+    except (OSError, ValueError, ET.ParseError) as error:
+        errors.append(f"artifact:svg-read:{type(error).__name__}")
+
+    opju_path = root / "support/multivariate/q5_multivariate_structure.opju"
+    try:
+        if opju_path.stat().st_size < 50_000 or opju_path.read_bytes()[:5] != b"CPYUA":
+            errors.append("artifact:opju-signature")
+    except OSError as error:
+        errors.append(f"artifact:opju-read:{type(error).__name__}")
+
+    return errors
+
+
 def _full_recompute() -> None:
     commands = [
         [sys.executable, "-B", "src/solve_q1_q2.py"],
@@ -1157,6 +1813,7 @@ def _full_recompute() -> None:
         commands.append([sys.executable, "-B", "src/validate_q3_q4_multiseed.py"])
     commands.extend(
         [
+            [sys.executable, "-B", "src/origin/render_q5_multivariate.py"],
             [sys.executable, "-B", "src/generate_figures.py"],
             [sys.executable, "-B", "src/render_appendix_evidence.py"],
         ]
@@ -1537,7 +2194,14 @@ def _verify_artifacts(
             "F6": {"shot_index", "overlap", "union"},
             "F7": {"gap", "union"},
             "F9": {"release_position", "explosion_position", "shot_index", "missile_assignment"},
-            "F10": {"shot_index", "union", "largest_gap"},
+            "F10": {
+                "shot_index",
+                "union",
+                "largest_gap",
+                "high_dimensional_matrix",
+                "unique_contribution",
+                "criterion_retention",
+            },
             "F11": {"absolute_loss", "relative_loss", "total"},
             "F12": {"same_strategy_retention", "independent_optimization_boundary"},
             "F13": {"reference_order", "tolerance_band"},
@@ -1603,6 +2267,14 @@ def _verify_artifacts(
         not appendix_errors,
         "附录以可检索源码行号、三线结果表和复算摘要排版；零截图入文，来源范围、哈希与数值断言一致",
         "附录证据链不完整或已陈旧：" + ", ".join(appendix_errors),
+    )
+    origin_errors = _origin_multivariate_errors()
+    _add_check(
+        checks,
+        "origin-multivariate-provenance",
+        not origin_errors,
+        "Origin 高维辅助图的能力快照、旋转不变预处理、数值重算与 PNG/PDF/SVG/OPJU 闭包有效",
+        "Origin 高维辅助图缺失、陈旧或不合格：" + ", ".join(origin_errors[:20]),
     )
     return checks
 

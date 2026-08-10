@@ -151,14 +151,14 @@
         "problem",
         "stornprice"
       ],
-      "embedded_font_count": 36,
+      "embedded_font_count": 39,
       "fonts_fully_embedded": true,
-      "input_bundle_sha256": "59786222fcc7ad1cff4c36f9383261732a513c9947d566ec2780c300061cb21d",
+      "input_bundle_sha256": "af3c5ea71705c890d2c79d19a8e0c25d08cdb6dd9a66612cf6d6ae673e0e6dee",
       "input_file_count": 70,
       "layout_warnings": [],
       "local_rendered_page_count": 28,
       "log_exists": true,
-      "log_sha256": "10418ef6ae736cbe26c26e2faaf00ee6fd0417726227747c4b77fb7b54ed5f13",
+      "log_sha256": "0afe88ecda55530f5a87078d961c724e19a343b32cc4fc3cc86acf0476abb9d2",
       "manual_record_exists": true,
       "manual_render_evidence": "support/pdf-render-evidence/page-01.png 至 page-28.png；当前 PDF 以 144 dpi 全部重新渲染并逐页检查。",
       "manual_render_evidence_pass": true,
@@ -285,7 +285,7 @@
       ],
       "pdf_exists": true,
       "pdf_read_error": null,
-      "pdf_sha256": "133db65ac29e16efa38b2f2679fc340cd107c22c641000dee96729749d52d828",
+      "pdf_sha256": "26d6d8350c474d2b75e72b2829516cfe2c5cd6503a6f4c199bbd10a73492c32c",
       "reference_warnings": [],
       "references_pass": true,
       "technical_pass": true,
@@ -297,7 +297,8 @@
         "Underfull \\hbox (badness 1478) in paragraph at lines 120--120",
         "Underfull \\hbox (badness 10000) in paragraph at lines 120--120",
         "Underfull \\hbox (badness 10000) in paragraph at lines 120--120",
-        "Underfull \\hbox (badness 10000) in paragraph at lines 164--164"
+        "Underfull \\hbox (badness 10000) in paragraph at lines 164--164",
+        "Underfull \\hbox (badness 10000) in paragraph at lines 8--8"
       ],
       "unembedded_fonts": [],
       "unused_bibliography_keys": []
@@ -305,9 +306,9 @@
     "provenance": {
       "figure_count": 14,
       "output_workbook_sha256": {
-        "result1.xlsx": "9650ff0b39cb00b2b28230196619c74edd985f493805f640646e911d41dda269",
-        "result2.xlsx": "7fee8c3eea2f6081768666297aaaf44db2260891992b62a7a9630daf7a3d6062",
-        "result3.xlsx": "a98a721eb0e72c0011fa98b29295559e0159f59da5b31c2fc3af87d1eff56772"
+        "result1.xlsx": "1999d45f8965a1654814711bbfe322718a5bfcf91bd7eaedb66797a60e4c749f",
+        "result2.xlsx": "6bda3baab1edc0387a3044690d35f2bdf2e6c7b63e2801d535826c3d19dfa982",
+        "result3.xlsx": "b4bce302dd76c3b94c2993e65c470c4f75ee03bc0cf6925c8714bce86b4362de"
       },
       "random_seed": 20250808,
       "random_seed_by_problem": {
@@ -326,7 +327,7 @@
         "validation/q1_q2_independent.json": "87356ed221129d27784aff9bd90dceb8be4da372b767db4d3db7ccba4cf597c9",
         "validation/q2_multiseed.json": "ef066c6811eb3d62769c6e015adddbd864b157c5e7b84ab0e53ef9bd12a4a314",
         "validation/q3_q4_multiseed.json": "b6a789e46ed875ba0eace96a8f5ef594c2289456ae31e62c0e28b468858c1be4",
-        "validation/q3_q5_independent.json": "8dc5fa5a489e7228371a79d0248987032e45b55b6d2b85792c9558c4f86c1baa"
+        "validation/q3_q5_independent.json": "b0a96ea77a502bb835d32fe37bdf569260b0c893d7aa2ee2187e760ad47df288"
       }
     }
   },
@@ -516,6 +517,11 @@
         "status": "PASS"
       },
       {
+        "check_id": "origin-multivariate-provenance",
+        "detail": "Origin 高维辅助图的能力快照、旋转不变预处理、数值重算与 PNG/PDF/SVG/OPJU 闭包有效",
+        "status": "PASS"
+      },
+      {
         "check_id": "paper-references",
         "detail": "正文 8 个参考文献条目与 8 个引用键一致，日志无未定义引用",
         "status": "PASS"
@@ -527,7 +533,7 @@
       },
       {
         "check_id": "paper-pdf-technical",
-        "detail": "PDF 为 28 页 A4，36 个字体全部嵌入，日志无阻断型布局警告",
+        "detail": "PDF 为 28 页 A4，39 个字体全部嵌入，日志无阻断型布局警告",
         "status": "PASS"
       },
       {
@@ -542,7 +548,7 @@
       }
     ],
     "checks_failed": 0,
-    "checks_passed": 21,
+    "checks_passed": 22,
     "checks_skipped": 0,
     "paper_pdf_manual_visual_pass": true,
     "paper_pdf_technical_pass": true,

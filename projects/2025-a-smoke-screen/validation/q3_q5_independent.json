@@ -304,9 +304,9 @@
   },
   "optimality_disclaimer": "All reported strategies are continuously verified feasible solutions. Q5 is a restricted route-library/beam-search solution and is not claimed globally optimal.",
   "output_workbook_sha256": {
-    "result1.xlsx": "9650ff0b39cb00b2b28230196619c74edd985f493805f640646e911d41dda269",
-    "result2.xlsx": "7fee8c3eea2f6081768666297aaaf44db2260891992b62a7a9630daf7a3d6062",
-    "result3.xlsx": "a98a721eb0e72c0011fa98b29295559e0159f59da5b31c2fc3af87d1eff56772"
+    "result1.xlsx": "1999d45f8965a1654814711bbfe322718a5bfcf91bd7eaedb66797a60e4c749f",
+    "result2.xlsx": "6bda3baab1edc0387a3044690d35f2bdf2e6c7b63e2801d535826c3d19dfa982",
+    "result3.xlsx": "b4bce302dd76c3b94c2993e65c470c4f75ee03bc0cf6925c8714bce86b4362de"
   },
   "quick_mode": false,
   "random_seed": 20250808,
@@ -4239,7 +4239,7 @@
           "M2": 16.37128644113473,
           "M3": 13.804852246242977
         },
-        "fast_baseline_objective": 51.37000000000002,
+        "fast_baseline_objective": 51.370000000000026,
         "fast_final_objective": 53.06000000000002,
         "local_refinement_candidate_exact_objective": 0.0,
         "local_refinement_iterations": 0,
@@ -4740,8 +4740,8 @@
   "runtime": {
     "numpy": "2.4.6",
     "openpyxl": "3.1.5",
-    "python": "3.14.5",
-    "scipy": "1.18.0"
+    "python": "3.11.9",
+    "scipy": "1.17.1"
   },
   "schema_version": "1.1",
   "scope": "Independent reproducible Q3-Q5 solver using only official source files and geometry_engine.py.",

@@ -25,6 +25,13 @@
     "#6284A1",
     "#365D7D"
   ],
+  "diverging_standardized": [
+    "#AD5D45",
+    "#D2A395",
+    "#F7F8FA",
+    "#9DB5C8",
+    "#365D7D"
+  ],
   "constraints": {
     "minimum_text_contrast_on_paper": 4.5,
     "maximum_grid_contrast_on_paper": 1.3,

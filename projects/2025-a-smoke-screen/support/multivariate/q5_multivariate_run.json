@@ -1,0 +1,23 @@
+{
+  "capability_snapshot": "support/multivariate/origin_capability_snapshot.json",
+  "capability_snapshot_sha256": "f8adc6d87e8eb722bd3cdb7a77fe1f2944fc89fc705deec89393b5fc6a36cdd6",
+  "export_formats": [
+    "png",
+    "pdf",
+    "svg",
+    "opju"
+  ],
+  "external_automation": true,
+  "hidden_session": true,
+  "origin_exit_verified": true,
+  "originext_version": "1.2.5",
+  "originpro_version": "1.1.15",
+  "project_roundtrip_verified": true,
+  "provenance": "support/multivariate/q5_multivariate_provenance.json",
+  "provenance_sha256": "403eaa8476c4e2d047e78bd2537e8b1a921ab1a9fa715319de5b3bed0a5d0a36",
+  "remaining_new_origin_pids": [],
+  "renderer": "OriginPro 10.100178",
+  "run_id": "origin-1786371454748819600",
+  "schema_version": 2,
+  "status": "pass"
+}

@@ -46,7 +46,7 @@ FILE_INDEX: tuple[tuple[str, Path, str], ...] = (
     ("结果表写入与反算", SOLVE_Q3_Q5, "112--204，397--442"),
     ("问题二多种子试验", ROOT / "src" / "validate_q2_multiseed.py", "全文"),
     ("问题三、四多种子试验", ROOT / "src" / "validate_q3_q4_multiseed.py", "全文"),
-    ("一键核验入口", ROOT / "src" / "run_all.py", "141--225，956--1408"),
+    ("一键核验入口", ROOT / "src" / "run_all.py", "1142--1856，1914--2280，2826--2888"),
 )
 
 CODE_FRAGMENT_SPECS: dict[str, list[tuple[str, Path, int, int]]] = {

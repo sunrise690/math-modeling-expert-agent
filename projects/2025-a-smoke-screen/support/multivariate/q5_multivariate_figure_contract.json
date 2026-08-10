@@ -1,0 +1,70 @@
+{
+  "exports": {
+    "opju": {
+      "editable": true,
+      "roundtrip_required": true
+    },
+    "pdf": {
+      "font_mode": "outlined_compact",
+      "origin_tree": "tr2.PDF.Fonts",
+      "outline_mode": 0,
+      "truetype": false
+    },
+    "png": {
+      "dpi": 360,
+      "width_px": 2232
+    },
+    "svg": {
+      "size_factor_percent": 100,
+      "text_mode": "editable_text"
+    }
+  },
+  "font": "Arial",
+  "matrix_plot_type": "Origin matrix image",
+  "matrix_plot_type_id": 220,
+  "matrix_scale": {
+    "center": 0.0,
+    "color_scale_required": true,
+    "kind": "diverging",
+    "label": "weighted z",
+    "levels": [
+      -2.5,
+      -2.0,
+      -1.5,
+      -1.0,
+      -0.5,
+      0.0,
+      0.5,
+      1.0,
+      1.5,
+      2.0,
+      2.5
+    ],
+    "limits": [
+      -2.5,
+      2.5
+    ]
+  },
+  "page_definition": "script_defined_from_blank_origin_graph",
+  "panel_geometry_percent": {
+    "A": {
+      "height": 82.0,
+      "left": 8.0,
+      "top": 8.0,
+      "width": 43.5
+    },
+    "B": {
+      "height": 37.0,
+      "left": 68.0,
+      "top": 8.0,
+      "width": 28.0
+    },
+    "C": {
+      "height": 37.0,
+      "left": 68.0,
+      "top": 53.0,
+      "width": 28.0
+    }
+  },
+  "schema_version": 1
+}

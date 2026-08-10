@@ -21,6 +21,8 @@ python -B src/run_all.py --recompute
 
 14 组正式图全部由 `src/matlab/render_*.m` 生成；Python 只负责调用 MATLAB、检查产物并写入哈希清单，不参与正式绘图。默认流程校验版本库中已经生成并通过视觉复核的 42 个 MATLAB 产物；需要强制重绘时先设置 `CUMCM_FORCE_MATLAB_FIGURES=1`。重绘需要 MATLAB `-batch`；若 `matlab` 不在 PATH，请设置 `MATLAB_ROOT`。MATLAB 不可用或图形客户端异常时不会用 Python 静默改画。
 
+`src/origin/render_q5_multivariate.py` 提供受审计的 OriginPro 高维辅助分析；运行 `python -B src/origin/render_q5_multivariate.py`，即可从同一验证 JSON 确定性生成九维规范矩阵、PCA 得分与相关载荷，并在 `support/multivariate/` 保存原始/标准化 CSV、旋转不变的圆周变量组尺度、发散色板、可编辑 OPJU、PNG/PDF/SVG、能力快照、退出证据和逐文件 SHA-256。渲染器会在同一隐藏会话中重开刚保存的 OPJU，核对 3 个图层、矩阵/得分/载荷工作表及数值；默认 `run_all.py` 再独立重算数据、核验 PDF 轮廓字体结构、SVG 标签碰撞和精确闭包。在本机 Origin 可执行文件存在时还会重算其哈希；离线/GitHub 验证则使用已记录能力快照。`--recompute` 会在 MATLAB 正式图之前强制重跑该 Origin 脚本，能力或导出失败即中止，不静默换后端。该辅助产物不替换论文中已验证的 MATLAB 正式图。
+
 ## 判据与结论边界
 
 - 主评分使用导弹到真目标几何中心的有限视线，Q2--Q5 的优化和模板填报均按此口径。
@@ -37,4 +39,4 @@ python -B src/run_all.py --recompute
 - `reports/summary.json`、`verification_report.md`、`redteam_review.md`：结构化结果与边界审计。
 - `references/claim_evidence_map.md`：论文主张到可重生成证据的映射。
 - `paper/main.tex`、`paper/main.pdf`：正式中文论文及可编译源文件。
-- `support/`：自审和 AI 使用记录，不进入论文正文。
+- `support/`：自审、Origin 可编辑辅助证据和 AI 使用记录，不进入论文正文。

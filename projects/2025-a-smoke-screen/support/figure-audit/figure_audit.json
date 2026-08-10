@@ -2,18 +2,18 @@
   "contact_sheets": {
     "color": {
       "path": "support/figure-audit/figure-contact-sheet.png",
-      "sha256": "9f90cfb8f8f5043517e68bae9a55dbd8de4a632e853c75c783803a20cba9bb26"
+      "sha256": "28752dc2055e3d98d17ea53208c52344a09acf16331c9736cde00f0e6a1e8f30"
     },
     "grayscale": {
       "path": "support/figure-audit/figure-contact-sheet-gray.png",
-      "sha256": "c23a246bb12d267e1d9e0e2a21af86957c7815b5af8cff339805876c1a3a7059"
+      "sha256": "4ad6526c79ef196feeba02c65870143938b03ad9d644829e2f209dada0ddbbc3"
     }
   },
   "figures": [
     {
       "artifacts": {
-        "figures/finite_sightline_geometry.pdf": "23cd5638be2f27ebe1dc888dc264f958ff6bfc3b9d11b4d8716e5443194e7def",
-        "figures/finite_sightline_geometry.png": "5e899b8e35e9400ebac00aff1d09cbeb1e3ea80203c664b52e80f55d3e4cd0ae",
+        "figures/finite_sightline_geometry.pdf": "b08823c0c6e84b7a04802c0d6e77b3135e98d6fb6017ec5165387e05579acc5e",
+        "figures/finite_sightline_geometry.png": "d4e8019f14a153648f7063743d71b0726da0268ec79d9008226b2e19b059e4ba",
         "figures/finite_sightline_geometry.svg": "496feff615f5b18ef92a6a5479c550a2de8966d379564054ae3831332debec4c"
       },
       "claim": "遮蔽由球心到有限线段的距离而非无限直线距离决定。",
@@ -57,8 +57,8 @@
     },
     {
       "artifacts": {
-        "figures/modeling_workflow.pdf": "f2d349b13efcfd2dca5ad332f5a27d2db2d6e5300648e3075e3373e8340f60dc",
-        "figures/modeling_workflow.png": "c32302c5197ab029fffb0fbae8f7a6cf6aba7cc81a1074ab3af2392648338d0a",
+        "figures/modeling_workflow.pdf": "882a07e5f1ffdf6adc16730d9d532231348520bb9a191ce82cf47d5dd42bc4da",
+        "figures/modeling_workflow.png": "3eab1eb63e1e78ad64c953f12ee7df46fd1eb3e8371479bccc8c0614503b4b36",
         "figures/modeling_workflow.svg": "588613620ef7d8d9b003a4a5aa4029d8afd919c98e13becf2d2d9b87a6b1d5d8"
       },
       "claim": "1.4351 s 有效区间由两个相切根限定，且中途最近点从线段内部切换到导弹端点。",
@@ -106,8 +106,8 @@
     },
     {
       "artifacts": {
-        "figures/q1_occlusion_intervals.pdf": "78a9c912e81252afc3f2ad842fdef728b61dad59976a13579fd16f0cd16b7420",
-        "figures/q1_occlusion_intervals.png": "fe6546f6395f2ecae530895d00130f0c50bf454b5f54a1871d092f058be354ab",
+        "figures/q1_occlusion_intervals.pdf": "57189d3d99cadf432bbbd18c298a09cf4b0c918b5b59d5954163b724d5cd1232",
+        "figures/q1_occlusion_intervals.png": "50e04d4ed62fe8a655b6ca4701256ff94948dc1c847d958f9d965b114ae15662",
         "figures/q1_occlusion_intervals.svg": "4b4091c32cf2bd7c3dfd9c6e6a9c6c4d93c9b94cf0c2058dcf15361caed5da7c"
       },
       "claim": "口径差异主要来自进入边界。",
@@ -152,8 +152,8 @@
     },
     {
       "artifacts": {
-        "figures/q2_response_surface.pdf": "e07bdfd0e368a43211bb6ae629bfaed9c37c1cc2ed24262126d5a9aae8fece54",
-        "figures/q2_response_surface.png": "0ff13525c4196576e1f8e9e9ae65e29189147912aa9b9f93119695ce723557cd",
+        "figures/q2_response_surface.pdf": "c3f0fe127d849eb83a8dd6481dd29e743996efd13551dc75fe532dd5a0f79edb",
+        "figures/q2_response_surface.png": "0dfa1d468d4433ece657d192a5c0537dd2d350d68e376d2ecf35eda2beefdba4",
         "figures/q2_response_surface.svg": "256354e4c6a23220001a48d81be442c2f8ccfdd6bedd8371945397cd1da0f15a"
       },
       "claim": "目标面具有零平台与狭窄高值区，支持全局候选后连续精化。",
@@ -195,8 +195,8 @@
     },
     {
       "artifacts": {
-        "figures/q3_interval_union.pdf": "b374fddbfc20fcae81e88cfebfbd706d1a1785f5e2194661d82de3dcb9987e2e",
-        "figures/q3_interval_union.png": "faa795eb3b3c507cbf65e096c5869ee471d5c48aacf3003c73b04664918c6b49",
+        "figures/q3_interval_union.pdf": "3c62a0bdae8e4a8a5561158b373256b5e9e822b69b099f827338b30f76b4c934",
+        "figures/q3_interval_union.png": "1a4438e62076bd006934bbef2571e02ed542caac8c2772188882b8a87c15351f",
         "figures/q3_interval_union.svg": "bcd7ead4e9ece2b676ec8f675b749500388a95d9bc7c58929ba82fcc11f27bc0"
       },
       "claim": "两段短双覆盖消除空窗；单弹时长之和扣除 0.067 s 与 0.115 s 重叠后得到 6.631 s 连续并集。",
@@ -237,8 +237,8 @@
     },
     {
       "artifacts": {
-        "figures/q4_temporal_synergy.pdf": "9ea21ed7c5bd75371f94cdb92ee3be4303557a91e1229275b0e84711dbd13543",
-        "figures/q4_temporal_synergy.png": "adeeff34c181ae4cb8de09c7719045578d1d7dd91b6928bf2f3285cad41aa85a",
+        "figures/q4_temporal_synergy.pdf": "f80a4f1450fcdd25a348a2d7880d9eeb475f0f9e7d2f371f378992237dbc78da",
+        "figures/q4_temporal_synergy.png": "2623a487af3032e45688e29a1be75b8b037046dbe59f121be653272f427a17f6",
         "figures/q4_temporal_synergy.svg": "9e87535c465257522ef426a0feaeb2af481c3b008af18fa280e9eb56fe2550e6"
       },
       "claim": "三段互不重叠窗口使并集等于单弹时长之和，两个状态节点间隔直接显示内部空窗。",
@@ -278,8 +278,8 @@
     },
     {
       "artifacts": {
-        "figures/q5_xy_strategy.pdf": "9cc2da908c95fe95d731556c3827b173b5592cee8583e5073fbfc33499ee2cde",
-        "figures/q5_xy_strategy.png": "5e49bcaaa5786fb2e25761d86d8eb3f30b1e66ffe49006349581cbe1378e9226",
+        "figures/q5_xy_strategy.pdf": "b6a575094f019b3a33d49c227501190c65cbd2fb598d8c3cefe773f2d4097fad",
+        "figures/q5_xy_strategy.png": "af8241a0d29b628cd87299b1cbc609964c0a29dd934260baaa0be29e7547ea8e",
         "figures/q5_xy_strategy.svg": "3b1cc3170a6d779525058ef723bc88778855e1f7f88bfb0542ddab6c61b3edc5"
       },
       "claim": "同机三弹共享航向与速度，且投放层与起爆层均被显式绘制。",
@@ -327,11 +327,11 @@
     },
     {
       "artifacts": {
-        "figures/q5_coverage_gantt.pdf": "4c8df13332998cd90dab5e775232eba072c522be2b025a2b1b133081120b2043",
-        "figures/q5_coverage_gantt.png": "54d3c58f7c51cafd1a47d8adba39908636f0bf1c3c2df9841e650ccf78f9de23",
-        "figures/q5_coverage_gantt.svg": "4f94d6e7214067fb6e8a285457808ffd4f20dbed4383cb96f3a15e7b7f488e2b"
+        "figures/q5_coverage_gantt.pdf": "9dff4cf0d1e3c24e50dba12da93b1660e2e116c08983eb63fddcb4ea12838660",
+        "figures/q5_coverage_gantt.png": "054aab1caeda29aad2c0e0278959a1254e530da06821d91942528685d62e66e2",
+        "figures/q5_coverage_gantt.svg": "f885b98190de10ce466d7309e2211d9539e56aa89341c569909ea5d6e001e279"
       },
-      "claim": "指派矩阵给出 15 枚烟幕弹的资源归属；区间并集事件带定位每枚导弹的最大内部空窗。",
+      "claim": "15 次投放在 7 维标准化角色空间中的差异可与逐导弹区间并集逐项对应，并定位唯一贡献、判据敏感投放及最大内部空窗。",
       "color_budget": {
         "accent_count": 1,
         "chromatic_hues": [
@@ -347,29 +347,32 @@
       "display_decision": {
         "decision": "figure"
       },
-      "evidence_signature": "Q5:15_shot_assignment+three_missile_unions+largest_internal_gaps",
+      "evidence_signature": "Q5:15_shotsx7_standardized_roles+unique_contribution+criterion_retention+three_missile_unions+largest_internal_gaps",
       "figure_id": "F10",
       "line_applicability": {
         "recorded": false
       },
-      "nearest_figure": "F7",
+      "nearest_figure": "F9",
       "panel_contract": [
         "shot_index",
         "missile_group",
+        "high_dimensional_matrix",
+        "standardized_role",
+        "unique_contribution",
+        "criterion_retention",
         "entry_event",
         "exit_event",
-        "assignment_matrix",
         "union",
         "largest_gap"
       ],
       "role": "paper",
-      "visual_grammar": "resource_target_assignment_matrix + grouped_union_event_strips",
-      "why_not_merge": "F10 同时回答跨五机资源指派与三目标覆盖结构；F7 仅回答单目标三机的时间组成。"
+      "visual_grammar": "high_dimensional_standardized_role_matrix + grouped_union_event_strips",
+      "why_not_merge": "F10 核对逐次投放的多维角色、条件唯一贡献、判据保留率与时间并集；F9 核对共享航路及投放—起爆空间几何。"
     },
     {
       "artifacts": {
-        "figures/time_step_convergence.pdf": "564fff4f20aa738e8b44ba946f410b06c8397330a10297e937f5e4ef5c4c7507",
-        "figures/time_step_convergence.png": "ea77ee29bfdc94b081abc8b0f8d03c5183c21ba44a6aa0e7b8845cb761fb10e7",
+        "figures/time_step_convergence.pdf": "5a3cf3ce6403be22026979debe5ab342edf05e5c8c6b6157f0944b84cee0cd01",
+        "figures/time_step_convergence.png": "593f56b1c7f2a204f788c6d184f0ad0e9b789e791f1e8a29d57633e242e03023",
         "figures/time_step_convergence.svg": "9983270226c79ae77375323b47ced027bdffba387a7a4e72935ad56f344f1896"
       },
       "claim": "根精化消除了把采样分辨率直接当作报告精度的风险。",
@@ -412,7 +415,7 @@
       "why_not_merge": null
     }
   ],
-  "generated_at_utc": "2026-08-10T11:16:33+00:00",
+  "generated_at_utc": "2026-08-10T14:15:06+00:00",
   "generator": {
     "command": "python -B src/render_figure_audit.py",
     "path": "src/render_figure_audit.py",
@@ -429,13 +432,13 @@
     ],
     "review_type": "codex_page_by_page_visual",
     "reviewed_at_local": "2026-08-10",
-    "reviewed_pdf_sha256": "133db65ac29e16efa38b2f2679fc340cd107c22c641000dee96729749d52d828",
+    "reviewed_pdf_sha256": "26d6d8350c474d2b75e72b2829516cfe2c5cd6503a6f4c199bbd10a73492c32c",
     "reviewer_record": "Codex 主任务逐页视觉检查",
     "status": "PASS"
   },
   "manuscript": {
     "path": "paper/main.pdf",
-    "sha256": "133db65ac29e16efa38b2f2679fc340cd107c22c641000dee96729749d52d828"
+    "sha256": "26d6d8350c474d2b75e72b2829516cfe2c5cd6503a6f4c199bbd10a73492c32c"
   },
   "paper_order": [
     "F2",
