@@ -58,7 +58,7 @@ class RevisingProvider:
 class QualityScoringTests(unittest.TestCase):
     def test_rubric_weights_are_complete(self) -> None:
         spec = rubric_spec()
-        self.assertEqual(spec["version"], "2026.5")
+        self.assertEqual(spec["version"], "2026.6")
         self.assertEqual({item["id"] for item in spec["dimensions"]}, set(MODE_WEIGHTS["solver"]))
         self.assertTrue(all(sum(weights.values()) == 100 for weights in MODE_WEIGHTS.values()))
         gate_ids = {item["id"] for item in spec["hardGates"]}
@@ -68,6 +68,7 @@ class QualityScoringTests(unittest.TestCase):
                 "stochastic_robustness",
                 "predictive_validation",
                 "mechanistic_consistency",
+                "modeling_workflow_audit",
                 "abstract_numeric_evidence",
             }.issubset(gate_ids)
         )

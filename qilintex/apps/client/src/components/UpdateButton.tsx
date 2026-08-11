@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { Download, RefreshCw } from 'lucide-react'
-import { useRegisterSW } from 'virtual:pwa-register/react'
 import { Capacitor } from '@capacitor/core'
 import { App as CapacitorApp } from '@capacitor/app'
 import { Browser } from '@capacitor/browser'
@@ -19,7 +18,6 @@ export function isNewerVersion(current: string, latest: string) {
 export function UpdateButton() {
   const [desktopState, setDesktopState] = useState<UpdateState>({ status: 'idle' })
   const [mobileUpdate, setMobileUpdate] = useState<{ version: string; storeUrl: string } | null>(null)
-  const { needRefresh: [needRefresh], updateServiceWorker } = useRegisterSW()
 
   useEffect(() => {
     if (!window.desktop) return
@@ -53,6 +51,5 @@ export function UpdateButton() {
     return <button className="toolbar-button update-ready" onClick={() => Browser.open({ url: mobileUpdate.storeUrl })}><Download size={16} />更新 {mobileUpdate.version}</button>
   }
 
-  if (needRefresh) return <button className="toolbar-button update-ready" onClick={() => updateServiceWorker(true)}><RefreshCw size={16} />刷新更新</button>
   return null
 }

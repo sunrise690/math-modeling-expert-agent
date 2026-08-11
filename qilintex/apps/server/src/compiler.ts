@@ -7,7 +7,7 @@ import { config } from './config.js'
 
 const run = promisify(execFile)
 
-export async function compileLatex(source: string) {
+export async function compileLatex(source: string, prepareDirectory?: (directory: string) => Promise<void>) {
   if (!source.trim()) return { ok: false, log: 'main.tex 为空。' }
   if (Buffer.byteLength(source, 'utf8') > 1_000_000) return { ok: false, log: 'main.tex 超过 1 MB 限制。' }
 
@@ -21,6 +21,7 @@ export async function compileLatex(source: string) {
     : [sourcePath, '--outdir', directory, '--keep-logs']
 
   try {
+    await prepareDirectory?.(directory)
     await writeFile(sourcePath, source, 'utf8')
     const { stdout, stderr } = await run(executable, args, { cwd: directory, timeout: 30_000, maxBuffer: 2_000_000, windowsHide: true })
     const pdf = await readFile(join(directory, 'main.pdf'))

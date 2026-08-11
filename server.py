@@ -14,10 +14,12 @@ from typing import Any
 from urllib.parse import parse_qs, unquote, urlparse
 
 from agent_tools import MAX_UPLOAD_BYTES, ToolError
+from codex_login import CodexLoginError, CodexLoginManager
 from quality_scoring import rubric_spec
 from provider_config import ProviderConfigError, ProviderConfigStore, codex_cli_status
 from provider_config import public_codex_status
 from http_safety import safe_http_error, scrub_diagnostic, urlopen_no_redirect
+from runtime_paths import agent_data_dir, portable_path
 
 from agent_backend import (
     MODES,
@@ -36,15 +38,31 @@ RUN_CANCEL_PATH = re.compile(r"^/api/runs/([a-f0-9]{32})/cancel$")
 RUN_ARTIFACTS_PATH = re.compile(r"^/api/runs/([a-f0-9]{32})/artifacts$")
 ARTIFACT_PATH = re.compile(r"^/api/artifacts/([a-f0-9]{32})/([^/]+)$")
 UPLOAD_PATH = re.compile(r"^/api/uploads/([a-f0-9]{32})$")
+CODEX_LOGIN_PATH = re.compile(r"^/api/codex-login/([a-f0-9]{32})$")
 
 
 class AgentHTTPServer(ThreadingHTTPServer):
     daemon_threads = True
 
-    def __init__(self, address: tuple[str, int], manager: RunManager) -> None:
+    def __init__(
+        self,
+        address: tuple[str, int],
+        manager: RunManager,
+        frontend_url: str | None = None,
+    ) -> None:
         super().__init__(address, Handler)
         self.manager = manager
         self.provider_config = ProviderConfigStore(manager.root)
+        self.codex_login = CodexLoginManager()
+        self.frontend_url = frontend_url
+        self.frontend_origin = ""
+        if frontend_url:
+            parsed_frontend = urlparse(frontend_url)
+            self.frontend_origin = f"{parsed_frontend.scheme}://{parsed_frontend.netloc}".casefold()
+
+    def server_close(self) -> None:
+        self.codex_login.close()
+        super().server_close()
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -80,6 +98,10 @@ class Handler(BaseHTTPRequestHandler):
             if parsed.path == "/api/config":
                 settings = AgentSettings.load(self.server.manager.root)
                 self.send_json(self.server.provider_config.public_config(settings.public_dict()))
+                return
+            login_match = CODEX_LOGIN_PATH.fullmatch(parsed.path)
+            if login_match:
+                self.send_json({"login": self.server.codex_login.status(login_match.group(1))})
                 return
             if parsed.path == "/api/modes":
                 self.send_json({"modes": MODES})
@@ -162,6 +184,8 @@ class Handler(BaseHTTPRequestHandler):
             self.send_error_json(error.status, error.message)
         except ToolError as error:
             self.send_error_json(404, str(error))
+        except CodexLoginError as error:
+            self.send_error_json(404, str(error))
         except (ValueError, TypeError):
             self.send_error_json(400, "请求参数无效")
         except Exception as error:
@@ -183,6 +207,21 @@ class Handler(BaseHTTPRequestHandler):
                 values = self.server.provider_config.preview_values(payload)
                 settings = AgentSettings.load(self.server.manager.root, overrides=values)
                 self.send_json({"test": self.test_provider_connection(settings)})
+                return
+            if parsed.path == "/api/codex-login":
+                self.send_json({"login": self.server.codex_login.start()}, status=202)
+                return
+            if parsed.path == "/api/codex-login/callback":
+                payload = self.read_json()
+                self.send_json(
+                    {
+                        "login": self.server.codex_login.relay_callback(
+                            str(payload.get("id", "")),
+                            str(payload.get("callbackUrl", "")),
+                        )
+                    },
+                    status=202,
+                )
                 return
             if parsed.path in {"/api/knowledge/reindex", "/api/knowledge/index"}:
                 self.send_json(
@@ -233,6 +272,8 @@ class Handler(BaseHTTPRequestHandler):
             self.send_error_json(400, str(error))
         except ProviderConfigError as error:
             self.send_error_json(400, str(error))
+        except CodexLoginError as error:
+            self.send_error_json(409, str(error))
         except Exception as error:
             self.log_error("POST failed: %s", error)
             self.send_error_json(500, "服务器错误")
@@ -244,6 +285,13 @@ class Handler(BaseHTTPRequestHandler):
             upload_match = UPLOAD_PATH.fullmatch(parsed.path)
             if upload_match:
                 self.server.manager.tools.delete_upload(upload_match.group(1))
+                self.send_response(204)
+                self.send_cors_headers()
+                self.end_headers()
+                return
+            login_match = CODEX_LOGIN_PATH.fullmatch(parsed.path)
+            if login_match:
+                self.server.codex_login.cancel(login_match.group(1))
                 self.send_response(204)
                 self.send_cors_headers()
                 self.end_headers()
@@ -416,6 +464,12 @@ class Handler(BaseHTTPRequestHandler):
             path = "/index.html"
         if path != "/index.html":
             raise ApiError(404, "文件不存在")
+        if self.server.frontend_url:
+            self.send_response(307)
+            self.send_header("Location", self.server.frontend_url)
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            return
         target = self.server.manager.root / "index.html"
         self.serve_file(target)
 
@@ -449,7 +503,9 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", origin)
             self.send_header("Vary", "Origin")
             self.send_header("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
-            self.send_header("Access-Control-Allow-Headers", "Content-Type, Last-Event-ID, X-Filename")
+            self.send_header("Access-Control-Allow-Headers", "Accept, Content-Type, Last-Event-ID, X-Filename")
+            if self.headers.get("Access-Control-Request-Private-Network", "").strip().casefold() == "true":
+                self.send_header("Access-Control-Allow-Private-Network", "true")
 
     def require_same_origin(self) -> None:
         request_host = self.headers.get("Host", "").strip()
@@ -465,8 +521,11 @@ class Handler(BaseHTTPRequestHandler):
         if not origin:
             return
         origin_parts = urlparse(origin)
-        if origin_parts.scheme not in {"http", "https"} or origin_parts.netloc.casefold() != request_host.casefold():
-            raise ApiError(403, "仅允许同源本地请求")
+        origin_value = f"{origin_parts.scheme}://{origin_parts.netloc}".casefold()
+        same_loopback_origin = origin_parts.scheme in {"http", "https"} and origin_parts.netloc.casefold() == request_host.casefold()
+        trusted_frontend = bool(self.server.frontend_origin) and origin_value == self.server.frontend_origin
+        if not same_loopback_origin and not trusted_frontend:
+            raise ApiError(403, "仅允许本机页面或已配置的统一工作台访问")
 
     @staticmethod
     def _query_int(query: dict[str, list[str]], key: str, default: int) -> int:
@@ -478,30 +537,50 @@ class Handler(BaseHTTPRequestHandler):
         print(f"{self.address_string()} - {format % args}")
 
 
-def create_server(host: str, port: int, database: Path | None = None) -> AgentHTTPServer:
+def normalize_frontend_url(value: str | None) -> str | None:
+    if not value:
+        return None
+    parsed = urlparse(value.strip())
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        raise ValueError("统一前端地址必须是有效的 HTTP(S) URL")
+    if parsed.username or parsed.password or parsed.query or parsed.fragment:
+        raise ValueError("统一前端地址不能包含凭据、查询参数或片段")
+    return value.strip().rstrip("/") + "/"
+
+
+def create_server(
+    host: str,
+    port: int,
+    database: Path | None = None,
+    frontend_url: str | None = None,
+) -> AgentHTTPServer:
     try:
         loopback = host.casefold() == "localhost" or ipaddress.ip_address(host).is_loopback
     except ValueError:
         loopback = False
     if not loopback:
         raise ValueError("为保护模型密钥与本地资料，服务只能监听回环地址")
-    store = RunStore(database or ROOT / ".agent-data/runs.db")
+    database_path = portable_path(ROOT, str(database)) if database else agent_data_dir(ROOT) / "runs.db"
+    store = RunStore(database_path)
     manager = RunManager(store, ROOT)
-    return AgentHTTPServer((host, port), manager)
+    return AgentHTTPServer((host, port), manager, normalize_frontend_url(frontend_url))
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run the local math modeling agent backend.")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8765)
-    parser.add_argument("--database", type=Path, default=ROOT / ".agent-data/runs.db")
+    parser.add_argument("--database", type=Path)
+    parser.add_argument("--frontend-url", help="统一工作台地址；访问后端首页时跳转到该地址")
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
-    server = create_server(args.host, args.port, args.database)
-    print(f"Math modeling agent: http://{args.host}:{args.port}")
+    server = create_server(args.host, args.port, args.database, args.frontend_url)
+    print(f"Math modeling agent API: http://{args.host}:{args.port}")
+    if server.frontend_url:
+        print(f"Unified frontend: {server.frontend_url}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

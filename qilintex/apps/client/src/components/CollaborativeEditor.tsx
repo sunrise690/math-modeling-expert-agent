@@ -12,6 +12,7 @@ import type { User } from '../lib/types'
 
 interface Props {
   projectId: string
+  filePath: string
   user: User
   onStatus: (status: 'connecting' | 'connected' | 'disconnected') => void
   onSourceChange: (source: string) => void
@@ -26,7 +27,20 @@ function colorFor(value: string) {
   return collaboratorColors[Math.abs(hash) % collaboratorColors.length]
 }
 
-export function CollaborativeEditor({ projectId, user, onStatus, onSourceChange, onCollaborators }: Props) {
+export function encodeDocumentPath(path: string) {
+  const bytes = new TextEncoder().encode(path)
+  let binary = ''
+  for (const byte of bytes) binary += String.fromCharCode(byte)
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '')
+}
+
+export function collaborationDocumentName(projectId: string, filePath: string) {
+  return filePath === 'main.tex'
+    ? `project.${projectId}.main.tex`
+    : `project.${projectId}.file.${encodeDocumentPath(filePath)}`
+}
+
+export function CollaborativeEditor({ projectId, filePath, user, onStatus, onSourceChange, onCollaborators }: Props) {
   const hostRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -35,7 +49,7 @@ export function CollaborativeEditor({ projectId, user, onStatus, onSourceChange,
     const document = new Y.Doc()
     const provider = new HocuspocusProvider({
       url: collabUrl,
-      name: `project.${projectId}.main.tex`,
+      name: collaborationDocumentName(projectId, filePath),
       document,
       token: getToken()
     })
@@ -80,14 +94,14 @@ export function CollaborativeEditor({ projectId, user, onStatus, onSourceChange,
         yCollab(ytext, awareness, { undoManager }),
         EditorView.lineWrapping,
         EditorView.theme({
-          '&': { height: '100%', color: '#F4F4F5', fontSize: '13px', backgroundColor: '#171717' },
-          '.cm-content': { fontFamily: '"IBM Plex Mono", "Cascadia Code", Consolas, monospace', padding: '22px 0' },
+          '&': { height: '100%', color: '#D4D4D4', fontSize: '13px', backgroundColor: '#1E1E1E' },
+          '.cm-content': { fontFamily: '"JetBrains Mono", "Cascadia Code", Consolas, monospace', padding: '22px 0' },
           '.cm-line': { padding: '0 24px' },
-          '.cm-gutters': { backgroundColor: '#121212', color: '#71717A', borderRight: '1px solid #2B2B2B' },
-          '.cm-activeLineGutter': { backgroundColor: '#1F1F1F', color: '#F4F4F5' },
-          '.cm-activeLine': { backgroundColor: '#1F1F1F' },
-          '.cm-cursor': { borderLeftColor: '#F4F4F5', borderLeftWidth: '2px' },
-          '.cm-selectionBackground, ::selection': { backgroundColor: '#3F3F46 !important' },
+          '.cm-gutters': { backgroundColor: '#181818', color: '#858585', borderRight: '1px solid #2B2B2B' },
+          '.cm-activeLineGutter': { backgroundColor: '#2A2D2E', color: '#C6C6C6' },
+          '.cm-activeLine': { backgroundColor: '#242424' },
+          '.cm-cursor': { borderLeftColor: '#AEAFAD', borderLeftWidth: '2px' },
+          '.cm-selectionBackground, ::selection': { backgroundColor: '#264F78 !important' },
           '&.cm-focused': { outline: 'none' }
         })
       ]
@@ -104,7 +118,7 @@ export function CollaborativeEditor({ projectId, user, onStatus, onSourceChange,
       document.destroy()
       onCollaborators([])
     }
-  }, [projectId, user.id])
+  }, [projectId, filePath, user.id])
 
-  return <div className="editor-host" ref={hostRef} aria-label="LaTeX 编辑器" />
+  return <div className="editor-host" ref={hostRef} aria-label={`${filePath} 编辑器`} />
 }

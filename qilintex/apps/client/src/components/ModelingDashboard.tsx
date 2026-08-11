@@ -1,14 +1,14 @@
 import { useMemo, useState } from 'react'
 import {
-  ArrowRight, BookOpenText, Check, CircleCheckBig, Clipboard, FileCode2,
-  GitBranch, LockKeyhole, PanelRight, TerminalSquare
+  ArrowRight, BookOpenText, Bot, Check, ChevronDown, CircleAlert, CircleCheckBig, Download, FileCode2,
+  GitBranch, LoaderCircle, TerminalSquare, X
 } from 'lucide-react'
-import type { Project } from '../lib/types'
+import type { AgentResult, Project } from '../lib/types'
 
 interface Props {
   project: Project
   onOpenEditor: () => void
-  onCopyCommand: (command: string, label: string) => void
+  onRunAgent: (command: string, label: string) => Promise<AgentResult>
 }
 
 interface StageDefinition {
@@ -32,8 +32,6 @@ const stages: StageDefinition[] = [
   { command: 'polish', title: '确认交付', shortTitle: '最终收尾', purpose: '修复阻塞项，重建结果并检查最终 PDF。', gate: '结果可复现，核心结论有证据。', artifacts: ['validation/latest_score.md', 'reports/workflow_state.json', '最终 PDF 与支持材料'], evidenceIndex: 4 },
 ]
 
-const evidenceChain = ['赛题', '模型', '计算', '证据', '结论']
-
 function formatUpdatedAt(value: string) {
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return '更新时间未知'
@@ -46,81 +44,77 @@ function stageState(index: number) {
   return '待前序'
 }
 
-export function ModelingDashboard({ project, onOpenEditor, onCopyCommand }: Props) {
+export function ModelingDashboard({ project, onOpenEditor, onRunAgent }: Props) {
   const [selectedIndex, setSelectedIndex] = useState(1)
+  const [showStages, setShowStages] = useState(false)
+  const [running, setRunning] = useState('')
+  const [runResult, setRunResult] = useState<AgentResult | null>(null)
+  const [runError, setRunError] = useState('')
   const selected = stages[selectedIndex]
   const commandText = useMemo(() => `$cumcm-modeling ${selected.command} 当前项目“${project.name}”`, [project.name, selected.command])
 
+  const run = async (command: string, label: string) => {
+    if (running) return
+    setRunning(label)
+    setRunResult(null)
+    setRunError('')
+    try {
+      setRunResult(await onRunAgent(command, label))
+    } catch (error) {
+      setRunError(error instanceof Error ? error.message : 'Agent 执行失败。')
+    } finally {
+      setRunning('')
+    }
+  }
+
   return (
     <div className="modeling-dashboard">
-      <header className="modeling-summary">
-        <div><h1>{project.name}</h1><p>数模流程</p></div>
-        <div className="workflow-source"><span>状态</span><strong>未连接</strong></div>
+      <header className="modeling-simple-head">
+        <div><p className="eyebrow">数模 Agent</p><h1>{project.name}</h1><span>{formatUpdatedAt(project.updatedAt)}</span></div>
+        <button className="run-all-button" onClick={() => { void run('end-to-end', '完整流程') }} disabled={Boolean(running)}>{running === '完整流程' ? <LoaderCircle className="spin" size={15} /> : <GitBranch size={15} />}运行完整流程</button>
       </header>
 
-      <nav className="stage-tabs" aria-label="数学建模阶段">
-        {stages.map((stage, index) => (
-          <button
-            key={stage.command}
-            className={selectedIndex === index ? 'active' : index === 0 ? 'established' : ''}
-            onClick={() => setSelectedIndex(index)}
-            aria-current={selectedIndex === index ? 'step' : undefined}
-          >
+      <div className="workflow-picker-wrap">
+        <button className="workflow-picker" type="button" aria-expanded={showStages} onClick={() => setShowStages((value) => !value)}>
+          <span className="workflow-number">{String(selectedIndex + 1).padStart(2, '0')}</span>
+          <span><small>当前任务</small><strong>{selected.shortTitle}</strong></span>
+          <ChevronDown size={16} />
+        </button>
+        {showStages && <div className="workflow-menu" role="menu">
+          {stages.map((stage, index) => <button type="button" role="menuitem" key={stage.command} className={selectedIndex === index ? 'active' : ''} onClick={() => { setSelectedIndex(index); setShowStages(false) }}>
             <span>{index === 0 ? <Check size={13} /> : String(index + 1).padStart(2, '0')}</span>
-            <div><strong>{stage.shortTitle}</strong><small>{stageState(index)}</small></div>
-            {index > 1 && <LockKeyhole size={13} />}
-          </button>
-        ))}
-      </nav>
-
-      <div className="modeling-content">
-        <main className="mission-panel">
-          <article className="task-thread">
-            <header className="task-heading">
-              <span className="task-index">{String(selectedIndex + 1).padStart(2, '0')}</span>
-              <div><span className="task-state">{stageState(selectedIndex)}</span><h2>{selected.title}</h2><p>{selected.purpose}</p></div>
-            </header>
-
-            <section className="command-launch">
-              <div><span>命令</span><code>{commandText}</code></div>
-              <button onClick={() => onCopyCommand(selected.command, selected.shortTitle)}><Clipboard size={16} />复制</button>
-            </section>
-
-            <section className="gate-panel">
-              <CircleCheckBig size={21} />
-              <div><h3>完成条件</h3><p>{selected.gate}</p></div>
-            </section>
-          </article>
-
-          <section className="deliverables-panel">
-            <header><h2>交付物</h2><p>通过后生成</p></header>
-            <div className="artifact-list">
-              {selected.artifacts.map((artifact) => (
-                <div key={artifact}><FileCode2 size={16} /><code>{artifact}</code><span>待生成</span></div>
-              ))}
-            </div>
-          </section>
-        </main>
-
-        <aside className="evidence-console">
-          <header><PanelRight size={18} /><div><h2>证据链</h2><p>赛题 → 结论</p></div></header>
-          <ol className="evidence-flow">
-            {evidenceChain.map((item, index) => (
-              <li key={item} className={selected.evidenceIndex === index ? 'focused' : ''}>
-                <span>{String(index + 1).padStart(2, '0')}</span><strong>{item}</strong><small>{selected.evidenceIndex === index ? '当前' : '待同步'}</small>
-              </li>
-            ))}
-          </ol>
-          <div className="state-source"><strong>数据源</strong><p><code>workflow_state.json</code> 未连接，不推测进度。</p></div>
-          <div className="project-facts"><span>{project.name}</span><p>{project.role === 'owner' ? '项目所有者' : project.role === 'editor' ? '可编辑成员' : '只读成员'} · {formatUpdatedAt(project.updatedAt)}</p></div>
-          <button className="open-paper" onClick={onOpenEditor}><BookOpenText size={16} />打开论文<ArrowRight size={15} /></button>
-        </aside>
+            <div><strong>{stage.shortTitle}</strong><small>{stage.purpose}</small></div>
+            {selectedIndex === index && <Check size={14} />}
+          </button>)}
+        </div>}
       </div>
 
-      <footer className="modeling-actions">
-        <button onClick={() => onCopyCommand('status', '状态检查')}><TerminalSquare size={15} />状态</button>
-        <button onClick={() => onCopyCommand('end-to-end', '完整流程')}><GitBranch size={15} />运行全流程</button>
-      </footer>
+      <main className="modeling-focus modeling-focus-simple">
+        <section className="focus-task">
+          <span className="task-state">{stageState(selectedIndex)}</span>
+          <h2>{selected.title}</h2>
+          <p>{selected.purpose}</p>
+          <div className="modeling-essential"><CircleCheckBig size={16} /><span><small>完成条件</small><strong>{selected.gate}</strong></span></div>
+          <button className="focus-run" onClick={() => { void run(selected.command, selected.shortTitle) }} disabled={Boolean(running)}>{running === selected.shortTitle ? <LoaderCircle className="spin" size={17} /> : <Bot size={17} />}<span>{running === selected.shortTitle ? 'Agent 正在执行' : '交给 Agent'}</span><ArrowRight size={15} /></button>
+          <details className="modeling-more">
+            <summary>更多详情</summary>
+            <div className="focus-command"><span>执行命令</span><code>{commandText}</code></div>
+            <div className="modeling-more-artifacts"><span>本步交付</span>{selected.artifacts.map((artifact) => <code key={artifact}>{artifact}</code>)}</div>
+            <div className="focus-links">
+              <button onClick={() => { void run('status', '状态检查') }} disabled={Boolean(running)}>{running === '状态检查' ? <LoaderCircle className="spin" size={15} /> : <TerminalSquare size={15} />}检查状态</button>
+              <button onClick={onOpenEditor}><BookOpenText size={15} />打开论文</button>
+            </div>
+          </details>
+        </section>
+      </main>
+      {(running || runResult || runError) && <section className="modeling-run-output" aria-live="polite">
+        <header>
+          <div>{running ? <LoaderCircle className="spin" size={17} /> : runError ? <CircleAlert size={17} /> : <CircleCheckBig size={17} />}<span><strong>{running ? `正在执行${running}` : runError ? 'Agent 执行失败' : 'Agent 已完成'}</strong><small>{running ? '任务已直接提交，完成后结果会显示在这里。' : runResult ? `${runResult.mode} · ${runResult.backend === 'math_modeling_agent' ? '数模 Agent' : 'OpenAI'}` : runError}</small></span></div>
+          {!running && <button type="button" className="icon-button" onClick={() => { setRunResult(null); setRunError('') }} aria-label="关闭运行结果"><X size={16} /></button>}
+        </header>
+        {runResult?.text && <pre>{runResult.text}</pre>}
+        {runResult && runResult.artifacts.length > 0 && <div className="modeling-run-artifacts">{runResult.artifacts.map((artifact) => <a key={artifact.id} href={`data:${artifact.mimeType};base64,${artifact.base64}`} download={artifact.name}><FileCode2 size={15} /><span>{artifact.name}</span><Download size={14} /></a>)}</div>}
+      </section>}
     </div>
   )
 }

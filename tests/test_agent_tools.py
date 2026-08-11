@@ -27,6 +27,15 @@ class AgentToolsTests(unittest.TestCase):
         self.registry._env_values["AGENT_UNSANDBOXED_MATLAB"] = "1"
         self.registry._env_values["AGENT_MATLAB_TIMEOUT"] = str(timeout)
 
+    def test_default_and_relative_knowledge_paths_are_repository_portable(self) -> None:
+        self.assertEqual(self.registry.knowledge.roots, [(self.root / "knowledge").resolve()])
+        self.assertTrue((self.root / "knowledge").is_dir())
+        self.registry._env_values["AGENT_KNOWLEDGE_ROOTS"] = os.pathsep.join(["references", "shared/materials"])
+        self.assertEqual(
+            [path.resolve() for path in self.registry._knowledge_roots()],
+            [(self.root / "references").resolve(), (self.root / "shared/materials").resolve()],
+        )
+
     def test_searches_installed_modeling_skills(self) -> None:
         result = self.registry.execute("search_skills", {"query": "多目标优化", "limit": 3}, self.run_id)
         names = [item["name"] for item in result["skills"]]

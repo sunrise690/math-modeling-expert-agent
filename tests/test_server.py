@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import tempfile
 import threading
 import unittest
@@ -10,7 +11,8 @@ from pathlib import Path
 from unittest.mock import patch
 
 from agent_backend import RunManager, RunStore
-from server import AgentHTTPServer, create_server
+from server import AgentHTTPServer, create_server, normalize_frontend_url
+from runtime_paths import agent_data_dir
 
 
 CODEX_STATUS = {
@@ -102,6 +104,24 @@ class ServerTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertIn("activeCount", payload)
 
+    def test_configured_workbench_origin_can_reach_loopback_runtime(self) -> None:
+        self.server.frontend_origin = "https://workbench.example"
+        status, payload = self.request("/api/health", headers={"Origin": "https://workbench.example"})
+        self.assertEqual(status, 200)
+        self.assertTrue(payload["ok"])
+        request = urllib.request.Request(
+            f"{self.base_url}/api/health",
+            headers={
+                "Origin": "https://workbench.example",
+                "Access-Control-Request-Method": "GET",
+                "Access-Control-Request-Private-Network": "true",
+            },
+            method="OPTIONS",
+        )
+        with urllib.request.urlopen(request, timeout=10) as response:
+            self.assertEqual(response.headers.get("Access-Control-Allow-Origin"), "https://workbench.example")
+            self.assertEqual(response.headers.get("Access-Control-Allow-Private-Network"), "true")
+
     def test_graphical_provider_config_saves_encrypted_secret_and_tests_codex(self) -> None:
         with patch("provider_config.codex_cli_status", return_value=CODEX_STATUS), patch(
             "agent_backend.codex_cli_status",
@@ -135,9 +155,56 @@ class ServerTests(unittest.TestCase):
             self.assertTrue(tested["test"]["ok"])
             self.assertEqual(tested["test"]["defaultModel"], "gpt-test")
 
+    def test_codex_browser_login_routes_only_return_public_session_state(self) -> None:
+        session_id = "d" * 32
+
+        class LoginStub:
+            callback = ""
+
+            def start(self):
+                return {"id": session_id, "mode": "device-code", "status": "pending", "verificationUrl": "https://auth.example/device", "userCode": "ABCD"}
+
+            def status(self, requested_id):
+                self.requested_id = requested_id
+                return {"id": requested_id, "mode": "device-code", "status": "pending"}
+
+            def relay_callback(self, requested_id, callback_url):
+                self.callback = callback_url
+                return {"id": requested_id, "mode": "browser-callback", "status": "pending"}
+
+            def cancel(self, requested_id):
+                self.cancelled = requested_id
+
+            def close(self):
+                pass
+
+        stub = LoginStub()
+        self.server.codex_login = stub
+        status, started = self.request("/api/codex-login", method="POST", payload={})
+        self.assertEqual(status, 202)
+        self.assertEqual(started["login"]["userCode"], "ABCD")
+        _, current = self.request(f"/api/codex-login/{session_id}")
+        self.assertEqual(current["login"]["id"], session_id)
+        callback = "http://localhost:1455/auth/callback?code=x&state=y"
+        self.request("/api/codex-login/callback", method="POST", payload={"id": session_id, "callbackUrl": callback})
+        self.assertEqual(stub.callback, callback)
+        self.request(f"/api/codex-login/{session_id}", method="DELETE")
+        self.assertEqual(stub.cancelled, session_id)
+
     def test_create_server_refuses_non_loopback_binding(self) -> None:
         with self.assertRaises(ValueError):
             create_server("0.0.0.0", 0, self.root / "rejected.db")
+
+    def test_unified_frontend_url_is_normalized_and_validated(self) -> None:
+        self.assertEqual(normalize_frontend_url("http://localhost:5173"), "http://localhost:5173/")
+        self.assertEqual(normalize_frontend_url("https://modeling.example/app/"), "https://modeling.example/app/")
+        for value in ("localhost:5173", "file:///tmp/app", "https://user:secret@example.com"):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                normalize_frontend_url(value)
+
+    def test_agent_data_directory_supports_repository_relative_configuration(self) -> None:
+        with patch.dict(os.environ, {"AGENT_DATA_DIR": "runtime/agent"}):
+            self.assertEqual(agent_data_dir(self.root), (self.root / "runtime/agent").resolve())
 
 
 if __name__ == "__main__":

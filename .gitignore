@@ -1,7 +1,9 @@
 .env
 .agent-data/
+.codex-temp/
 .runtime/
 /node_modules/
+/tmp/
 __pycache__/
 *.pyc
 *.log

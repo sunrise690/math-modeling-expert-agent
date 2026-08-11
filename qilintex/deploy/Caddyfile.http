@@ -11,7 +11,7 @@ http://__PUBLIC_HOST__ {
   }
 
   handle {
-    root * /opt/qilintex/current/apps/client/dist
+    root * "__APP_ROOT__/apps/client/dist"
     try_files {path} /index.html
     file_server
   }

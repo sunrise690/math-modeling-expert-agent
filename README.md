@@ -1,13 +1,15 @@
-# 数模 Agent
+# 数模工作台
 
 > 简单模型优先，复杂度由证据驱动；允许创新算法，但不允许用随机数、机器学习或高级模型名称代替问题结构分析。
 
 ![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-315D86?style=flat-square&logo=python&logoColor=white)
-![Windows](https://img.shields.io/badge/Platform-Windows-5B6F35?style=flat-square&logo=windows&logoColor=white)
+![Web](https://img.shields.io/badge/Frontend-Web-5B6F35?style=flat-square)
 ![Local first](https://img.shields.io/badge/Runtime-local--first-8A6A42?style=flat-square)
 ![Evidence gated](https://img.shields.io/badge/Workflow-evidence--gated-6C7A57?style=flat-square)
 
-数模 Agent 是一个只监听本机回环地址的数学建模工作台。它把模型推理、本地资料检索、数据预检、受限 Python 计算、优化与统计、MATLAB/Origin 绘图、论文生成和质量审计放进同一条可复现工作流，面向 CUMCM、MCM/ICM、校赛和日常建模任务。
+数模工作台把数模 Agent 与 QilinTeX 放在同一个前端、同一个项目上下文中。用户可在“建模 Agent”和“QilinTeX”之间直接切换，共享登录、成员、论文、计算产物与 Agent 对话，不需要打开或部署两个站点。
+
+后端包含协作服务和只监听本机回环地址的数模任务服务。它把模型推理、本地资料检索、数据预检、受限 Python 计算、优化与统计、MATLAB/Origin 绘图、论文生成和质量审计接入同一条可复现工作流，面向 CUMCM、MCM/ICM、校赛和日常建模任务。
 
 它的目标不是“给出几个模型名”，而是完成可核验的：
 
@@ -19,11 +21,14 @@
 
 | 能力 | 实际约束 |
 |---|---|
+| 单一项目工作台 | 同一页面切换建模流程和 LaTeX 论文，Agent 在两个工作区中共享当前项目上下文 |
+| VS Code 深色交互 | 活动栏、资源管理器、编辑器页签、分栏面板和状态栏保持稳定；`Ctrl+P` 搜索当前可执行命令 |
 | 简单模型优先 | 按量纲/手算、解析基线、确定性数值模型、结构化复杂模型、随机/机器学习逐级升级；当前一级已经满足精度时停止加复杂度 |
 | 可验证算法创新 | 可以设计解析消元、对称降维、事件驱动、邻域筛选、可行解构造或混合搜索，但必须完成同预算基线、消融、复杂度、稳定性和失效边界检查 |
 | 真实计算证据 | 未执行代码不能声称“已求得”；优化结果必须报告求解状态、约束违反量、停止条件和基线/理论界或独立算法对照 |
 | 论文级图表 | 每张图先说明要支撑的主张；检查单位、色盲/灰度可辨、图例遮挡、误差表达、最终字号和 PDF 实际页面，不用装饰图代替证据 |
 | 完整论文闭环 | 每问形成“模型选择—定义—求解—量化结果—解释—验证”；摘要数字必须能回到正文、表格或计算产物 |
+| 结构化过程审计 | 完整解题/成稿必须提交题面、假设、基线、升级依据、主张—证据—验证和修改复验账本；不靠“去 AI 味”掩盖过程缺口 |
 | 本地资料检索 | 按内容哈希增量索引 PDF、DOCX、XLSX、TeX、Python、MATLAB 等资料，先检索再回读原页或工作表，不根据文件名猜内容 |
 | 本地优先与密钥隔离 | 服务拒绝绑定公网地址；Provider 密钥不通过公开接口回显，图形化配置下使用 Windows DPAPI 保存 |
 | 质量评分与回滚 | 从问题覆盖、模型严谨性、复现、验证、交付和真实性六个维度评分；硬门禁失败时不会被平均分掩盖 |
@@ -32,29 +37,23 @@
 
 ### 环境要求
 
-- Windows 10/11
-- Python 3.11 或更高版本
+- Node.js 20 或更高版本与 pnpm 11（推荐通过 Corepack 启用）
+- Python 3.11 或更高版本；初始化脚本会在项目内创建托管虚拟环境
 - 至少一种可用模型通道：Codex Runtime、OpenAI API、DeepSeek、OpenAI 兼容接口或 Ollama
 - MATLAB 与 Origin 均为可选能力，不影响基础 Agent 启动
 
 ### 安装与运行
 
-```powershell
+```shell
 git clone https://github.com/sunrise690/math-modeling-expert-agent.git
 cd math-modeling-expert-agent
-
-py -3.11 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-
-if (-not (Test-Path .env)) { Copy-Item .env.example .env }
-python server.py
+pnpm setup
+pnpm dev
 ```
 
-浏览器打开 <http://127.0.0.1:8765/>。后端会拒绝 `0.0.0.0` 或其他非回环监听地址。
+浏览器只需打开 <http://localhost:5173/>。根目录命令会一起启动统一前端、协作服务和数模 Agent；脚本根据自身位置寻找仓库与 Python，不依赖下载者复刻任何开发者目录。
 
-首次运行时，在右上角“模型设置”中选择 Provider、模型与推理强度，先执行“测试连接”，成功后再保存。随后选择任务模式、粘贴题目并上传数据即可。
+首次运行可把 [`.env.example`](.env.example) 复制为根目录 `.env`。这个文件同时配置统一工作台与数模 Agent；如需仅覆盖协作服务，再创建 `qilintex/.env`。运行数据默认写入仓库相对的 `.agent-data/` 和 `qilintex/apps/server/data/`；如需放到其他位置，使用 `AGENT_DATA_DIR` 与 `DATA_DIR`。
 
 推荐的第一条任务：
 
@@ -85,10 +84,12 @@ flowchart LR
     E --> F
     F --> G[可行性与独立验证]
     G --> H[表格、图形与论文]
-    H --> I[质量评分与成稿审计]
+    H --> I[过程审计、质量评分与成稿审计]
     I -- 未通过 --> B
     I -- 通过 --> J[可复现交付]
 ```
+
+完整交付会调用 `audit_modeling_workflow`，并生成 manifest、JSON 报告和 Markdown 报告。它针对仿真替代机理、复杂度堆叠、NP-hard 无工程化简、虚构来源、逻辑断链、图表无证据和无反馈迭代等风险；最新最终审计未通过时，质量分最高为 68。审计通过只说明证据链合同完整，仍需人工复核模型和论文。
 
 ### 模型升级阶梯
 
@@ -158,7 +159,7 @@ PowerShell -ExecutionPolicy Bypass -File scripts\install_mcp_backends.ps1
 | OpenAI 兼容接口 | `openai-compatible` | 自定义 HTTPS 地址、模型和可选 Key |
 | Ollama | `ollama` | 本机回环地址，通常不需要 Key |
 
-默认 `AGENT_CONFIG_LOCK=0`，页面保存的设置覆盖 `.env` 中的 Provider 运行值。API Provider 的密钥按 Provider 分开保存在 `.agent-data/provider-secrets/`，使用 Windows DPAPI 加密，公开配置接口只返回“是否已配置”。DPAPI 保护磁盘副本，但不等于进程隔离。
+默认 `AGENT_CONFIG_LOCK=0`，页面保存的设置覆盖 `.env` 中的 Provider 运行值。API Provider 的密钥按 Provider 分开保存在 `.agent-data/provider-secrets/`：Windows 使用 DPAPI，Linux/macOS 使用权限为 `0600` 的本机 Fernet 主密钥加密。公开配置接口只返回“是否已配置”。这些机制用于保护磁盘副本，但不等于进程隔离。
 
 设置 `AGENT_CONFIG_LOCK=1` 后，页面进入只读模式，只使用部署环境或 `.env`。完整变量和五种 Provider 示例见 [.env.example](.env.example)。远程基础 URL 必须使用 HTTPS；HTTP 仅允许 `localhost`、`127.0.0.1` 等回环地址。
 
@@ -166,10 +167,10 @@ Codex Runtime 与 OpenAI API 是两条独立通道。项目不会读取、复制
 
 ## 本地资料库
 
-建议显式设置资料根目录：
+默认资料目录是仓库内的 `knowledge/`，也可追加一个或多个相对目录：
 
 ```env
-AGENT_KNOWLEDGE_ROOTS=D:\你的资料目录;E:\第二个资料目录
+AGENT_KNOWLEDGE_ROOTS=knowledge
 ```
 
 支持：`PDF`、`DOCX`、`XLSX`、`CSV`、`TSV`、`JSON`、`Markdown`、`TXT`、`TeX`、`BibTeX`、LaTeX 类/样式文件、Python 与 MATLAB 源码。
@@ -191,7 +192,7 @@ Invoke-RestMethod http://127.0.0.1:8765/api/knowledge/status | ConvertTo-Json -D
 .agent-data/
 ├─ runs.db                 # 任务、状态与质量记录
 ├─ provider-settings.json  # 非密钥 Provider 设置
-├─ provider-secrets/       # DPAPI 加密密钥
+├─ provider-secrets/       # 跨平台加密的 Provider 密钥
 ├─ knowledge.db            # 本地资料索引
 ├─ python-workspaces/      # Python 任务输入、输出和日志
 ├─ matlab-workspaces/      # 获准 MATLAB 任务产物
@@ -206,19 +207,20 @@ Invoke-RestMethod http://127.0.0.1:8765/api/knowledge/status | ConvertTo-Json -D
 .
 ├─ agent_backend.py        # Provider 调用、任务队列与运行闭环
 ├─ agent_tools.py          # 数据、计算、绘图、文档和资料工具
-├─ server.py               # 本机 HTTP API 与静态页面
+├─ server.py               # 本机数模任务 API
 ├─ knowledge_base.py       # 增量全文索引与隐私过滤
 ├─ quality_scoring.py      # 六维评分和硬门禁
+├─ workflow_guard.py       # 结构化建模过程与证据链审计
 ├─ mcp_servers/            # Codex/MATLAB/Origin 工具桥
 ├─ skills/cumcm-expert-agent/
 │  ├─ SKILL.md             # 专业数模总工作流
 │  └─ references/          # 建模、验证、论文与历史语料规则
 ├─ scripts/                # 安装、论文审计、绘图和语料分析脚本
 ├─ tests/                  # 单元与集成测试
-└─ qilintex/               # 独立的多人 LaTeX 协作工作台
+└─ qilintex/               # 统一前端、协作服务与跨平台启动脚本
 ```
 
-根目录数模 Agent 与 [`qilintex/`](qilintex/) 是两个可独立运行的组件，分别维护运行配置、登录和安全边界。QilinTeX 的安装、部署、协作与发布方式见 [`qilintex/README.md`](qilintex/README.md)。具体年份赛题、原始附件、完整求解项目和大体积论文语料应放在仓库外或独立仓库，公开前单独检查竞赛规则、版权和个人信息。
+[`qilintex/`](qilintex/) 是整个项目的唯一用户前端；根目录 Python 服务作为它的内部数模任务后端。两者可以在开发和部署时分进程运行，但不构成两个面向用户的产品。完整启动、部署、协作与发布方式见 [`qilintex/README.md`](qilintex/README.md)。具体年份赛题、原始附件、完整求解项目和大体积论文语料应放在仓库外或独立仓库，公开前单独检查竞赛规则、版权和个人信息。
 
 ## API 概览
 

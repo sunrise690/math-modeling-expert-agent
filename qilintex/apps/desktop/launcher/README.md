@@ -5,5 +5,6 @@
 本地编译命令：
 
 ```powershell
-& 'C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe' /nologo /target:winexe /reference:System.Windows.Forms.dll /out:'release\win-unpacked\Qilintex 启动器.exe' 'apps\desktop\launcher\Program.cs'
+$compiler = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319\csc.exe'
+& $compiler /nologo /target:winexe /reference:System.Windows.Forms.dll /out:'release\win-unpacked\Qilintex 启动器.exe' 'apps\desktop\launcher\Program.cs'
 ```

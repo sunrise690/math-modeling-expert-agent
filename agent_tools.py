@@ -19,6 +19,8 @@ from urllib.parse import quote
 
 from knowledge_base import KnowledgeBase, KnowledgeError, SUPPORTED_MATERIAL_EXTENSIONS
 from mcp_bridge import MCPBridgeError, MCPServerConfig, MCPToolManager
+from runtime_paths import agent_data_dir
+from workflow_guard import audit_modeling_workflow, render_workflow_audit
 
 
 TOOLKIT_ROOT = Path.home() / ".codex/skills/math-modeling-toolkit"
@@ -143,19 +145,20 @@ class ToolError(RuntimeError):
 class ToolRegistry:
     def __init__(self, root: Path) -> None:
         self.root = root
-        self.artifact_root = root / ".agent-data/artifacts"
-        self.upload_root = root / ".agent-data/uploads"
-        self.mcp_workspace_root = root / ".agent-data/mcp-workspaces"
-        self.python_workspace_root = root / ".agent-data/python-workspaces"
-        self.matlab_workspace_root = root / ".agent-data/matlab-workspaces"
+        self.data_root = agent_data_dir(root)
+        self.artifact_root = self.data_root / "artifacts"
+        self.upload_root = self.data_root / "uploads"
+        self.mcp_workspace_root = self.data_root / "mcp-workspaces"
+        self.python_workspace_root = self.data_root / "python-workspaces"
+        self.matlab_workspace_root = self.data_root / "matlab-workspaces"
         self.artifact_root.mkdir(parents=True, exist_ok=True)
         self.upload_root.mkdir(parents=True, exist_ok=True)
         self.mcp_workspace_root.mkdir(parents=True, exist_ok=True)
         self.python_workspace_root.mkdir(parents=True, exist_ok=True)
         self.matlab_workspace_root.mkdir(parents=True, exist_ok=True)
         self._env_values = self._read_local_env()
-        self.knowledge = KnowledgeBase(root / ".agent-data/knowledge.db", self._knowledge_roots())
-        self.mcp = MCPToolManager(self._mcp_configs(), root / ".agent-data/mcp/logs")
+        self.knowledge = KnowledgeBase(self.data_root / "knowledge.db", self._knowledge_roots())
+        self.mcp = MCPToolManager(self._mcp_configs(), self.data_root / "mcp/logs")
         self._mcp_tool_names: set[str] = set()
 
     def definitions(self) -> list[dict[str, Any]]:
@@ -592,6 +595,25 @@ class ToolRegistry:
             {
                 "type": "function",
                 "function": {
+                    "name": "audit_modeling_workflow",
+                    "description": "Audit the structured modeling process before a full contest solution or paper is marked final. First read cumcm-expert-agent/references/anti-ai-resilience.md for the manifest contract. Verifies problem/variable contracts, assumptions, simple baseline and complexity escalation, mechanism-before-simulation, NP-hard engineering strategy, source and claim evidence, validation coverage, figure semantics, stochastic reproducibility, and an evidence-backed revision loop. This is a process gate, not a prose-style detector.",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "manifest": {
+                                "type": "object",
+                                "description": "Workflow ledger with stage, problem, assumptions, model, evidence, claims, validations, iterations, and optional figures/citations. Use stable IDs for every cross-reference.",
+                            },
+                            "filename": {"type": "string", "default": "modeling-workflow-audit"},
+                        },
+                        "required": ["manifest"],
+                        "additionalProperties": False,
+                    },
+                },
+            },
+            {
+                "type": "function",
+                "function": {
                     "name": "audit_competition_paper",
                     "description": "Audit an actual mathematical-modeling manuscript artifact before final delivery. Checks full-paper structure, quantified abstract, per-question depth, figure coverage and balance, validation figures, citations, and placeholders; returns JSON and Markdown audit artifacts. Passing does not guarantee an award.",
                     "parameters": {
@@ -646,7 +668,7 @@ class ToolRegistry:
         candidates: list[Path] = []
         configured = self._config_value("MATLAB_ROOT")
         if configured:
-            configured_path = Path(configured).expanduser()
+            configured_path = self._portable_path(configured)
             if configured_path.is_file():
                 candidates.append(configured_path)
             else:
@@ -662,7 +684,6 @@ class ToolRegistry:
         if discovered:
             candidates.append(Path(discovered))
         if os.name == "nt":
-            candidates.append(Path(r"D:\matlab\bin\matlab.exe"))
             for variable in ("ProgramFiles", "ProgramW6432"):
                 program_files = os.environ.get(variable, "").strip()
                 if program_files:
@@ -736,7 +757,7 @@ class ToolRegistry:
 
     def _mcp_configs(self) -> list[MCPServerConfig]:
         mcp_enabled = self._env_enabled("AGENT_MCP", True)
-        matlab_binary = self.root / ".agent-data/mcp/matlab-mcp-server-windows-x64.exe"
+        matlab_binary = self.data_root / "mcp/matlab-mcp-server-windows-x64.exe"
         matlab_executable = self._matlab_executable()
         matlab_root = matlab_executable.parent.parent if matlab_executable else None
         origin_server = SOURCE_ROOT / "mcp_servers/origin_server.py"
@@ -777,15 +798,19 @@ class ToolRegistry:
     def _config_value(self, name: str) -> str:
         return os.environ.get(name, self._env_values.get(name, "")).strip()
 
+    def _portable_path(self, value: str) -> Path:
+        path = Path(os.path.expandvars(value)).expanduser()
+        return path if path.is_absolute() else self.root / path
+
     def _knowledge_roots(self) -> list[Path]:
         configured = self._config_value("AGENT_KNOWLEDGE_ROOTS")
         roots: list[Path] = []
         if configured:
-            roots.extend(Path(item.strip()) for item in configured.split(os.pathsep) if item.strip())
+            roots.extend(self._portable_path(item.strip()) for item in configured.split(os.pathsep) if item.strip())
         else:
-            default_root = Path(r"D:\codexxiangmu\shumo")
-            if default_root.is_dir():
-                roots.append(default_root)
+            default_root = self.root / "knowledge"
+            default_root.mkdir(parents=True, exist_ok=True)
+            roots.append(default_root)
         if self._env_enabled("AGENT_KNOWLEDGE_INCLUDE_SKILLS", False):
             roots.extend(
                 skill_root / name
@@ -924,6 +949,7 @@ class ToolRegistry:
             "create_matlab_plot_from_dataset": lambda args: self._create_mcp_plot_from_dataset("matlab", args, run_id),
             "create_origin_plot": lambda args: self._create_mcp_plot("origin", args, run_id),
             "create_origin_plot_from_dataset": lambda args: self._create_mcp_plot_from_dataset("origin", args, run_id),
+            "audit_modeling_workflow": lambda args: self._audit_modeling_workflow(args, run_id),
             "audit_competition_paper": lambda args: self._audit_competition_paper(args, run_id),
             "export_report": lambda args: self._run_script("export_report.py", args, run_id),
         }
@@ -1463,6 +1489,23 @@ class ToolRegistry:
         result = self._run_script("plot_figure.py", spec, run_id)
         result.update({"source": self.get_upload(upload_id), "selectedSheet": context["selectedSheet"]})
         return result
+
+    def _audit_modeling_workflow(self, arguments: dict[str, Any], run_id: str) -> dict[str, Any]:
+        manifest = arguments.get("manifest")
+        if not isinstance(manifest, dict):
+            raise ToolError("manifest 必须是 JSON 对象")
+        safe_name = self._safe_filename(str(arguments.get("filename", "modeling-workflow-audit")))
+        stem = Path(safe_name).stem or "modeling-workflow-audit"
+        artifact_dir = self._artifact_dir(run_id)
+        artifact_dir.mkdir(parents=True, exist_ok=True)
+        manifest_path = artifact_dir / f"{stem}-manifest.json"
+        report_path = artifact_dir / f"{stem}.json"
+        markdown_path = artifact_dir / f"{stem}.md"
+        report = audit_modeling_workflow(manifest)
+        manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        markdown_path.write_text(render_workflow_audit(report), encoding="utf-8")
+        return {"ok": True, "workflowAudit": report, "artifacts": self.list_artifacts(run_id)}
 
     def _audit_competition_paper(self, arguments: dict[str, Any], run_id: str) -> dict[str, Any]:
         artifact_name = str(arguments.get("artifact_name", "")).strip()

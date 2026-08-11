@@ -17,6 +17,17 @@ interface Window {
     getUpdateState: () => Promise<UpdateState>
     checkForUpdates: () => Promise<UpdateState>
     installUpdate: () => Promise<void>
+    agentRequest: (request: {
+      path: string
+      method: string
+      headers: Record<string, string>
+      bodyBase64?: string
+    }) => Promise<{
+      ok: boolean
+      status: number
+      headers: Record<string, string>
+      bodyBase64: string
+    }>
     onUpdateState: (callback: (state: UpdateState) => void) => () => void
     onAuthTicket: (callback: (ticket: string) => void) => () => void
   }

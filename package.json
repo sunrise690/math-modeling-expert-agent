@@ -1,0 +1,15 @@
+{
+  "name": "math-modeling-workbench",
+  "version": "0.1.0",
+  "private": true,
+  "description": "数模 Agent 与 QilinTeX 一体化工作台",
+  "packageManager": "pnpm@11.16.0",
+  "scripts": {
+    "setup": "pnpm --dir qilintex install && pnpm --dir qilintex setup",
+    "dev": "pnpm --dir qilintex dev",
+    "dev:desktop": "pnpm --dir qilintex dev:desktop",
+    "build": "pnpm --dir qilintex build",
+    "test:web": "pnpm --dir qilintex test",
+    "typecheck": "pnpm --dir qilintex typecheck"
+  }
+}

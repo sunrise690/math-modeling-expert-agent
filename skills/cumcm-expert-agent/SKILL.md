@@ -1,6 +1,6 @@
 ---
 name: cumcm-expert-agent
-description: 数学建模竞赛专家工作流，覆盖国赛、美赛及校赛的拆题、资料检索、简单模型优先、机理与优化建模、算法创新、可复现求解、专业作图、灵敏度与鲁棒性检验、结果模板填写、论文交付和历史赛题基准迭代。用户要求完整解题、专业数模 Agent、历年 A 题/优秀论文复盘、资料包学习、模型与算法对比、创新算法、Python/MATLAB/Origin 作图、论文或结果验证时使用。
+description: 数学建模竞赛专家工作流，覆盖国赛、华数杯、美赛及校赛的拆题、资料检索、简单模型优先、机理与优化建模、算法创新、可复现求解、专业作图、灵敏度与鲁棒性检验、结果模板填写、论文交付和历史赛题基准迭代。用户要求完整解题、专业数模 Agent、历年 A/B/C 题或优秀论文复盘、资料包学习、模型与算法对比、创新算法、Python/MATLAB/Origin 作图、论文或结果验证时使用。
 ---
 
 # 数模竞赛专家 Agent
@@ -20,7 +20,13 @@ description: 数学建模竞赛专家工作流，覆盖国赛、美赛及校赛�
 
 涉及国赛 A 题、工程机理题、优秀论文复盘、用户提供的论文资料包或要求从历年论文学习时，必须读取 [references/a-paper-corpus-lessons.md](references/a-paper-corpus-lessons.md)。先用 [references/a-paper-corpus-index.md](references/a-paper-corpus-index.md) 选择年份与题型；需要方法或验证命中页时再读取 `references/a-paper-corpus-index.json`，随后通过 `search_materials`/`read_material` 回到原文核验。若任务涉及论文写作、版式、图表或审美，还必须读取 [references/a-paper-visual-writing-patterns.md](references/a-paper-visual-writing-patterns.md)，用 [references/a-paper-presentation-index.md](references/a-paper-presentation-index.md) 定位需要视觉回读的原页。OCR 和统计索引只用于路由，不能代替原 PDF。
 
+涉及华数杯、第四至第六届 A/B/C 题、游客路线、VLSI 布局、多孔膜、网络切片、生物节律 LED 或本次 18 篇优秀论文语料时，必须读取 [references/huashu-cup-corpus-lessons.md](references/huashu-cup-corpus-lessons.md)，先用 [references/huashu-cup-corpus-index.md](references/huashu-cup-corpus-index.md) 按题型定位；需要具体方法、验证、章节或图题页时再读取 `references/huashu-cup-corpus-index.json`。涉及图表、配色或行文时还必须读取 [references/huashu-cup-visual-writing-patterns.md](references/huashu-cup-visual-writing-patterns.md)。像素色相、OCR 和关键词命中只用于选页，必须回读原 PDF；不能继承历史论文的彩虹图、饼图墙、装饰粉彩、无语义双 Y 轴、无色条三维图或字体缺失。
+
 ## 整题闭环
+
+整题工程、完整论文或跨回合续做任务必须先读取 [references/workflow-checkpoints.md](references/workflow-checkpoints.md)，用 `scripts/workflow_state.py` 初始化或恢复 `<PROJECT_ROOT>/.modeling-agent/workflow-state.json`。阶段只能按 `intake → parse → model → prototype → solve → validate → evidence → write → package → complete` 相邻推进；每次推进绑定项目内证据文件及其哈希。证据变化后先运行 `status`，旧门禁和下游状态自动失效。
+
+完成 `model_contract` 后，先向用户汇报逐问模型、变量与约束、算法、验证、风险和回退方案并取得明确确认，再进入 `prototype`。用户在当前请求中明确预授权直接完成时可记录该原句；不得虚构确认、把沉默视为确认或绕道跳阶段。快速咨询和一次性单问解释不强制启用状态文件，也不得擅自扩大为整题工程。
 
 ### 1. 锁定题意和交付
 
@@ -67,6 +73,8 @@ description: 数学建模竞赛专家工作流，覆盖国赛、美赛及校赛�
 
 按 [references/evidence-and-validation.md](references/evidence-and-validation.md) 建立主张—证据映射。资料原文只能支撑来源性主张，不能替代数值计算。
 
+完整解题、论文成稿或针对“反智能体出题”风险的任务还必须读取 [references/anti-ai-resilience.md](references/anti-ai-resilience.md)，建立结构化过程账本并在交付前调用 `audit_modeling_workflow`。该门禁检查机理、复杂度升级、来源、逻辑、图表和反馈闭环，不用于伪装写作风格或规避 AI 检测。
+
 ### 5. 验证与反证
 
 至少执行：
@@ -97,12 +105,16 @@ description: 数学建模竞赛专家工作流，覆盖国赛、美赛及校赛�
 
 完整成稿生成后必须调用 `audit_competition_paper` 审计实际论文产物；审计失败时回到对应章节、图或验证阶段修复，不得用最终答复中的说明替代成品修订。
 
+完整解题或论文成稿还必须以 `stage=final` 的 manifest 通过 `audit_modeling_workflow`；旧的 PASS 之后若又产生失败审计，以最新一次为准。审计失败时必须回到对应模型、证据或验证阶段，不得仅重写文字。
+
 把历史赛题作为盲测基准时读取 [references/benchmark-protocol.md](references/benchmark-protocol.md)。记录 Agent 的失败类型、缺失工具、错误假设和人工修正，再更新 skill、工具或质量门禁；更新后从干净输入重新运行，不读取旧答案作为隐藏提示。
 
 ## 硬门禁
 
+- 整题工程、完整论文或跨回合续做任务未建立可恢复状态、跨阶段跳转、门禁无项目内哈希证据、模型方案未经用户确认或预授权，或证据变化后仍沿用旧 PASS 时，不得进入下一阶段或标记完成。
 - 未读题面或附件，不得给最终数值。
 - 未执行代码，不得声称“已求得”“已验证”或“已绘制”。
+- 完整解题或论文成稿没有通过最新一次最终过程审计，或最终主张仍为 `provisional`/`failed` 时，不得标记完成。
 - 未报告可行性与约束违反量，优化结果不得进入摘要。
 - 没有全局界、穷举证明或充分最优性条件，不得把启发式搜索结果称为全局最优。
 - 连续事件只用离散时间步长、未验根或直接相加重叠区间时，不得声称结果精确。
@@ -139,3 +151,7 @@ description: 数学建模竞赛专家工作流，覆盖国赛、美赛及校赛�
 - `references/a-paper-visual-writing-patterns.md`：从 70 份论文提炼的图表审美、页面层级、摘要与逐问论证、题注和现代化视觉门禁。
 - `references/a-paper-presentation-index.md`：章节覆盖、摘要、图题、表题与行文信号的语料级概览。
 - `references/a-paper-presentation-index.json`：逐篇呈现方式字段，用于选择原 PDF 的视觉与写作样本，不直接代表质量评价。
+- `references/huashu-cup-corpus-lessons.md`：第四至第六届全部 18 篇 A/B/C 题论文的问题结构、逐篇学习卡、行文规律和现代验证门禁。
+- `references/huashu-cup-corpus-index.md`：18 篇、706 页的题型、方法族、验证信号、图表与颜色路由概览。
+- `references/huashu-cup-corpus-index.json`：逐篇机器索引，含方法/验证页、章节页、题注样本和代表色页；只用于定位原文。
+- `references/huashu-cup-visual-writing-patterns.md`：覆盖全部 18 篇代表页的配色正反例、可复用色板、图型规则和最终 PDF 视觉门禁。

@@ -22,6 +22,7 @@ from agent_tools import ToolRegistry
 from provider_config import ProviderConfigError, ProviderConfigStore, codex_cli_status
 from http_safety import safe_http_error, urlopen_no_redirect
 from quality_scoring import DEFAULT_QUALITY_THRESHOLD, QualityEvaluator
+from runtime_paths import agent_data_dir
 from tool_broker import FileToolBroker
 
 
@@ -137,6 +138,24 @@ def build_prompt(payload: dict[str, Any]) -> dict[str, Any]:
             if normalize_text(item) in ALLOWED_REQUIREMENTS
         )
     )
+    full_paper_terms = (
+        "完整论文",
+        "完整竞赛论文",
+        "完整数模论文",
+        "整篇论文",
+        "整篇数学建模",
+        "整篇数模",
+        "论文成稿",
+        "全文成稿",
+        "从题目到论文",
+        "完整解题",
+        "整题",
+        "full paper",
+        "complete solution",
+    )
+    workflow_audit_required = mode_key == "cumcm" or (
+        mode_key in {"solver", "paper"} and any(term in content.lower() for term in full_paper_terms)
+    )
 
     prompt_parts = [
             f"语言：{language}",
@@ -151,6 +170,14 @@ def build_prompt(payload: dict[str, Any]) -> dict[str, Any]:
                 "",
                 "数据附件（先用 inspect_dataset 读取，调用时使用括号内 upload_id）：",
                 *[f"- {item['name']}（upload_id: {item['id']}，{item['size']} bytes）" for item in uploads],
+            ]
+        )
+    if workflow_audit_required:
+        prompt_parts.extend(
+            [
+                "",
+                "过程审计：本任务属于完整竞赛解题/成稿。最终交付前必须建立结构化建模账本并调用 "
+                "audit_modeling_workflow；失败时回到模型、证据或验证阶段修复后重审，不能只润色文字。",
             ]
         )
     prompt_parts.extend(["", "用户内容：", content])
@@ -168,6 +195,7 @@ def build_prompt(payload: dict[str, Any]) -> dict[str, Any]:
             "requirements": requirements,
             "contentLength": len(content),
             "uploads": uploads,
+            "workflowAuditRequired": workflow_audit_required,
         },
     }
 
@@ -227,6 +255,7 @@ class AgentSettings:
     codex_fast_http: bool = True
     matlab_timeout: int = 180
     unsandboxed_matlab: bool = False
+    data_root: str = ""
 
     @classmethod
     def load(cls, root: Path = ROOT, overrides: dict[str, str] | None = None) -> "AgentSettings":
@@ -243,7 +272,9 @@ class AgentSettings:
         if overrides:
             values.update({key: str(value) for key, value in overrides.items()})
 
-        provider = values.get("AGENT_PROVIDER", "auto").strip().lower()
+        # A fresh desktop installation starts with the current user's Codex
+        # account. Other providers remain explicit, per-user choices in the UI.
+        provider = values.get("AGENT_PROVIDER", "codex-cli").strip().lower()
         base_url = values.get("AGENT_BASE_URL", values.get("OPENAI_BASE_URL", "")).strip()
         api_key = values.get("AGENT_API_KEY", values.get("OPENAI_API_KEY", "")).strip()
         model = values.get("AGENT_MODEL", values.get("OPENAI_MODEL", "")).strip()
@@ -352,6 +383,7 @@ class AgentSettings:
             codex_fast_http,
             matlab_timeout,
             unsandboxed_matlab,
+            str(agent_data_dir(Path(root).resolve())),
         )
 
     @property
@@ -727,7 +759,8 @@ class CodexCliProvider(OpenAICompatibleProvider):
             raise ProviderError("Codex 任务 ID 无效")
 
         root = Path(self.settings.project_root or ROOT).resolve()
-        workspace_root = (root / ".agent-data/codex-workspaces").resolve()
+        data_root = Path(self.settings.data_root).resolve() if self.settings.data_root else agent_data_dir(root)
+        workspace_root = (data_root / "codex-workspaces").resolve()
         workspace_root.mkdir(parents=True, exist_ok=True)
         workspace = (workspace_root / run_id).resolve()
         if workspace.parent != workspace_root:
@@ -1113,6 +1146,7 @@ def build_system_prompt(mode: str, root: Path = ROOT, *, unsandboxed_matlab: boo
             "不得伪造数据、代码运行结果、引用或文件内容。信息不足时明确列出假设和需要补充的数据。输出使用 Markdown。",
             "最终答复提交前必须自检六项：任务覆盖、模型严谨性、证据可复现性、验证稳健性、表达交付质量、真实性边界。明确要求的代码、图表或风险检查不能省略；有附件时未预检不得给出数据结论。",
             "当任务要求生成或完善完整竞赛论文时，必须在交付前调用 audit_competition_paper 审计实际的 PDF、DOCX、LaTeX 或 Markdown 成稿；结构、逐问深度、量化摘要、图谱覆盖、验证图、正文引用和占位符任一硬门禁失败时，应先修订产物，不能仅在回答中解释缺口。通过该审计不等于保证获奖，最终仍需人工逐页检查。",
+            "完整竞赛解题或论文成稿必须先用 read_skill_reference 读取 cumcm-expert-agent/references/anti-ai-resilience.md，再在最终交付前调用 audit_modeling_workflow 审计结构化过程账本。账本应绑定题面事实、变量与单位、假设依据、简单基线、复杂度升级证据、机理与仿真关系、NP-hard 工程策略、主张—证据—验证、图表语义、随机复现参数以及至少一次有证据的修改复验闭环。审计失败时修复对应模型或证据，不得用改写措辞、堆图或隐藏 AI 痕迹代替。",
             "按题型执行竞赛级验证：机理结果同时报告量纲/单位检查与初边值、守恒、极限或步长收敛；竞赛优化结果用基线、理论界、最优间隙、多初值或独立算法标定；后一问放宽可行域时必须注入前一问方案并检查目标支配关系；随机优化必须多随机种子并报告离散程度或收敛统计；预测结果必须给出尊重时间/主体结构的样本外验证与误差指标；导出表逐行回算约束。训练拟合、单次最好值和算法名称不能替代这些证据。",
             "最终答复只能链接成功工具调用实际返回并由后端登记的 artifacts；计划生成、工作区内未收集、格式不获准或不存在的文件不得写成下载链接。若需要的文件没有出现在工具结果中，应明确说明未交付，而不是猜测 URL。",
             "需要专业方法时先调用 search_skills，再按需调用 read_skill；当 SKILL.md 明确链接到必要细则时，用 read_skill_reference 读取对应 references/ 文件。存在数据附件时，必须先用 inspect_dataset 核对字段、缺失与样例，再进行建模；需要直接按列作图时使用对应的 from_dataset 工具。需要计算、图表或文档时优先调用确定性工具，并在回答中链接生成的产物。",
@@ -1792,6 +1826,16 @@ class RunManager:
                 "score": audit.get("score"),
                 "status": audit.get("status"),
                 "gates": audit.get("gates", []),
+                "metrics": audit.get("metrics", {}),
+            }
+        if item.name == "audit_modeling_workflow" and isinstance(result.get("workflowAudit"), dict):
+            audit = result["workflowAudit"]
+            record["workflowAudit"] = {
+                "passed": bool(audit.get("passed", False)),
+                "score": audit.get("score"),
+                "stage": audit.get("stage"),
+                "gates": audit.get("gates", []),
+                "issues": audit.get("issues", []),
                 "metrics": audit.get("metrics", {}),
             }
         tool_history.append(record)

@@ -5,19 +5,19 @@ After=network-online.target
 
 [Service]
 Type=simple
-User=qilintex
-Group=qilintex
-WorkingDirectory=/opt/qilintex/current/apps/server
-EnvironmentFile=/etc/qilintex/qilintex.env
-ExecStart=/usr/bin/node /opt/qilintex/current/apps/server/dist/index.js
+User=__SERVICE_USER__
+Group=__SERVICE_GROUP__
+WorkingDirectory=__APP_ROOT__/apps/server
+EnvironmentFile=__CONFIG_ROOT__/qilintex.env
+ExecStart="__NODE_BIN__" "__APP_ROOT__/apps/server/dist/index.js"
 Restart=on-failure
 RestartSec=5
 UMask=0027
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
-ProtectHome=true
-ReadWritePaths=/var/lib/qilintex
+ProtectHome=read-only
+ReadWritePaths=__DATA_ROOT__
 RestrictRealtime=true
 RestrictSUIDSGID=true
 

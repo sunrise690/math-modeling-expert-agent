@@ -1,36 +1,40 @@
-# Qilintex
+# 数模工作台前端与协作服务
 
-Qilintex 是一个跨端多人 LaTeX 工作台 MVP。当前仓库包含共享 React 客户端、Yjs 实时协作服务、免审核的内部团队登录、好友与项目 API、OpenAI Responses API 助手、Windows Electron 封装、Capacitor Android/iOS 配置，以及桌面应用内更新机制。
+这里承载数模工作台的唯一前端与协作服务。数模 Agent 和 QilinTeX 不拆成两个前端：同一个 React 客户端以同一项目为上下文，提供“建模 Agent”和“QilinTeX”两个工作区，并共享登录、成员、文档与产物。目录同时包含 Yjs 实时协作服务、项目 API、Windows Electron 本机运行器、Capacitor Android/iOS 配置，以及桌面应用内更新机制。
 
 ## 当前可运行能力
 
+- 同一项目内直接切换建模 Agent 与 QilinTeX，不打开第二个应用或站点。
 - 多人共同编辑同一个 `.tex` 文档，基于 Yjs CRDT 同步并显示在线协作者。
 - 项目创建、项目列表、好友搜索、好友申请与接受。
 - 内部团队口令登录：成员首次填写名称和口令，之后同一设备自动保持登录；不依赖 QQ/微信审核。
-- AI 侧栏通过服务端 OpenAI Responses API 读取当前文档并回答或给出可插入的 LaTeX；绘图请求会按阶段协调代码绘图、结构图与生成式图片，并回传可预览/下载的图形产物。
+- AI 侧栏调用当前电脑的本机数模 Agent，可选择自动、建模、整题交付、论文和质检模式，并回传质量评分与可下载产物；Codex 与各类 API 均使用当前电脑用户自己的配置。
 - 服务端调用 Tectonic/latexmk 编译 PDF；未安装编译器时返回明确诊断。
 - Electron Windows 客户端检查、下载、安装更新；Web 端提供刷新更新；Android/iOS 走应用商店更新。
 - 同一套前端代码可构建 Web、Windows、Android 与 iOS。
 
 ## 本地启动
 
-1. 复制 `.env.example` 为 `.env`，至少修改 `SESSION_SECRET`。
-2. 安装依赖：`pnpm install`。
-3. Web + 服务端：`pnpm dev`。
-4. Windows 桌面调试：`pnpm dev:desktop`。
-5. 构建 Windows 安装器和便携版：`pnpm build:win`。
+1. 在任意位置克隆或解压仓库，不需要复刻开发者目录结构。
+2. 在仓库根目录执行 `pnpm setup`；它安装前端依赖，并自动创建仓库相对的 `.runtime/python` 与 Python 依赖。
+3. 本地开发可直接使用默认值；需要配置 Provider 或团队访问时，把根目录 `.env.example` 复制为 `.env`。`qilintex/.env` 只作为协作服务的可选覆盖层。
+4. 统一 Web 工作台：在根目录执行 `pnpm dev`。脚本从自身位置定位仓库，同时启动数模 Agent、协作服务和 React 前端。
+5. Windows 桌面调试：在根目录执行 `pnpm dev:desktop`。该命令同样会启动数模 Agent。
+6. Windows 安装器和便携版仍在 `qilintex/` 执行 `pnpm build:win`。
 
-默认地址：Web `http://localhost:5173`、REST API `http://localhost:4318`、协作 WebSocket `ws://localhost:4319`。
+用户只需打开 Web `http://localhost:5173`。内部地址为 REST API `http://localhost:4318`、协作 WebSocket `ws://localhost:4319` 和数模 Agent API `http://127.0.0.1:8765`。
 
 ## Ubuntu 云服务器部署
 
-`deploy/` 提供 Ubuntu 24.04 + systemd + Caddy 的部署基线。发布包解压到 `/opt/qilintex/releases/<版本>` 并让 `/opt/qilintex/current` 指向该目录后，可执行：
+`deploy/` 提供 Ubuntu 24.04 + systemd + Caddy 的部署基线。发布包可解压到任意目录，脚本会从自身位置推导 `APP_ROOT`：
 
 ```bash
-cd /opt/qilintex/current
-sudo bash deploy/bootstrap.sh
-PUBLIC_HOST=example.com bash deploy/configure-server.sh
+cd <解压后的项目目录>
+sudo bash qilintex/deploy/bootstrap.sh
+PUBLIC_HOST=example.com bash qilintex/deploy/configure-server.sh
 ```
+
+如需自定义安装、数据或配置目录，可显式设置 `APP_ROOT`、`DATA_ROOT`、`CONFIG_ROOT`；默认值不包含任何开发者个人路径。配置脚本会构建项目并安装 `qilintex.service`；服务器只负责账号、项目、LaTeX 编译和多人协作。
 
 `configure-server.sh` 会生成强随机会话密钥和团队访问码，关闭开发登录，并把生产环境写入 `/etc/qilintex/qilintex.env`。首次部署可先用服务器公网 IP 验收；正式使用应把 `PUBLIC_HOST` 设置为已解析域名，并将 Caddy 入口升级为 HTTPS/WSS。
 
@@ -40,19 +44,24 @@ PUBLIC_HOST=example.com bash deploy/configure-server.sh
 BASE_URL=https://example.com \
 COLLAB_URL=wss://example.com/collab \
 TEAM_ACCESS_CODE='临时验收码' \
-node apps/client/scripts/verify-production.mjs
+node qilintex/apps/client/scripts/verify-production.mjs
 ```
 
-## Agent 绘图调度
+## App、本机 Agent 与网页快捷入口
 
-服务端只根据用户本轮请求开放必要工具，避免普通文档问答误触发高成本绘图：
+Windows App 是完整入口。它打开同一个在线工作台，并自动启动只监听 `127.0.0.1:8765` 的本机数模 Agent。Codex 浏览器登录在用户电脑上完成；模型 Provider、API Base URL、API Key、题目附件、运行记录和产物均属于当前系统用户，不会上传给协作服务器。Windows 上的 API 密钥使用 DPAPI 加密保存。
 
-- 数据探索：优先 Seaborn/Plotly；适合查看分布、异常值和交互关系。
-- 论文正式图与验证图：优先 Matplotlib/Seaborn，通过 Code Interpreter 执行并回传 PNG、SVG 或 PDF。
-- 流程、网络与模型结构：优先 Graphviz/NetworkX；适合直接嵌入论文的小图可由 Agent 返回 TikZ/PGFPlots。
-- 封面、插画与非定量概念视觉：仅在请求明确匹配时开放 `image_generation`。该能力不得生成统计证据、精确数据或替代真实实验结果。
+网页端作为快捷入口，可随时登录、查看项目、编辑 LaTeX 和参与实时协作。如果同一台电脑已启动 Qilintex App，本网页会通过受限本机通道复用该电脑的 Codex 与 API；没有本机运行器时，网页会提示下载或打开 App，而不会退回服务器共享账号。
 
-可通过 `.env` 中的 `OPENAI_CODE_INTERPRETER` 和 `OPENAI_IMAGE_GENERATION` 分别关闭两类云端能力；`OPENAI_MAX_ARTIFACTS` 与 `OPENAI_MAX_ARTIFACT_BYTES` 控制单次回复回传产物的数量和大小。
+每台电脑安装 App 后都可以登录同一个在线账号接手项目，无需下载源码、安装 Python 或复刻任何开发者目录。项目与协作状态在服务器同步，本机模型配置则在各电脑之间相互隔离。
+
+Windows 构建命令：
+
+```bash
+pnpm --dir qilintex build:win
+```
+
+构建脚本会准备独立 Python/Codex 运行时，并在 `qilintex/release/` 生成 NSIS 安装版和便携版。服务器部署不安装数模 Agent，也不需要配置 OpenAI 或其他模型密钥。
 
 ## 内部团队登录
 
@@ -60,7 +69,7 @@ node apps/client/scripts/verify-production.mjs
 
 团队登录和 QQ/微信 OAuth 属于两个独立登录域：分别使用 `tg_team_session` / `tg_oauth_session` HttpOnly Cookie 和独立的客户端 token 存储。JWT 会记录登录域，服务端拒绝把团队 token 用到 OAuth 域（反向亦然）；退出一种登录方式不会清理另一种方式的会话。
 
-在局域网内提供给其他成员时，把 `CLIENT_URLS` 设置为允许访问的前端地址列表（逗号分隔，第一个地址用于生成邀请链接），并将 `PUBLIC_API_URL`、`PUBLIC_COLLAB_URL` 设置为成员设备可访问的服务端地址，不能继续使用成员各自机器上的 `localhost`。生产环境应使用 HTTPS/WSS，并更换强随机 `SESSION_SECRET` 与团队口令。
+在局域网或公网提供给其他成员时，把 `CLIENT_URLS` 设置为允许访问的前端地址列表（逗号分隔，第一个地址用于生成邀请链接）。同源 Web 部署会自动使用当前站点的 `/api`、`/auth` 和 `/collab`，无需写死主机地址；仅当前端与 API 不同源时，才在构建前设置 `QILINTEX_CLIENT_API_URL` 和 `QILINTEX_CLIENT_COLLAB_URL`。生产环境应使用 HTTPS/WSS，并更换强随机 `SESSION_SECRET` 与团队口令。
 
 ## OAuth 配置
 

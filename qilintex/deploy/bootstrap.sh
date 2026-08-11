@@ -4,7 +4,7 @@ set -euo pipefail
 export DEBIAN_FRONTEND=noninteractive
 
 sudo apt-get update
-sudo apt-get install -y ca-certificates curl gnupg git unzip build-essential
+sudo apt-get install -y ca-certificates curl gnupg git unzip build-essential python3 python3-venv
 
 curl -fsSL https://deb.nodesource.com/setup_22.x -o /tmp/nodesource_setup.sh
 sudo -E bash /tmp/nodesource_setup.sh

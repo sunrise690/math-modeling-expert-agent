@@ -1097,7 +1097,15 @@ def create_figure(spec: dict[str, Any], output_dir: Path) -> dict[str, Any]:
     plt.rcParams.update(
         {
             "font.family": "sans-serif",
-            "font.sans-serif": ["Microsoft YaHei", "SimHei", "Arial", "DejaVu Sans"],
+            "font.sans-serif": [
+                "Microsoft YaHei",
+                "SimHei",
+                "Noto Sans CJK SC",
+                "Source Han Sans SC",
+                "WenQuanYi Zen Hei",
+                "Arial",
+                "DejaVu Sans",
+            ],
             "svg.fonttype": "none",
             "pdf.fonttype": 42,
             "ps.fonttype": 42,

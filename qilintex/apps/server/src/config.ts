@@ -38,14 +38,6 @@ const parsedClientUrls = (process.env.CLIENT_URLS || process.env.CLIENT_URL || '
   .map((url) => url.trim().replace(/\/$/, ''))
   .filter(Boolean)
 const configuredClientUrls = parsedClientUrls.length ? parsedClientUrls : ['http://localhost:5173']
-const requestedAgentBackend = (process.env.QILINTEX_AGENT_BACKEND || 'math-modeling').trim().toLowerCase()
-const documentAgentBackend = requestedAgentBackend === 'openai' ? 'openai' : 'math-modeling'
-
-function boundedNumber(value: string | undefined, fallback: number, minimum: number, maximum: number) {
-  const parsed = Number(value || fallback)
-  return Number.isFinite(parsed) ? Math.max(minimum, Math.min(maximum, parsed)) : fallback
-}
-
 export const config = {
   host: process.env.HOST || '0.0.0.0',
   port: Number(process.env.PORT || 4318),
@@ -69,20 +61,6 @@ export const config = {
     appId: process.env.WECHAT_APP_ID || '',
     appSecret: process.env.WECHAT_APP_SECRET || '',
     redirectUri: process.env.WECHAT_REDIRECT_URI || `http://localhost:${process.env.PORT || 4318}/auth/wechat/callback`
-  },
-  openai: {
-    apiKey: process.env.OPENAI_API_KEY || '',
-    model: process.env.OPENAI_MODEL || 'gpt-5.6',
-    codeInterpreter: process.env.OPENAI_CODE_INTERPRETER !== 'false',
-    imageGeneration: process.env.OPENAI_IMAGE_GENERATION !== 'false',
-    maxArtifacts: Math.max(1, Math.min(8, Number(process.env.OPENAI_MAX_ARTIFACTS || 4))),
-    maxArtifactBytes: Math.max(256_000, Math.min(20_000_000, Number(process.env.OPENAI_MAX_ARTIFACT_BYTES || 8_000_000)))
-  },
-  documentAgent: {
-    backend: documentAgentBackend as 'math-modeling' | 'openai',
-    mathModelingUrl: (process.env.MATH_MODELING_AGENT_URL || 'http://127.0.0.1:8765').replace(/\/+$/, ''),
-    timeoutMs: boundedNumber(process.env.MATH_MODELING_AGENT_TIMEOUT_MS, 600_000, 30_000, 1_800_000),
-    pollIntervalMs: boundedNumber(process.env.MATH_MODELING_AGENT_POLL_MS, 750, 250, 5_000)
   },
   tex: {
     engine: process.env.TEX_ENGINE || 'tectonic',

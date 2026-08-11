@@ -6,9 +6,11 @@ import { startCollaboration } from './collaboration.js'
 import { config } from './config.js'
 import { apiRouter } from './routes.js'
 import { Store } from './store.js'
+import { ProjectFileStore } from './project-files.js'
 
 async function main() {
   const store = new Store()
+  const projectFiles = new ProjectFileStore()
   await store.init()
 
   const app = express()
@@ -35,7 +37,7 @@ async function main() {
     })
   })
   app.use('/auth', authRouter(store))
-  app.use('/api', apiRouter(store))
+  app.use('/api', apiRouter(store, projectFiles))
 
   const errorHandler: ErrorRequestHandler = (error, _request, response, _next) => {
     console.error(error)
@@ -44,7 +46,7 @@ async function main() {
   app.use(errorHandler)
 
   app.listen(config.port, config.host, () => console.log(`REST API: http://${config.host}:${config.port}`))
-  await startCollaboration(store)
+  await startCollaboration(store, projectFiles)
   console.log(`Collaboration: ws://localhost:${config.collaborationPort}`)
 }
 

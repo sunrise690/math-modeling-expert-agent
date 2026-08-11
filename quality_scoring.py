@@ -6,13 +6,14 @@ from typing import Any
 from urllib.parse import unquote
 
 
-RUBRIC_VERSION = "2026.5"
+RUBRIC_VERSION = "2026.6"
 DEFAULT_QUALITY_THRESHOLD = 82
 NUMERIC_VALUE = r"[-+]?(?:\d+(?:\.\d+)?|\.\d+)(?:[eE][-+]?\d+)?"
 ROUTING_TOOL_NAMES = {
     "search_skills",
     "read_skill",
     "search_materials",
+    "audit_modeling_workflow",
     "origin_status",
     "detect_matlab_toolboxes",
 }
@@ -101,6 +102,7 @@ def rubric_spec() -> dict[str, Any]:
             {"id": "stochastic_robustness", "cap": 79, "description": "随机优化给出数值方案，却没有至少 5 次多种子运行、数值离散统计及停止/收敛证据。"},
             {"id": "predictive_validation", "cap": 78, "description": "给出预测结果，却没有结构正确的样本外验证和数值误差指标。"},
             {"id": "mechanistic_consistency", "cap": 80, "description": "机理模型给出数值结果，却没有明确量纲一致性及数值初边值/守恒/收敛校验。"},
+            {"id": "modeling_workflow_audit", "cap": 68, "description": "完整竞赛解题或论文成稿没有通过结构化建模过程审计。"},
             {"id": "abstract_numeric_evidence", "cap": 80, "description": "正式摘要没有为已分列的子问题给出可核对的量化结果。"},
             {"id": "paper_artifact_audit", "cap": 72, "description": "已经生成完整论文产物，但没有对实际成稿执行论文审计。"},
             {"id": "paper_visual_evidence", "cap": 78, "description": "完整论文的图谱数量、验证图或正文图解未通过成品审计。"},
@@ -149,6 +151,12 @@ class QualityEvaluator:
             for item in successful_tools
             if str(item.get("name", "")) not in ROUTING_TOOL_NAMES | SOURCE_TOOL_NAMES
         ]
+        workflow_audits = [
+            item["workflowAudit"]
+            for item in successful_tools
+            if str(item.get("name", "")) == "audit_modeling_workflow"
+            and isinstance(item.get("workflowAudit"), dict)
+        ]
         tool_names = {str(item.get("name", "")) for item in successful_tools}
         artifact_records: dict[str, dict[str, Any]] = {}
 
@@ -184,6 +192,7 @@ class QualityEvaluator:
             evidence_tools,
             artifact_names,
             artifact_records,
+            workflow_audits,
         )
         active_caps = [int(item["cap"]) for item in gates if not item["passed"]]
         cap = min(active_caps, default=100)
@@ -239,6 +248,12 @@ class QualityEvaluator:
                 "evidenceTools": len(evidence_tools),
                 "sourceTools": len(source_tools),
                 "artifacts": len(artifact_names),
+                "workflowAudits": len(workflow_audits),
+                "workflowAuditPassed": bool(
+                    workflow_audits
+                    and workflow_audits[-1].get("stage") == "final"
+                    and workflow_audits[-1].get("passed") is True
+                ),
             },
         }
 
@@ -557,6 +572,7 @@ class QualityEvaluator:
         successful_tools: list[dict[str, Any]],
         artifacts: set[str],
         artifact_records: dict[str, dict[str, Any]],
+        workflow_audits: list[dict[str, Any]],
     ) -> list[dict[str, Any]]:
         requirements = set(meta.get("requirements", []))
         has_uploads = bool(meta.get("uploads"))
@@ -759,6 +775,19 @@ class QualityEvaluator:
         )
         depth = str(meta.get("depth", ""))
         minimum_characters = 120 if depth == "简要" else 180 if mode in {"paper", "reviewer"} else 220
+        workflow_audit_required = meta.get("workflowAuditRequired") is True
+        latest_workflow_audit = workflow_audits[-1] if workflow_audits else {}
+        workflow_audit_passed = bool(
+            latest_workflow_audit.get("stage") == "final" and latest_workflow_audit.get("passed") is True
+        )
+        failed_workflow_gate_ids = [
+            str(item.get("id", ""))
+            for item in latest_workflow_audit.get("gates", [])
+            if isinstance(item, dict) and item.get("passed") is False and item.get("id")
+        ]
+        workflow_audit_message = "完整竞赛解题或论文成稿未通过最终结构化过程审计。"
+        if failed_workflow_gate_ids:
+            workflow_audit_message += " 失败项：" + "、".join(failed_workflow_gate_ids[:5]) + "。"
         gates = [
             self._gate(
                 "data_inspection",
@@ -831,6 +860,12 @@ class QualityEvaluator:
                 or (has_dimension_audit and has_mechanistic_check),
                 80,
                 "机理模型给出了数值结果，但没有同时报告明确的量纲一致性及数值初边值、守恒、极限或收敛误差。",
+            ),
+            self._gate(
+                "modeling_workflow_audit",
+                not workflow_audit_required or workflow_audit_passed,
+                68,
+                workflow_audit_message,
             ),
             self._gate(
                 "abstract_numeric_evidence",

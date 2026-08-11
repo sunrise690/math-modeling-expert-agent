@@ -14,6 +14,10 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
+from cryptography.fernet import Fernet, InvalidToken
+
+from runtime_paths import agent_data_dir
+
 
 class ProviderConfigError(RuntimeError):
     pass
@@ -77,6 +81,8 @@ DEFAULT_PROFILE: dict[str, Any] = {
 
 _CODEX_STATUS_LOCK = threading.Lock()
 _CODEX_STATUS_CACHE: tuple[float, str, dict[str, Any]] | None = None
+_DPAPI_SECRET_PREFIX = b"dpapi-v1\0"
+_FERNET_SECRET_PREFIX = b"fernet-v1\0"
 
 
 def _is_loopback_hostname(hostname: str) -> bool:
@@ -198,7 +204,7 @@ def _dpapi_unprotect(content: bytes) -> bytes:
 class ProviderConfigStore:
     def __init__(self, root: Path) -> None:
         self.root = Path(root).resolve()
-        self.data_root = self.root / ".agent-data"
+        self.data_root = agent_data_dir(self.root)
         self.path = self.data_root / "provider-settings.json"
         self.secret_root = self.data_root / "provider-secrets"
         self._lock = threading.RLock()
@@ -269,7 +275,7 @@ class ProviderConfigStore:
                 "activeProvider": active,
                 "apiKeyConfigured": self._secret_path(active).is_file(),
                 "apiKeyStored": self._secret_path(active).is_file(),
-                "credentialStorage": "windows-dpapi" if os.name == "nt" else "unavailable",
+                "credentialStorage": "windows-dpapi" if os.name == "nt" else "fernet-file-key",
                 "configLocked": self.config_locked(),
                 "effectiveConfigSource": "environment" if self.config_locked() else "graphical",
                 "profiles": profiles,
@@ -437,8 +443,11 @@ class ProviderConfigStore:
     def _write_secret(self, provider: str, api_key: str) -> None:
         if provider in {"codex-cli", "ollama"}:
             raise ProviderConfigError("该提供商不使用 API Key")
-        self.secret_root.mkdir(parents=True, exist_ok=True)
-        encrypted = _dpapi_protect(api_key.encode("utf-8"))
+        self._prepare_secret_root()
+        if os.name == "nt":
+            encrypted = _DPAPI_SECRET_PREFIX + _dpapi_protect(api_key.encode("utf-8"))
+        else:
+            encrypted = _FERNET_SECRET_PREFIX + Fernet(self._file_encryption_key()).encrypt(api_key.encode("utf-8"))
         self._write_bytes_atomic(self._secret_path(provider), encrypted)
 
     def _read_secret(self, provider: str) -> str:
@@ -446,9 +455,47 @@ class ProviderConfigStore:
         if not path.is_file():
             return ""
         try:
-            return _dpapi_unprotect(path.read_bytes()).decode("utf-8")
-        except (OSError, UnicodeDecodeError, ProviderConfigError) as error:
+            payload = path.read_bytes()
+            if payload.startswith(_DPAPI_SECRET_PREFIX):
+                if os.name != "nt":
+                    raise ProviderConfigError("Windows DPAPI 密钥不能在当前系统解密")
+                cleartext = _dpapi_unprotect(payload[len(_DPAPI_SECRET_PREFIX) :])
+            elif payload.startswith(_FERNET_SECRET_PREFIX):
+                cleartext = Fernet(self._file_encryption_key()).decrypt(payload[len(_FERNET_SECRET_PREFIX) :])
+            elif os.name == "nt":
+                # 兼容旧版本未带格式标记的 DPAPI 密文。
+                cleartext = _dpapi_unprotect(payload)
+            else:
+                raise ProviderConfigError("密钥文件格式不受当前系统支持")
+            return cleartext.decode("utf-8")
+        except (OSError, UnicodeDecodeError, InvalidToken, ValueError, ProviderConfigError) as error:
             raise ProviderConfigError(f"无法读取 {PROVIDER_CATALOG[provider]['label']} 的 API Key") from error
+
+    def _prepare_secret_root(self) -> None:
+        self.secret_root.mkdir(mode=0o700, parents=True, exist_ok=True)
+        if os.name != "nt":
+            os.chmod(self.secret_root, 0o700)
+
+    def _file_encryption_key(self) -> bytes:
+        self._prepare_secret_root()
+        path = self.secret_root / ".master-key"
+        try:
+            descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        except FileExistsError:
+            pass
+        else:
+            with os.fdopen(descriptor, "wb") as stream:
+                stream.write(Fernet.generate_key())
+                stream.flush()
+                os.fsync(stream.fileno())
+        try:
+            if os.name != "nt":
+                os.chmod(path, 0o600)
+            key = path.read_bytes().strip()
+            Fernet(key)
+            return key
+        except (OSError, ValueError) as error:
+            raise ProviderConfigError("无法初始化 API Key 加密密钥") from error
 
     def _secret_path(self, provider: str) -> Path:
         return self.secret_root / f"{provider}.bin"

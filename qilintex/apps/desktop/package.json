@@ -3,13 +3,14 @@
   "productName": "Qilintex",
   "version": "0.1.0",
   "private": true,
-  "description": "多人实时协作 LaTeX 与 AI 写作工作台",
+  "description": "数学建模、LaTeX 写作与多人协作工作台",
   "author": "sunrise690",
   "type": "module",
   "main": "main.mjs",
   "scripts": {
     "dev": "wait-on http://localhost:5173 && cross-env VITE_DEV_SERVER_URL=http://localhost:5173 electron .",
-    "package:win": "electron-builder --win nsis portable --x64",
+    "prepare:runtime": "powershell -NoProfile -ExecutionPolicy Bypass -File ../../scripts/prepare-desktop-runtime.ps1",
+    "package:win": "pnpm prepare:runtime && electron-builder --win nsis portable --x64",
     "test": "node --test tests/*.test.mjs",
     "typecheck": "node --check main.mjs && node --check preload.mjs"
   },
@@ -25,6 +26,7 @@
   "build": {
     "appId": "cn.tonggao.tex",
     "productName": "Qilintex",
+    "electronDist": "node_modules/electron/dist",
     "asar": true,
     "directories": {
       "output": "../../release"
@@ -36,13 +38,14 @@
       "package.json"
     ],
     "extraResources": [
-      { "from": "../client/dist", "to": "web" },
-      { "from": "../server/dist/bundle.cjs", "to": "server/bundle.cjs" }
+      { "from": "../../.desktop-staging/runtime", "to": "runtime" },
+      { "from": "../../.desktop-staging/agent", "to": "agent" }
     ],
     "protocols": [
       { "name": "Qilintex 登录", "schemes": ["tonggaotex"] }
     ],
     "win": {
+      "icon": "build/icon.ico",
       "target": ["nsis", "portable"]
     },
     "nsis": {

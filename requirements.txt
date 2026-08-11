@@ -16,4 +16,5 @@ pymoo>=0.6.1.6,<0.7
 simpy>=4.1,<5
 mcp>=1.28.1,<2
 openai-codex==0.144.4
+cryptography>=46,<51
 originpro>=1.1.15,<1.2; platform_system == "Windows"

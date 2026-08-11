@@ -1,6 +1,8 @@
 node_modules/
 dist/
 release/
+.desktop-staging/
+apps/desktop/build/icon.ico
 .env
 *.log
 *.tsbuildinfo

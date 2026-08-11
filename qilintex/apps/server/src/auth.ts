@@ -28,6 +28,21 @@ const teamFailures = new Map<string, { count: number; resetAt: number }>()
 const TEAM_ATTEMPT_LIMIT = 5
 const TEAM_ATTEMPT_WINDOW = 10 * 60_000
 
+export function normalizeTeamAccountId(value: string) {
+  const accountId = String(value || '').normalize('NFKC').trim().toLocaleLowerCase()
+  if (!/^[a-z0-9][a-z0-9_-]{2,23}$/.test(accountId)) {
+    throw new Error('账号 ID 需为 3–24 位小写字母、数字、下划线或连字符，并以字母或数字开头。')
+  }
+  return accountId
+}
+
+export function normalizeOptionalEmail(value: string) {
+  const email = String(value || '').normalize('NFKC').trim().toLocaleLowerCase()
+  if (!email) return undefined
+  if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('邮箱格式无效。')
+  return email
+}
+
 export function matchesAccessCode(input: string, expected: string) {
   if (!expected) return true
   const inputHash = createHash('sha256').update(input).digest()
@@ -176,7 +191,7 @@ export function authRouter(store: Store) {
 
   router.get('/me', (request, response) => {
     if (!request.user) return response.status(401).json({ error: '未登录。' })
-    response.json({ user: toPublicUser(request.user), realm: request.authRealm || authRealmForProvider(request.user.provider) })
+    response.json({ user: toPublicUser(request.user, true), realm: request.authRealm || authRealmForProvider(request.user.provider) })
   })
 
   router.post('/team', async (request, response) => {
@@ -187,22 +202,25 @@ export function authRouter(store: Store) {
       return response.status(429).json({ error: '尝试次数过多，请 10 分钟后再试。' })
     }
 
-    const displayName = String(request.body?.displayName || '').trim().slice(0, 24)
-    const deviceId = String(request.body?.deviceId || '').trim()
+    let accountId = ''
+    let email: string | undefined
+    try { accountId = normalizeTeamAccountId(request.body?.accountId) }
+    catch (error) { return response.status(400).json({ error: error instanceof Error ? error.message : '账号 ID 无效。' }) }
+    try { email = normalizeOptionalEmail(request.body?.email) }
+    catch (error) { return response.status(400).json({ error: error instanceof Error ? error.message : '邮箱格式无效。' }) }
     const accessCode = String(request.body?.accessCode || '').slice(0, 128)
-    if (!displayName) return response.status(400).json({ error: '请输入你的名称。' })
-    if (!/^[a-zA-Z0-9_-]{20,128}$/.test(deviceId)) return response.status(400).json({ error: '本机身份无效，请刷新页面后重试。' })
     if (!matchesAccessCode(accessCode, config.team.accessCode)) {
       recordTeamFailure(attemptKey)
       return response.status(401).json({ error: '团队口令不正确。' })
     }
 
     teamFailures.delete(attemptKey)
-    const providerId = createHash('sha256').update(deviceId).digest('hex')
-    const user = await store.upsertUser({ provider: 'team', providerId, displayName })
+    let user: StoredUser
+    try { user = await store.loginTeamUser(accountId, email) }
+    catch (error) { return response.status(409).json({ error: error instanceof Error ? error.message : '账号登录失败。' }) }
     const token = await signSession(user)
     setSessionCookie(response, 'team', token)
-    response.json({ user: toPublicUser(user), token, realm: 'team' })
+    response.json({ user: toPublicUser(user, true), token, realm: 'team' })
   })
 
   router.post('/dev', async (request, response) => {

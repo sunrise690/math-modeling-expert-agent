@@ -4,6 +4,7 @@ export interface User {
   id: string
   handle: string
   displayName: string
+  email?: string
   avatarUrl?: string
   provider: 'team' | 'qq' | 'wechat' | 'dev'
 }
@@ -14,6 +15,13 @@ export interface Project {
   ownerId: string
   role: 'owner' | 'editor' | 'viewer'
   updatedAt: string
+}
+
+export interface ProjectFileEntry {
+  path: string
+  kind: 'file' | 'folder'
+  size: number
+  editable: boolean
 }
 
 export interface FriendRequest {
@@ -27,6 +35,58 @@ export interface FriendRequest {
 export interface FriendsPayload {
   friends: User[]
   requests: FriendRequest[]
+}
+
+export interface DirectMessage {
+  id: string
+  fromId: string
+  toId: string
+  body: string
+  createdAt: string
+}
+
+export interface AgentProviderProfile {
+  model: string
+  baseUrl: string
+  apiKeyConfigured?: boolean
+  reasoningEffort?: string
+  models?: Array<{ id: string; displayName?: string; isDefault?: boolean }>
+}
+
+export interface AgentProviderOption {
+  id: string
+  label: string
+  description: string
+  requiresApiKey: boolean
+  defaultModel?: string
+  defaultBaseUrl?: string
+  profile: AgentProviderProfile
+}
+
+export interface AgentConfig {
+  activeProvider: string
+  configLocked: boolean
+  providerCatalog: AgentProviderOption[]
+  codexStatus?: { available?: boolean; authenticated?: boolean; reason?: string }
+}
+
+export interface CodexLoginSession {
+  id: string
+  mode: 'device-code' | 'browser-callback'
+  status: 'pending' | 'completed' | 'failed' | 'cancelled' | 'expired'
+  authUrl: string
+  verificationUrl: string
+  userCode: string
+  message: string
+  expiresAt: string
+}
+
+export interface AgentUpload {
+  id: string
+  name: string
+  size: number
+  mimeType: string
+  inspection?: Record<string, unknown>
 }
 
 export interface AuthPayload {

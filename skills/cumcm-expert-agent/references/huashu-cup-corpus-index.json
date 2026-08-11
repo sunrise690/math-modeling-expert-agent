@@ -1,0 +1,6374 @@
+{
+  "schemaVersion": 1,
+  "collection": "华数杯全国大学生数学建模竞赛第四至第六届优秀论文",
+  "boundary": "Derived routing index; inspect source PDF pages before making content or quality claims.",
+  "summary": {
+    "paperCount": 18,
+    "pageCount": 706,
+    "editions": [
+      4,
+      5,
+      6
+    ],
+    "years": [
+      2023,
+      2024,
+      2025
+    ],
+    "methodCoverage": {
+      "随机与群智能优化": 14,
+      "连续、整数与多目标规划": 12,
+      "机器人、几何与坐标": 7,
+      "图论与路径规划": 6,
+      "多指标综合评价": 6,
+      "统计推断与回归": 6,
+      "仿真、调度与资源分配": 5,
+      "传热与多物理机理": 5,
+      "光学、光谱与色度": 5,
+      "机器学习": 3
+    },
+    "validationCoverage": {
+      "约束或可行性复核": 17,
+      "数值或算法收敛": 15,
+      "灵敏度与鲁棒性": 13,
+      "误差、残差或实测对照": 8,
+      "统计显著性与效应量": 6,
+      "样本外或交叉验证": 3,
+      "随机重复": 3
+    },
+    "sectionCoverage": {
+      "摘要": 17,
+      "关键词": 17,
+      "问题重述": 16,
+      "问题分析": 16,
+      "模型假设": 17,
+      "符号说明": 17,
+      "模型建立": 17,
+      "模型求解": 14,
+      "误差或灵敏度": 7,
+      "模型评价": 17,
+      "参考文献": 17,
+      "附录": 16
+    },
+    "writingMarkerTotals": {
+      "逐问映射": 62,
+      "顺序衔接": 396,
+      "因果解释": 330,
+      "图表解读": 139,
+      "结果落地": 128,
+      "跨问复用": 10,
+      "限制评价": 16
+    },
+    "figureCaptions": 243,
+    "tableCaptions": 123,
+    "abstractMedianCharacters": 1166,
+    "dominantHueRoutingSignal": [
+      "蓝",
+      "绿",
+      "红",
+      "橙",
+      "黄",
+      "青",
+      "品红",
+      "紫"
+    ]
+  },
+  "papers": [
+    {
+      "paperId": "huashu-2024-A-1-6569825f",
+      "edition": 5,
+      "editionLabel": "第五届",
+      "problem": "A",
+      "paperNumber": 1,
+      "year": 2024,
+      "title": "基于“可达点”的机器臂关节角路径优化设计",
+      "titleEvidence": "pdf-text-layer",
+      "source": "第五届/A1/paper-6569825f2801.pdf",
+      "sha256": "6569825f2801ebfcac2f4218ad820185c3785c945d45ccf63b4eae49b6411480",
+      "pages": 40,
+      "characters": 43164,
+      "extraction": "text-layer",
+      "methodFamilies": {
+        "机器人、几何与坐标": [
+          "D-H",
+          "运动学方程",
+          "坐标转换",
+          "空间直角坐标",
+          "欧氏距离",
+          "栅格图",
+          "机械臂"
+        ],
+        "图论与路径规划": [
+          "最短路径",
+          "Dijkstra",
+          "A*算法",
+          "蚁群算法",
+          "路径规划"
+        ],
+        "随机与群智能优化": [
+          "蚁群算法",
+          "蒙特卡洛"
+        ],
+        "仿真、调度与资源分配": [
+          "蒙特卡洛模拟"
+        ]
+      },
+      "methodPages": {
+        "机器人、几何与坐标": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          7,
+          8,
+          9,
+          12,
+          13,
+          15,
+          16
+        ],
+        "图论与路径规划": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          10,
+          11,
+          12,
+          14,
+          15,
+          17,
+          18
+        ],
+        "随机与群智能优化": [
+          1,
+          3,
+          5,
+          9,
+          10,
+          11,
+          12,
+          14,
+          15,
+          18,
+          22,
+          23
+        ],
+        "仿真、调度与资源分配": [
+          23
+        ]
+      },
+      "validationSignals": {
+        "数值或算法收敛": [
+          "网格",
+          "迭代次数"
+        ],
+        "灵敏度与鲁棒性": [
+          "灵敏度分析"
+        ],
+        "约束或可行性复核": [
+          "约束条件"
+        ]
+      },
+      "validationPages": {
+        "数值或算法收敛": [
+          11,
+          14,
+          18,
+          22,
+          35
+        ],
+        "灵敏度与鲁棒性": [
+          22,
+          23
+        ],
+        "约束或可行性复核": [
+          1,
+          3,
+          5,
+          9,
+          12,
+          13,
+          17,
+          19,
+          20
+        ]
+      },
+      "abstractCharacters": 1290,
+      "sections": [
+        "摘要",
+        "关键词",
+        "问题重述",
+        "问题分析",
+        "模型假设",
+        "符号说明",
+        "模型建立",
+        "模型求解",
+        "误差或灵敏度",
+        "模型评价",
+        "参考文献",
+        "附录"
+      ],
+      "sectionPages": {
+        "摘要": 1,
+        "关键词": 1,
+        "问题重述": 2,
+        "问题分析": 2,
+        "模型假设": 4,
+        "符号说明": 4,
+        "模型建立": 5,
+        "附录": 8,
+        "模型求解": 9,
+        "误差或灵敏度": 22,
+        "模型评价": 22,
+        "参考文献": 23
+      },
+      "writingMarkers": {
+        "逐问映射": 3,
+        "顺序衔接": 58,
+        "因果解释": 21,
+        "图表解读": 21,
+        "结果落地": 8,
+        "跨问复用": 3,
+        "限制评价": 0
+      },
+      "figureCaptions": 22,
+      "tableCaptions": 13,
+      "informativeFigureCaptions": 22,
+      "informativeTableCaptions": 13,
+      "captionSamples": [
+        {
+          "kind": "图",
+          "label": "6",
+          "title": "所示。其次，为便于描述机器臂的位姿，以机器臂初始位置为原点建立空间直角坐",
+          "page": 1
+        },
+        {
+          "kind": "图",
+          "label": "1",
+          "title": "问题一求解流程图",
+          "page": 3
+        },
+        {
+          "kind": "图",
+          "label": "2",
+          "title": "问题二求解过程流程图",
+          "page": 3
+        },
+        {
+          "kind": "图",
+          "label": "3",
+          "title": "问题三求解思路图",
+          "page": 4
+        },
+        {
+          "kind": "图",
+          "label": "5",
+          "title": "机器臂正逆运动学关系图",
+          "page": 5
+        },
+        {
+          "kind": "图",
+          "label": "7",
+          "title": "关节坐标系示意图",
+          "page": 7
+        },
+        {
+          "kind": "图",
+          "label": "8",
+          "title": "相邻关节变换示意图",
+          "page": 8
+        },
+        {
+          "kind": "图",
+          "label": "9",
+          "title": "机器臂三维工作空间图",
+          "page": 10
+        },
+        {
+          "kind": "图",
+          "label": "10",
+          "title": "工作区间在 YOZ 平面的投影 图 11 工作区间在 XOY 平面的投影",
+          "page": 10
+        },
+        {
+          "kind": "表",
+          "label": "1",
+          "title": "蚁群算法参数表",
+          "page": 10
+        },
+        {
+          "kind": "图",
+          "label": "12",
+          "title": "各关节角路径随迭代次数变化折线图",
+          "page": 11
+        },
+        {
+          "kind": "表",
+          "label": "2",
+          "title": "最优关节角结果表",
+          "page": 11
+        },
+        {
+          "kind": "图",
+          "label": "13",
+          "title": "机器臂最终位姿",
+          "page": 11
+        },
+        {
+          "kind": "图",
+          "label": "14",
+          "title": "机器臂最终位姿侧视图 图 15 机器臂最终位姿俯视图",
+          "page": 12
+        },
+        {
+          "kind": "表",
+          "label": "3",
+          "title": "蚁群算法参数表",
+          "page": 14
+        },
+        {
+          "kind": "图",
+          "label": "16",
+          "title": "各关节角路径随迭代次数变化折线图",
+          "page": 14
+        },
+        {
+          "kind": "表",
+          "label": "4",
+          "title": "最优关节角结果表",
+          "page": 14
+        },
+        {
+          "kind": "图",
+          "label": "17",
+          "title": "机器臂最终位姿",
+          "page": 15
+        },
+        {
+          "kind": "图",
+          "label": "18",
+          "title": "机器臂最终位姿侧视图 图 19 机器臂最终位姿俯视图",
+          "page": 15
+        },
+        {
+          "kind": "图",
+          "label": "20",
+          "title": "可达点格栅图及机器臂模型",
+          "page": 16
+        },
+        {
+          "kind": "图",
+          "label": "21",
+          "title": "货物与障碍物栅格图",
+          "page": 16
+        },
+        {
+          "kind": "表",
+          "label": "5",
+          "title": "蚁群算法参数表",
+          "page": 18
+        },
+        {
+          "kind": "图",
+          "label": "22",
+          "title": "最终末端误差随迭代次数变化图 图 23 最终能耗随迭代次数变化图",
+          "page": 18
+        },
+        {
+          "kind": "表",
+          "label": "6",
+          "title": "可达点参数表",
+          "page": 18
+        },
+        {
+          "kind": "表",
+          "label": "7",
+          "title": "最优关节角",
+          "page": 18
+        },
+        {
+          "kind": "图",
+          "label": "24",
+          "title": "最优的底座移动路径栅格图",
+          "page": 19
+        },
+        {
+          "kind": "图",
+          "label": "25",
+          "title": "可达点示意图",
+          "page": 20
+        },
+        {
+          "kind": "表",
+          "label": "8",
+          "title": "求解结果参数表",
+          "page": 21
+        },
+        {
+          "kind": "表",
+          "label": "9",
+          "title": "抓取目标 1 最优关节角",
+          "page": 21
+        },
+        {
+          "kind": "表",
+          "label": "10",
+          "title": "抓取目标 2 最优关节角",
+          "page": 21
+        },
+        {
+          "kind": "表",
+          "label": "11",
+          "title": "抓取目标点 3 最优关节角",
+          "page": 21
+        },
+        {
+          "kind": "表",
+          "label": "12",
+          "title": "抓取目标点 4 最优关节角",
+          "page": 21
+        },
+        {
+          "kind": "表",
+          "label": "13",
+          "title": "抓取目标点 5 最优关节角",
+          "page": 21
+        },
+        {
+          "kind": "图",
+          "label": "26",
+          "title": "最优底座路径格栅图",
+          "page": 22
+        },
+        {
+          "kind": "图",
+          "label": "27",
+          "title": "关节角对优化效果可视化",
+          "page": 23
+        }
+      ],
+      "mainBodyEndPage": 40,
+      "visualProfile": {
+        "status": "ok",
+        "eligiblePageCount": 39,
+        "chromaticPixels": 94575,
+        "chromaticPageCount": 29,
+        "dominantHues": [
+          {
+            "name": "绿",
+            "share": 0.3448
+          },
+          {
+            "name": "蓝",
+            "share": 0.3418
+          },
+          {
+            "name": "橙",
+            "share": 0.2076
+          },
+          {
+            "name": "红",
+            "share": 0.0521
+          }
+        ],
+        "dominantQuantizedRgb": [
+          {
+            "hex": "#80E080",
+            "share": 0.1155
+          },
+          {
+            "hex": "#A0E0A0",
+            "share": 0.0938
+          },
+          {
+            "hex": "#0060A0",
+            "share": 0.0592
+          },
+          {
+            "hex": "#C0A080",
+            "share": 0.0562
+          },
+          {
+            "hex": "#C0C0A0",
+            "share": 0.0551
+          },
+          {
+            "hex": "#60A0C0",
+            "share": 0.0395
+          },
+          {
+            "hex": "#A0C0A0",
+            "share": 0.0379
+          },
+          {
+            "hex": "#60E060",
+            "share": 0.0359
+          }
+        ],
+        "topColorPages": [
+          {
+            "page": 10,
+            "chromaticRatio": 0.0864
+          },
+          {
+            "page": 15,
+            "chromaticRatio": 0.059141
+          },
+          {
+            "page": 11,
+            "chromaticRatio": 0.050769
+          }
+        ],
+        "metricBoundary": "低分辨率栅格像素统计仅用于定位彩色页面；照片、地图、校徽和抗锯齿均可能影响占比，配色质量必须回看原页。"
+      }
+    },
+    {
+      "paperId": "huashu-2024-A-2-13bcd85c",
+      "edition": 5,
+      "editionLabel": "第五届",
+      "problem": "A",
+      "paperNumber": 2,
+      "year": 2024,
+      "title": "六轴机械臂关节角路径优化：从误差最小化到能耗效率",
+      "titleEvidence": "pdf-text-layer",
+      "source": "第五届/A2/paper-13bcd85c79c1.pdf",
+      "sha256": "13bcd85c79c11eb55142f4973cfb880a0af6dd1448666dae5993ea1cc7481d55",
+      "pages": 45,
+      "characters": 47769,
+      "extraction": "text-layer",
+      "methodFamilies": {
+        "机器人、几何与坐标": [
+          "D-H",
+          "欧氏距离",
+          "栅格图",
+          "机械臂"
+        ],
+        "图论与路径规划": [
+          "最短路径",
+          "A*算法",
+          "旅行商",
+          "路径规划"
+        ],
+        "连续、整数与多目标规划": [
+          "线性规划",
+          "多目标优化",
+          "Minimize"
+        ],
+        "随机与群智能优化": [
+          "遗传算法"
+        ]
+      },
+      "methodPages": {
+        "机器人、几何与坐标": [
+          1,
+          2,
+          3,
+          4,
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "图论与路径规划": [
+          1,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          31,
+          32,
+          40
+        ],
+        "连续、整数与多目标规划": [
+          1,
+          2,
+          7,
+          8,
+          10,
+          19,
+          20,
+          21,
+          23,
+          26,
+          30,
+          33
+        ],
+        "随机与群智能优化": [
+          18
+        ]
+      },
+      "validationSignals": {
+        "数值或算法收敛": [
+          "步长",
+          "网格"
+        ],
+        "灵敏度与鲁棒性": [
+          "鲁棒性"
+        ],
+        "约束或可行性复核": [
+          "约束条件"
+        ]
+      },
+      "validationPages": {
+        "数值或算法收敛": [
+          5,
+          8,
+          24,
+          31,
+          39,
+          40,
+          43
+        ],
+        "灵敏度与鲁棒性": [
+          17
+        ],
+        "约束或可行性复核": [
+          1,
+          6,
+          7,
+          8,
+          10,
+          15,
+          16
+        ]
+      },
+      "abstractCharacters": 1240,
+      "sections": [
+        "摘要",
+        "关键词",
+        "问题重述",
+        "模型假设",
+        "符号说明",
+        "模型建立",
+        "模型求解",
+        "模型评价",
+        "参考文献",
+        "附录"
+      ],
+      "sectionPages": {
+        "摘要": 1,
+        "关键词": 1,
+        "模型求解": 1,
+        "问题重述": 2,
+        "模型假设": 2,
+        "符号说明": 3,
+        "模型建立": 4,
+        "模型评价": 17,
+        "参考文献": 18,
+        "附录": 19
+      },
+      "writingMarkers": {
+        "逐问映射": 3,
+        "顺序衔接": 17,
+        "因果解释": 14,
+        "图表解读": 13,
+        "结果落地": 0,
+        "跨问复用": 1,
+        "限制评价": 0
+      },
+      "figureCaptions": 7,
+      "tableCaptions": 4,
+      "informativeFigureCaptions": 7,
+      "informativeTableCaptions": 4,
+      "captionSamples": [
+        {
+          "kind": "图",
+          "label": "1",
+          "title": "六轴机械臂简图示意",
+          "page": 3
+        },
+        {
+          "kind": "图",
+          "label": "2",
+          "title": "D-H 参数建模示意图",
+          "page": 4
+        },
+        {
+          "kind": "表",
+          "label": "1",
+          "title": "问题一求解结果",
+          "page": 6
+        },
+        {
+          "kind": "图",
+          "label": "3",
+          "title": "所示",
+          "page": 7
+        },
+        {
+          "kind": "表",
+          "label": "2",
+          "title": "问题二求解结果",
+          "page": 10
+        },
+        {
+          "kind": "图",
+          "label": "4",
+          "title": "划分区域示意图",
+          "page": 12
+        },
+        {
+          "kind": "图",
+          "label": "5",
+          "title": "有效拿取点位置图",
+          "page": 13
+        },
+        {
+          "kind": "表",
+          "label": "3",
+          "title": "问题三求解结果",
+          "page": 13
+        },
+        {
+          "kind": "图",
+          "label": "6",
+          "title": "最优底座移动路径",
+          "page": 14
+        },
+        {
+          "kind": "表",
+          "label": "4",
+          "title": "问题四求解结果",
+          "page": 16
+        },
+        {
+          "kind": "图",
+          "label": "7",
+          "title": "多目标路径规划",
+          "page": 17
+        }
+      ],
+      "mainBodyEndPage": 17,
+      "visualProfile": {
+        "status": "ok",
+        "eligiblePageCount": 16,
+        "chromaticPixels": 2050,
+        "chromaticPageCount": 3,
+        "dominantHues": [
+          {
+            "name": "蓝",
+            "share": 0.3693
+          },
+          {
+            "name": "绿",
+            "share": 0.3449
+          },
+          {
+            "name": "红",
+            "share": 0.1649
+          },
+          {
+            "name": "品红",
+            "share": 0.0712
+          }
+        ],
+        "dominantQuantizedRgb": [
+          {
+            "hex": "#80A0C0",
+            "share": 0.1044
+          },
+          {
+            "hex": "#A0C0C0",
+            "share": 0.0902
+          },
+          {
+            "hex": "#A0A0C0",
+            "share": 0.0849
+          },
+          {
+            "hex": "#A0E0A0",
+            "share": 0.0702
+          },
+          {
+            "hex": "#80E080",
+            "share": 0.0683
+          },
+          {
+            "hex": "#400000",
+            "share": 0.0395
+          },
+          {
+            "hex": "#80C080",
+            "share": 0.0356
+          },
+          {
+            "hex": "#C0A0C0",
+            "share": 0.0307
+          }
+        ],
+        "topColorPages": [
+          {
+            "page": 7,
+            "chromaticRatio": 0.005785
+          },
+          {
+            "page": 4,
+            "chromaticRatio": 0.00328
+          },
+          {
+            "page": 17,
+            "chromaticRatio": 0.001419
+          }
+        ],
+        "metricBoundary": "低分辨率栅格像素统计仅用于定位彩色页面；照片、地图、校徽和抗锯齿均可能影响占比，配色质量必须回看原页。"
+      }
+    },
+    {
+      "paperId": "huashu-2024-B-1-8e1a3e86",
+      "edition": 5,
+      "editionLabel": "第五届",
+      "problem": "B",
+      "paperNumber": 1,
+      "year": 2024,
+      "title": "基于改进模拟退火算法的 VLSI 自动布局研究",
+      "titleEvidence": "pdf-text-layer",
+      "source": "第五届/B1/paper-8e1a3e86c9f4.pdf",
+      "sha256": "8e1a3e86c9f482d7d7549edd679b27dd6d9cb76c04bc0296d1028b46eee3ac49",
+      "pages": 26,
+      "characters": 21334,
+      "extraction": "text-layer",
+      "methodFamilies": {
+        "图论与路径规划": [
+          "最短路径"
+        ],
+        "连续、整数与多目标规划": [
+          "线性规划",
+          "整数规划",
+          "非线性规划",
+          "多目标优化",
+          "目标规划"
+        ],
+        "随机与群智能优化": [
+          "模拟退火"
+        ]
+      },
+      "methodPages": {
+        "图论与路径规划": [
+          8
+        ],
+        "连续、整数与多目标规划": [
+          1,
+          4,
+          5,
+          16,
+          17
+        ],
+        "随机与群智能优化": [
+          1,
+          12,
+          13,
+          16,
+          22,
+          24,
+          25
+        ]
+      },
+      "validationSignals": {
+        "数值或算法收敛": [
+          "网格",
+          "迭代次数"
+        ],
+        "灵敏度与鲁棒性": [
+          "扰动"
+        ],
+        "约束或可行性复核": [
+          "约束条件"
+        ]
+      },
+      "validationPages": {
+        "数值或算法收敛": [
+          1,
+          2,
+          4,
+          5,
+          6,
+          8,
+          10,
+          11,
+          13,
+          14,
+          15,
+          16
+        ],
+        "灵敏度与鲁棒性": [
+          13
+        ],
+        "约束或可行性复核": [
+          1,
+          2,
+          4,
+          12,
+          16
+        ]
+      },
+      "abstractCharacters": 1107,
+      "sections": [
+        "摘要",
+        "关键词",
+        "问题分析",
+        "模型假设",
+        "符号说明",
+        "模型建立",
+        "模型求解",
+        "模型评价",
+        "参考文献",
+        "附录"
+      ],
+      "sectionPages": {
+        "摘要": 1,
+        "关键词": 1,
+        "模型评价": 1,
+        "问题分析": 2,
+        "模型假设": 5,
+        "符号说明": 6,
+        "模型建立": 7,
+        "模型求解": 10,
+        "参考文献": 18,
+        "附录": 19
+      },
+      "writingMarkers": {
+        "逐问映射": 3,
+        "顺序衔接": 8,
+        "因果解释": 10,
+        "图表解读": 12,
+        "结果落地": 11,
+        "跨问复用": 0,
+        "限制评价": 0
+      },
+      "figureCaptions": 13,
+      "tableCaptions": 4,
+      "informativeFigureCaptions": 10,
+      "informativeTableCaptions": 4,
+      "captionSamples": [
+        {
+          "kind": "图",
+          "label": "1-1",
+          "title": "问题背景",
+          "page": 2
+        },
+        {
+          "kind": "图",
+          "label": "2-1",
+          "title": "VLSI电路单元自动布局示意图",
+          "page": 3
+        },
+        {
+          "kind": "图",
+          "label": "2-2",
+          "title": "具有不同连线接口数目的 HPWL 和 RSMT 线长估计示意图",
+          "page": 3
+        },
+        {
+          "kind": "图",
+          "label": "2-3",
+          "title": "单元密度计算示意图",
+          "page": 4
+        },
+        {
+          "kind": "图",
+          "label": "2-4",
+          "title": "一种计算网格布线密度的模型",
+          "page": 4
+        },
+        {
+          "kind": "表",
+          "label": "5-1",
+          "title": "附件 1 部分数据展示",
+          "page": 7
+        },
+        {
+          "kind": "表",
+          "label": "5-2",
+          "title": "不同连线接口数对应 Group组数统计及比例",
+          "page": 7
+        },
+        {
+          "kind": "图",
+          "label": "5-1",
+          "title": "RSMT方法计算流程",
+          "page": 8
+        },
+        {
+          "kind": "表",
+          "label": "5-3",
+          "title": "不同连线接口数对应 RSMT占比情况",
+          "page": 9
+        },
+        {
+          "kind": "图",
+          "label": "5-2",
+          "title": "查找表可视化",
+          "page": 9
+        },
+        {
+          "kind": "表",
+          "label": "5-4",
+          "title": "问题一计算结果",
+          "page": 10
+        },
+        {
+          "kind": "图",
+          "label": "5-3",
+          "title": "模拟退火算法流程图",
+          "page": 12
+        },
+        {
+          "kind": "图",
+          "label": "5-4",
+          "title": "模拟",
+          "page": 13
+        },
+        {
+          "kind": "图",
+          "label": "5-5",
+          "title": "问题",
+          "page": 13
+        },
+        {
+          "kind": "图",
+          "label": "5-6",
+          "title": "网格布线密度计算模型示意图",
+          "page": 14
+        },
+        {
+          "kind": "图",
+          "label": "5-7",
+          "title": "问题三布局可视化",
+          "page": 15
+        },
+        {
+          "kind": "图",
+          "label": "5-8",
+          "title": "问题四布局可视化",
+          "page": 16
+        }
+      ],
+      "mainBodyEndPage": 17,
+      "visualProfile": {
+        "status": "ok",
+        "eligiblePageCount": 16,
+        "chromaticPixels": 61321,
+        "chromaticPageCount": 12,
+        "dominantHues": [
+          {
+            "name": "蓝",
+            "share": 0.6679
+          },
+          {
+            "name": "橙",
+            "share": 0.1699
+          },
+          {
+            "name": "红",
+            "share": 0.0452
+          },
+          {
+            "name": "绿",
+            "share": 0.045
+          }
+        ],
+        "dominantQuantizedRgb": [
+          {
+            "hex": "#60A0C0",
+            "share": 0.0682
+          },
+          {
+            "hex": "#C0C0E0",
+            "share": 0.0682
+          },
+          {
+            "hex": "#A0C0E0",
+            "share": 0.0548
+          },
+          {
+            "hex": "#2060A0",
+            "share": 0.0495
+          },
+          {
+            "hex": "#E0C0A0",
+            "share": 0.0463
+          },
+          {
+            "hex": "#6080A0",
+            "share": 0.0288
+          },
+          {
+            "hex": "#202040",
+            "share": 0.0282
+          },
+          {
+            "hex": "#406080",
+            "share": 0.0278
+          }
+        ],
+        "topColorPages": [
+          {
+            "page": 9,
+            "chromaticRatio": 0.082597
+          },
+          {
+            "page": 2,
+            "chromaticRatio": 0.060107
+          },
+          {
+            "page": 12,
+            "chromaticRatio": 0.055943
+          }
+        ],
+        "metricBoundary": "低分辨率栅格像素统计仅用于定位彩色页面；照片、地图、校徽和抗锯齿均可能影响占比，配色质量必须回看原页。"
+      }
+    },
+    {
+      "paperId": "huashu-2024-B-2-3ce876fb",
+      "edition": 5,
+      "editionLabel": "第五届",
+      "problem": "B",
+      "paperNumber": 2,
+      "year": 2024,
+      "title": "基于优化算法的电路单元自动布局",
+      "titleEvidence": "pdf-text-layer",
+      "source": "第五届/B2/paper-3ce876fbfd53.pdf",
+      "sha256": "3ce876fbfd53499e8da7bb91a997062807b1e28e7cdd6850abe2980781b146e0",
+      "pages": 28,
+      "characters": 24123,
+      "extraction": "text-layer",
+      "methodFamilies": {
+        "机器人、几何与坐标": [
+          "D-H"
+        ],
+        "图论与路径规划": [
+          "路径规划"
+        ],
+        "连续、整数与多目标规划": [
+          "线性规划",
+          "非线性规划",
+          "多目标优化"
+        ],
+        "随机与群智能优化": [
+          "模拟退火",
+          "粒子群",
+          "遗传算法"
+        ]
+      },
+      "methodPages": {
+        "机器人、几何与坐标": [
+          6
+        ],
+        "图论与路径规划": [
+          1,
+          17
+        ],
+        "连续、整数与多目标规划": [
+          8,
+          15
+        ],
+        "随机与群智能优化": [
+          1,
+          2,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          15,
+          16,
+          17,
+          18
+        ]
+      },
+      "validationSignals": {
+        "数值或算法收敛": [
+          "网格",
+          "迭代次数",
+          "终止条件"
+        ],
+        "灵敏度与鲁棒性": [
+          "扰动"
+        ],
+        "约束或可行性复核": [
+          "约束条件"
+        ]
+      },
+      "validationPages": {
+        "数值或算法收敛": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          10,
+          11,
+          12,
+          13
+        ],
+        "灵敏度与鲁棒性": [
+          5
+        ],
+        "约束或可行性复核": [
+          1,
+          2,
+          7,
+          8,
+          9,
+          14,
+          15,
+          17
+        ]
+      },
+      "abstractCharacters": 894,
+      "sections": [
+        "摘要",
+        "关键词",
+        "问题重述",
+        "问题分析",
+        "模型假设",
+        "符号说明",
+        "模型建立",
+        "模型求解",
+        "模型评价",
+        "参考文献",
+        "附录"
+      ],
+      "sectionPages": {
+        "摘要": 1,
+        "关键词": 1,
+        "模型评价": 1,
+        "问题重述": 2,
+        "问题分析": 2,
+        "模型假设": 3,
+        "符号说明": 3,
+        "模型建立": 4,
+        "参考文献": 4,
+        "模型求解": 5,
+        "附录": 19
+      },
+      "writingMarkers": {
+        "逐问映射": 7,
+        "顺序衔接": 34,
+        "因果解释": 18,
+        "图表解读": 8,
+        "结果落地": 5,
+        "跨问复用": 0,
+        "限制评价": 1
+      },
+      "figureCaptions": 13,
+      "tableCaptions": 3,
+      "informativeFigureCaptions": 13,
+      "informativeTableCaptions": 3,
+      "captionSamples": [
+        {
+          "kind": "图",
+          "label": "1",
+          "title": "全文思路流程图",
+          "page": 3
+        },
+        {
+          "kind": "图",
+          "label": "2",
+          "title": "模拟退火算法流程图",
+          "page": 5
+        },
+        {
+          "kind": "表",
+          "label": "1",
+          "title": "调整后的HPWL 部分数据表",
+          "page": 6
+        },
+        {
+          "kind": "图",
+          "label": "3",
+          "title": "新估计线长与原始RSMT 值的对比折线图",
+          "page": 6
+        },
+        {
+          "kind": "表",
+          "label": "2",
+          "title": "模拟退火算法和粒子群算法的结果对比图",
+          "page": 7
+        },
+        {
+          "kind": "图",
+          "label": "4",
+          "title": "遗传算法流程图",
+          "page": 9
+        },
+        {
+          "kind": "图",
+          "label": "5",
+          "title": "各电路单元位置可视化图",
+          "page": 10
+        },
+        {
+          "kind": "图",
+          "label": "6",
+          "title": "直角型弯折示意图",
+          "page": 11
+        },
+        {
+          "kind": "图",
+          "label": "7",
+          "title": "T 字型弯折示意图",
+          "page": 11
+        },
+        {
+          "kind": "图",
+          "label": "8",
+          "title": "十字型弯折示意图",
+          "page": 11
+        },
+        {
+          "kind": "图",
+          "label": "9",
+          "title": "重叠单元示意图",
+          "page": 12
+        },
+        {
+          "kind": "图",
+          "label": "10",
+          "title": "十字型和T 字型具体判断示意图",
+          "page": 13
+        },
+        {
+          "kind": "表",
+          "label": "3",
+          "title": "部分网格密度数据表",
+          "page": 13
+        },
+        {
+          "kind": "图",
+          "label": "11",
+          "title": "网格密度可视化图",
+          "page": 14
+        },
+        {
+          "kind": "图",
+          "label": "12",
+          "title": "NSGA-II 算法的流程图",
+          "page": 16
+        },
+        {
+          "kind": "图",
+          "label": "13",
+          "title": "电路单元的位置和网格布线密度的可视化图",
+          "page": 17
+        }
+      ],
+      "mainBodyEndPage": 19,
+      "visualProfile": {
+        "status": "ok",
+        "eligiblePageCount": 18,
+        "chromaticPixels": 60367,
+        "chromaticPageCount": 11,
+        "dominantHues": [
+          {
+            "name": "蓝",
+            "share": 0.2722
+          },
+          {
+            "name": "黄",
+            "share": 0.2297
+          },
+          {
+            "name": "橙",
+            "share": 0.16
+          },
+          {
+            "name": "红",
+            "share": 0.1598
+          }
+        ],
+        "dominantQuantizedRgb": [
+          {
+            "hex": "#A0C0E0",
+            "share": 0.1048
+          },
+          {
+            "hex": "#E0E0A0",
+            "share": 0.0988
+          },
+          {
+            "hex": "#4060C0",
+            "share": 0.0781
+          },
+          {
+            "hex": "#E0A080",
+            "share": 0.0563
+          },
+          {
+            "hex": "#A0E0E0",
+            "share": 0.0495
+          },
+          {
+            "hex": "#E0A0A0",
+            "share": 0.0436
+          },
+          {
+            "hex": "#C0E0A0",
+            "share": 0.0343
+          },
+          {
+            "hex": "#A0C0C0",
+            "share": 0.0269
+          }
+        ],
+        "topColorPages": [
+          {
+            "page": 3,
+            "chromaticRatio": 0.060162
+          },
+          {
+            "page": 12,
+            "chromaticRatio": 0.044373
+          },
+          {
+            "page": 11,
+            "chromaticRatio": 0.04374
+          }
+        ],
+        "metricBoundary": "低分辨率栅格像素统计仅用于定位彩色页面；照片、地图、校徽和抗锯齿均可能影响占比，配色质量必须回看原页。"
+      }
+    },
+    {
+      "paperId": "huashu-2024-C-1-5ae310ff",
+      "edition": 5,
+      "editionLabel": "第五届",
+      "problem": "C",
+      "paperNumber": 1,
+      "year": 2024,
+      "title": "游客在华旅游规划（原题名因 PDF 字体缺失未恢复）",
+      "titleEvidence": "由问题链、地图页和可识别术语概括；不是原题名转录",
+      "source": "第五届/C1/paper-5ae310ff36e2.pdf",
+      "sha256": "5ae310ff36e25562a4f420754428ee42ff7603689f15b6e656f0d6455c5b48a0",
+      "pages": 40,
+      "characters": 23524,
+      "extraction": "ocr-representative",
+      "methodFamilies": {
+        "多指标综合评价": [
+          "TOPSIS",
+          "Topsis"
+        ]
+      },
+      "methodPages": {
+        "多指标综合评价": [
+          1,
+          4,
+          10,
+          11,
+          14,
+          16,
+          18,
+          19,
+          20,
+          27,
+          28,
+          34
+        ]
+      },
+      "validationSignals": {
+        "数值或算法收敛": [
+          "终止条件"
+        ]
+      },
+      "validationPages": {
+        "数值或算法收敛": [
+          18
+        ]
+      },
+      "abstractCharacters": null,
+      "sections": [],
+      "sectionPages": {},
+      "writingMarkers": {
+        "逐问映射": 0,
+        "顺序衔接": 0,
+        "因果解释": 0,
+        "图表解读": 0,
+        "结果落地": 0,
+        "跨问复用": 0,
+        "限制评价": 0
+      },
+      "figureCaptions": 0,
+      "tableCaptions": 0,
+      "informativeFigureCaptions": 0,
+      "informativeTableCaptions": 0,
+      "captionSamples": [],
+      "mainBodyEndPage": 40,
+      "visualProfile": {
+        "status": "ok",
+        "eligiblePageCount": 39,
+        "chromaticPixels": 46501,
+        "chromaticPageCount": 19,
+        "dominantHues": [
+          {
+            "name": "蓝",
+            "share": 0.6353
+          },
+          {
+            "name": "青",
+            "share": 0.1342
+          },
+          {
+            "name": "红",
+            "share": 0.1195
+          },
+          {
+            "name": "绿",
+            "share": 0.0762
+          }
+        ],
+        "dominantQuantizedRgb": [
+          {
+            "hex": "#A0C0E0",
+            "share": 0.2492
+          },
+          {
+            "hex": "#A0C0C0",
+            "share": 0.201
+          },
+          {
+            "hex": "#C0A0A0",
+            "share": 0.0549
+          },
+          {
+            "hex": "#60A0C0",
+            "share": 0.0528
+          },
+          {
+            "hex": "#C08080",
+            "share": 0.0357
+          },
+          {
+            "hex": "#C0E0E0",
+            "share": 0.025
+          },
+          {
+            "hex": "#000040",
+            "share": 0.0242
+          },
+          {
+            "hex": "#606080",
+            "share": 0.021
+          }
+        ],
+        "topColorPages": [
+          {
+            "page": 12,
+            "chromaticRatio": 0.047511
+          },
+          {
+            "page": 20,
+            "chromaticRatio": 0.042251
+          },
+          {
+            "page": 26,
+            "chromaticRatio": 0.030637
+          }
+        ],
+        "metricBoundary": "低分辨率栅格像素统计仅用于定位彩色页面；照片、地图、校徽和抗锯齿均可能影响占比，配色质量必须回看原页。"
+      },
+      "yearInference": "同届其他论文首页年份的多数值"
+    },
+    {
+      "paperId": "huashu-2024-C-2-94d2c0c0",
+      "edition": 5,
+      "editionLabel": "第五届",
+      "problem": "C",
+      "paperNumber": 2,
+      "year": 2024,
+      "title": "基于 Topsis 和最短路径的游客在华旅游规划研究",
+      "titleEvidence": "pdf-text-layer",
+      "source": "第五届/C2/paper-94d2c0c0e4fd.pdf",
+      "sha256": "94d2c0c0e4fde43f120273959650ebd1c1617866a24b4b54ebb10aee5cef0c5d",
+      "pages": 33,
+      "characters": 25232,
+      "extraction": "text-layer",
+      "methodFamilies": {
+        "机器人、几何与坐标": [
+          "欧氏距离"
+        ],
+        "图论与路径规划": [
+          "最短路径",
+          "Dijkstra",
+          "路径规划"
+        ],
+        "多指标综合评价": [
+          "TOPSIS",
+          "Topsis",
+          "熵权法",
+          "综合评价"
+        ],
+        "连续、整数与多目标规划": [
+          "整数规划"
+        ],
+        "随机与群智能优化": [
+          "模拟退火",
+          "蒙特卡洛"
+        ]
+      },
+      "methodPages": {
+        "机器人、几何与坐标": [
+          15
+        ],
+        "图论与路径规划": [
+          1,
+          3,
+          17,
+          18,
+          20,
+          21,
+          22,
+          23,
+          25,
+          27,
+          29,
+          30
+        ],
+        "多指标综合评价": [
+          1,
+          3,
+          14,
+          15,
+          30,
+          31
+        ],
+        "连续、整数与多目标规划": [
+          1,
+          3,
+          17,
+          20,
+          22,
+          23,
+          27,
+          30
+        ],
+        "随机与群智能优化": [
+          1,
+          3,
+          17,
+          18,
+          19,
+          30,
+          31
+        ]
+      },
+      "validationSignals": {
+        "统计显著性与效应量": [
+          "显著性"
+        ],
+        "约束或可行性复核": [
+          "约束条件"
+        ]
+      },
+      "validationPages": {
+        "统计显著性与效应量": [
+          4,
+          8
+        ],
+        "约束或可行性复核": [
+          1,
+          3,
+          17,
+          22,
+          23,
+          24,
+          27,
+          28
+        ]
+      },
+      "abstractCharacters": 1049,
+      "sections": [
+        "摘要",
+        "关键词",
+        "问题重述",
+        "问题分析",
+        "模型假设",
+        "符号说明",
+        "模型建立",
+        "模型求解",
+        "模型评价",
+        "参考文献",
+        "附录"
+      ],
+      "sectionPages": {
+        "摘要": 1,
+        "关键词": 1,
+        "问题重述": 2,
+        "问题分析": 2,
+        "模型假设": 3,
+        "符号说明": 4,
+        "模型求解": 8,
+        "模型建立": 9,
+        "模型评价": 29,
+        "参考文献": 31,
+        "附录": 32
+      },
+      "writingMarkers": {
+        "逐问映射": 9,
+        "顺序衔接": 41,
+        "因果解释": 41,
+        "图表解读": 9,
+        "结果落地": 5,
+        "跨问复用": 0,
+        "限制评价": 1
+      },
+      "figureCaptions": 11,
+      "tableCaptions": 14,
+      "informativeFigureCaptions": 10,
+      "informativeTableCaptions": 14,
+      "captionSamples": [
+        {
+          "kind": "表",
+          "label": "5.1",
+          "title": "2023 年度各地旅行社组织（外联）接待指标排序表",
+          "page": 4
+        },
+        {
+          "kind": "表",
+          "label": "5.2",
+          "title": "第一类城市景点评据插补缺失值（部分）",
+          "page": 6
+        },
+        {
+          "kind": "表",
+          "label": "5.3",
+          "title": "第二类城市景点评据插补缺失值（部分）",
+          "page": 6
+        },
+        {
+          "kind": "表",
+          "label": "5.4",
+          "title": "第三类城市景点评据插补缺失值（部分）",
+          "page": 7
+        },
+        {
+          "kind": "表",
+          "label": "6-1",
+          "title": "BS 景点城市信息表",
+          "page": 8
+        },
+        {
+          "kind": "表",
+          "label": "6-2",
+          "title": "BS 景点最多拥有城市",
+          "page": 8
+        },
+        {
+          "kind": "图",
+          "label": "6-1",
+          "title": "城市数值柱状图",
+          "page": 9
+        },
+        {
+          "kind": "表",
+          "label": "7-1",
+          "title": "第一类城市指标归一化结果",
+          "page": 10
+        },
+        {
+          "kind": "图",
+          "label": "7-1",
+          "title": "第一类城市指标箱线图",
+          "page": 11
+        },
+        {
+          "kind": "表",
+          "label": "7-2",
+          "title": "第二类城市指标化结果",
+          "page": 11
+        },
+        {
+          "kind": "图",
+          "label": "7-2",
+          "title": "第二类城市指标箱线图",
+          "page": 12
+        },
+        {
+          "kind": "表",
+          "label": "7-3",
+          "title": "第三类城市指标化结果",
+          "page": 12
+        },
+        {
+          "kind": "图",
+          "label": "7-3",
+          "title": "第三类城市指标箱线图",
+          "page": 13
+        },
+        {
+          "kind": "图",
+          "label": "7-4",
+          "title": "熵权 Topsls 算法流程",
+          "page": 14
+        },
+        {
+          "kind": "表",
+          "label": "7-4",
+          "title": "求解影响因子权重",
+          "page": 15
+        },
+        {
+          "kind": "表",
+          "label": "7-5",
+          "title": "最向往的城市信息",
+          "page": 15
+        },
+        {
+          "kind": "表",
+          "label": "8-1",
+          "title": "经纬度坐标数据",
+          "page": 16
+        },
+        {
+          "kind": "图",
+          "label": "8-1",
+          "title": "目标城市的经纬度轮廓图",
+          "page": 16
+        },
+        {
+          "kind": "图",
+          "label": "8-2",
+          "title": "路线图",
+          "page": 20
+        },
+        {
+          "kind": "表",
+          "label": "9-1",
+          "title": "各城市距离矩阵",
+          "page": 21
+        },
+        {
+          "kind": "图",
+          "label": "9-1",
+          "title": "非赋权有向图",
+          "page": 21
+        },
+        {
+          "kind": "图",
+          "label": "9-2",
+          "title": "最短路径路线图",
+          "page": 25
+        },
+        {
+          "kind": "表",
+          "label": "10-1",
+          "title": "山景信息表",
+          "page": 26
+        },
+        {
+          "kind": "图",
+          "label": "10-1",
+          "title": "山景信息有向图",
+          "page": 26
+        },
+        {
+          "kind": "图",
+          "label": "10-2",
+          "title": "最短路径路线图",
+          "page": 29
+        }
+      ],
+      "mainBodyEndPage": 30,
+      "visualProfile": {
+        "status": "ok",
+        "eligiblePageCount": 29,
+        "chromaticPixels": 22677,
+        "chromaticPageCount": 6,
+        "dominantHues": [
+          {
+            "name": "蓝",
+            "share": 0.466
+          },
+          {
+            "name": "黄",
+            "share": 0.3837
+          },
+          {
+            "name": "红",
+            "share": 0.0694
+          },
+          {
+            "name": "绿",
+            "share": 0.0503
+          }
+        ],
+        "dominantQuantizedRgb": [
+          {
+            "hex": "#80C0E0",
+            "share": 0.1567
+          },
+          {
+            "hex": "#C0C0A0",
+            "share": 0.1494
+          },
+          {
+            "hex": "#C0E0A0",
+            "share": 0.1322
+          },
+          {
+            "hex": "#E0E0A0",
+            "share": 0.0811
+          },
+          {
+            "hex": "#A0C0E0",
+            "share": 0.0713
+          },
+          {
+            "hex": "#E0E0C0",
+            "share": 0.0564
+          },
+          {
+            "hex": "#A0E0E0",
+            "share": 0.0535
+          },
+          {
+            "hex": "#C0E0E0",
+            "share": 0.0468
+          }
+        ],
+        "topColorPages": [
+          {
+            "page": 16,
+            "chromaticRatio": 0.042485
+          },
+          {
+            "page": 29,
+            "chromaticRatio": 0.02858
+          },
+          {
+            "page": 25,
+            "chromaticRatio": 0.017163
+          }
+        ],
+        "metricBoundary": "低分辨率栅格像素统计仅用于定位彩色页面；照片、地图、校徽和抗锯齿均可能影响占比，配色质量必须回看原页。"
+      }
+    },
+    {
+      "paperId": "huashu-2025-A-1-14b52ca5",
+      "edition": 6,
+      "editionLabel": "第六届",
+      "problem": "A",
+      "paperNumber": 1,
+      "year": 2025,
+      "title": "多孔膜光反射性能的优化与控制",
+      "titleEvidence": "pdf-text-layer",
+      "source": "第六届/A1/paper-14b52ca50939.pdf",
+      "sha256": "14b52ca50939c94c275b9048406e2830823a15a31013dce0046599eb156c46ea",
+      "pages": 41,
+      "characters": 51941,
+      "extraction": "text-layer",
+      "methodFamilies": {
+        "传热与多物理机理": [
+          "动力学模型",
+          "状态方程",
+          "布朗扩散",
+          "Smoluchowski"
+        ],
+        "光学、光谱与色度": [
+          "反射率"
+        ],
+        "图论与路径规划": [
+          "蚁群算法"
+        ],
+        "机器学习": [
+          "随机森林",
+          "XGBoost",
+          "XGboost"
+        ],
+        "随机与群智能优化": [
+          "差分进化",
+          "蚁群算法"
+        ]
+      },
+      "methodPages": {
+        "传热与多物理机理": [
+          1,
+          3,
+          6,
+          7,
+          19,
+          20,
+          22,
+          30
+        ],
+        "光学、光谱与色度": [
+          2
+        ],
+        "图论与路径规划": [
+          1,
+          13,
+          15,
+          22,
+          23
+        ],
+        "机器学习": [
+          1,
+          15,
+          16,
+          17,
+          21,
+          22,
+          23,
+          35,
+          37
+        ],
+        "随机与群智能优化": [
+          1,
+          9,
+          10,
+          12,
+          13,
+          15,
+          22,
+          23,
+          28
+        ]
+      },
+      "validationSignals": {
+        "误差、残差或实测对照": [
+          "残差",
+          "均方根误差",
+          "RMSE",
+          "决定系数",
+          "R²"
+        ],
+        "数值或算法收敛": [
+          "收敛曲线",
+          "网格",
+          "迭代次数"
+        ],
+        "灵敏度与鲁棒性": [
+          "鲁棒性",
+          "稳健性",
+          "扰动"
+        ],
+        "约束或可行性复核": [
+          "约束条件",
+          "模型检验"
+        ]
+      },
+      "validationPages": {
+        "误差、残差或实测对照": [
+          1,
+          9,
+          10,
+          11,
+          12,
+          17,
+          20,
+          21,
+          22,
+          26,
+          27,
+          28
+        ],
+        "数值或算法收敛": [
+          10,
+          11,
+          14,
+          15,
+          20,
+          21,
+          27,
+          28,
+          32,
+          33,
+          34,
+          36
+        ],
+        "灵敏度与鲁棒性": [
+          1,
+          2,
+          3,
+          6,
+          10,
+          11,
+          12,
+          13,
+          22,
+          23
+        ],
+        "约束或可行性复核": [
+          3,
+          19,
+          28
+        ]
+      },
+      "abstractCharacters": 1199,
+      "sections": [
+        "摘要",
+        "关键词",
+        "问题重述",
+        "问题分析",
+        "模型假设",
+        "符号说明",
+        "模型建立",
+        "模型求解",
+        "模型评价",
+        "参考文献",
+        "附录"
+      ],
+      "sectionPages": {
+        "摘要": 1,
+        "关键词": 1,
+        "问题重述": 2,
+        "问题分析": 2,
+        "模型假设": 2,
+        "模型建立": 2,
+        "模型求解": 3,
+        "模型评价": 3,
+        "符号说明": 4,
+        "参考文献": 23,
+        "附录": 24
+      },
+      "writingMarkers": {
+        "逐问映射": 6,
+        "顺序衔接": 10,
+        "因果解释": 24,
+        "图表解读": 0,
+        "结果落地": 2,
+        "跨问复用": 0,
+        "限制评价": 2
+      },
+      "figureCaptions": 9,
+      "tableCaptions": 0,
+      "informativeFigureCaptions": 9,
+      "informativeTableCaptions": 0,
+      "captionSamples": [
+        {
+          "kind": "图",
+          "label": "1",
+          "title": "问题求解思维导图",
+          "page": 3
+        },
+        {
+          "kind": "图",
+          "label": "2",
+          "title": "最佳 RMSE 收敛曲线",
+          "page": 11
+        },
+        {
+          "kind": "图",
+          "label": "3",
+          "title": "模型预测值与实测值对比图",
+          "page": 11
+        },
+        {
+          "kind": "图",
+          "label": "4",
+          "title": "工艺寻优收敛曲线",
+          "page": 15
+        },
+        {
+          "kind": "图",
+          "label": "5",
+          "title": "预测值和实际值拟合图",
+          "page": 17
+        },
+        {
+          "kind": "图",
+          "label": "6",
+          "title": "特征重要性分析图",
+          "page": 18
+        },
+        {
+          "kind": "图",
+          "label": "7",
+          "title": "最佳 RMSE 收敛曲线",
+          "page": 20
+        },
+        {
+          "kind": "图",
+          "label": "8",
+          "title": "孔面积预测值与实际值",
+          "page": 21
+        },
+        {
+          "kind": "图",
+          "label": "9",
+          "title": "当前最佳 Pp 收敛曲线",
+          "page": 21
+        }
+      ],
+      "mainBodyEndPage": 23,
+      "visualProfile": {
+        "status": "ok",
+        "eligiblePageCount": 22,
+        "chromaticPixels": 7822,
+        "chromaticPageCount": 7,
+        "dominantHues": [
+          {
+            "name": "绿",
+            "share": 0.3837
+          },
+          {
+            "name": "蓝",
+            "share": 0.2792
+          },
+          {
+            "name": "橙",
+            "share": 0.2318
+          },
+          {
+            "name": "红",
+            "share": 0.073
+          }
+        ],
+        "dominantQuantizedRgb": [
+          {
+            "hex": "#A0E0A0",
+            "share": 0.2198
+          },
+          {
+            "hex": "#E0C0A0",
+            "share": 0.085
+          },
+          {
+            "hex": "#C0A080",
+            "share": 0.058
+          },
+          {
+            "hex": "#A0E0C0",
+            "share": 0.0578
+          },
+          {
+            "hex": "#80A0C0",
+            "share": 0.0405
+          },
+          {
+            "hex": "#A0C0E0",
+            "share": 0.0371
+          },
+          {
+            "hex": "#A0C0A0",
+            "share": 0.026
+          },
+          {
+            "hex": "#2080C0",
+            "share": 0.0237
+          }
+        ],
+        "topColorPages": [
+          {
+            "page": 3,
+            "chromaticRatio": 0.017633
+          },
+          {
+            "page": 18,
+            "chromaticRatio": 0.01181
+          },
+          {
+            "page": 11,
+            "chromaticRatio": 0.004846
+          }
+        ],
+        "metricBoundary": "低分辨率栅格像素统计仅用于定位彩色页面；照片、地图、校徽和抗锯齿均可能影响占比，配色质量必须回看原页。"
+      }
+    },
+    {
+      "paperId": "huashu-2025-A-2-f6c0656f",
+      "edition": 6,
+      "editionLabel": "第六届",
+      "problem": "A",
+      "paperNumber": 2,
+      "year": 2025,
+      "title": "基于物理机理的多孔膜光反射性能的优化与控制",
+      "titleEvidence": "pdf-text-layer",
+      "source": "第六届/A2/paper-f6c0656fe56d.pdf",
+      "sha256": "f6c0656fe56d538af0dab947045223642ebcc9ac6ffeb0c1ae57f6c744d01c94",
+      "pages": 29,
+      "characters": 34772,
+      "extraction": "text-layer",
+      "methodFamilies": {
+        "传热与多物理机理": [
+          "动力学模型",
+          "状态方程"
+        ],
+        "统计推断与回归": [
+          "Spearman",
+          "斯皮尔曼",
+          "相关系数"
+        ],
+        "随机与群智能优化": [
+          "粒子群"
+        ]
+      },
+      "methodPages": {
+        "传热与多物理机理": [
+          10,
+          18
+        ],
+        "统计推断与回归": [
+          1,
+          3,
+          15,
+          16,
+          18,
+          26
+        ],
+        "随机与群智能优化": [
+          1,
+          11,
+          12,
+          17
+        ]
+      },
+      "validationSignals": {
+        "误差、残差或实测对照": [
+          "绝对误差",
+          "残差",
+          "均方根误差",
+          "RMSE",
+          "决定系数",
+          "R²",
+          "拟合优度"
+        ],
+        "数值或算法收敛": [
+          "步长",
+          "网格",
+          "迭代次数",
+          "终止条件"
+        ],
+        "统计显著性与效应量": [
+          "p 值",
+          "P 值",
+          "显著性"
+        ],
+        "约束或可行性复核": [
+          "约束条件",
+          "模型检验"
+        ]
+      },
+      "validationPages": {
+        "误差、残差或实测对照": [
+          11,
+          13,
+          14,
+          16,
+          21,
+          27
+        ],
+        "数值或算法收敛": [
+          3,
+          10,
+          11,
+          14,
+          15,
+          17
+        ],
+        "统计显著性与效应量": [
+          1,
+          15,
+          16,
+          17
+        ],
+        "约束或可行性复核": [
+          11,
+          13,
+          14
+        ]
+      },
+      "abstractCharacters": 910,
+      "sections": [
+        "摘要",
+        "关键词",
+        "问题重述",
+        "问题分析",
+        "模型假设",
+        "符号说明",
+        "模型建立",
+        "模型求解",
+        "误差或灵敏度",
+        "模型评价",
+        "参考文献",
+        "附录"
+      ],
+      "sectionPages": {
+        "摘要": 1,
+        "关键词": 1,
+        "模型建立": 1,
+        "模型求解": 1,
+        "问题重述": 2,
+        "问题分析": 2,
+        "参考文献": 2,
+        "模型假设": 3,
+        "符号说明": 4,
+        "模型评价": 17,
+        "附录": 20,
+        "误差或灵敏度": 25
+      },
+      "writingMarkers": {
+        "逐问映射": 3,
+        "顺序衔接": 16,
+        "因果解释": 22,
+        "图表解读": 2,
+        "结果落地": 4,
+        "跨问复用": 2,
+        "限制评价": 2
+      },
+      "figureCaptions": 5,
+      "tableCaptions": 3,
+      "informativeFigureCaptions": 5,
+      "informativeTableCaptions": 3,
+      "captionSamples": [
+        {
+          "kind": "表",
+          "label": "1",
+          "title": "模型参数说明",
+          "page": 10
+        },
+        {
+          "kind": "图",
+          "label": "1",
+          "title": "粒子群优化算法流程图",
+          "page": 12
+        },
+        {
+          "kind": "图",
+          "label": "2",
+          "title": "PSO 优化收敛图",
+          "page": 12
+        },
+        {
+          "kind": "表",
+          "label": "2",
+          "title": "模型参数取值",
+          "page": 13
+        },
+        {
+          "kind": "图",
+          "label": "3",
+          "title": "模型预测效果与残差分析",
+          "page": 13
+        },
+        {
+          "kind": "图",
+          "label": "4",
+          "title": "相关性判断图",
+          "page": 16
+        },
+        {
+          "kind": "表",
+          "label": "3",
+          "title": "修改后模型参数取值",
+          "page": 17
+        },
+        {
+          "kind": "图",
+          "label": "5",
+          "title": "实验值与预测值对比图",
+          "page": 17
+        }
+      ],
+      "mainBodyEndPage": 19,
+      "visualProfile": {
+        "status": "ok",
+        "eligiblePageCount": 18,
+        "chromaticPixels": 4683,
+        "chromaticPageCount": 2,
+        "dominantHues": [
+          {
+            "name": "蓝",
+            "share": 0.4305
+          },
+          {
+            "name": "红",
+            "share": 0.4119
+          },
+          {
+            "name": "青",
+            "share": 0.1217
+          },
+          {
+            "name": "绿",
+            "share": 0.0111
+          }
+        ],
+        "dominantQuantizedRgb": [
+          {
+            "hex": "#600000",
+            "share": 0.3496
+          },
+          {
+            "hex": "#000080",
+            "share": 0.1659
+          },
+          {
+            "hex": "#00E0E0",
+            "share": 0.0331
+          },
+          {
+            "hex": "#A0C0E0",
+            "share": 0.0316
+          },
+          {
+            "hex": "#00A0E0",
+            "share": 0.0237
+          },
+          {
+            "hex": "#60A0C0",
+            "share": 0.0233
+          },
+          {
+            "hex": "#00C0E0",
+            "share": 0.0192
+          },
+          {
+            "hex": "#0080E0",
+            "share": 0.0179
+          }
+        ],
+        "topColorPages": [
+          {
+            "page": 16,
+            "chromaticRatio": 0.023859
+          },
+          {
+            "page": 12,
+            "chromaticRatio": 0.00137
+          },
+          {
+            "page": 13,
+            "chromaticRatio": 0.000196
+          }
+        ],
+        "metricBoundary": "低分辨率栅格像素统计仅用于定位彩色页面；照片、地图、校徽和抗锯齿均可能影响占比，配色质量必须回看原页。"
+      }
+    },
+    {
+      "paperId": "huashu-2025-B-1-7a3e93a1",
+      "edition": 6,
+      "editionLabel": "第六届",
+      "problem": "B",
+      "paperNumber": 1,
+      "year": 2025,
+      "title": "基于动态调度和模拟实验的异构网络的资源分配优化",
+      "titleEvidence": "pdf-text-layer",
+      "source": "第六届/B1/paper-7a3e93a101cf.pdf",
+      "sha256": "7a3e93a101cf2045a88ebfdef69df919149e6af7c95398d5473a21c0a8836364",
+      "pages": 66,
+      "characters": 64994,
+      "extraction": "text-layer",
+      "methodFamilies": {
+        "机器人、几何与坐标": [
+          "欧氏距离"
+        ],
+        "连续、整数与多目标规划": [
+          "多目标优化"
+        ],
+        "随机与群智能优化": [
+          "遗传算法"
+        ],
+        "仿真、调度与资源分配": [
+          "动态调度",
+          "资源分配",
+          "网络切片"
+        ]
+      },
+      "methodPages": {
+        "机器人、几何与坐标": [
+          3
+        ],
+        "连续、整数与多目标规划": [
+          1
+        ],
+        "随机与群智能优化": [
+          1,
+          3,
+          10,
+          11,
+          15,
+          16,
+          22,
+          32,
+          33,
+          35,
+          36
+        ],
+        "仿真、调度与资源分配": [
+          1,
+          2,
+          3,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          15,
+          17,
+          19
+        ]
+      },
+      "validationSignals": {
+        "样本外或交叉验证": [
+          "交叉验证"
+        ],
+        "数值或算法收敛": [
+          "步长",
+          "迭代次数"
+        ],
+        "灵敏度与鲁棒性": [
+          "鲁棒性"
+        ],
+        "随机重复": [
+          "随机种子"
+        ],
+        "约束或可行性复核": [
+          "约束条件"
+        ]
+      },
+      "validationPages": {
+        "样本外或交叉验证": [
+          1,
+          3,
+          10,
+          22
+        ],
+        "数值或算法收敛": [
+          16,
+          35,
+          64
+        ],
+        "灵敏度与鲁棒性": [
+          10,
+          11,
+          22
+        ],
+        "随机重复": [
+          33
+        ],
+        "约束或可行性复核": [
+          2,
+          3,
+          6,
+          8,
+          9,
+          14,
+          22
+        ]
+      },
+      "abstractCharacters": 1180,
+      "sections": [
+        "摘要",
+        "关键词",
+        "问题重述",
+        "问题分析",
+        "模型假设",
+        "符号说明",
+        "模型建立",
+        "模型求解",
+        "模型评价",
+        "参考文献",
+        "附录"
+      ],
+      "sectionPages": {
+        "摘要": 1,
+        "关键词": 1,
+        "问题重述": 2,
+        "问题分析": 2,
+        "附录": 2,
+        "模型假设": 3,
+        "符号说明": 3,
+        "模型建立": 4,
+        "模型求解": 6,
+        "参考文献": 14,
+        "模型评价": 22
+      },
+      "writingMarkers": {
+        "逐问映射": 4,
+        "顺序衔接": 24,
+        "因果解释": 19,
+        "图表解读": 4,
+        "结果落地": 4,
+        "跨问复用": 0,
+        "限制评价": 0
+      },
+      "figureCaptions": 11,
+      "tableCaptions": 14,
+      "informativeFigureCaptions": 11,
+      "informativeTableCaptions": 14,
+      "captionSamples": [
+        {
+          "kind": "表",
+          "label": "1",
+          "title": "用户的传输速率计算结果",
+          "page": 6
+        },
+        {
+          "kind": "表",
+          "label": "2",
+          "title": "决策变量的可能取值",
+          "page": 6
+        },
+        {
+          "kind": "表",
+          "label": "3",
+          "title": "具体的资源块分配方案",
+          "page": 7
+        },
+        {
+          "kind": "图",
+          "label": "1",
+          "title": "U 用户任务量数据的区间检验图",
+          "page": 7
+        },
+        {
+          "kind": "表",
+          "label": "4",
+          "title": "决策周期的四种决策方案",
+          "page": 9
+        },
+        {
+          "kind": "表",
+          "label": "5",
+          "title": "模拟实验的得分表",
+          "page": 9
+        },
+        {
+          "kind": "表",
+          "label": "6",
+          "title": "动态调度实验的得分结果表",
+          "page": 10
+        },
+        {
+          "kind": "表",
+          "label": "7",
+          "title": "每次决策的三类切片的资源块最佳分配方案",
+          "page": 10
+        },
+        {
+          "kind": "图",
+          "label": "2",
+          "title": "遗传算法流程图",
+          "page": 10
+        },
+        {
+          "kind": "图",
+          "label": "3",
+          "title": "遗传算法迭代收敛情况",
+          "page": 11
+        },
+        {
+          "kind": "图",
+          "label": "4",
+          "title": "用户?与基站?的连接简化图",
+          "page": 12
+        },
+        {
+          "kind": "表",
+          "label": "8",
+          "title": "用户对基站的选择结果",
+          "page": 12
+        },
+        {
+          "kind": "图",
+          "label": "5",
+          "title": "用户 U1 传输速率的变化可视化图",
+          "page": 13
+        },
+        {
+          "kind": "图",
+          "label": "6",
+          "title": "功率大小与得分总分的关系",
+          "page": 14
+        },
+        {
+          "kind": "表",
+          "label": "9",
+          "title": "16 个初始分配方案",
+          "page": 14
+        },
+        {
+          "kind": "图",
+          "label": "7",
+          "title": "16 个方案与服务质量总得分关系图",
+          "page": 15
+        },
+        {
+          "kind": "表",
+          "label": "10",
+          "title": "剪枝后的 6 个分配方案",
+          "page": 15
+        },
+        {
+          "kind": "表",
+          "label": "11",
+          "title": "系统化实验的最优解",
+          "page": 15
+        },
+        {
+          "kind": "表",
+          "label": "12",
+          "title": "用户连接基站的分配",
+          "page": 17
+        },
+        {
+          "kind": "图",
+          "label": "8",
+          "title": "用户服务质量总得分?随宏基站功率pmacro变化曲线图",
+          "page": 18
+        },
+        {
+          "kind": "图",
+          "label": "9",
+          "title": "用户服务质量总得分 Y 随微基站功率pi",
+          "page": 18
+        },
+        {
+          "kind": "表",
+          "label": "13",
+          "title": "资源块分配方案结果",
+          "page": 19
+        },
+        {
+          "kind": "图",
+          "label": "10",
+          "title": "用户服务得分随基站 C 功率的变化曲线图",
+          "page": 21
+        },
+        {
+          "kind": "图",
+          "label": "11",
+          "title": "基站总能耗随基站 C 功率变化曲线图",
+          "page": 21
+        },
+        {
+          "kind": "表",
+          "label": "14",
+          "title": "最低能耗下的最高总质量得分结果",
+          "page": 21
+        }
+      ],
+      "mainBodyEndPage": 23,
+      "visualProfile": {
+        "status": "ok",
+        "eligiblePageCount": 22,
+        "chromaticPixels": 7485,
+        "chromaticPageCount": 6,
+        "dominantHues": [
+          {
+            "name": "蓝",
+            "share": 0.784
+          },
+          {
+            "name": "红",
+            "share": 0.1011
+          },
+          {
+            "name": "橙",
+            "share": 0.0446
+          },
+          {
+            "name": "绿",
+            "share": 0.0382
+          }
+        ],
+        "dominantQuantizedRgb": [
+          {
+            "hex": "#80A0C0",
+            "share": 0.3323
+          },
+          {
+            "hex": "#A0A0C0",
+            "share": 0.1185
+          },
+          {
+            "hex": "#A0C0C0",
+            "share": 0.117
+          },
+          {
+            "hex": "#8080C0",
+            "share": 0.0752
+          },
+          {
+            "hex": "#E0A0A0",
+            "share": 0.0444
+          },
+          {
+            "hex": "#A0C0E0",
+            "share": 0.0286
+          },
+          {
+            "hex": "#8080A0",
+            "share": 0.0246
+          },
+          {
+            "hex": "#E0C040",
+            "share": 0.0214
+          }
+        ],
+        "topColorPages": [
+          {
+            "page": 7,
+            "chromaticRatio": 0.027205
+          },
+          {
+            "page": 12,
+            "chromaticRatio": 0.006396
+          },
+          {
+            "page": 18,
+            "chromaticRatio": 0.002232
+          }
+        ],
+        "metricBoundary": "低分辨率栅格像素统计仅用于定位彩色页面；照片、地图、校徽和抗锯齿均可能影响占比，配色质量必须回看原页。"
+      }
+    },
+    {
+      "paperId": "huashu-2025-B-2-6e9ac1bc",
+      "edition": 6,
+      "editionLabel": "第六届",
+      "problem": "B",
+      "paperNumber": 2,
+      "year": 2025,
+      "title": "网络切片无线资源管理方案设计研究",
+      "titleEvidence": "pdf-text-layer",
+      "source": "第六届/B2/paper-6e9ac1bc5273.pdf",
+      "sha256": "6e9ac1bc527347a46f98358c296c4da76e4c1811f65310febaaf8d08ea43bc81",
+      "pages": 44,
+      "characters": 43927,
+      "extraction": "text-layer",
+      "methodFamilies": {
+        "连续、整数与多目标规划": [
+          "整数规划",
+          "多目标优化"
+        ],
+        "随机与群智能优化": [
+          "模拟退火",
+          "粒子群",
+          "蒙特卡洛"
+        ],
+        "仿真、调度与资源分配": [
+          "资源分配",
+          "网络切片",
+          "蒙特卡洛模拟",
+          "动态规划模型"
+        ]
+      },
+      "methodPages": {
+        "连续、整数与多目标规划": [
+          3,
+          20
+        ],
+        "随机与群智能优化": [
+          1,
+          3,
+          6,
+          7,
+          9,
+          11,
+          17,
+          19,
+          20
+        ],
+        "仿真、调度与资源分配": [
+          1,
+          2,
+          3,
+          4,
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          15
+        ]
+      },
+      "validationSignals": {
+        "误差、残差或实测对照": [
+          "残差"
+        ],
+        "数值或算法收敛": [
+          "迭代次数",
+          "终止条件"
+        ],
+        "灵敏度与鲁棒性": [
+          "鲁棒性"
+        ],
+        "约束或可行性复核": [
+          "约束条件"
+        ]
+      },
+      "validationPages": {
+        "误差、残差或实测对照": [
+          8
+        ],
+        "数值或算法收敛": [
+          7,
+          8,
+          14,
+          20
+        ],
+        "灵敏度与鲁棒性": [
+          20
+        ],
+        "约束或可行性复核": [
+          1,
+          3,
+          6,
+          9,
+          11,
+          14
+        ]
+      },
+      "abstractCharacters": 1082,
+      "sections": [
+        "摘要",
+        "关键词",
+        "问题重述",
+        "问题分析",
+        "模型假设",
+        "符号说明",
+        "模型建立",
+        "模型求解",
+        "模型评价",
+        "参考文献",
+        "附录"
+      ],
+      "sectionPages": {
+        "摘要": 1,
+        "关键词": 1,
+        "附录": 1,
+        "问题重述": 2,
+        "问题分析": 3,
+        "模型假设": 4,
+        "符号说明": 4,
+        "模型建立": 5,
+        "模型求解": 6,
+        "模型评价": 20,
+        "参考文献": 22
+      },
+      "writingMarkers": {
+        "逐问映射": 3,
+        "顺序衔接": 9,
+        "因果解释": 38,
+        "图表解读": 6,
+        "结果落地": 9,
+        "跨问复用": 0,
+        "限制评价": 3
+      },
+      "figureCaptions": 22,
+      "tableCaptions": 8,
+      "informativeFigureCaptions": 22,
+      "informativeTableCaptions": 8,
+      "captionSamples": [
+        {
+          "kind": "图",
+          "label": "1",
+          "title": "正交频分多址技术示意图（来源于赛题附录）",
+          "page": 2
+        },
+        {
+          "kind": "图",
+          "label": "2",
+          "title": "切片划分和任务处理流程图（来源于赛题附录）",
+          "page": 2
+        },
+        {
+          "kind": "图",
+          "label": "3",
+          "title": "总体思路图",
+          "page": 4
+        },
+        {
+          "kind": "图",
+          "label": "4",
+          "title": "模拟退火粒子群算法流程图",
+          "page": 7
+        },
+        {
+          "kind": "图",
+          "label": "5",
+          "title": "改进与非改进的优化结果比较 图 6 降温次数与绝对残差下降的关系",
+          "page": 8
+        },
+        {
+          "kind": "表",
+          "label": "1",
+          "title": "使单个微基站用户服务质量最大的资源块分配方案",
+          "page": 8
+        },
+        {
+          "kind": "表",
+          "label": "2",
+          "title": "各决策周期的最优分配方案",
+          "page": 9
+        },
+        {
+          "kind": "图",
+          "label": "7",
+          "title": "用户资源块堆叠面积图",
+          "page": 10
+        },
+        {
+          "kind": "表",
+          "label": "3",
+          "title": "时间点为 300ms 时的最优方案",
+          "page": 12
+        },
+        {
+          "kind": "图",
+          "label": "8",
+          "title": "系统服务质量随时间变化的折线图",
+          "page": 12
+        },
+        {
+          "kind": "图",
+          "label": "9",
+          "title": "基站 1 资源块分配 图 10 基站 1 功率",
+          "page": 12
+        },
+        {
+          "kind": "图",
+          "label": "11",
+          "title": "基站 2 资源块分配 图 12 基站 2 功率",
+          "page": 12
+        },
+        {
+          "kind": "图",
+          "label": "13",
+          "title": "基站 3 资源块分配 图 14 基站 3 功率",
+          "page": 13
+        },
+        {
+          "kind": "表",
+          "label": "4",
+          "title": "时间点 600ms 时的最优方案",
+          "page": 14
+        },
+        {
+          "kind": "表",
+          "label": "5",
+          "title": "时间点 600ms 部分用户接入决策",
+          "page": 14
+        },
+        {
+          "kind": "图",
+          "label": "15",
+          "title": "问题四系统服务质量随时间变化的折线图",
+          "page": 15
+        },
+        {
+          "kind": "图",
+          "label": "16",
+          "title": "问题四用户接入基站类型分布",
+          "page": 15
+        },
+        {
+          "kind": "图",
+          "label": "17",
+          "title": "宏基站的资源块分配 图 18 宏基站的功率",
+          "page": 15
+        },
+        {
+          "kind": "图",
+          "label": "19",
+          "title": "微基站 1 的资源块分配 图 20 微基站 1 的功率",
+          "page": 15
+        },
+        {
+          "kind": "图",
+          "label": "21",
+          "title": "微基站 2 的资源块分配 图 22 微基站 2 的功率",
+          "page": 16
+        },
+        {
+          "kind": "图",
+          "label": "23",
+          "title": "微基站 3 的资源块分配 图 24 微基站 3 的功率",
+          "page": 16
+        },
+        {
+          "kind": "表",
+          "label": "6",
+          "title": "时间点 700ms 时的最优方案",
+          "page": 18
+        },
+        {
+          "kind": "表",
+          "label": "7",
+          "title": "时间点 700ms 时部分用户的接入决策",
+          "page": 18
+        },
+        {
+          "kind": "图",
+          "label": "25",
+          "title": "最大系统服务质量（QoS）与最小系统总能耗随决策周期的变化图",
+          "page": 18
+        },
+        {
+          "kind": "图",
+          "label": "26",
+          "title": "问题五用户接入基站类型分布",
+          "page": 18
+        },
+        {
+          "kind": "图",
+          "label": "27",
+          "title": "宏基站的资源块分配 图 28 宏基站的功率",
+          "page": 19
+        },
+        {
+          "kind": "图",
+          "label": "29",
+          "title": "微基站 1 的资源块分配 图 30 微基站 1 的功率",
+          "page": 19
+        },
+        {
+          "kind": "图",
+          "label": "31",
+          "title": "微基站 2 的资源块分配 图 32 微基站 2 的功率",
+          "page": 19
+        },
+        {
+          "kind": "图",
+          "label": "33",
+          "title": "微基站 3 的资源块分配 图 34 微基站 3 的功率",
+          "page": 19
+        },
+        {
+          "kind": "表",
+          "label": "8",
+          "title": "三种算法对比",
+          "page": 20
+        }
+      ],
+      "mainBodyEndPage": 21,
+      "visualProfile": {
+        "status": "ok",
+        "eligiblePageCount": 20,
+        "chromaticPixels": 66605,
+        "chromaticPageCount": 9,
+        "dominantHues": [
+          {
+            "name": "蓝",
+            "share": 0.3973
+          },
+          {
+            "name": "绿",
+            "share": 0.2801
+          },
+          {
+            "name": "红",
+            "share": 0.1228
+          },
+          {
+            "name": "青",
+            "share": 0.0804
+          }
+        ],
+        "dominantQuantizedRgb": [
+          {
+            "hex": "#6080E0",
+            "share": 0.1205
+          },
+          {
+            "hex": "#40C060",
+            "share": 0.0807
+          },
+          {
+            "hex": "#A0C0E0",
+            "share": 0.0499
+          },
+          {
+            "hex": "#4080E0",
+            "share": 0.0352
+          },
+          {
+            "hex": "#80A0E0",
+            "share": 0.0346
+          },
+          {
+            "hex": "#A0C080",
+            "share": 0.0335
+          },
+          {
+            "hex": "#8080C0",
+            "share": 0.032
+          },
+          {
+            "hex": "#E0A0A0",
+            "share": 0.0291
+          }
+        ],
+        "topColorPages": [
+          {
+            "page": 10,
+            "chromaticRatio": 0.082924
+          },
+          {
+            "page": 19,
+            "chromaticRatio": 0.064353
+          },
+          {
+            "page": 4,
+            "chromaticRatio": 0.054862
+          }
+        ],
+        "metricBoundary": "低分辨率栅格像素统计仅用于定位彩色页面；照片、地图、校徽和抗锯齿均可能影响占比，配色质量必须回看原页。"
+      }
+    },
+    {
+      "paperId": "huashu-2025-C-1-1b42e06e",
+      "edition": 6,
+      "editionLabel": "第六届",
+      "problem": "C",
+      "paperNumber": 1,
+      "year": 2025,
+      "title": "可调控生物节律的 LED 光源优化与验证",
+      "titleEvidence": "pdf-text-layer",
+      "source": "第六届/C1/paper-1b42e06e8089.pdf",
+      "sha256": "1b42e06e808954b17ce4d941596d5e79bfc6162dbf2a01413ccbfc40759edb05",
+      "pages": 46,
+      "characters": 36083,
+      "extraction": "text-layer",
+      "methodFamilies": {
+        "光学、光谱与色度": [
+          "反射率",
+          "光谱功率分布",
+          "CIE 1931",
+          "TM-30",
+          "mel-DER",
+          "三刺激值",
+          "色差"
+        ],
+        "机器人、几何与坐标": [
+          "欧氏距离"
+        ],
+        "多指标综合评价": [
+          "综合评价"
+        ],
+        "统计推断与回归": [
+          "Friedman",
+          "Wilcoxon",
+          "效应量",
+          "相关系数"
+        ],
+        "连续、整数与多目标规划": [
+          "多目标优化",
+          "Minimize"
+        ],
+        "随机与群智能优化": [
+          "模拟退火",
+          "随机重启"
+        ]
+      },
+      "methodPages": {
+        "光学、光谱与色度": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "机器人、几何与坐标": [
+          7,
+          11
+        ],
+        "多指标综合评价": [
+          4
+        ],
+        "统计推断与回归": [
+          1,
+          3,
+          18,
+          19,
+          20,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35
+        ],
+        "连续、整数与多目标规划": [
+          1,
+          2,
+          21,
+          23,
+          37,
+          43,
+          44
+        ],
+        "随机与群智能优化": [
+          1,
+          2,
+          13,
+          15,
+          21,
+          23,
+          37,
+          42,
+          43,
+          44
+        ]
+      },
+      "validationSignals": {
+        "误差、残差或实测对照": [
+          "残差"
+        ],
+        "数值或算法收敛": [
+          "收敛曲线",
+          "步长"
+        ],
+        "灵敏度与鲁棒性": [
+          "灵敏度分析",
+          "扰动"
+        ],
+        "随机重复": [
+          "随机重启"
+        ],
+        "统计显著性与效应量": [
+          "p 值",
+          "P 值",
+          "显著性",
+          "效应量"
+        ],
+        "约束或可行性复核": [
+          "约束条件"
+        ]
+      },
+      "validationPages": {
+        "误差、残差或实测对照": [
+          25
+        ],
+        "数值或算法收敛": [
+          28,
+          42
+        ],
+        "灵敏度与鲁棒性": [
+          18,
+          19,
+          21
+        ],
+        "随机重复": [
+          1,
+          2,
+          21,
+          23,
+          42
+        ],
+        "统计显著性与效应量": [
+          1,
+          3,
+          30,
+          31,
+          32,
+          33,
+          35,
+          36,
+          37,
+          39
+        ],
+        "约束或可行性复核": [
+          2,
+          14,
+          15,
+          16,
+          23
+        ]
+      },
+      "abstractCharacters": 1334,
+      "sections": [
+        "摘要",
+        "关键词",
+        "问题重述",
+        "问题分析",
+        "模型假设",
+        "符号说明",
+        "模型建立",
+        "模型求解",
+        "误差或灵敏度",
+        "模型评价",
+        "参考文献",
+        "附录"
+      ],
+      "sectionPages": {
+        "摘要": 1,
+        "关键词": 1,
+        "附录": 1,
+        "问题重述": 2,
+        "问题分析": 2,
+        "模型假设": 3,
+        "符号说明": 3,
+        "模型建立": 4,
+        "模型求解": 9,
+        "误差或灵敏度": 18,
+        "模型评价": 37,
+        "参考文献": 38
+      },
+      "writingMarkers": {
+        "逐问映射": 4,
+        "顺序衔接": 16,
+        "因果解释": 8,
+        "图表解读": 3,
+        "结果落地": 13,
+        "跨问复用": 0,
+        "限制评价": 0
+      },
+      "figureCaptions": 27,
+      "tableCaptions": 0,
+      "informativeFigureCaptions": 27,
+      "informativeTableCaptions": 0,
+      "captionSamples": [
+        {
+          "kind": "图",
+          "label": "1",
+          "title": "性能参数关系",
+          "page": 4
+        },
+        {
+          "kind": "图",
+          "label": "2",
+          "title": "Duv的正负示意图",
+          "page": 5
+        },
+        {
+          "kind": "图",
+          "label": "3",
+          "title": "LED 测试光源和标准光源的相对光谱功率",
+          "page": 9
+        },
+        {
+          "kind": "图",
+          "label": "4",
+          "title": "IES TM-30-18 标准图",
+          "page": 10
+        },
+        {
+          "kind": "图",
+          "label": "5",
+          "title": "普朗克色度轨迹",
+          "page": 11
+        },
+        {
+          "kind": "图",
+          "label": "6",
+          "title": "LED 测试光源和标准光源对比图",
+          "page": 11
+        },
+        {
+          "kind": "图",
+          "label": "7",
+          "title": "光谱加权函数和 LED 光源的 SPD 的相对图",
+          "page": 12
+        },
+        {
+          "kind": "图",
+          "label": "8",
+          "title": "合成光谱的各通道贡献率占比图",
+          "page": 17
+        },
+        {
+          "kind": "图",
+          "label": "9",
+          "title": "五通道光源的权重演化图",
+          "page": 17
+        },
+        {
+          "kind": "图",
+          "label": "10",
+          "title": "合成光谱的相对光谱功率",
+          "page": 18
+        },
+        {
+          "kind": "图",
+          "label": "11",
+          "title": "日间环境 Rf 的灵敏度分析",
+          "page": 18
+        },
+        {
+          "kind": "图",
+          "label": "12",
+          "title": "合成光谱的各通道贡献率占比图",
+          "page": 19
+        },
+        {
+          "kind": "图",
+          "label": "13",
+          "title": "五通道光源的权重演化图",
+          "page": 20
+        },
+        {
+          "kind": "图",
+          "label": "14",
+          "title": "合成光谱的相对光谱功率",
+          "page": 20
+        },
+        {
+          "kind": "图",
+          "label": "15",
+          "title": "夜间环境 mel-DER 的灵敏度分析",
+          "page": 21
+        },
+        {
+          "kind": "图",
+          "label": "16",
+          "title": "太阳光谱和合成光谱归一化曲线图",
+          "page": 24
+        },
+        {
+          "kind": "图",
+          "label": "17",
+          "title": "拟合 LED SPD 曲面图 图 18 目标太阳 SPD 曲面图",
+          "page": 25
+        },
+        {
+          "kind": "图",
+          "label": "19",
+          "title": "残差热对比图",
+          "page": 25
+        },
+        {
+          "kind": "图",
+          "label": "20",
+          "title": "五个参数随时间对比图",
+          "page": 27
+        },
+        {
+          "kind": "图",
+          "label": "21",
+          "title": "LED 权重变化图 图 22 指标-通道权重相关关系热图",
+          "page": 27
+        },
+        {
+          "kind": "图",
+          "label": "23",
+          "title": "重启动优化收敛曲线图",
+          "page": 28
+        },
+        {
+          "kind": "图",
+          "label": "24",
+          "title": "权重分配过程示意图",
+          "page": 28
+        },
+        {
+          "kind": "图",
+          "label": "25",
+          "title": "问题四解题流程图",
+          "page": 29
+        },
+        {
+          "kind": "图",
+          "label": "26",
+          "title": "不同夜间环境各睡眠参数比较图",
+          "page": 33
+        },
+        {
+          "kind": "图",
+          "label": "27",
+          "title": "Shapiro-Wilk 正态性检验点阵图",
+          "page": 34
+        },
+        {
+          "kind": "图",
+          "label": "28",
+          "title": "整体检验 p 值热力图",
+          "page": 35
+        },
+        {
+          "kind": "图",
+          "label": "29",
+          "title": "事后比较 p 值热力图",
+          "page": 36
+        }
+      ],
+      "mainBodyEndPage": 37,
+      "visualProfile": {
+        "status": "ok",
+        "eligiblePageCount": 36,
+        "chromaticPixels": 66869,
+        "chromaticPageCount": 18,
+        "dominantHues": [
+          {
+            "name": "红",
+            "share": 0.3556
+          },
+          {
+            "name": "蓝",
+            "share": 0.1944
+          },
+          {
+            "name": "橙",
+            "share": 0.1281
+          },
+          {
+            "name": "品红",
+            "share": 0.1073
+          }
+        ],
+        "dominantQuantizedRgb": [
+          {
+            "hex": "#E06040",
+            "share": 0.1048
+          },
+          {
+            "hex": "#E0C0A0",
+            "share": 0.055
+          },
+          {
+            "hex": "#C02020",
+            "share": 0.045
+          },
+          {
+            "hex": "#A0C0E0",
+            "share": 0.0362
+          },
+          {
+            "hex": "#E0A080",
+            "share": 0.0351
+          },
+          {
+            "hex": "#C0C0E0",
+            "share": 0.0319
+          },
+          {
+            "hex": "#A00020",
+            "share": 0.0295
+          },
+          {
+            "hex": "#A02060",
+            "share": 0.0236
+          }
+        ],
+        "topColorPages": [
+          {
+            "page": 25,
+            "chromaticRatio": 0.094657
+          },
+          {
+            "page": 36,
+            "chromaticRatio": 0.08663
+          },
+          {
+            "page": 35,
+            "chromaticRatio": 0.044237
+          }
+        ],
+        "metricBoundary": "低分辨率栅格像素统计仅用于定位彩色页面；照片、地图、校徽和抗锯齿均可能影响占比，配色质量必须回看原页。"
+      }
+    },
+    {
+      "paperId": "huashu-2025-C-2-0238e208",
+      "edition": 6,
+      "editionLabel": "第六届",
+      "problem": "C",
+      "paperNumber": 2,
+      "year": 2025,
+      "title": "基于差分进化的动态生物节律 LED 照明系统研究",
+      "titleEvidence": "pdf-text-layer",
+      "source": "第六届/C2/paper-0238e2086cf7.pdf",
+      "sha256": "0238e2086cf76be4b9ad8ea8f2022ba15ef28832ffe5bac044422db435b35c37",
+      "pages": 39,
+      "characters": 52981,
+      "extraction": "text-layer",
+      "methodFamilies": {
+        "光学、光谱与色度": [
+          "反射率",
+          "光谱功率分布",
+          "CIE 1931",
+          "TM-30",
+          "mel-DER",
+          "三刺激值",
+          "色差"
+        ],
+        "机器人、几何与坐标": [
+          "欧氏距离"
+        ],
+        "统计推断与回归": [
+          "方差分析"
+        ],
+        "连续、整数与多目标规划": [
+          "多目标优化"
+        ],
+        "随机与群智能优化": [
+          "差分进化"
+        ]
+      },
+      "methodPages": {
+        "光学、光谱与色度": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          7,
+          8,
+          9,
+          10,
+          11,
+          13,
+          14
+        ],
+        "机器人、几何与坐标": [
+          8
+        ],
+        "统计推断与回归": [
+          1,
+          3,
+          16,
+          17,
+          38
+        ],
+        "连续、整数与多目标规划": [
+          21
+        ],
+        "随机与群智能优化": [
+          1,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          20,
+          21,
+          33,
+          35
+        ]
+      },
+      "validationSignals": {
+        "误差、残差或实测对照": [
+          "均方根误差",
+          "RMSE"
+        ],
+        "数值或算法收敛": [
+          "收敛曲线",
+          "步长",
+          "网格",
+          "迭代次数"
+        ],
+        "灵敏度与鲁棒性": [
+          "灵敏度分析",
+          "鲁棒性",
+          "扰动"
+        ],
+        "统计显著性与效应量": [
+          "显著性",
+          "Bonferroni"
+        ],
+        "约束或可行性复核": [
+          "约束条件"
+        ]
+      },
+      "validationPages": {
+        "误差、残差或实测对照": [
+          1,
+          14,
+          15,
+          19,
+          20,
+          32,
+          33,
+          34,
+          35,
+          36
+        ],
+        "数值或算法收敛": [
+          12,
+          13,
+          14,
+          25,
+          26,
+          31,
+          35,
+          39
+        ],
+        "灵敏度与鲁棒性": [
+          11,
+          12,
+          19,
+          31,
+          32,
+          35,
+          36
+        ],
+        "统计显著性与效应量": [
+          1,
+          16,
+          17,
+          18,
+          38
+        ],
+        "约束或可行性复核": [
+          2,
+          11,
+          15,
+          30
+        ]
+      },
+      "abstractCharacters": 1234,
+      "sections": [
+        "摘要",
+        "关键词",
+        "问题重述",
+        "问题分析",
+        "模型假设",
+        "符号说明",
+        "模型建立",
+        "误差或灵敏度",
+        "模型评价",
+        "参考文献",
+        "附录"
+      ],
+      "sectionPages": {
+        "摘要": 1,
+        "关键词": 1,
+        "问题重述": 2,
+        "问题分析": 2,
+        "模型假设": 3,
+        "符号说明": 3,
+        "附录": 3,
+        "模型建立": 4,
+        "误差或灵敏度": 19,
+        "模型评价": 20,
+        "参考文献": 21
+      },
+      "writingMarkers": {
+        "逐问映射": 3,
+        "顺序衔接": 22,
+        "因果解释": 16,
+        "图表解读": 14,
+        "结果落地": 13,
+        "跨问复用": 0,
+        "限制评价": 3
+      },
+      "figureCaptions": 13,
+      "tableCaptions": 6,
+      "informativeFigureCaptions": 13,
+      "informativeTableCaptions": 6,
+      "captionSamples": [
+        {
+          "kind": "表",
+          "label": "5-1",
+          "title": "处理后数据样例",
+          "page": 4
+        },
+        {
+          "kind": "图",
+          "label": "5-1",
+          "title": "光谱数据曲线",
+          "page": 4
+        },
+        {
+          "kind": "表",
+          "label": "5-2",
+          "title": "三刺激值和色品坐标",
+          "page": 5
+        },
+        {
+          "kind": "图",
+          "label": "5-2",
+          "title": "CIE 1976 UCS 色度图",
+          "page": 7
+        },
+        {
+          "kind": "表",
+          "label": "5-3",
+          "title": "三刺激值和色品坐标",
+          "page": 10
+        },
+        {
+          "kind": "图",
+          "label": "5-3",
+          "title": "五个 LED 通道的光谱功率分布曲线",
+          "page": 10
+        },
+        {
+          "kind": "表",
+          "label": "5-4",
+          "title": "差分进化算法参数说明表",
+          "page": 12
+        },
+        {
+          "kind": "图",
+          "label": "5-4",
+          "title": "日间照明模式",
+          "page": 13
+        },
+        {
+          "kind": "图",
+          "label": "5-5",
+          "title": "夜间助眠模式",
+          "page": 13
+        },
+        {
+          "kind": "图",
+          "label": "5-6",
+          "title": "两种场景下差分进化算法的适应度收敛曲线",
+          "page": 13
+        },
+        {
+          "kind": "图",
+          "label": "5-7",
+          "title": "所有时刻的光谱功率分布",
+          "page": 14
+        },
+        {
+          "kind": "图",
+          "label": "5-8",
+          "title": "计算结果动态模拟控制结果",
+          "page": 15
+        },
+        {
+          "kind": "表",
+          "label": "5-5",
+          "title": "部分睡眠指标计算结果",
+          "page": 16
+        },
+        {
+          "kind": "表",
+          "label": "5-6",
+          "title": "三种光照环境下各睡眠指标检验结果",
+          "page": 17
+        },
+        {
+          "kind": "图",
+          "label": "5-9",
+          "title": "所示，对于总睡眠时间和睡眠效率，三个环境下的数据分布高度重叠，未显",
+          "page": 17
+        },
+        {
+          "kind": "图",
+          "label": "5-10",
+          "title": "睡眠结构与连续性指标",
+          "page": 18
+        },
+        {
+          "kind": "图",
+          "label": "5-11",
+          "title": "深睡眠比例",
+          "page": 18
+        },
+        {
+          "kind": "图",
+          "label": "5-12",
+          "title": "日间模式灵敏度分析",
+          "page": 19
+        },
+        {
+          "kind": "图",
+          "label": "5-13",
+          "title": "各通道对模拟傍晚光谱的贡献",
+          "page": 19
+        }
+      ],
+      "mainBodyEndPage": 39,
+      "visualProfile": {
+        "status": "ok",
+        "eligiblePageCount": 38,
+        "chromaticPixels": 61854,
+        "chromaticPageCount": 26,
+        "dominantHues": [
+          {
+            "name": "绿",
+            "share": 0.4458
+          },
+          {
+            "name": "蓝",
+            "share": 0.2151
+          },
+          {
+            "name": "青",
+            "share": 0.1203
+          },
+          {
+            "name": "橙",
+            "share": 0.0803
+          }
+        ],
+        "dominantQuantizedRgb": [
+          {
+            "hex": "#A0C0A0",
+            "share": 0.1511
+          },
+          {
+            "hex": "#80C080",
+            "share": 0.1022
+          },
+          {
+            "hex": "#A0C0C0",
+            "share": 0.0657
+          },
+          {
+            "hex": "#80A0C0",
+            "share": 0.0613
+          },
+          {
+            "hex": "#80C0C0",
+            "share": 0.0584
+          },
+          {
+            "hex": "#E08060",
+            "share": 0.0363
+          },
+          {
+            "hex": "#A0C0E0",
+            "share": 0.0317
+          },
+          {
+            "hex": "#A0C060",
+            "share": 0.0256
+          }
+        ],
+        "topColorPages": [
+          {
+            "page": 13,
+            "chromaticRatio": 0.058573
+          },
+          {
+            "page": 19,
+            "chromaticRatio": 0.038289
+          },
+          {
+            "page": 18,
+            "chromaticRatio": 0.03753
+          }
+        ],
+        "metricBoundary": "低分辨率栅格像素统计仅用于定位彩色页面；照片、地图、校徽和抗锯齿均可能影响占比，配色质量必须回看原页。"
+      }
+    },
+    {
+      "paperId": "huashu-2023-A-1-94711f73",
+      "edition": 4,
+      "editionLabel": "第四届",
+      "problem": "A",
+      "paperNumber": 1,
+      "year": 2023,
+      "title": "数值模拟在隔热结构上的应用",
+      "titleEvidence": "pdf-text-layer",
+      "source": "第四届/A1/paper-94711f73c03f.pdf",
+      "sha256": "94711f73c03f7fcc3aa113697d1be295affb363ff975b2ffab3af0b01bb605b0",
+      "pages": 34,
+      "characters": 24999,
+      "extraction": "text-layer",
+      "methodFamilies": {
+        "传热与多物理机理": [
+          "热传导方程",
+          "有限差分",
+          "牛顿冷却"
+        ],
+        "连续、整数与多目标规划": [
+          "分层序列"
+        ]
+      },
+      "methodPages": {
+        "传热与多物理机理": [
+          1,
+          3,
+          4,
+          5,
+          6,
+          7,
+          9,
+          10,
+          11,
+          13,
+          14,
+          15
+        ],
+        "连续、整数与多目标规划": [
+          1,
+          14,
+          17
+        ]
+      },
+      "validationSignals": {
+        "误差、残差或实测对照": [
+          "残差"
+        ],
+        "数值或算法收敛": [
+          "步长"
+        ],
+        "灵敏度与鲁棒性": [
+          "灵敏度分析"
+        ],
+        "约束或可行性复核": [
+          "约束条件"
+        ]
+      },
+      "validationPages": {
+        "误差、残差或实测对照": [
+          1,
+          6
+        ],
+        "数值或算法收敛": [
+          14,
+          15
+        ],
+        "灵敏度与鲁棒性": [
+          18,
+          26,
+          27
+        ],
+        "约束或可行性复核": [
+          1,
+          3,
+          10,
+          13,
+          14,
+          16,
+          17,
+          18
+        ]
+      },
+      "abstractCharacters": 932,
+      "sections": [
+        "摘要",
+        "关键词",
+        "问题重述",
+        "问题分析",
+        "模型假设",
+        "符号说明",
+        "模型建立",
+        "模型求解",
+        "误差或灵敏度",
+        "模型评价",
+        "参考文献"
+      ],
+      "sectionPages": {
+        "摘要": 1,
+        "关键词": 1,
+        "模型建立": 1,
+        "模型求解": 1,
+        "问题重述": 2,
+        "问题分析": 2,
+        "模型假设": 3,
+        "符号说明": 3,
+        "误差或灵敏度": 18,
+        "模型评价": 18,
+        "参考文献": 19
+      },
+      "writingMarkers": {
+        "逐问映射": 0,
+        "顺序衔接": 21,
+        "因果解释": 30,
+        "图表解读": 5,
+        "结果落地": 5,
+        "跨问复用": 0,
+        "限制评价": 0
+      },
+      "figureCaptions": 7,
+      "tableCaptions": 2,
+      "informativeFigureCaptions": 7,
+      "informativeTableCaptions": 2,
+      "captionSamples": [
+        {
+          "kind": "图",
+          "label": "1",
+          "title": "整体织物坐标图",
+          "page": 6
+        },
+        {
+          "kind": "图",
+          "label": "2",
+          "title": "经向截面图",
+          "page": 8
+        },
+        {
+          "kind": "表",
+          "label": "1",
+          "title": "问题一结果显示表",
+          "page": 12
+        },
+        {
+          "kind": "图",
+          "label": "3",
+          "title": "整体分析下温度分布图",
+          "page": 12
+        },
+        {
+          "kind": "图",
+          "label": "4",
+          "title": "结果热导率下微观分析温度分布图",
+          "page": 12
+        },
+        {
+          "kind": "表",
+          "label": "2",
+          "title": "问题二求解表",
+          "page": 15
+        },
+        {
+          "kind": "图",
+          "label": "5",
+          "title": "经密的灵敏度分析图",
+          "page": 18
+        },
+        {
+          "kind": "图",
+          "label": "8",
+          "title": "问题三整体分析下的温度分布图",
+          "page": 31
+        },
+        {
+          "kind": "图",
+          "label": "9",
+          "title": "问题三微观分析下的温度分析图",
+          "page": 31
+        }
+      ],
+      "mainBodyEndPage": 34,
+      "visualProfile": {
+        "status": "ok",
+        "eligiblePageCount": 33,
+        "chromaticPixels": 48041,
+        "chromaticPageCount": 19,
+        "dominantHues": [
+          {
+            "name": "蓝",
+            "share": 0.5357
+          },
+          {
+            "name": "绿",
+            "share": 0.292
+          },
+          {
+            "name": "青",
+            "share": 0.113
+          },
+          {
+            "name": "黄",
+            "share": 0.0453
+          }
+        ],
+        "dominantQuantizedRgb": [
+          {
+            "hex": "#A0E0A0",
+            "share": 0.1089
+          },
+          {
+            "hex": "#80E080",
+            "share": 0.1087
+          },
+          {
+            "hex": "#2020A0",
+            "share": 0.0642
+          },
+          {
+            "hex": "#A0A0E0",
+            "share": 0.0474
+          },
+          {
+            "hex": "#40A0C0",
+            "share": 0.042
+          },
+          {
+            "hex": "#6060C0",
+            "share": 0.0341
+          },
+          {
+            "hex": "#2080E0",
+            "share": 0.0334
+          },
+          {
+            "hex": "#C0C0E0",
+            "share": 0.0307
+          }
+        ],
+        "topColorPages": [
+          {
+            "page": 31,
+            "chromaticRatio": 0.134092
+          },
+          {
+            "page": 12,
+            "chromaticRatio": 0.02768
+          },
+          {
+            "page": 26,
+            "chromaticRatio": 0.011313
+          }
+        ],
+        "metricBoundary": "低分辨率栅格像素统计仅用于定位彩色页面；照片、地图、校徽和抗锯齿均可能影响占比，配色质量必须回看原页。"
+      },
+      "yearInference": "同届其他论文首页年份的多数值"
+    },
+    {
+      "paperId": "huashu-2023-A-2-d2ca26b8",
+      "edition": 4,
+      "editionLabel": "第四届",
+      "problem": "A",
+      "paperNumber": 2,
+      "year": 2023,
+      "title": "隔热材料的结构优化控制设计",
+      "titleEvidence": "pdf-text-layer",
+      "source": "第四届/A2/paper-d2ca26b84b09.pdf",
+      "sha256": "d2ca26b84b093a29b5aba738221f8c804373747a0887b9ca6ada66a1f1fd38ca",
+      "pages": 38,
+      "characters": 28521,
+      "extraction": "text-layer",
+      "methodFamilies": {
+        "传热与多物理机理": [
+          "热传导方程"
+        ]
+      },
+      "methodPages": {
+        "传热与多物理机理": [
+          1,
+          2,
+          3,
+          4,
+          6,
+          9,
+          16
+        ]
+      },
+      "validationSignals": {
+        "数值或算法收敛": [
+          "步长",
+          "网格"
+        ],
+        "约束或可行性复核": [
+          "约束条件",
+          "模型检验"
+        ]
+      },
+      "validationPages": {
+        "数值或算法收敛": [
+          8,
+          25,
+          31
+        ],
+        "约束或可行性复核": [
+          19,
+          36,
+          37
+        ]
+      },
+      "abstractCharacters": 1090,
+      "sections": [
+        "摘要",
+        "关键词",
+        "问题重述",
+        "问题分析",
+        "模型假设",
+        "符号说明",
+        "模型建立",
+        "模型评价",
+        "参考文献",
+        "附录"
+      ],
+      "sectionPages": {
+        "摘要": 1,
+        "关键词": 1,
+        "问题重述": 2,
+        "问题分析": 2,
+        "模型假设": 4,
+        "符号说明": 5,
+        "模型建立": 6,
+        "模型评价": 19,
+        "参考文献": 21,
+        "附录": 22
+      },
+      "writingMarkers": {
+        "逐问映射": 5,
+        "顺序衔接": 30,
+        "因果解释": 5,
+        "图表解读": 0,
+        "结果落地": 2,
+        "跨问复用": 3,
+        "限制评价": 0
+      },
+      "figureCaptions": 22,
+      "tableCaptions": 0,
+      "informativeFigureCaptions": 22,
+      "informativeTableCaptions": 0,
+      "captionSamples": [
+        {
+          "kind": "图",
+          "label": "2.1",
+          "title": "问题总体思路图",
+          "page": 4
+        },
+        {
+          "kind": "图",
+          "label": "5.1",
+          "title": "问题一思路框架图",
+          "page": 6
+        },
+        {
+          "kind": "图",
+          "label": "5.2",
+          "title": "D2Q9 离散速度矢量图",
+          "page": 7
+        },
+        {
+          "kind": "图",
+          "label": "5.3",
+          "title": "织物表面温度场仿真图",
+          "page": 8
+        },
+        {
+          "kind": "图",
+          "label": "5.4",
+          "title": "基于 LBM 第二类边界条件设置示意图",
+          "page": 8
+        },
+        {
+          "kind": "图",
+          "label": "5.5",
+          "title": "织物整体传热仿真图",
+          "page": 9
+        },
+        {
+          "kind": "图",
+          "label": "5.6",
+          "title": "单根A 纤维参数分析图",
+          "page": 10
+        },
+        {
+          "kind": "图",
+          "label": "5.7",
+          "title": "单根A 纤维长度估计仿真图",
+          "page": 10
+        },
+        {
+          "kind": "图",
+          "label": "5.8",
+          "title": "单根A 纤维温度变化仿真图",
+          "page": 11
+        },
+        {
+          "kind": "图",
+          "label": "5.9",
+          "title": "织物整体、单根 A 纤维和空气热导率柱形图",
+          "page": 11
+        },
+        {
+          "kind": "图",
+          "label": "5.10",
+          "title": "问题二（1）思路框架图",
+          "page": 11
+        },
+        {
+          "kind": "图",
+          "label": "5.11",
+          "title": "厚度与克罗值的关系曲线仿真图",
+          "page": 12
+        },
+        {
+          "kind": "图",
+          "label": "5.12",
+          "title": "透气量—克罗值拟合曲线仿真图",
+          "page": 12
+        },
+        {
+          "kind": "图",
+          "label": "5.13",
+          "title": "透气量—织物覆盖系数拟合曲线仿真图",
+          "page": 13
+        },
+        {
+          "kind": "图",
+          "label": "5.14",
+          "title": "单目标优化模型迭代过程图",
+          "page": 14
+        },
+        {
+          "kind": "图",
+          "label": "5.15",
+          "title": "考虑对流换热织物结构仿真图",
+          "page": 14
+        },
+        {
+          "kind": "图",
+          "label": "5.16",
+          "title": "对流换热中 Nu 数变化仿真图",
+          "page": 15
+        },
+        {
+          "kind": "图",
+          "label": "5.17",
+          "title": "气体传热中Ra 数和Pr 数变化仿真图",
+          "page": 15
+        },
+        {
+          "kind": "图",
+          "label": "5.18",
+          "title": "纤维内部温度分布仿真图",
+          "page": 16
+        },
+        {
+          "kind": "图",
+          "label": "5.19",
+          "title": "织物结构参数对热传导率的影响仿真图",
+          "page": 18
+        },
+        {
+          "kind": "图",
+          "label": "6.1",
+          "title": "空气热导率随温度变化仿真图",
+          "page": 18
+        },
+        {
+          "kind": "图",
+          "label": "6.2",
+          "title": "织物整体热导率—温度仿真图",
+          "page": 19
+        }
+      ],
+      "mainBodyEndPage": 21,
+      "visualProfile": {
+        "status": "ok",
+        "eligiblePageCount": 20,
+        "chromaticPixels": 56977,
+        "chromaticPageCount": 7,
+        "dominantHues": [
+          {
+            "name": "蓝",
+            "share": 0.7775
+          },
+          {
+            "name": "橙",
+            "share": 0.0582
+          },
+          {
+            "name": "红",
+            "share": 0.0533
+          },
+          {
+            "name": "黄",
+            "share": 0.0435
+          }
+        ],
+        "dominantQuantizedRgb": [
+          {
+            "hex": "#2020A0",
+            "share": 0.297
+          },
+          {
+            "hex": "#0060A0",
+            "share": 0.1143
+          },
+          {
+            "hex": "#4020C0",
+            "share": 0.1122
+          },
+          {
+            "hex": "#4020A0",
+            "share": 0.0522
+          },
+          {
+            "hex": "#E0C0C0",
+            "share": 0.0496
+          },
+          {
+            "hex": "#600000",
+            "share": 0.0388
+          },
+          {
+            "hex": "#808000",
+            "share": 0.0341
+          },
+          {
+            "hex": "#000020",
+            "share": 0.033
+          }
+        ],
+        "topColorPages": [
+          {
+            "page": 9,
+            "chromaticRatio": 0.172888
+          },
+          {
+            "page": 8,
+            "chromaticRatio": 0.044717
+          },
+          {
+            "page": 11,
+            "chromaticRatio": 0.039664
+          }
+        ],
+        "metricBoundary": "低分辨率栅格像素统计仅用于定位彩色页面；照片、地图、校徽和抗锯齿均可能影响占比，配色质量必须回看原页。"
+      }
+    },
+    {
+      "paperId": "huashu-2023-B-1-2fdf6dc1",
+      "edition": 4,
+      "editionLabel": "第四届",
+      "problem": "B",
+      "paperNumber": 1,
+      "year": 2023,
+      "title": "不透明制品最优配色方案设计",
+      "titleEvidence": "pdf-text-layer",
+      "source": "第四届/B1/paper-2fdf6dc1bdee.pdf",
+      "sha256": "2fdf6dc1bdee080a068b931a61ae056a221299f1243c30f740d4dbb9b10cc95c",
+      "pages": 34,
+      "characters": 30894,
+      "extraction": "text-layer",
+      "methodFamilies": {
+        "光学、光谱与色度": [
+          "反射率",
+          "三刺激值",
+          "色差"
+        ],
+        "连续、整数与多目标规划": [
+          "多目标优化"
+        ],
+        "随机与群智能优化": [
+          "蒙特卡洛"
+        ],
+        "仿真、调度与资源分配": [
+          "蒙特卡洛模拟"
+        ]
+      },
+      "methodPages": {
+        "光学、光谱与色度": [
+          1,
+          2,
+          3,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "连续、整数与多目标规划": [
+          1,
+          2,
+          3,
+          12,
+          13,
+          14,
+          15
+        ],
+        "随机与群智能优化": [
+          1,
+          2,
+          6,
+          8,
+          9,
+          10,
+          11,
+          13,
+          15,
+          25,
+          28,
+          30
+        ],
+        "仿真、调度与资源分配": [
+          8,
+          9,
+          11,
+          15,
+          25,
+          28,
+          30
+        ]
+      },
+      "validationSignals": {
+        "误差、残差或实测对照": [
+          "残差"
+        ],
+        "灵敏度与鲁棒性": [
+          "灵敏度分析",
+          "稳健性",
+          "扰动"
+        ],
+        "约束或可行性复核": [
+          "约束条件"
+        ]
+      },
+      "validationPages": {
+        "误差、残差或实测对照": [
+          3,
+          4
+        ],
+        "灵敏度与鲁棒性": [
+          1,
+          14,
+          15,
+          33
+        ],
+        "约束或可行性复核": [
+          1,
+          2,
+          9,
+          10,
+          12
+        ]
+      },
+      "abstractCharacters": 1166,
+      "sections": [
+        "摘要",
+        "关键词",
+        "问题重述",
+        "问题分析",
+        "模型假设",
+        "符号说明",
+        "模型建立",
+        "模型求解",
+        "误差或灵敏度",
+        "模型评价",
+        "参考文献",
+        "附录"
+      ],
+      "sectionPages": {
+        "摘要": 1,
+        "关键词": 1,
+        "误差或灵敏度": 1,
+        "问题重述": 2,
+        "问题分析": 2,
+        "模型假设": 3,
+        "符号说明": 3,
+        "模型建立": 3,
+        "附录": 5,
+        "模型求解": 6,
+        "模型评价": 15,
+        "参考文献": 16
+      },
+      "writingMarkers": {
+        "逐问映射": 3,
+        "顺序衔接": 10,
+        "因果解释": 9,
+        "图表解读": 3,
+        "结果落地": 4,
+        "跨问复用": 0,
+        "限制评价": 1
+      },
+      "figureCaptions": 5,
+      "tableCaptions": 5,
+      "informativeFigureCaptions": 5,
+      "informativeTableCaptions": 5,
+      "captionSamples": [
+        {
+          "kind": "表",
+          "label": "1",
+          "title": "红色着色剂在不同波长下 K/S 值与浓度之间的关系式与拟合系数",
+          "page": 5
+        },
+        {
+          "kind": "图",
+          "label": "1",
+          "title": "CIELAB 表色系统示意图",
+          "page": 6
+        },
+        {
+          "kind": "图",
+          "label": "2",
+          "title": "色差计算流程图",
+          "page": 7
+        },
+        {
+          "kind": "图",
+          "label": "3",
+          "title": "蒙特卡洛结果图示",
+          "page": 8
+        },
+        {
+          "kind": "表",
+          "label": "2",
+          "title": "10 个样本的部分配色方案",
+          "page": 9
+        },
+        {
+          "kind": "表",
+          "label": "3",
+          "title": "10 个样本的部分配色方案（考虑成本控制）",
+          "page": 11
+        },
+        {
+          "kind": "表",
+          "label": "4",
+          "title": "着色剂模型求解伪代码",
+          "page": 13
+        },
+        {
+          "kind": "表",
+          "label": "5",
+          "title": "前 5 个样本的配色方案",
+          "page": 13
+        },
+        {
+          "kind": "图",
+          "label": "4",
+          "title": "色差值波动趋势",
+          "page": 14
+        },
+        {
+          "kind": "图",
+          "label": "5",
+          "title": "最佳浓度比下色差值波动趋势",
+          "page": 15
+        }
+      ],
+      "mainBodyEndPage": 34,
+      "visualProfile": {
+        "status": "ok",
+        "eligiblePageCount": 33,
+        "chromaticPixels": 12810,
+        "chromaticPageCount": 7,
+        "dominantHues": [
+          {
+            "name": "蓝",
+            "share": 0.7679
+          },
+          {
+            "name": "紫",
+            "share": 0.1137
+          },
+          {
+            "name": "绿",
+            "share": 0.1114
+          },
+          {
+            "name": "红",
+            "share": 0.0064
+          }
+        ],
+        "dominantQuantizedRgb": [
+          {
+            "hex": "#0060A0",
+            "share": 0.7272
+          },
+          {
+            "hex": "#80A080",
+            "share": 0.1093
+          },
+          {
+            "hex": "#C0A0E0",
+            "share": 0.0519
+          },
+          {
+            "hex": "#C080E0",
+            "share": 0.0419
+          },
+          {
+            "hex": "#E0A0E0",
+            "share": 0.0141
+          },
+          {
+            "hex": "#0060C0",
+            "share": 0.0069
+          },
+          {
+            "hex": "#2080A0",
+            "share": 0.0047
+          },
+          {
+            "hex": "#2080C0",
+            "share": 0.0041
+          }
+        ],
+        "topColorPages": [
+          {
+            "page": 8,
+            "chromaticRatio": 0.053585
+          },
+          {
+            "page": 27,
+            "chromaticRatio": 0.004148
+          },
+          {
+            "page": 29,
+            "chromaticRatio": 0.003253
+          }
+        ],
+        "metricBoundary": "低分辨率栅格像素统计仅用于定位彩色页面；照片、地图、校徽和抗锯齿均可能影响占比，配色质量必须回看原页。"
+      }
+    },
+    {
+      "paperId": "huashu-2023-B-2-8849ac29",
+      "edition": 4,
+      "editionLabel": "第四届",
+      "problem": "B",
+      "paperNumber": 2,
+      "year": 2023,
+      "title": "基于 Kubelka-Munk 光学模型的计算机配色方法设计",
+      "titleEvidence": "pdf-text-layer",
+      "source": "第四届/B2/paper-8849ac294a41.pdf",
+      "sha256": "8849ac294a411b27550159a4eb17cc5aec55e48f30ce696503c504aa8eed6761",
+      "pages": 56,
+      "characters": 52040,
+      "extraction": "text-layer",
+      "methodFamilies": {
+        "传热与多物理机理": [
+          "Kubelka-Munk"
+        ],
+        "光学、光谱与色度": [
+          "反射率",
+          "三刺激值",
+          "Kubelka-Munk",
+          "色差"
+        ],
+        "多指标综合评价": [
+          "TOPSIS",
+          "Topsis",
+          "熵权法"
+        ],
+        "统计推断与回归": [
+          "相关系数"
+        ],
+        "连续、整数与多目标规划": [
+          "线性规划",
+          "非线性规划",
+          "多目标优化",
+          "目标规划",
+          "Minimize"
+        ],
+        "随机与群智能优化": [
+          "遗传算法"
+        ]
+      },
+      "methodPages": {
+        "传热与多物理机理": [
+          1
+        ],
+        "光学、光谱与色度": [
+          1,
+          2,
+          3,
+          4,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          14
+        ],
+        "多指标综合评价": [
+          1,
+          3,
+          13,
+          14,
+          22,
+          32,
+          38,
+          39,
+          40
+        ],
+        "统计推断与回归": [
+          22
+        ],
+        "连续、整数与多目标规划": [
+          1,
+          12,
+          15,
+          20,
+          29,
+          37,
+          41,
+          48
+        ],
+        "随机与群智能优化": [
+          1,
+          3,
+          4,
+          12,
+          15,
+          16,
+          19,
+          22,
+          41,
+          48
+        ]
+      },
+      "validationSignals": {
+        "灵敏度与鲁棒性": [
+          "灵敏度分析"
+        ],
+        "约束或可行性复核": [
+          "约束条件"
+        ]
+      },
+      "validationPages": {
+        "灵敏度与鲁棒性": [
+          6,
+          17
+        ],
+        "约束或可行性复核": [
+          1,
+          8,
+          9,
+          12,
+          13,
+          15
+        ]
+      },
+      "abstractCharacters": 1312,
+      "sections": [
+        "摘要",
+        "关键词",
+        "问题重述",
+        "问题分析",
+        "模型假设",
+        "符号说明",
+        "模型建立",
+        "模型求解",
+        "误差或灵敏度",
+        "模型评价",
+        "参考文献",
+        "附录"
+      ],
+      "sectionPages": {
+        "摘要": 1,
+        "关键词": 1,
+        "模型求解": 1,
+        "问题重述": 2,
+        "模型建立": 2,
+        "问题分析": 3,
+        "模型假设": 3,
+        "符号说明": 4,
+        "误差或灵敏度": 6,
+        "模型评价": 18,
+        "参考文献": 21,
+        "附录": 22
+      },
+      "writingMarkers": {
+        "逐问映射": 3,
+        "顺序衔接": 16,
+        "因果解释": 6,
+        "图表解读": 11,
+        "结果落地": 3,
+        "跨问复用": 0,
+        "限制评价": 3
+      },
+      "figureCaptions": 25,
+      "tableCaptions": 7,
+      "informativeFigureCaptions": 25,
+      "informativeTableCaptions": 7,
+      "captionSamples": [
+        {
+          "kind": "表",
+          "label": "1",
+          "title": "为符号解释说明",
+          "page": 4
+        },
+        {
+          "kind": "图",
+          "label": "1",
+          "title": "三种情况原始数据散点图",
+          "page": 5
+        },
+        {
+          "kind": "图",
+          "label": "2",
+          "title": "三种情况拟合数据图",
+          "page": 5
+        },
+        {
+          "kind": "表",
+          "label": "2",
+          "title": "三种着色剂在不同波长下 𝐾/𝑆 与浓度的关系",
+          "page": 6
+        },
+        {
+          "kind": "图",
+          "label": "3",
+          "title": "问题二算法流程图",
+          "page": 9
+        },
+        {
+          "kind": "图",
+          "label": "4",
+          "title": "目标样本 1、2 对应配方",
+          "page": 10
+        },
+        {
+          "kind": "图",
+          "label": "5",
+          "title": "目标样本 3、4 对应配方",
+          "page": 10
+        },
+        {
+          "kind": "图",
+          "label": "6",
+          "title": "目标样本 5、6 对应配方",
+          "page": 10
+        },
+        {
+          "kind": "图",
+          "label": "7",
+          "title": "目标样本 7、8 对应配方",
+          "page": 11
+        },
+        {
+          "kind": "图",
+          "label": "8",
+          "title": "目标样本 9、10 对应配方",
+          "page": 11
+        },
+        {
+          "kind": "表",
+          "label": "3",
+          "title": "遗传算法求解步骤",
+          "page": 12
+        },
+        {
+          "kind": "图",
+          "label": "9",
+          "title": "目标样本 1、2 对应配方",
+          "page": 12
+        },
+        {
+          "kind": "图",
+          "label": "10",
+          "title": "目标样本 3、4 对应配方",
+          "page": 12
+        },
+        {
+          "kind": "图",
+          "label": "11",
+          "title": "目标样本 5、6 对应配方",
+          "page": 13
+        },
+        {
+          "kind": "图",
+          "label": "12",
+          "title": "目标样本对应配方",
+          "page": 13
+        },
+        {
+          "kind": "表",
+          "label": "4",
+          "title": "求解每一个权值 𝛼 下的十个最优解",
+          "page": 14
+        },
+        {
+          "kind": "表",
+          "label": "5",
+          "title": "TOPSIS 算法求解",
+          "page": 14
+        },
+        {
+          "kind": "图",
+          "label": "13",
+          "title": "算法流程图",
+          "page": 14
+        },
+        {
+          "kind": "图",
+          "label": "14",
+          "title": "目标样本 1、2 对应配方",
+          "page": 15
+        },
+        {
+          "kind": "表",
+          "label": "6",
+          "title": "遗传算法求解步骤",
+          "page": 16
+        },
+        {
+          "kind": "图",
+          "label": "15",
+          "title": "目标样本 1 对应配方",
+          "page": 16
+        },
+        {
+          "kind": "图",
+          "label": "16",
+          "title": "目标样本 2 对应配方",
+          "page": 16
+        },
+        {
+          "kind": "图",
+          "label": "17",
+          "title": "目标样本 3 对应配方",
+          "page": 16
+        },
+        {
+          "kind": "图",
+          "label": "18",
+          "title": "目标样本 4 对应配方",
+          "page": 17
+        },
+        {
+          "kind": "图",
+          "label": "19",
+          "title": "目标样本 5 对应配方",
+          "page": 17
+        },
+        {
+          "kind": "图",
+          "label": "20",
+          "title": "波长 𝜆 在 400𝑛𝑚 − 440𝑛𝑚 时三种着色剂在不同波长下 𝐾/𝑆 与浓度关系的函数曲线图",
+          "page": 17
+        },
+        {
+          "kind": "图",
+          "label": "21",
+          "title": "波长 𝜆 在 520𝑛𝑚 − 560𝑛𝑚 时三种着色剂在不同波长下 𝐾/𝑆 与浓度关系的函数曲线图",
+          "page": 18
+        },
+        {
+          "kind": "图",
+          "label": "22",
+          "title": "波长 𝜆 在 660𝑛𝑚 − 700𝑛𝑚 时三种着色剂在不同波长下 𝐾/𝑆 与浓度关系的函数曲线图",
+          "page": 18
+        },
+        {
+          "kind": "图",
+          "label": "23",
+          "title": "目标样本 9、10 对应配方",
+          "page": 19
+        },
+        {
+          "kind": "图",
+          "label": "24",
+          "title": "红色着色剂在波长 𝜆 为 700𝑛𝑚 时 𝐾/𝑆 与浓度的函数关系",
+          "page": 19
+        },
+        {
+          "kind": "图",
+          "label": "25",
+          "title": "红色着色剂在波长 𝜆 为 700𝑛𝑚 时 𝐾/𝑆 与浓度的二次函数关系",
+          "page": 20
+        },
+        {
+          "kind": "表",
+          "label": "7",
+          "title": "支撑材料列表",
+          "page": 22
+        }
+      ],
+      "mainBodyEndPage": 20,
+      "visualProfile": {
+        "status": "ok",
+        "eligiblePageCount": 19,
+        "chromaticPixels": 5435,
+        "chromaticPageCount": 4,
+        "dominantHues": [
+          {
+            "name": "橙",
+            "share": 0.4015
+          },
+          {
+            "name": "黄",
+            "share": 0.2789
+          },
+          {
+            "name": "红",
+            "share": 0.2307
+          },
+          {
+            "name": "蓝",
+            "share": 0.0859
+          }
+        ],
+        "dominantQuantizedRgb": [
+          {
+            "hex": "#E0E0A0",
+            "share": 0.0902
+          },
+          {
+            "hex": "#E0E080",
+            "share": 0.0618
+          },
+          {
+            "hex": "#E0C080",
+            "share": 0.0521
+          },
+          {
+            "hex": "#E0C060",
+            "share": 0.0495
+          },
+          {
+            "hex": "#E0C0A0",
+            "share": 0.0491
+          },
+          {
+            "hex": "#E0A060",
+            "share": 0.048
+          },
+          {
+            "hex": "#E0E0C0",
+            "share": 0.0475
+          },
+          {
+            "hex": "#E0A080",
+            "share": 0.0368
+          }
+        ],
+        "topColorPages": [
+          {
+            "page": 19,
+            "chromaticRatio": 0.021458
+          },
+          {
+            "page": 18,
+            "chromaticRatio": 0.002734
+          },
+          {
+            "page": 17,
+            "chromaticRatio": 0.00185
+          }
+        ],
+        "metricBoundary": "低分辨率栅格像素统计仅用于定位彩色页面；照片、地图、校徽和抗锯齿均可能影响占比，配色质量必须回看原页。"
+      }
+    },
+    {
+      "paperId": "huashu-2023-C-1-927d487f",
+      "edition": 4,
+      "editionLabel": "第四届",
+      "problem": "C",
+      "paperNumber": 1,
+      "year": 2023,
+      "title": "母亲的身心健康对婴儿身心发展的影响",
+      "titleEvidence": "pdf-text-layer",
+      "source": "第四届/C1/paper-927d487f86a8.pdf",
+      "sha256": "927d487f86a8d9ad9df83e28cfed9043dda57171f295dec5b91c20a0c618f5a3",
+      "pages": 34,
+      "characters": 33234,
+      "extraction": "text-layer",
+      "methodFamilies": {
+        "多指标综合评价": [
+          "主成分分析",
+          "灰色关联"
+        ],
+        "统计推断与回归": [
+          "卡方检验",
+          "Spearman",
+          "斯皮尔曼",
+          "逻辑回归",
+          "相关系数"
+        ],
+        "机器学习": [
+          "随机森林"
+        ],
+        "随机与群智能优化": [
+          "模拟退火"
+        ],
+        "仿真、调度与资源分配": [
+          "资源分配"
+        ]
+      },
+      "methodPages": {
+        "多指标综合评价": [
+          1,
+          4,
+          5,
+          6,
+          7,
+          16,
+          17,
+          18,
+          20,
+          25,
+          27,
+          31
+        ],
+        "统计推断与回归": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          21
+        ],
+        "机器学习": [
+          1,
+          16,
+          18,
+          19,
+          20,
+          21,
+          25,
+          27,
+          31,
+          32
+        ],
+        "随机与群智能优化": [
+          14,
+          22,
+          30
+        ],
+        "仿真、调度与资源分配": [
+          25
+        ]
+      },
+      "validationSignals": {
+        "样本外或交叉验证": [
+          "交叉验证",
+          "训练集",
+          "测试集",
+          "混淆矩阵"
+        ],
+        "数值或算法收敛": [
+          "迭代次数"
+        ],
+        "随机重复": [
+          "置信区间"
+        ],
+        "统计显著性与效应量": [
+          "p 值",
+          "P 值",
+          "显著性",
+          "置信区间"
+        ],
+        "约束或可行性复核": [
+          "约束条件"
+        ]
+      },
+      "validationPages": {
+        "样本外或交叉验证": [
+          3,
+          8,
+          10,
+          16,
+          18,
+          19,
+          33
+        ],
+        "数值或算法收敛": [
+          14,
+          22
+        ],
+        "随机重复": [
+          9
+        ],
+        "统计显著性与效应量": [
+          1,
+          3,
+          6,
+          7,
+          8,
+          9,
+          27
+        ],
+        "约束或可行性复核": [
+          1,
+          2,
+          3,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          21,
+          22
+        ]
+      },
+      "abstractCharacters": 1247,
+      "sections": [
+        "摘要",
+        "关键词",
+        "问题重述",
+        "问题分析",
+        "模型假设",
+        "符号说明",
+        "模型建立",
+        "模型求解",
+        "模型评价",
+        "参考文献",
+        "附录"
+      ],
+      "sectionPages": {
+        "摘要": 1,
+        "关键词": 1,
+        "参考文献": 1,
+        "问题重述": 2,
+        "问题分析": 2,
+        "模型假设": 3,
+        "符号说明": 4,
+        "模型建立": 4,
+        "附录": 7,
+        "模型评价": 8,
+        "模型求解": 21
+      },
+      "writingMarkers": {
+        "逐问映射": 3,
+        "顺序衔接": 46,
+        "因果解释": 31,
+        "图表解读": 15,
+        "结果落地": 34,
+        "跨问复用": 0,
+        "限制评价": 0
+      },
+      "figureCaptions": 21,
+      "tableCaptions": 22,
+      "informativeFigureCaptions": 19,
+      "informativeTableCaptions": 22,
+      "captionSamples": [
+        {
+          "kind": "图",
+          "label": "1",
+          "title": "问题一求解思路图",
+          "page": 5
+        },
+        {
+          "kind": "表",
+          "label": "1",
+          "title": "KMO 与 Bartlett 球形检验表",
+          "page": 6
+        },
+        {
+          "kind": "图",
+          "label": "2",
+          "title": "碎石图",
+          "page": 6
+        },
+        {
+          "kind": "表",
+          "label": "2",
+          "title": "方差解释表",
+          "page": 6
+        },
+        {
+          "kind": "表",
+          "label": "3",
+          "title": "因子载荷系数及得分系数表",
+          "page": 7
+        },
+        {
+          "kind": "表",
+          "label": "4",
+          "title": "显著性检验结果表",
+          "page": 7
+        },
+        {
+          "kind": "图",
+          "label": "3",
+          "title": "相关系数矩阵热力图",
+          "page": 8
+        },
+        {
+          "kind": "表",
+          "label": "5",
+          "title": "有序分类因变量分布表",
+          "page": 9
+        },
+        {
+          "kind": "表",
+          "label": "6",
+          "title": "有序逻辑回归结果表",
+          "page": 9
+        },
+        {
+          "kind": "表",
+          "label": "7",
+          "title": "因变量分类阈值表",
+          "page": 9
+        },
+        {
+          "kind": "图",
+          "label": "4",
+          "title": "有序逻辑回归分类混淆矩阵热力图",
+          "page": 10
+        },
+        {
+          "kind": "表",
+          "label": "8",
+          "title": "问题一分类结果表",
+          "page": 10
+        },
+        {
+          "kind": "图",
+          "label": "5",
+          "title": "问题三思路流程图",
+          "page": 11
+        },
+        {
+          "kind": "表",
+          "label": "9",
+          "title": "每种患病程度变化率与治疗费用关系系数表",
+          "page": 11
+        },
+        {
+          "kind": "图",
+          "label": "6",
+          "title": "三种病状治疗费用与患病程度变化率函数比较图",
+          "page": 11
+        },
+        {
+          "kind": "表",
+          "label": "10",
+          "title": "每种婴儿行为特征对应的 3 种心理指标边界表",
+          "page": 12
+        },
+        {
+          "kind": "图",
+          "label": "7",
+          "title": "婴儿行为特征变为中等型优化模型迭代求解过程图",
+          "page": 14
+        },
+        {
+          "kind": "表",
+          "label": "11",
+          "title": "婴儿行为特征变为中等型治疗费用最少结果数据表",
+          "page": 14
+        },
+        {
+          "kind": "图",
+          "label": "8",
+          "title": "婴儿行为特征变为安静型优化模型迭代求解过程图",
+          "page": 15
+        },
+        {
+          "kind": "表",
+          "label": "12",
+          "title": "婴儿行为特征变为安静型治疗费用最少结果数据表",
+          "page": 15
+        },
+        {
+          "kind": "图",
+          "label": "9",
+          "title": "单目标最值优化模型的灵敏度检验图",
+          "page": 16
+        },
+        {
+          "kind": "表",
+          "label": "13",
+          "title": "灰色关联度得分分类表",
+          "page": 18
+        },
+        {
+          "kind": "表",
+          "label": "14",
+          "title": "随机森林模型参数表",
+          "page": 18
+        },
+        {
+          "kind": "图",
+          "label": "10",
+          "title": "随机森林模型特征重要性图",
+          "page": 19
+        },
+        {
+          "kind": "图",
+          "label": "11",
+          "title": "混淆矩阵热力图",
+          "page": 19
+        },
+        {
+          "kind": "图",
+          "label": "12",
+          "title": "ROC 曲线图",
+          "page": 20
+        },
+        {
+          "kind": "图",
+          "label": "13",
+          "title": "带外错误率图",
+          "page": 20
+        },
+        {
+          "kind": "表",
+          "label": "15",
+          "title": "问题四分类结果表",
+          "page": 21
+        },
+        {
+          "kind": "图",
+          "label": "14",
+          "title": "问题五思路流程图",
+          "page": 21
+        },
+        {
+          "kind": "表",
+          "label": "16",
+          "title": "婴儿综合睡眠质量为优对应的 3 种心理指标边界表",
+          "page": 21
+        },
+        {
+          "kind": "图",
+          "label": "15",
+          "title": "中等型特征+优质睡眠质量优化模型迭代求解过程图",
+          "page": 23
+        },
+        {
+          "kind": "表",
+          "label": "17",
+          "title": "中等型特征+优质睡眠质量治疗费用最少结果数据表",
+          "page": 23
+        },
+        {
+          "kind": "图",
+          "label": "16",
+          "title": "安静型特征+优质睡眠质量优化模型迭代求解过程图",
+          "page": 23
+        },
+        {
+          "kind": "表",
+          "label": "18",
+          "title": "安静型特征+优质睡眠质量治疗费用最少结果数据表",
+          "page": 24
+        },
+        {
+          "kind": "图",
+          "label": "17",
+          "title": "单目标最值优化模型的灵敏度检验图",
+          "page": 24
+        },
+        {
+          "kind": "表",
+          "label": "19",
+          "title": "KMO 检验和 Bartlett 检验表",
+          "page": 27
+        },
+        {
+          "kind": "表",
+          "label": "20",
+          "title": "方差解释表",
+          "page": 27
+        },
+        {
+          "kind": "表",
+          "label": "21",
+          "title": "因子载荷系数及得分系数表",
+          "page": 27
+        },
+        {
+          "kind": "图",
+          "label": "18",
+          "title": "碎石图",
+          "page": 28
+        },
+        {
+          "kind": "表",
+          "label": "22",
+          "title": "正态性检验表",
+          "page": 28
+        },
+        {
+          "kind": "图",
+          "label": "19",
+          "title": "正态性检验直方图",
+          "page": 29
+        },
+        {
+          "kind": "图",
+          "label": "20",
+          "title": "正态性检验 P-P 图",
+          "page": 30
+        },
+        {
+          "kind": "图",
+          "label": "21",
+          "title": "随机森林分类树图",
+          "page": 32
+        }
+      ],
+      "mainBodyEndPage": 34,
+      "visualProfile": {
+        "status": "ok",
+        "eligiblePageCount": 33,
+        "chromaticPixels": 43169,
+        "chromaticPageCount": 14,
+        "dominantHues": [
+          {
+            "name": "蓝",
+            "share": 0.9103
+          },
+          {
+            "name": "红",
+            "share": 0.053
+          },
+          {
+            "name": "绿",
+            "share": 0.0157
+          },
+          {
+            "name": "橙",
+            "share": 0.0131
+          }
+        ],
+        "dominantQuantizedRgb": [
+          {
+            "hex": "#0060A0",
+            "share": 0.4275
+          },
+          {
+            "hex": "#A0C0E0",
+            "share": 0.1111
+          },
+          {
+            "hex": "#80A0C0",
+            "share": 0.0525
+          },
+          {
+            "hex": "#80C0E0",
+            "share": 0.0317
+          },
+          {
+            "hex": "#0000E0",
+            "share": 0.0224
+          },
+          {
+            "hex": "#C0C0E0",
+            "share": 0.0222
+          },
+          {
+            "hex": "#80A0E0",
+            "share": 0.0172
+          },
+          {
+            "hex": "#A0A0E0",
+            "share": 0.0172
+          }
+        ],
+        "topColorPages": [
+          {
+            "page": 8,
+            "chromaticRatio": 0.074716
+          },
+          {
+            "page": 23,
+            "chromaticRatio": 0.040046
+          },
+          {
+            "page": 15,
+            "chromaticRatio": 0.030616
+          }
+        ],
+        "metricBoundary": "低分辨率栅格像素统计仅用于定位彩色页面；照片、地图、校徽和抗锯齿均可能影响占比，配色质量必须回看原页。"
+      }
+    },
+    {
+      "paperId": "huashu-2023-C-2-71ef8ba6",
+      "edition": 4,
+      "editionLabel": "第四届",
+      "problem": "C",
+      "paperNumber": 2,
+      "year": 2023,
+      "title": "母亲状态对婴儿行为与睡眠的影响",
+      "titleEvidence": "pdf-text-layer",
+      "source": "第四届/C2/paper-71ef8ba66c79.pdf",
+      "sha256": "71ef8ba66c7991e61eb718bc05f068ea33f596dd42a002de5dfcfe0b5a975566",
+      "pages": 33,
+      "characters": 24460,
+      "extraction": "text-layer",
+      "methodFamilies": {
+        "多指标综合评价": [
+          "TOPSIS",
+          "Topsis",
+          "综合评价"
+        ],
+        "统计推断与回归": [
+          "卡方检验",
+          "Spearman",
+          "斯皮尔曼",
+          "相关系数"
+        ],
+        "机器学习": [
+          "随机森林",
+          "XGBoost",
+          "XGboost",
+          "梯度提升树"
+        ],
+        "连续、整数与多目标规划": [
+          "目标规划",
+          "Minimize"
+        ]
+      },
+      "methodPages": {
+        "多指标综合评价": [
+          1,
+          3,
+          20,
+          21,
+          22
+        ],
+        "统计推断与回归": [
+          1,
+          2,
+          3,
+          5,
+          6,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          20
+        ],
+        "机器学习": [
+          1,
+          2,
+          14,
+          15,
+          16,
+          23,
+          28
+        ],
+        "连续、整数与多目标规划": [
+          1,
+          2,
+          18,
+          26
+        ]
+      },
+      "validationSignals": {
+        "误差、残差或实测对照": [
+          "残差"
+        ],
+        "样本外或交叉验证": [
+          "训练集",
+          "测试集",
+          "混淆矩阵"
+        ],
+        "数值或算法收敛": [
+          "迭代次数"
+        ],
+        "灵敏度与鲁棒性": [
+          "鲁棒性"
+        ],
+        "统计显著性与效应量": [
+          "p 值",
+          "P 值",
+          "显著性"
+        ],
+        "约束或可行性复核": [
+          "约束条件"
+        ]
+      },
+      "validationPages": {
+        "误差、残差或实测对照": [
+          5,
+          14,
+          23
+        ],
+        "样本外或交叉验证": [
+          15,
+          23,
+          24
+        ],
+        "数值或算法收敛": [
+          14,
+          23
+        ],
+        "灵敏度与鲁棒性": [
+          15
+        ],
+        "统计显著性与效应量": [
+          5,
+          10,
+          11,
+          12,
+          31,
+          32
+        ],
+        "约束或可行性复核": [
+          1,
+          17,
+          18,
+          19,
+          26,
+          27
+        ]
+      },
+      "abstractCharacters": 945,
+      "sections": [
+        "摘要",
+        "关键词",
+        "问题重述",
+        "问题分析",
+        "模型假设",
+        "符号说明",
+        "模型建立",
+        "模型评价",
+        "参考文献",
+        "附录"
+      ],
+      "sectionPages": {
+        "摘要": 1,
+        "关键词": 1,
+        "问题重述": 2,
+        "问题分析": 2,
+        "模型假设": 3,
+        "符号说明": 3,
+        "模型建立": 3,
+        "附录": 9,
+        "模型评价": 28,
+        "参考文献": 29
+      },
+      "writingMarkers": {
+        "逐问映射": 0,
+        "顺序衔接": 18,
+        "因果解释": 18,
+        "图表解读": 13,
+        "结果落地": 6,
+        "跨问复用": 1,
+        "限制评价": 0
+      },
+      "figureCaptions": 10,
+      "tableCaptions": 18,
+      "informativeFigureCaptions": 7,
+      "informativeTableCaptions": 13,
+      "captionSamples": [
+        {
+          "kind": "图",
+          "label": "5-1",
+          "title": "异常值处理图",
+          "page": 4
+        },
+        {
+          "kind": "表",
+          "label": "5-1",
+          "title": "连续数据正态分布检验结果",
+          "page": 5
+        },
+        {
+          "kind": "图",
+          "label": "5-2",
+          "title": "连续数据 Q-Q 图",
+          "page": 5
+        },
+        {
+          "kind": "图",
+          "label": "5-3",
+          "title": "相关性热力图",
+          "page": 6
+        },
+        {
+          "kind": "图",
+          "label": "5-5",
+          "title": "连续数据分布直方图",
+          "page": 10
+        },
+        {
+          "kind": "表",
+          "label": "5-5",
+          "title": "一月龄婴儿整晚睡眠时间相关系数",
+          "page": 11
+        },
+        {
+          "kind": "表",
+          "label": "5-6",
+          "title": "二月龄婴儿整晚睡眠时间相关系数",
+          "page": 11
+        },
+        {
+          "kind": "表",
+          "label": "5-7",
+          "title": "三月龄婴儿整晚睡眠时间相关系数",
+          "page": 12
+        },
+        {
+          "kind": "表",
+          "label": "5-8",
+          "title": "三月龄婴儿整晚睡眠时间相关系数",
+          "page": 12
+        },
+        {
+          "kind": "表",
+          "label": "5-9",
+          "title": "三月龄婴儿整晚睡眠时间相关系数",
+          "page": 12
+        },
+        {
+          "kind": "表",
+          "label": "5-10",
+          "title": "三月龄婴儿整晚睡眠时间相关系数",
+          "page": 13
+        },
+        {
+          "kind": "图",
+          "label": "6-1",
+          "title": "Bagging 方法原理图",
+          "page": 15
+        },
+        {
+          "kind": "表",
+          "label": "6-1",
+          "title": "XGBT 预测结果",
+          "page": 16
+        },
+        {
+          "kind": "表",
+          "label": "6-2",
+          "title": "随机森林预测结果",
+          "page": 16
+        },
+        {
+          "kind": "表",
+          "label": "6-3",
+          "title": "预测结果",
+          "page": 16
+        },
+        {
+          "kind": "表",
+          "label": "7-1",
+          "title": "搜索算法流程",
+          "page": 18
+        },
+        {
+          "kind": "图",
+          "label": "7-1",
+          "title": "迭代过程",
+          "page": 18
+        },
+        {
+          "kind": "表",
+          "label": "7-2",
+          "title": "规划结果",
+          "page": 18
+        },
+        {
+          "kind": "图",
+          "label": "7-2",
+          "title": "迭代过程",
+          "page": 19
+        },
+        {
+          "kind": "表",
+          "label": "7-3",
+          "title": "规划结果",
+          "page": 19
+        },
+        {
+          "kind": "表",
+          "label": "8-1",
+          "title": "入睡方式一致化处理结果",
+          "page": 20
+        },
+        {
+          "kind": "表",
+          "label": "8-2",
+          "title": "熵值法权重计算结果",
+          "page": 21
+        },
+        {
+          "kind": "表",
+          "label": "8-3",
+          "title": "Topsis 评分结果",
+          "page": 22
+        },
+        {
+          "kind": "图",
+          "label": "8-1",
+          "title": "集成学习方法原理图",
+          "page": 24
+        },
+        {
+          "kind": "图",
+          "label": "8-2",
+          "title": "混淆矩阵热力图",
+          "page": 24
+        },
+        {
+          "kind": "表",
+          "label": "8-4",
+          "title": "预测结果",
+          "page": 25
+        },
+        {
+          "kind": "图",
+          "label": "9-1",
+          "title": "迭代过程",
+          "page": 26
+        },
+        {
+          "kind": "表",
+          "label": "9-1",
+          "title": "规划结果",
+          "page": 26
+        }
+      ],
+      "mainBodyEndPage": 28,
+      "visualProfile": {
+        "status": "ok",
+        "eligiblePageCount": 27,
+        "chromaticPixels": 103852,
+        "chromaticPageCount": 11,
+        "dominantHues": [
+          {
+            "name": "蓝",
+            "share": 0.6382
+          },
+          {
+            "name": "橙",
+            "share": 0.2991
+          },
+          {
+            "name": "红",
+            "share": 0.0276
+          },
+          {
+            "name": "青",
+            "share": 0.0134
+          }
+        ],
+        "dominantQuantizedRgb": [
+          {
+            "hex": "#4060C0",
+            "share": 0.2868
+          },
+          {
+            "hex": "#C08040",
+            "share": 0.1274
+          },
+          {
+            "hex": "#E0C040",
+            "share": 0.122
+          },
+          {
+            "hex": "#6080C0",
+            "share": 0.0599
+          },
+          {
+            "hex": "#6080E0",
+            "share": 0.036
+          },
+          {
+            "hex": "#80A0E0",
+            "share": 0.0311
+          },
+          {
+            "hex": "#60A0C0",
+            "share": 0.0297
+          },
+          {
+            "hex": "#A0C0E0",
+            "share": 0.0292
+          }
+        ],
+        "topColorPages": [
+          {
+            "page": 7,
+            "chromaticRatio": 0.275082
+          },
+          {
+            "page": 8,
+            "chromaticRatio": 0.073647
+          },
+          {
+            "page": 6,
+            "chromaticRatio": 0.073396
+          }
+        ],
+        "metricBoundary": "低分辨率栅格像素统计仅用于定位彩色页面；照片、地图、校徽和抗锯齿均可能影响占比，配色质量必须回看原页。"
+      }
+    }
+  ]
+}

@@ -10,7 +10,7 @@ GitHub：<https://github.com/sunrise690/math-modeling-expert-agent>
 
 `qilintex/apps/client/` 是整个数模工作台的唯一前端源码，QilinTeX 是其中的论文工作区，不是独立产品。原外层重复目录 `TongGaoTeX/` 已于 2026-08-11 移入 Windows 回收站。
 
-运行时可有多个安全隔离的后端进程，但用户只进入一个前端。工作台服务端默认通过 `http://127.0.0.1:8765` 调用数模 Agent，向同一项目中的建模和论文工作区提供建模、整题交付、论文和质检模式；浏览器不直接连接数模 Agent，也不会取得其 Provider 凭据。
+用户只进入一个统一前端。协作服务器保存账号、项目与多人文档；Windows App 在每台电脑上自动启动只监听 `127.0.0.1:8765` 的数模 Agent。建模、整题交付、论文和质检请求使用当前电脑自己的 Codex 登录、网络与 API 配置，服务器不保存或转发 Provider 凭据。
 
 ## 不进入主仓库的内容
 
@@ -29,11 +29,14 @@ GitHub：<https://github.com/sunrise690/math-modeling-expert-agent>
 | 相对位置 | 内容 | 可移植规则 |
 | --- | --- | --- |
 | `./` | 统一数模工作台与数模 Agent 后端 | 不读取开发者机器的绝对路径 |
+| `package.json` | 面向下载者的根目录命令入口 | `pnpm setup`、`pnpm dev`、`pnpm build` 不要求先切换子目录 |
 | `qilintex/apps/client/` | 唯一前端 | Web、桌面与移动端共享同一源码 |
 | `.runtime/python/` | `pnpm setup` 创建的 Python 隔离环境 | 自动创建、Git 忽略，可随时重建 |
 | `.agent-data/` | 数模 Agent 运行数据 | 仓库相对、Git 忽略；部署时可显式映射到用户数据目录 |
 | `qilintex/apps/server/data/` | 协作服务数据 | 从服务模块位置推导；桌面端改用系统用户数据目录 |
 | `knowledge/` | 默认本地资料库 | 自动发现；外部目录通过 `AGENT_KNOWLEDGE_ROOTS` 可选配置 |
+
+根目录 `.env` 是统一配置入口；`qilintex/.env` 只在需要时覆盖协作服务配置。显式进程环境变量优先级最高。
 
 ## 维护规则
 

@@ -11,7 +11,7 @@
 - 高层工具：内联数据与上传数据绘图。
 - 产物：300 DPI PNG、矢量 PDF/SVG、FIG、可复现 M 脚本。
 
-MATLAB 代码求值被固定到当前任务的 `.agent-data/mcp-workspaces/{run_id}`；脚本检查和运行只接受当前任务工作区或产物目录中的 `.m` 文件。
+MATLAB 代码求值被固定到当前任务的 `AGENT_DATA_DIR/mcp-workspaces/{run_id}`（未配置时即 `.agent-data/mcp-workspaces/{run_id}`）；脚本检查和运行只接受当前任务工作区或产物目录中的 `.m` 文件。
 
 ## Origin
 
@@ -29,8 +29,10 @@ Origin MCP Server 可以正常启动并列出工具，但只有检测到 Origin 
 AGENT_MCP=1
 AGENT_MATLAB_MCP=1
 AGENT_ORIGIN_MCP=1
-MATLAB_ROOT=D:\matlab
+MATLAB_ROOT=
 ```
+
+`MATLAB_ROOT` 可留空以自动从 `PATH` 和系统安装目录发现；若填写相对路径，则以仓库根目录为基准。
 
 查看状态：
 

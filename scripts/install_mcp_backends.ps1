@@ -5,10 +5,17 @@ param(
 
 $ErrorActionPreference = "Stop"
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
-$InstallDir = Join-Path $ProjectRoot ".agent-data\mcp"
+$DataRoot = if ($env:AGENT_DATA_DIR) {
+    if ([System.IO.Path]::IsPathRooted($env:AGENT_DATA_DIR)) { $env:AGENT_DATA_DIR } else { Join-Path $ProjectRoot $env:AGENT_DATA_DIR }
+} else {
+    Join-Path $ProjectRoot ".agent-data"
+}
+$InstallDir = Join-Path $DataRoot "mcp"
 $Binary = Join-Path $InstallDir "matlab-mcp-server-windows-x64.exe"
+$ManagedPython = Join-Path $ProjectRoot ".runtime\python\Scripts\python.exe"
+$Python = if (Test-Path -LiteralPath $ManagedPython) { $ManagedPython } else { (Get-Command python -ErrorAction Stop).Source }
 
-python -m pip install "mcp>=1.28.1,<2" "originpro>=1.1.15,<1.2"
+& $Python -m pip install "mcp>=1.28.1,<2" "originpro>=1.1.15,<1.2"
 
 $ReleaseUri = if ($Version -eq "latest") {
     "https://api.github.com/repos/matlab/matlab-mcp-server/releases/latest"
@@ -31,7 +38,7 @@ if (-not $MatlabRoot) {
         $MatlabRoot = Split-Path -Parent (Split-Path -Parent $Matlab.Source)
     }
 }
-$OriginInfo = python -m pip show originpro
+$OriginInfo = & $Python -m pip show originpro
 $OriginPython = (($OriginInfo | Select-String "^Version:").Line -replace "^Version:\s*", "")
 
 [pscustomobject]@{
