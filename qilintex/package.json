@@ -1,0 +1,18 @@
+{
+  "name": "tonggao-tex",
+  "version": "0.1.0",
+  "private": true,
+  "description": "多人实时协作 LaTeX 与 AI 写作工作台",
+  "packageManager": "pnpm@11.16.0",
+  "scripts": {
+    "dev": "concurrently -k -n server,client -c blue,green \"pnpm --filter @tonggao/server dev\" \"pnpm --filter @tonggao/client dev\"",
+    "dev:desktop": "concurrently -k -n server,client,desktop -c blue,green,magenta \"pnpm --filter @tonggao/server dev\" \"pnpm --filter @tonggao/client dev\" \"pnpm --filter @tonggao/desktop dev\"",
+    "build": "pnpm --filter @tonggao/client build && pnpm --filter @tonggao/server build",
+    "build:win": "pnpm --filter @tonggao/client build && pnpm --filter @tonggao/server bundle && pnpm --filter @tonggao/desktop package:win",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

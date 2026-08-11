@@ -1,0 +1,234 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-09T20:20:07.3773715+08:00",
+  "title": "Design System: 同稿 TeX",
+  "extensions": {
+    "colorMeta": {
+      "canvas": {
+        "role": "neutral",
+        "displayName": "浅米灰画布",
+        "canonical": "#f5f5f2",
+        "tonalRamp": ["oklch(15% 0.004 95)", "oklch(27% 0.004 95)", "oklch(39% 0.004 95)", "oklch(51% 0.004 95)", "oklch(63% 0.004 95)", "oklch(75% 0.004 95)", "oklch(87% 0.004 95)", "oklch(95% 0.004 95)"]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "白色工作面",
+        "canonical": "#ffffff",
+        "tonalRamp": ["oklch(15% 0 0)", "oklch(27% 0 0)", "oklch(39% 0 0)", "oklch(51% 0 0)", "oklch(63% 0 0)", "oklch(75% 0 0)", "oklch(87% 0 0)", "oklch(95% 0 0)"]
+      },
+      "surface-subtle": {
+        "role": "neutral",
+        "displayName": "柔灰工具面",
+        "canonical": "#eeeeea",
+        "tonalRamp": ["oklch(15% 0.004 95)", "oklch(27% 0.004 95)", "oklch(39% 0.004 95)", "oklch(51% 0.004 95)", "oklch(63% 0.004 95)", "oklch(75% 0.004 95)", "oklch(87% 0.004 95)", "oklch(95% 0.004 95)"]
+      },
+      "surface-hover": {
+        "role": "neutral",
+        "displayName": "悬停灰",
+        "canonical": "#e8e8e3",
+        "tonalRamp": ["oklch(15% 0.005 95)", "oklch(27% 0.005 95)", "oklch(39% 0.005 95)", "oklch(51% 0.005 95)", "oklch(63% 0.005 95)", "oklch(75% 0.005 95)", "oklch(87% 0.005 95)", "oklch(95% 0.005 95)"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "炭黑正文",
+        "canonical": "#20201e",
+        "tonalRamp": ["oklch(15% 0.004 95)", "oklch(27% 0.004 95)", "oklch(39% 0.004 95)", "oklch(51% 0.004 95)", "oklch(63% 0.004 95)", "oklch(75% 0.004 95)", "oklch(87% 0.004 95)", "oklch(95% 0.004 95)"]
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "静音灰",
+        "canonical": "#6b6b66",
+        "tonalRamp": ["oklch(15% 0.006 95)", "oklch(27% 0.006 95)", "oklch(39% 0.006 95)", "oklch(51% 0.006 95)", "oklch(63% 0.006 95)", "oklch(75% 0.006 95)", "oklch(87% 0.006 95)", "oklch(95% 0.006 95)"]
+      },
+      "divider": {
+        "role": "neutral",
+        "displayName": "细分隔线",
+        "canonical": "#deded8",
+        "tonalRamp": ["oklch(15% 0.006 95)", "oklch(27% 0.006 95)", "oklch(39% 0.006 95)", "oklch(51% 0.006 95)", "oklch(63% 0.006 95)", "oklch(75% 0.006 95)", "oklch(87% 0.006 95)", "oklch(95% 0.006 95)"]
+      },
+      "divider-strong": {
+        "role": "neutral",
+        "displayName": "强分隔线",
+        "canonical": "#c8c8c0",
+        "tonalRamp": ["oklch(15% 0.008 95)", "oklch(27% 0.008 95)", "oklch(39% 0.008 95)", "oklch(51% 0.008 95)", "oklch(63% 0.008 95)", "oklch(75% 0.008 95)", "oklch(87% 0.008 95)", "oklch(95% 0.008 95)"]
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "克制青绿",
+        "canonical": "#0f766e",
+        "tonalRamp": ["oklch(15% 0.08 180)", "oklch(27% 0.08 180)", "oklch(39% 0.08 180)", "oklch(51% 0.08 180)", "oklch(63% 0.08 180)", "oklch(75% 0.08 180)", "oklch(87% 0.08 180)", "oklch(95% 0.08 180)"]
+      },
+      "accent-hover": {
+        "role": "primary",
+        "displayName": "深青绿",
+        "canonical": "#115e59",
+        "tonalRamp": ["oklch(15% 0.07 180)", "oklch(27% 0.07 180)", "oklch(39% 0.07 180)", "oklch(51% 0.07 180)", "oklch(63% 0.07 180)", "oklch(75% 0.07 180)", "oklch(87% 0.07 180)", "oklch(95% 0.07 180)"]
+      },
+      "accent-soft": {
+        "role": "primary",
+        "displayName": "薄荷雾面",
+        "canonical": "#e3f2ef",
+        "tonalRamp": ["oklch(15% 0.03 180)", "oklch(27% 0.03 180)", "oklch(39% 0.03 180)", "oklch(51% 0.03 180)", "oklch(63% 0.03 180)", "oklch(75% 0.03 180)", "oklch(87% 0.03 180)", "oklch(95% 0.03 180)"]
+      },
+      "danger": {
+        "role": "tertiary",
+        "displayName": "错误红",
+        "canonical": "#b42318",
+        "tonalRamp": ["oklch(15% 0.12 28)", "oklch(27% 0.12 28)", "oklch(39% 0.12 28)", "oklch(51% 0.12 28)", "oklch(63% 0.12 28)", "oklch(75% 0.12 28)", "oklch(87% 0.12 28)", "oklch(95% 0.12 28)"]
+      },
+      "danger-soft": {
+        "role": "tertiary",
+        "displayName": "错误浅底",
+        "canonical": "#fef0ed",
+        "tonalRamp": ["oklch(15% 0.03 28)", "oklch(27% 0.03 28)", "oklch(39% 0.03 28)", "oklch(51% 0.03 28)", "oklch(63% 0.03 28)", "oklch(75% 0.03 28)", "oklch(87% 0.03 28)", "oklch(95% 0.03 28)"]
+      },
+      "code-surface": {
+        "role": "neutral",
+        "displayName": "代码灰面",
+        "canonical": "#f0f1ee",
+        "tonalRamp": ["oklch(15% 0.004 130)", "oklch(27% 0.004 130)", "oklch(39% 0.004 130)", "oklch(51% 0.004 130)", "oklch(63% 0.004 130)", "oklch(75% 0.004 130)", "oklch(87% 0.004 130)", "oklch(95% 0.004 130)"]
+      },
+      "pending-ink": {
+        "role": "tertiary",
+        "displayName": "待确认棕",
+        "canonical": "#725d19",
+        "tonalRamp": ["oklch(15% 0.07 90)", "oklch(27% 0.07 90)", "oklch(39% 0.07 90)", "oklch(51% 0.07 90)", "oklch(63% 0.07 90)", "oklch(75% 0.07 90)", "oklch(87% 0.07 90)", "oklch(95% 0.07 90)"]
+      },
+      "pending-soft": {
+        "role": "tertiary",
+        "displayName": "待确认浅底",
+        "canonical": "#f7efcf",
+        "tonalRamp": ["oklch(15% 0.035 90)", "oklch(27% 0.035 90)", "oklch(39% 0.035 90)", "oklch(51% 0.035 90)", "oklch(63% 0.035 90)", "oklch(75% 0.035 90)", "oklch(87% 0.035 90)", "oklch(95% 0.035 90)"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "任务展示", "purpose": "当前任务标题与主要空状态标题。" },
+      "headline": { "displayName": "项目标题", "purpose": "项目、资源页与主要分区首标题。" },
+      "title": { "displayName": "面板标题", "purpose": "卡片、交付物与证据面板标题。" },
+      "body": { "displayName": "工作正文", "purpose": "任务目的、门槛与解释性文案。" },
+      "label": { "displayName": "工具标签", "purpose": "工具按钮、状态、元数据和结构标签。" },
+      "code": { "displayName": "可执行内容", "purpose": "命令、路径、源代码与运行输出。" }
+    },
+    "shadows": [
+      { "name": "paper-preview", "value": "0 8px 22px rgba(35,35,30,.16)", "purpose": "只让 PDF 页面或页面占位从预览底板中分离。" },
+      { "name": "mobile-drawer", "value": "14px 0 36px rgba(32,32,30,.18)", "purpose": "窄屏项目侧栏覆盖内容时建立临时层级。" },
+      { "name": "modal", "value": "0 22px 60px rgba(32,32,30,.24)", "purpose": "阻断背景操作的模态对话框。" },
+      { "name": "avatar-ring", "value": "0 0 0 2px #ffffff", "purpose": "重叠协作者头像之间的结构分隔。" }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(.16, 1, .3, 1)", "purpose": "侧栏开合等少量空间状态变化。" },
+      { "name": "sidebar-transition", "value": "transform 180ms cubic-bezier(.16, 1, .3, 1), opacity 140ms ease", "purpose": "桌面收起与移动抽屉进出的唯一主要转场。" },
+      { "name": "status-pulse", "value": "opacity 1s ease infinite", "purpose": "仅用于连接中状态，并在 reduced-motion 下缩短至近乎静止。" }
+    ],
+    "breakpoints": [
+      { "name": "compact-desktop", "value": "1080px" },
+      { "name": "mobile", "value": "760px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Action",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "用于编译、创建和复制命令等当前唯一主动作。",
+      "html": "<button class=\"ds-btn-primary\">编译</button>",
+      "css": ".ds-btn-primary { min-height: 34px; padding: 0 11px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid var(--accent); border-radius: 8px; color: var(--surface); background: var(--accent); font: 650 11px/1.4 ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif; cursor: pointer; transition: background 140ms ease, border-color 140ms ease; } .ds-btn-primary:hover { border-color: var(--accent-hover); background: var(--accent-hover); } .ds-btn-primary:active { background: var(--accent-hover); } .ds-btn-primary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Tool",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "用于分享、取消和不应竞争注意力的工具动作。",
+      "html": "<button class=\"ds-btn-secondary\">分享</button>",
+      "css": ".ds-btn-secondary { min-height: 34px; padding: 0 11px; border: 1px solid var(--line-strong); border-radius: 8px; color: var(--ink); background: var(--surface); font: 650 11px/1.4 ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif; cursor: pointer; transition: background 140ms ease, border-color 140ms ease; } .ds-btn-secondary:hover { border-color: #a6a69f; background: var(--surface-subtle); } .ds-btn-secondary:active { background: var(--surface-hover); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input-default",
+      "description": "项目名称等常规文本输入，保持白底和明确边界。",
+      "html": "<label class=\"ds-field-label\" for=\"ds-project-name\">项目名称</label><input class=\"ds-field\" id=\"ds-project-name\" placeholder=\"例如：竞赛论文\" />",
+      "css": ".ds-field-label { display: block; margin-bottom: 8px; color: var(--ink); font: 650 12px/1.4 ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif; } .ds-field { width: 100%; height: 46px; padding: 0 12px; border: 1px solid var(--line-strong); border-radius: 8px; color: var(--ink); background: var(--surface); caret-color: var(--accent); font: 400 13px/1.5 ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif; } .ds-field:hover { border-color: #a6a69f; } .ds-field:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }"
+    },
+    {
+      "name": "Project Surface Switch",
+      "kind": "nav",
+      "refersTo": "navigation-active",
+      "description": "在同一项目内稳定切换流程和论文两个工作视图。",
+      "html": "<div class=\"ds-surface-switch\" role=\"group\" aria-label=\"项目视图\"><button class=\"ds-surface-option ds-is-active\">流程</button><button class=\"ds-surface-option\">论文</button></div>",
+      "css": ".ds-surface-switch { height: 34px; padding: 2px; display: inline-flex; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-subtle); } .ds-surface-option { min-width: 62px; padding: 0 9px; border: 0; border-radius: 6px; color: var(--muted); background: transparent; font: 650 10px/1.4 ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif; cursor: pointer; } .ds-surface-option:hover { color: var(--ink); } .ds-surface-option:active, .ds-surface-option.ds-is-active { color: var(--ink); background: var(--surface); } .ds-surface-option:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }"
+    },
+    {
+      "name": "Active Stage",
+      "kind": "nav",
+      "refersTo": "stage-active",
+      "description": "阶段条中的当前任务，组合编号、名称和诚实状态。",
+      "html": "<button class=\"ds-stage\"><span class=\"ds-stage-index\">02</span><span class=\"ds-stage-copy\"><strong>赛题解析</strong><small>建议下一步</small></span></button>",
+      "css": ".ds-stage { min-width: 116px; min-height: 52px; padding: 7px 9px; display: grid; grid-template-columns: 25px minmax(0,1fr); align-items: center; gap: 7px; border: 0; border-radius: 7px; color: var(--ink); background: var(--accent-soft); text-align: left; cursor: pointer; } .ds-stage-index { width: 25px; height: 25px; display: grid; place-items: center; border: 1px solid var(--accent); border-radius: 7px; color: var(--surface); background: var(--accent); font: 730 9px/1 ui-sans-serif, sans-serif; } .ds-stage-copy { min-width: 0; display: flex; flex-direction: column; gap: 3px; } .ds-stage-copy strong { font: 650 10px/1.2 ui-sans-serif, 'Microsoft YaHei', sans-serif; } .ds-stage-copy small { opacity: .82; font: 400 8px/1.2 ui-sans-serif, 'Microsoft YaHei', sans-serif; } .ds-stage:hover { background: #d8ece8; } .ds-stage:active { background: var(--accent-soft); } .ds-stage:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }"
+    },
+    {
+      "name": "Task Thread Card",
+      "kind": "card",
+      "refersTo": "card-task",
+      "description": "以意图、执行和审核顺序承载当前唯一任务。",
+      "html": "<article class=\"ds-task-card\"><header class=\"ds-task-head\"><span class=\"ds-task-index\">02</span><div><span class=\"ds-task-state\">建议下一步</span><h2>把赛题变成数学任务</h2><p>逐问识别目标、输入、输出、决策变量、约束、数据结构、不确定性和失败风险。</p></div></header></article>",
+      "css": ".ds-task-card { overflow: hidden; border: 1px solid var(--line); border-radius: 12px; color: var(--ink); background: var(--surface); } .ds-task-head { padding: 24px 25px 22px; display: grid; grid-template-columns: 40px minmax(0,1fr); gap: 15px; } .ds-task-index { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 10px; color: var(--surface); background: var(--accent); font: 760 12px/1 ui-sans-serif, sans-serif; } .ds-task-state { display: block; margin-bottom: 7px; color: var(--accent); font: 650 10px/1.4 ui-sans-serif, 'Microsoft YaHei', sans-serif; } .ds-task-card h2 { max-width: 30ch; margin: 0; font: 760 28px/1.18 ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif; letter-spacing: -.025em; } .ds-task-card p { max-width: 70ch; margin: 12px 0 0; color: var(--muted); font: 400 13px/1.65 ui-sans-serif, 'Microsoft YaHei', sans-serif; }"
+    },
+    {
+      "name": "Command Launcher",
+      "kind": "custom",
+      "refersTo": "command-surface",
+      "description": "把下一条 Skill 命令放到任务线程的视觉中轴。",
+      "html": "<section class=\"ds-command\"><div><span>运行命令</span><code>$cumcm-modeling analyze 当前项目“数模界面演示”</code></div><button class=\"ds-command-copy\">复制命令</button></section>",
+      "css": ".ds-command { min-height: 82px; padding: 14px 15px 14px 25px; display: flex; align-items: center; justify-content: space-between; gap: 18px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--code-bg); } .ds-command span { display: block; margin-bottom: 7px; color: var(--muted); font: 400 9px/1.4 ui-sans-serif, 'Microsoft YaHei', sans-serif; } .ds-command code { overflow-wrap: anywhere; color: #30302d; font: 400 11px/1.5 'Cascadia Code', Consolas, monospace; } .ds-command-copy { min-height: 36px; padding: 0 11px; flex: 0 0 auto; border: 0; border-radius: 8px; color: var(--surface); background: var(--accent); font: 650 10px/1.4 ui-sans-serif, 'Microsoft YaHei', sans-serif; cursor: pointer; } .ds-command-copy:hover, .ds-command-copy:active { background: var(--accent-hover); } .ds-command-copy:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }"
+    },
+    {
+      "name": "Pending Status",
+      "kind": "chip",
+      "refersTo": "status-pending",
+      "description": "明确标记尚未接入真实工作流数据的状态。",
+      "html": "<span class=\"ds-status-pending\">尚未连接</span>",
+      "css": ".ds-status-pending { display: inline-flex; align-items: center; min-height: 24px; padding: 5px 8px; border-radius: 999px; color: #725d19; background: #f7efcf; font: 650 10px/1.4 ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif; }"
+    },
+    {
+      "name": "Source PDF Split",
+      "kind": "custom",
+      "refersTo": "card-task",
+      "description": "稳定并列源文件与 PDF 输出，分隔柄支持键盘调整。",
+      "html": "<div class=\"ds-document-split\"><section class=\"ds-source-pane\"><div class=\"ds-pane-label\"><span>源文件</span><strong>main.tex</strong></div><pre>\\documentclass{ctexart}</pre></section><button class=\"ds-split-handle\" aria-label=\"调整编辑器和 PDF 宽度\"><span></span></button><section class=\"ds-preview-pane\"><div class=\"ds-pane-label\"><span>输出</span><strong>PDF 预览</strong></div><p>尚未编译</p></section></div>",
+      "css": ".ds-document-split { min-height: 260px; display: flex; border: 1px solid var(--line); background: var(--surface); } .ds-source-pane, .ds-preview-pane { min-width: 0; flex: 1; display: flex; flex-direction: column; } .ds-preview-pane { background: #ecece8; } .ds-pane-label { height: 34px; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); color: var(--muted); background: var(--surface-subtle); font: 400 9px/1.4 ui-sans-serif, 'Microsoft YaHei', sans-serif; letter-spacing: .04em; } .ds-pane-label strong { color: var(--ink); letter-spacing: 0; } .ds-source-pane pre { margin: 0; padding: 18px; color: var(--ink); background: var(--surface); font: 400 11px/1.6 'Cascadia Code', Consolas, monospace; } .ds-preview-pane p { margin: auto; color: var(--muted); font: 400 11px/1.5 ui-sans-serif, 'Microsoft YaHei', sans-serif; } .ds-split-handle { width: 7px; padding: 0; display: grid; place-items: center; border: 0; border-left: 1px solid var(--line); border-right: 1px solid var(--line); background: var(--surface-subtle); cursor: col-resize; } .ds-split-handle span { width: 2px; height: 32px; border-radius: 2px; background: var(--line-strong); } .ds-split-handle:hover span, .ds-split-handle:active span { background: var(--accent); } .ds-split-handle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Modeling Thread / 建模线程",
+    "overview": "“建模线程”把一场数学建模竞赛组织成一条可监督的任务线程：用户从项目进入当前阶段，读取真实状态，执行一条明确命令，审查过程输出与证据，再进入论文视图。整体气质是 focused、quiet、task-first；信息密度服务于连续工作，而不是制造后台仪表盘的忙碌感。\n\n视觉世界借鉴 Codex 的中性项目与任务表面，以及 Overleaf 稳定的源文件/PDF 工作区，但不复制两者的品牌资产。浅米灰画布承托白色工作表面，低饱和青绿只标记当前动作与可信状态；层级主要来自表面色差和细边界，动效少且只解释状态。缺失、等待、失败和未连接必须用文字与图形如实呈现。",
+    "keyCharacteristics": [
+      "单一当前任务优先于总览统计。",
+      "浅米灰画布、白色表面与克制青绿共同构成安静的长时工作环境。",
+      "1px 边界、紧凑工具栏和 7–12px 圆角建立精确而不生硬的工具感。",
+      "项目、任务线程、过程输出、审核结果与论文编辑器保持连续上下文。",
+      "状态表达诚实且不只依赖颜色。"
+    ],
+    "rules": [
+      { "name": "The Quiet Accent Rule", "body": "青绿只出现在当前动作、当前定位和可信状态上；单屏不把它扩展成大面积品牌色块。", "section": "colors" },
+      { "name": "The Honest State Rule", "body": "成功、等待、失败和离线状态必须同时提供可读文案或图标，颜色永远不是唯一证据。", "section": "colors" },
+      { "name": "The Working Type Rule", "body": "中文系统字体是默认表达，等宽字体只服务于可执行或可定位内容，不能把普通界面文案伪装成终端输出。", "section": "typography" },
+      { "name": "The Flat-by-Default Rule", "body": "如果 1px 边界和表面色差已经能说明层级，就不添加阴影。", "section": "elevation" },
+      { "name": "The Radius Discipline Rule", "body": "7–12px 是工作台的常规圆角区间；胶囊不得扩散到普通按钮、卡片或导航项。", "section": "shapes" }
+    ],
+    "dos": [
+      "Do 把当前任务、下一步命令和通过标准放在同一连续阅读路径中。",
+      "Do 用浅米灰画布、白色工作面、1px 边界与 7–12px 圆角维持安静而精确的工具感。",
+      "Do 让阶段、交付物、证据和编译结果使用真实文字状态，并为图标提供可访问标签。",
+      "Do 在窄屏重排结构、横向滚动阶段条并纵向堆叠 source/PDF，而不是缩小正文字号。",
+      "Do 尊重 `prefers-reduced-motion`，让状态变化在近乎无动画时仍然可理解。"
+    ],
+    "donts": [
+      "Don't 恢复旧 Swiss 蓝色网格、Aurora 渐变、装饰性 hero 或密集统计仪表盘。",
+      "Don't 把青绿铺成大面积装饰背景，或让多个主按钮同时竞争注意力。",
+      "Don't 给静止卡片和普通按钮添加投影、玻璃拟态、发光或厚重立体效果。",
+      "Don't 用游戏化、科幻化术语替代“编译”“阶段”“通过标准”“待生成”等标准操作文案。",
+      "Don't 把推测进度、虚构指标或尚未生成的工件呈现为已完成事实。"
+    ]
+  }
+}

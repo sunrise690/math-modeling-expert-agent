@@ -1,0 +1,24 @@
+http://__PUBLIC_HOST__ {
+  encode zstd gzip
+
+  handle_path /collab* {
+    reverse_proxy 127.0.0.1:4319
+  }
+
+  @backend path /api/* /auth/* /health /updates/*
+  handle @backend {
+    reverse_proxy 127.0.0.1:4318
+  }
+
+  handle {
+    root * /opt/qilintex/current/apps/client/dist
+    try_files {path} /index.html
+    file_server
+  }
+
+  header {
+    X-Content-Type-Options nosniff
+    Referrer-Policy strict-origin-when-cross-origin
+    X-Frame-Options SAMEORIGIN
+  }
+}

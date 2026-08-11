@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Qilintex</string>
+    <string name="title_activity_main">Qilintex</string>
+    <string name="package_name">cn.tonggao.tex</string>
+    <string name="custom_url_scheme">cn.tonggao.tex</string>
+</resources>
