@@ -1,0 +1,146 @@
+name: QilinTeX release builds
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "qilintex-v*"
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: qilintex
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.16.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: qilintex/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+
+  windows:
+    needs: validate
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: qilintex
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.16.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: qilintex/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build:win
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: |
+            qilintex/release/*.exe
+            qilintex/release/*.yml
+
+  android:
+    needs: validate
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: qilintex
+    env:
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.16.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: qilintex/pnpm-lock.yaml
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @tonggao/client build
+      - run: pnpm --filter @tonggao/client exec cap sync android
+      - name: Build Android package
+        working-directory: qilintex/apps/client/android
+        shell: bash
+        run: |
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > app/release.jks
+            export ANDROID_KEYSTORE_PATH="$PWD/app/release.jks"
+            ./gradlew bundleRelease
+          else
+            ./gradlew assembleDebug
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android
+          path: |
+            qilintex/apps/client/android/app/build/outputs/bundle/release/*.aab
+            qilintex/apps/client/android/app/build/outputs/apk/debug/*.apk
+
+  ios-simulator:
+    needs: validate
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: qilintex
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.16.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          cache-dependency-path: qilintex/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @tonggao/client build
+      - run: pnpm --filter @tonggao/client exec cap sync ios
+      - run: pod install
+        working-directory: qilintex/apps/client/ios/App
+      - name: Build unsigned iOS simulator app
+        working-directory: qilintex/apps/client/ios/App
+        run: xcodebuild -workspace App.xcworkspace -scheme App -configuration Release -sdk iphonesimulator -derivedDataPath build CODE_SIGNING_ALLOWED=NO build
+      - run: ditto -c -k --sequesterRsrc --keepParent apps/client/ios/App/build/Build/Products/Release-iphonesimulator/App.app ios-simulator.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ios-simulator
+          path: qilintex/ios-simulator.zip
+
+  github-release:
+    if: startsWith(github.ref, 'refs/tags/qilintex-v')
+    needs: [windows, android, ios-simulator]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${GITHUB_REF_NAME}" $(find artifacts -type f) --generate-notes --verify-tag
