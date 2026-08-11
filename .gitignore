@@ -1,5 +1,7 @@
 .env
 .agent-data/
+.runtime/
+/node_modules/
 __pycache__/
 *.pyc
 *.log
@@ -10,16 +12,9 @@ __pycache__/
 # 数模 Agent、通用 Skill/工具和 QilinTeX。
 /projects/
 
-# Raw contest archives and row-level datasets stay local. Projects may publish
-# source code, aggregate tables, figures and reports, but never participant or
-# medical records.
-projects/*/*.zip
-projects/*/raw/
-projects/*/data/raw/
-projects/*/data/processed/
-projects/*/validation/*_render/
-projects/*/validation/lo_profile*/
-projects/*/tmp/
+# 用户本地资料默认放在仓库相对目录 knowledge/；说明文件保留，资料本体不提交。
+/knowledge/*
+!/knowledge/README.md
 
 # LaTeX build cache; keep the source and final PDF.
 *.aux
