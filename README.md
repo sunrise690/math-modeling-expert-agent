@@ -1,168 +1,253 @@
 # 数模 Agent
 
-本项目是一个仅监听本机回环地址的数学建模 Agent，提供建模、整题交付、论文写作和质检四种工作模式。它可以在模型推理之外调用本地资料检索、数据预检、受限 Python 执行、优化、统计、Matplotlib、MATLAB、Origin 和报告导出工具，并通过质量评分闭环检查最终结果。
+> 简单模型优先，复杂度由证据驱动；允许创新算法，但不允许用随机数、机器学习或高级模型名称代替问题结构分析。
 
-专业能力不是只写在系统提示词里：项目内 `cumcm-expert-agent` skill 负责拆题、路线比较、连续事件、证据链、约束与论文门禁，再按任务路由统计、机器学习、符号推导、图论、多目标优化、离散事件仿真和科学绘图 skill。它还会用本地国赛一等奖/组委会展示优秀论文做反向工程，吸收理论界、机理验证和证据组织，同时纠正单次随机搜索、只看样本内拟合等常见不足。2025 国赛 A/C 题的实跑基准与失败修复见 [BENCHMARK.md](BENCHMARK.md)。
+![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-315D86?style=flat-square&logo=python&logoColor=white)
+![Windows](https://img.shields.io/badge/Platform-Windows-5B6F35?style=flat-square&logo=windows&logoColor=white)
+![Local first](https://img.shields.io/badge/Runtime-local--first-8A6A42?style=flat-square)
+![Evidence gated](https://img.shields.io/badge/Workflow-evidence--gated-6C7A57?style=flat-square)
 
-## 仓库组成
+数模 Agent 是一个只监听本机回环地址的数学建模工作台。它把模型推理、本地资料检索、数据预检、受限 Python 计算、优化与统计、MATLAB/Origin 绘图、论文生成和质量审计放进同一条可复现工作流，面向 CUMCM、MCM/ICM、校赛和日常建模任务。
 
-本仓库现在包含两个边界清晰、可独立运行的组件：
+它的目标不是“给出几个模型名”，而是完成可核验的：
 
-| 目录 | 组件 | 用途 |
-| --- | --- | --- |
-| 仓库根目录 | 数模 Agent | 本地数学建模、工具调用、质量评分、MCP 与论文交付 |
-| [`qilintex/`](qilintex/) | QilinTeX 协作工作台 | 团队登录、多人实时 LaTeX 编辑、项目权限、PDF 编译及跨端客户端 |
+> 题目理解 → 简单基线 → 主模型 → 实际计算 → 图表与结果 → 独立验证 → 论文交付
 
-数模 Agent 仍只监听本机回环地址，不直接暴露到公网；QilinTeX 作为独立 Web/Node 服务部署。两套登录与密钥配置彼此隔离，QilinTeX 的团队登录和 QQ/微信 OAuth 也使用独立登录域。QilinTeX 的详细启动、部署和生产验收方式见 [`qilintex/README.md`](qilintex/README.md)。
+![数模 Agent 桌面界面](frontend-desktop.png)
 
-## 快速启动
+## 核心特点
 
-在 Windows PowerShell 中进入项目目录后执行：
+| 能力 | 实际约束 |
+|---|---|
+| 简单模型优先 | 按量纲/手算、解析基线、确定性数值模型、结构化复杂模型、随机/机器学习逐级升级；当前一级已经满足精度时停止加复杂度 |
+| 可验证算法创新 | 可以设计解析消元、对称降维、事件驱动、邻域筛选、可行解构造或混合搜索，但必须完成同预算基线、消融、复杂度、稳定性和失效边界检查 |
+| 真实计算证据 | 未执行代码不能声称“已求得”；优化结果必须报告求解状态、约束违反量、停止条件和基线/理论界或独立算法对照 |
+| 论文级图表 | 每张图先说明要支撑的主张；检查单位、色盲/灰度可辨、图例遮挡、误差表达、最终字号和 PDF 实际页面，不用装饰图代替证据 |
+| 完整论文闭环 | 每问形成“模型选择—定义—求解—量化结果—解释—验证”；摘要数字必须能回到正文、表格或计算产物 |
+| 本地资料检索 | 按内容哈希增量索引 PDF、DOCX、XLSX、TeX、Python、MATLAB 等资料，先检索再回读原页或工作表，不根据文件名猜内容 |
+| 本地优先与密钥隔离 | 服务拒绝绑定公网地址；Provider 密钥不通过公开接口回显，图形化配置下使用 Windows DPAPI 保存 |
+| 质量评分与回滚 | 从问题覆盖、模型严谨性、复现、验证、交付和真实性六个维度评分；硬门禁失败时不会被平均分掩盖 |
+
+## 五分钟启动
+
+### 环境要求
+
+- Windows 10/11
+- Python 3.11 或更高版本
+- 至少一种可用模型通道：Codex Runtime、OpenAI API、DeepSeek、OpenAI 兼容接口或 Ollama
+- MATLAB 与 Origin 均为可选能力，不影响基础 Agent 启动
+
+### 安装与运行
 
 ```powershell
+git clone https://github.com/sunrise690/math-modeling-expert-agent.git
+cd math-modeling-expert-agent
+
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
+
 if (-not (Test-Path .env)) { Copy-Item .env.example .env }
 python server.py
 ```
 
-然后打开 `http://127.0.0.1:8765/`。服务不允许绑定 `0.0.0.0` 或其他非回环地址。
+浏览器打开 <http://127.0.0.1:8765/>。后端会拒绝 `0.0.0.0` 或其他非回环监听地址。
 
-MATLAB 和 Origin 是可选能力。需要时再安装 MCP 后端：
+首次运行时，在右上角“模型设置”中选择 Provider、模型与推理强度，先执行“测试连接”，成功后再保存。随后选择任务模式、粘贴题目并上传数据即可。
+
+推荐的第一条任务：
+
+```text
+先拆解每个子问题，建立最简单的可解释基线；只有基线误差、约束冲突或计算瓶颈被实际证据证明后，才升级模型。需要创新算法时，请给出同预算对照、消融、稳定性和失效边界。
+```
+
+## 四种任务模式
+
+| 模式 | 适合输入 | 主要输出 |
+|---|---|---|
+| 建模 | 赛题、模型疑问、代码需求 | 拆题、数学本质、候选模型、实现路线 |
+| 交付 | 完整赛题、数据与模板 | 主路线、计算产物、验证、图表和论文工程 |
+| 论文 | 结果、草稿、摘要或现有成稿 | 结构重写、图文论证、语言规范和成稿审计 |
+| 质检 | 方案、代码、图表或论文 | 按严重度排序的问题、证据缺口、风险和修复动作 |
+
+任务支持附件、简体中文输出、简要/标准/详细深度，以及公式推导、代码实现、图表方案和风险检查等交付要求。
+
+## 工作流
+
+```mermaid
+flowchart LR
+    A[题面与附件] --> B[逐问拆解与数据预检]
+    B --> C[最简单可解释基线]
+    C --> D{证据证明需要升级?}
+    D -- 否 --> F[实际求解]
+    D -- 是 --> E[复杂模型或创新算法]
+    E --> F
+    F --> G[可行性与独立验证]
+    G --> H[表格、图形与论文]
+    H --> I[质量评分与成稿审计]
+    I -- 未通过 --> B
+    I -- 通过 --> J[可复现交付]
+```
+
+### 模型升级阶梯
+
+| 层级 | 默认选择 | 进入条件 |
+|---|---|---|
+| L0 | 量纲、数量级、极限情形、手算上下界 | 所有题目都先执行 |
+| L1 | 守恒/几何关系、解析特例、低维回归或确定性基线 | L0 后的首选可运行模型 |
+| L2 | ODE/PDE 数值解、事件驱动、确定性搜索与数学规划 | 解析解不可得或约束需要计算 |
+| L3 | 多物理耦合、鲁棒/多目标优化、结构化组合算法 | L1/L2 的误差或约束缺口已有证据 |
+| L4 | 元启发式、蒙特卡洛、机器学习 | 问题确有随机性、非凸大规模搜索或复杂数据关系，并保留简单基线 |
+
+随机优化至少使用多个有效种子并报告分布；预测模型必须使用结构正确的样本外验证；没有严格证书时，启发式结果只能称为“当前找到的最好可行解”或“候选方案”。
+
+## 优秀论文知识：不只学习解题方法
+
+仓库内的 `cumcm-expert-agent` 已对用户提供的 2009—2023 年国赛 A 题论文包完成结构化提炼：70 份 PDF、2,441 页，覆盖机理、几何、数值计算、拟合估计、优化、调度和验证信号。原 PDF 与本地路径不进入 GitHub，只发布经过隐私化的派生索引和方法规则。
+
+Agent 从论文中学习三层知识：
+
+1. **模型与算法**：题目结构、简单基线、计算内核、验证方式和历史缺陷。
+2. **图片与审美**：图形意图、颜色与尺度、三线表、图文邻接、题注、灰度检查和最终页面复核。
+3. **写作与行文**：摘要的量化闭环、逐问依赖、假设如何进入公式、结果如何解释、主张强度与证据怎样对应。
+
+历史优秀论文是检索样本，不是标准答案。Agent 会保留其清晰的信息架构，同时修正单次随机搜索、样本内拟合冒充预测、缺少步长收敛、弱题注、默认 Office 图和代码截图等不足。
+
+相关知识文件：
+
+- [模型谱系、简单模型阶梯与算法创新验收](skills/cumcm-expert-agent/references/a-paper-corpus-lessons.md)
+- [70 份论文的方法与验证索引](skills/cumcm-expert-agent/references/a-paper-corpus-index.md)
+- [图表审美、写作规范与行文模式](skills/cumcm-expert-agent/references/a-paper-visual-writing-patterns.md)
+- [章节、摘要、图题和表题呈现索引](skills/cumcm-expert-agent/references/a-paper-presentation-index.md)
+
+OCR 与关键词统计只用于定位原文，不能替代逐页核验；新题的数值结果必须由本次计算重新产生。
+
+## 计算、绘图与论文工具
+
+| 类别 | 主要能力 |
+|---|---|
+| 数据预检 | CSV、TSV、XLSX、JSON；工作表、字段类型、缺失率、摘要、相关性和样例行 |
+| Python | 每任务独立工作区；NumPy、Pandas、SciPy、statsmodels、scikit-learn、SymPy、NetworkX、pymoo、SimPy |
+| 优化 | SciPy HiGHS 线性规划，以及通过受限 Python 执行的非线性、多目标、仿真和统计方法 |
+| Matplotlib | 折线、散点、分布、热图、多面板、连续事件区间、灵敏度、响应面、Pareto 与多种子分布；输出 PNG/PDF/SVG 和参数 JSON |
+| MATLAB | 官方 MCP 状态检查与高层结构化绘图；可保存 PNG/PDF/SVG、FIG 和 M 脚本 |
+| Origin | 使用 OriginLab `originpro` 创建图形与可编辑 OPJU，先检查安装、自动化与许可证能力 |
+| 报告 | Markdown、DOCX 与论文成稿审计；检查摘要、逐问深度、图表引用、验证和占位符 |
+| 资料库 | `search_materials` 定位，`read_material` 回读文件名、页码或工作表；专业 skill 独立按需加载 |
+
+上传文件单个最大 25 MB。`run_python` 与可选 `run_matlab` 都是受约束的本机进程，但不是容器或面向恶意代码的强安全沙箱；不要执行不可信代码。
+
+### MATLAB / Origin 后端（可选）
 
 ```powershell
 PowerShell -ExecutionPolicy Bypass -File scripts\install_mcp_backends.ps1
 ```
 
-安装脚本会下载 MathWorks 官方 Windows x64 MATLAB MCP Server，并安装 `mcp` 与 OriginLab `originpro`。MATLAB 本体、Origin 2021 或更高版本及相应许可证仍需由用户自行安装。
+脚本安装 MCP 侧依赖；MATLAB 本体、Origin 2021+ 与许可证仍需用户自行准备。任意 MATLAB 源码执行默认关闭，只有操作员明确设置 `AGENT_UNSANDBOXED_MATLAB=1` 后才开放，用完应立即恢复为 `0`。
 
-## 图形化模型设置
+更多说明见 [MCP.md](MCP.md)。
 
-页面右上角的“模型设置”可以完成提供商切换，不必手工编辑 `.env`：
+## Provider 与密钥
 
-1. 选择提供商。
-2. 选择或填写模型、基础 URL 和推理强度。
-3. API 提供商填写各自的密钥；Codex 与 Ollama 不使用该密钥框。
-4. 先点“测试连接”查看登录状态、模型列表、延迟或错误，再点“保存并使用”。
+| Provider | `AGENT_PROVIDER` | 认证方式 |
+|---|---|---|
+| Codex Runtime 当前登录会话 | `codex-cli` | 使用当前 `CODEX_HOME` 的官方 Runtime/CLI 登录；不使用 API Key |
+| OpenAI Responses API | `openai-responses` | 独立 OpenAI API Key |
+| DeepSeek | `deepseek` | 独立 DeepSeek API Key |
+| OpenAI 兼容接口 | `openai-compatible` | 自定义 HTTPS 地址、模型和可选 Key |
+| Ollama | `ollama` | 本机回环地址，通常不需要 Key |
 
-界面不会回显已保存的 API Key。留空表示保留当前提供商的密钥，只有勾选“清除已保存的密钥”才会删除它。模型列表和 Codex 支持的推理档位由后端探测结果动态提供。
+默认 `AGENT_CONFIG_LOCK=0`，页面保存的设置覆盖 `.env` 中的 Provider 运行值。API Provider 的密钥按 Provider 分开保存在 `.agent-data/provider-secrets/`，使用 Windows DPAPI 加密，公开配置接口只返回“是否已配置”。DPAPI 保护磁盘副本，但不等于进程隔离。
 
-当 `AGENT_CONFIG_LOCK=1` 时，设置窗口会明确显示“环境配置锁定 / 只读”，并禁用字段编辑、提供商切换、连接测试和保存。此时页面只展示环境变量或 `.env` 中实际生效的配置。
+设置 `AGENT_CONFIG_LOCK=1` 后，页面进入只读模式，只使用部署环境或 `.env`。完整变量和五种 Provider 示例见 [.env.example](.env.example)。远程基础 URL 必须使用 HTTPS；HTTP 仅允许 `localhost`、`127.0.0.1` 等回环地址。
 
-### 五种 Provider
+Codex Runtime 与 OpenAI API 是两条独立通道。项目不会读取、复制或导出 `auth.json`、访问令牌或刷新令牌，也不能仅凭运行状态宣称与 Codex 桌面应用使用同一账号。
 
-| 界面名称 | `AGENT_PROVIDER` | 调用方式 | 凭据与默认地址 |
-|---|---|---|---|
-| Codex Runtime 当前登录会话 | `codex-cli` | 官方 Codex runtime/CLI，任务通过 `codex exec` 运行 | 使用当前 `CODEX_HOME` 对应的 Codex Runtime 登录会话；不使用 API Key，也不需要基础 URL |
-| OpenAI API | `openai-responses` | Responses API 与函数工具循环 | 独立 OpenAI API Key；默认 `https://api.openai.com/v1` |
-| DeepSeek API | `deepseek` | OpenAI Chat Completions 兼容接口 | 独立 DeepSeek API Key；默认 `https://api.deepseek.com` |
-| OpenAI 兼容接口 | `openai-compatible` | 自定义 Chat Completions 兼容服务 | 自定义模型与基础 URL；远程服务需要自己的 Key，本机回环服务可不设 Key |
-| Ollama 本地模型 | `ollama` | 本机 OpenAI 兼容接口 | 默认 `http://127.0.0.1:11434/v1`，通常不需要 Key；模型留空时后端会尝试发现本机模型 |
+## 本地资料库
 
-远程基础 URL 必须使用 HTTPS；只有 `localhost`、`127.0.0.1` 等回环地址允许 HTTP。基础 URL 不应包含账号、密码、`/responses` 或 `/chat/completions` 路径。
-
-### Codex Runtime 当前登录会话模式
-
-`requirements.txt` 固定安装 `openai-codex==0.144.4`。后端优先通过该官方 SDK 随附的 runtime 探测账号和模型，也可以使用 `AGENT_CODEX_CLI_PATH` 指向独立安装且可执行的 Codex CLI。
-
-该模式只通过官方接口读取公开登录状态和模型列表，运行时使用相同 `CODEX_HOME` 下的 Codex Runtime 当前登录会话；它不会读取、复制或导出 `auth.json`、访问令牌或刷新令牌。后端只验证该 Runtime 会话是否可调用及其认证状态，`sameDesktopAccount` 当前未验证，因此不能据此宣称它与 Codex 桌面应用使用同一账号。如果未复用现有会话，请在官方独立 Codex CLI 中执行一次 `codex login`，再回到界面测试连接。不要修改 WindowsApps 权限，也不要复制桌面应用内部的 `codex.exe`。
-
-`AGENT_CODEX_FAST_HTTP=1` 启用兼容加速路径，可绕过部分默认传输回退等待，但它依赖非默认的兼容行为，可能随上游服务变化而失效，存在稳定性风险。设置 `AGENT_CODEX_FAST_HTTP=0` 会使用 Codex Runtime 的官方默认传输；该路径更保守，但首次连接或 WebSocket 回退时可能更慢。两种路径都使用上述 Codex Runtime 当前登录会话。
-
-Codex 任务使用独立工作区 `.agent-data/codex-workspaces/{run_id}/`，忽略用户级运行配置，但保留当前登录认证；专业数模工具通过项目内白名单化的 stdio MCP Server 提供。Codex 账号与 OpenAI API Key 是两条独立通道，切换到 OpenAI API 不会借用 ChatGPT/Codex 登录状态。
-
-## 配置优先级与密钥隔离
-
-默认 `AGENT_CONFIG_LOCK=0`。此时图形化设置保存在 `.agent-data/provider-settings.json`，并覆盖 `.env` 与进程环境中的 Provider 运行值。每个 API Provider 的 Key 独立保存在：
-
-```text
-.agent-data/provider-secrets/<provider>.bin
-```
-
-密钥使用 Windows DPAPI 按当前 Windows 用户加密；公开配置接口只返回 `apiKeyConfigured: true/false`，配置 JSON 中不包含明文。Codex 与 Ollama 拒绝保存 API Key。DPAPI 是本机静态加密，不等于进程隔离：后端发起请求时仍会在内存中解密，同一 Windows 用户下运行的恶意程序也不应被视为可信。
-
-如需完全由部署环境管理配置，可在 `.env` 中设置：
+建议显式设置资料根目录：
 
 ```env
-AGENT_CONFIG_LOCK=1
+AGENT_KNOWLEDGE_ROOTS=D:\你的资料目录;E:\第二个资料目录
 ```
 
-锁定后，后端拒绝图形化配置的保存和草稿测试，页面进入只读状态，公开配置中的 `configLocked` 为 `true`、`effectiveConfigSource` 为 `environment`。直接写入 `.env` 的 Key 是明文，仅适合受控部署；`.env` 和整个 `.agent-data/` 已加入 `.gitignore`，但仍应限制本机文件权限并做好备份策略。`.env.example` 不应填写真实凭据。
+支持：`PDF`、`DOCX`、`XLSX`、`CSV`、`TSV`、`JSON`、`Markdown`、`TXT`、`TeX`、`BibTeX`、LaTeX 类/样式文件、Python 与 MATLAB 源码。
 
-## 本地工具
-
-### 数据、Python 与优化
-
-- 可上传 CSV、TSV、XLSX 和 JSON；单文件最大 25 MB，最多向一次 Python 执行传入 10 个附件。
-- `inspect_dataset` 在建模前返回工作表、形状、字段类型、缺失率、摘要、相关性与样例行。
-- `run_python` 在 `.agent-data/python-workspaces/{run_id}/` 的任务独立目录执行。附件复制到 `inputs/`，交付文件必须写到 `outputs/`。
-- Python 单次最长 120 秒，限制代码、标准输出与产物总量；子进程、网络访问和工作区外写入由审计钩子阻止，API Key 不传入 Python 环境。
-- `solve_linear_program` 使用 SciPy HiGHS 返回最优值、变量、状态和约束残差；其他统计、仿真、机器学习和多目标优化可使用依赖中安装的 SciPy、statsmodels、scikit-learn、SimPy、pymoo 等库。
-- Matplotlib 专业绘图除折线、散点、柱状、直方、箱线、热力和多面板外，还原生支持连续事件区间、灵敏度龙卷风、响应面等高线、Pareto 前沿和多种子小提琴图。默认使用色盲友好配色，SVG 保留可编辑文本，PDF 使用 TrueType 字体，并导出 300--1200 dpi PNG、PDF、SVG 及可复现参数 JSON。
-- `audit_competition_paper` 对实际的 PDF、DOCX、TeX、Markdown 或 TXT 成稿执行确定性审计：检查逐问深度、量化摘要、每问专属图、验证图、图件失衡、正文引用和占位符，并生成 JSON/Markdown 审计报告。该工具检查可见证据，不验证模型真值，也不保证竞赛奖项。
-- 最终报告可导出 Markdown 和 DOCX；完整竞赛论文必须先通过成稿审计，再进行逐页视觉复核。
-- Codex Runtime 调用专业工具时通过每任务随机令牌、固定白名单和文件 IPC 交给父进程执行。默认白名单只包含 `matlab_status` 与两个高层 MATLAB 绘图工具，不包含任意源码执行；MCP 客户端和父进程 broker 都会再次校验，不暴露裸 `evaluate_matlab_code`。
-
-`run_python` 是“受限本机进程”，不是容器、虚拟机或面对恶意代码的强安全边界。不要让不可信用户提交任意 Python 代码。
-
-### MATLAB 与 Origin
-
-- `matlab_status` 先检查本地 `-batch` 运行时、版本、任意源码开关及 MathWorks 官方 MCP 状态。常规结构化图无需开启任意代码权限。
-- 常规结构化图使用 `create_matlab_plot` 或 `create_matlab_plot_from_dataset`。它们通过 MathWorks 官方 MCP Server 运行，保留 PNG/PDF/SVG、FIG 和 M 脚本；底层裸代码执行工具不直接提供给模型。
-- 数模正式图提供可复用的 MATLAB 低饱和语义主题：整篇以蓝灰为主、暖赭仅强调关键结论，多实体优先靠线型、标记和直接标签区分；无人机、导弹、事件与评分口径保持跨图一致，并通过彩色联系表和灰度版检查彩虹化、重叠、对比度与黑白可辨性。
-- `run_matlab` 默认不出现在模型工具表，也不能通过 Codex 自动批准的 broker 调用。只有操作员显式设置 `AGENT_UNSANDBOXED_MATLAB=1` 后才开放；它在 `.agent-data/matlab-workspaces/{run_id}/` 中运行经审查的自定义源码，并登记源码、限长日志和获准产物。
-- `run_matlab` 会剥离 Provider/API 凭据并限定可收集目录，但 MATLAB 代码仍拥有当前用户的本机能力，**不是安全沙箱**。切勿执行来自网页、资料、附件或不可信用户的代码；用完应立即恢复 `AGENT_UNSANDBOXED_MATLAB=0`。
-- 如果 `matlab` 不在 PATH，可在 `.env` 中设置 `MATLAB_ROOT`。`AGENT_MATLAB_LOCAL=0` 可关闭本地批处理入口；`AGENT_MATLAB_TIMEOUT` 是单次 MATLAB 最大时限，Codex MCP、broker 与总运行时限会据此联动，超时或取消会终止对应进程树。
-- Origin 使用 OriginLab 官方 `originpro`，支持折线、散点、柱状图和热图，输出图形及可编辑 OPJU 工程。`origin_status` 在不启动 Origin 的情况下报告 Python 包和本机安装；许可证与实际可用性在创建图形时进一步验证，不可用时不会伪造产物。
-- `GET /api/mcp` 可以查看 MATLAB/Origin MCP 的启用、启动和错误状态；实际工具列表以 `GET /api/tools` 为准。
-
-### 本地资料库
-
-资料库默认读取 `D:\codexxiangmu\shumo`；也可用 `AGENT_KNOWLEDGE_ROOTS` 指定一个或多个目录（Windows 下用分号分隔）。支持 PDF、DOCX、XLSX、CSV、TSV、JSON、Markdown、TXT 和 TeX。
-
-首次使用或资料变化后需要显式启动增量索引：
+启动服务后显式创建或更新索引：
 
 ```powershell
 Invoke-RestMethod -Method Post http://127.0.0.1:8765/api/knowledge/index
 Invoke-RestMethod http://127.0.0.1:8765/api/knowledge/status | ConvertTo-Json -Depth 6
 ```
 
-Agent 先用 `search_materials` 检索，再用 `read_material` 读取命中页或工作表，并在回答中引用文件名与页码/工作表。专业 skill 由 `search_skills`、`read_skill` 和 `read_skill_reference` 单独读取，默认不混入赛题资料索引，避免工作规范或示例被误当成外部证据；如确需兼容旧行为可设置 `AGENT_KNOWLEDGE_INCLUDE_SKILLS=1`。索引按内容哈希去重；疑似参赛名单、报名表、通讯录等工作簿会默认排除，表格中的姓名、学号、电话、邮箱等敏感列也会过滤。这是启发式保护而非完整脱敏，请在建库前自行检查资料。扫描版 PDF 不自动 OCR，无法提取文本时不会成为可检索证据。
+索引按内容哈希增量更新并去重。疑似参赛名单、报名表和通讯录默认排除，表格中的姓名、学号、电话、邮箱等敏感列也会过滤；这是启发式保护，不是完整脱敏。通用资料库不会自动 OCR 扫描 PDF，无法提取文本时不会把文件名猜成证据。
 
-## 任务队列与质量闭环
+## 产物与可复现性
 
-任务由固定 worker 队列执行，默认最多同时运行 2 个任务、等待 20 个任务。队列满时 `POST /api/runs` 返回 `429`；排队任务可立即取消，服务关闭时会取消等待任务并通知运行任务停止。`AGENT_MAX_CONCURRENT_RUNS` 与 `AGENT_MAX_QUEUED_RUNS` 在后端启动时用于创建固定 worker 和队列容量，修改环境变量或配置文件后必须重启服务才会生效。
+运行数据位于 `.agent-data/`，主要包括：
 
-每次回答执行六维评分：问题覆盖、模型严谨性、证据可复现性、验证稳健性、表达交付质量和真实性边界。默认阈值为 `82`，低于阈值时最多自动修订一次并保留分数更高的版本。附件未预检、无依据声称已运行、明确要求的代码或图表缺失等硬门槛不能由其他维度抵消。竞赛优化还必须报告数值可行性与基线/理论界/独立算法比较；随机优化必须给出多种子离散与收敛统计；预测必须给出结构正确的样本外误差；机理结果必须给出量纲与数值一致性检查。论文模式若生成了成稿产物，还必须有针对该实际文件的论文审计记录，并同时通过图谱和学术结构门禁。否定句和占位数字不会被当作证据，声称全局最优却没有严格证书也会被封顶。
+```text
+.agent-data/
+├─ runs.db                 # 任务、状态与质量记录
+├─ provider-settings.json  # 非密钥 Provider 设置
+├─ provider-secrets/       # DPAPI 加密密钥
+├─ knowledge.db            # 本地资料索引
+├─ python-workspaces/      # Python 任务输入、输出和日志
+├─ matlab-workspaces/      # 获准 MATLAB 任务产物
+└─ codex-workspaces/       # Codex Runtime 独立工作区
+```
 
-## 主要接口
+优化和论文任务应同时保留输入说明、源码、结果表、正式图、关键中间数据、验证报告、结论限制和运行环境。图表、正文与摘要必须使用同一指标定义和数字口径。
 
-- `GET /api/health`：服务、Provider、工具、MCP、资料库和队列概况
-- `GET /api/config`：公开 Provider 配置、模型列表与 Codex 登录状态，不返回密钥
-- `POST /api/config`：保存并启用图形化 Provider 配置；环境配置锁定时拒绝请求
-- `POST /api/config/test`：在不保存的情况下测试登录或模型接口；环境配置锁定时页面禁用该操作
-- `GET /api/tools`：当前可用工具
-- `GET /api/mcp`：MATLAB/Origin MCP 状态
-- `GET /api/runtime`：worker、活动任务、排队任务与剩余容量
-- `GET /api/knowledge/status`：资料索引状态
-- `POST /api/knowledge/index`：后台启动增量索引
-- `GET /api/knowledge/search?q=...`：检索本地资料
-- `POST /api/uploads`、`GET/DELETE /api/uploads/{id}`：上传、读取或移除附件
-- `POST /api/runs`、`GET /api/runs/{id}`：创建或读取任务
-- `GET /api/runs/{id}/events`：SSE 事件流
-- `GET /api/runs/{id}/artifacts`：任务产物
-- `POST /api/runs/{id}/cancel`：取消任务
-- `DELETE /api/runs/{id}`：删除已结束任务
+## 仓库结构
 
-任务对象中的 `quality` 保存总分、各维分、硬门槛、问题和修复建议；`revisionCount` 表示自动修订次数。SSE 还提供 `QUALITY_SCORED`、`REVISION_STARTED`、`TEXT_MESSAGE_REPLACE` 等事件。
+```text
+.
+├─ agent_backend.py        # Provider 调用、任务队列与运行闭环
+├─ agent_tools.py          # 数据、计算、绘图、文档和资料工具
+├─ server.py               # 本机 HTTP API 与静态页面
+├─ knowledge_base.py       # 增量全文索引与隐私过滤
+├─ quality_scoring.py      # 六维评分和硬门禁
+├─ mcp_servers/            # Codex/MATLAB/Origin 工具桥
+├─ skills/cumcm-expert-agent/
+│  ├─ SKILL.md             # 专业数模总工作流
+│  └─ references/          # 建模、验证、论文与历史语料规则
+├─ scripts/                # 安装、论文审计、绘图和语料分析脚本
+├─ tests/                  # 单元与集成测试
+└─ qilintex/               # 独立的多人 LaTeX 协作工作台
+```
 
-## 测试与运行检查
+根目录数模 Agent 与 [`qilintex/`](qilintex/) 是两个可独立运行的组件，分别维护运行配置、登录和安全边界。QilinTeX 的安装、部署、协作与发布方式见 [`qilintex/README.md`](qilintex/README.md)。具体年份赛题、原始附件、完整求解项目和大体积论文语料应放在仓库外或独立仓库，公开前单独检查竞赛规则、版权和个人信息。
+
+## API 概览
+
+| 接口 | 用途 |
+|---|---|
+| `GET /api/health` | Provider、工具、MCP、资料库和队列健康状态 |
+| `GET /api/config`、`POST /api/config` | 查看公开配置或保存图形化设置，不返回密钥 |
+| `POST /api/config/test` | 不保存配置的连接测试 |
+| `GET /api/tools`、`GET /api/mcp` | 当前工具和 MATLAB/Origin MCP 状态 |
+| `GET /api/runtime` | worker、活动任务、队列和剩余容量 |
+| `POST /api/knowledge/index` | 启动增量资料索引 |
+| `GET /api/knowledge/search?q=...` | 检索本地资料 |
+| `POST /api/uploads` | 上传单个附件 |
+| `POST /api/runs` | 创建任务 |
+| `GET /api/runs/{id}` | 读取任务状态和结果 |
+| `GET /api/runs/{id}/events` | SSE 运行事件流 |
+| `GET /api/runs/{id}/artifacts` | 任务产物列表 |
+| `POST /api/runs/{id}/cancel` | 取消排队中或运行中的任务 |
+
+默认最多同时执行 2 个任务并等待 20 个任务，可用 `AGENT_MAX_CONCURRENT_RUNS` 与 `AGENT_MAX_QUEUED_RUNS` 调整；修改后需重启服务。
+
+## 测试
 
 ```powershell
-python -m unittest discover -s tests -v
+python -m unittest discover -s tests -p "test_*.py"
 python -m compileall -q agent_backend.py agent_tools.py provider_config.py server.py mcp_servers
 ```
 
-启动服务后可以检查：
+启动服务后的基本检查：
 
 ```powershell
 Invoke-RestMethod http://127.0.0.1:8765/api/health | ConvertTo-Json -Depth 8
@@ -170,11 +255,40 @@ Invoke-RestMethod http://127.0.0.1:8765/api/config | ConvertTo-Json -Depth 8
 Invoke-RestMethod http://127.0.0.1:8765/api/mcp | ConvertTo-Json -Depth 8
 ```
 
+质量评分字段、硬门禁和封顶规则见 [SCORING.md](SCORING.md)。论文成稿还需要对实际 PDF/DOCX/TeX/Markdown 运行 `audit_competition_paper`，通过审计不代表保证获奖。
+
+## 单独安装为 Codex skill（可选）
+
+如果只想在 Codex 中使用专业工作流，而不启动本地 Web 服务：
+
+```powershell
+$target = Join-Path $env:USERPROFILE ".codex\skills\cumcm-expert-agent"
+New-Item -ItemType Directory -Force -Path $target | Out-Null
+Copy-Item -Path "skills\cumcm-expert-agent\*" -Destination $target -Recurse -Force
+```
+
+之后可使用：
+
+```text
+使用 $cumcm-expert-agent 完成该数学建模任务：优先建立最简单的可解释模型，仅在证据支持时升级或创新算法，并交付可复现计算、严格验证和专业图文论文。
+```
+
 ## 安全边界
 
-- 服务仅监听回环地址并拒绝跨源浏览器请求，但没有本地用户认证；同一台电脑上的其他进程仍可调用接口。
-- 只有 `/index.html` 会作为静态页面提供，`.env`、数据库和源代码不会通过静态路由暴露。
-- OpenAI、DeepSeek、远程兼容接口及 Codex 服务会接收任务内容、必要的附件摘要或资料片段；只有 Ollama 与纯本地工具路径可以完全留在本机。发送前应确认数据许可与竞赛规则。
-- DPAPI 只保护 API Key 的磁盘副本；运行记录、资料索引、上传文件和产物保存在 `.agent-data/`，默认不加密。
-- 本地资料的敏感文件名/字段过滤、Python 审计钩子和工具目录白名单均属于纵深防护，不能替代操作系统沙箱、恶意代码隔离或人工审查。
-- MATLAB、Origin、Codex CLI 与 MCP Server 都是本机子进程或外部软件。仅安装可信版本，检查生成脚本和产物，并保持项目目录权限最小化。
+- 服务仅监听回环地址，但没有本地用户认证；同一台电脑上的其他进程仍可能调用接口。
+- 远程 Provider 与 Codex 服务会收到任务内容、必要附件摘要或资料片段；只有 Ollama 与纯本地工具路径可以完全留在本机。
+- `.agent-data/` 默认不加密，包含任务、上传、索引和产物；不要把它提交到 Git。
+- Python 审计钩子、资料过滤和目录白名单属于纵深防护，不能替代操作系统沙箱、恶意代码隔离或人工审查。
+- MATLAB、Origin、Codex CLI 与 MCP Server 都是本机软件或子进程；只安装可信版本，并检查生成脚本和产物。
+- 不上传 API Key、认证材料、个人信息、本地绝对路径或未经许可的论文原文。
+
+## 文档索引
+
+- [专业 Agent 工作流](skills/cumcm-expert-agent/SKILL.md)
+- [质量评分与硬门禁](SCORING.md)
+- [MCP 与可选后端](MCP.md)
+- [QilinTeX 协作工作台](qilintex/README.md)
+
+---
+
+数模 Agent 提供工作流、工具与质量门禁，不构成竞赛奖项保证。最终题意解释、模型假设、数据许可、论文规范和提交内容仍需参赛者人工复核。
