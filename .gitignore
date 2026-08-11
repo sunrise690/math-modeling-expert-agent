@@ -6,12 +6,9 @@ __pycache__/
 **/__pycache__/
 **/workflow_events.jsonl
 
-# Official contest statement/templates and source manifests are local inputs;
-# publish code and derived results instead of redistributing sources or paths.
-projects/*/source/*.pdf
-projects/*/source/*.xlsx
-projects/*/source/problem.txt
-projects/*/source/MANIFEST.sha256
+# 具体年份和题号的竞赛项目在仓库外独立维护；主仓库只保留
+# 数模 Agent、通用 Skill/工具和 QilinTeX。
+/projects/
 
 # Raw contest archives and row-level datasets stay local. Projects may publish
 # source code, aggregate tables, figures and reports, but never participant or
