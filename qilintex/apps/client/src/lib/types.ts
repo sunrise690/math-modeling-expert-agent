@@ -42,23 +42,34 @@ export interface CompileResult {
   engine?: string
 }
 
+export type AgentMode = 'auto' | 'solver' | 'cumcm' | 'paper' | 'reviewer'
+
 export interface AgentArtifact {
   id: string
   name: string
   mimeType: string
   base64: string
-  kind: 'data_figure' | 'generated_image'
-  sourceTool: 'code_interpreter' | 'image_generation'
+  kind: 'data_figure' | 'generated_image' | 'modeling_artifact'
+  sourceTool: 'code_interpreter' | 'image_generation' | 'math_modeling_agent'
 }
 
 export interface AgentResult {
   text: string
   artifacts: AgentArtifact[]
+  backend: 'math_modeling_agent' | 'openai'
+  mode: Exclude<AgentMode, 'auto'>
+  runId?: string
+  quality?: {
+    total?: number
+    threshold?: number
+    passed?: boolean
+    grade?: string
+  }
   visualization: {
     intent: 'none' | 'data_plot' | 'diagram' | 'generative_image' | 'hybrid'
     phase: 'none' | 'exploration' | 'analysis' | 'validation' | 'publication' | 'presentation'
     requestedTools: string[]
-    usedTools: Array<'code_interpreter' | 'image_generation'>
+    usedTools: Array<'code_interpreter' | 'image_generation' | 'math_modeling_agent'>
     rationale: string
     warnings: string[]
   }

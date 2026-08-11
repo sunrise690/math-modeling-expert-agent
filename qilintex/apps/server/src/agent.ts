@@ -1,5 +1,6 @@
 import OpenAI from 'openai'
 import { config } from './config.js'
+import { askMathModelingAgent, resolveDocumentAgentMode } from './math-agent.js'
 import {
   buildVisualizationInstructions, buildVisualizationTools, collectVisualizationArtifacts, planVisualization,
   type VisualizationRunSummary
@@ -7,11 +8,23 @@ import {
 
 const client = config.openai.apiKey ? new OpenAI({ apiKey: config.openai.apiKey }) : null
 
-export async function askDocumentAgent(source: string, message: string) {
-  if (!client) throw new Error('AI 助手尚未配置。请在服务端设置 OPENAI_API_KEY。')
+export async function askDocumentAgent(source: string, message: string, requestedMode = 'auto') {
   if (!message.trim()) throw new Error('问题不能为空。')
   if (message.length > 20_000) throw new Error('问题超过 20,000 字符限制。')
-  if (source.length > 150_000) throw new Error('当前文档过长，请选择片段后再询问。')
+  if (source.length > 95_000) throw new Error('当前文档过长，请选择片段后再询问。')
+
+  if (config.documentAgent.backend === 'math-modeling') {
+    return askMathModelingAgent(source, message, requestedMode, {
+      baseUrl: config.documentAgent.mathModelingUrl,
+      timeoutMs: config.documentAgent.timeoutMs,
+      pollIntervalMs: config.documentAgent.pollIntervalMs,
+      maxArtifacts: config.openai.maxArtifacts,
+      maxArtifactBytes: config.openai.maxArtifactBytes
+    })
+  }
+
+  if (!client) throw new Error('OpenAI 直连助手尚未配置。请设置 OPENAI_API_KEY，或改用数模 Agent 后端。')
+  const mode = resolveDocumentAgentMode(requestedMode, message)
 
   const capabilities = {
     codeInterpreter: config.openai.codeInterpreter,
@@ -47,5 +60,5 @@ export async function askDocumentAgent(source: string, message: string) {
     rationale: plan.rationale,
     warnings: collected.warnings
   }
-  return { text: response.output_text, artifacts: collected.artifacts, visualization }
+  return { text: response.output_text, artifacts: collected.artifacts, visualization, backend: 'openai' as const, mode }
 }

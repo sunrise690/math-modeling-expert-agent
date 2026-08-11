@@ -1,4 +1,4 @@
-import type { AgentResult, AuthPayload, AuthRealm, CompileResult, FriendsPayload, Project, User } from './types'
+import type { AgentMode, AgentResult, AuthPayload, AuthRealm, CompileResult, FriendsPayload, Project, User } from './types'
 
 const ACTIVE_REALM_KEY = 'tonggao.authRealm'
 const TOKEN_KEYS: Record<AuthRealm, string> = {
@@ -87,7 +87,7 @@ export const api = {
   compile: (projectId: string, source: string) => request<CompileResult>(`/api/projects/${projectId}/compile`, {
     method: 'POST', body: JSON.stringify({ source })
   }),
-  askAgent: (projectId: string, source: string, message: string) => request<AgentResult>(`/api/projects/${projectId}/agent`, {
-    method: 'POST', body: JSON.stringify({ source, message })
+  askAgent: (projectId: string, source: string, message: string, mode: AgentMode = 'auto') => request<AgentResult>(`/api/projects/${projectId}/agent`, {
+    method: 'POST', body: JSON.stringify({ source, message, mode })
   })
 }

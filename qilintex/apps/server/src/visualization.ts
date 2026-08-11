@@ -26,15 +26,15 @@ export interface AgentArtifact {
   name: string
   mimeType: string
   base64: string
-  kind: 'data_figure' | 'generated_image'
-  sourceTool: 'code_interpreter' | 'image_generation'
+  kind: 'data_figure' | 'generated_image' | 'modeling_artifact'
+  sourceTool: 'code_interpreter' | 'image_generation' | 'math_modeling_agent'
 }
 
 export interface VisualizationRunSummary {
   intent: VisualizationIntent
   phase: VisualizationPhase
   requestedTools: VisualizationTool[]
-  usedTools: Array<'code_interpreter' | 'image_generation'>
+  usedTools: Array<'code_interpreter' | 'image_generation' | 'math_modeling_agent'>
   rationale: string
   warnings: string[]
 }

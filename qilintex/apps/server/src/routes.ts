@@ -37,7 +37,11 @@ export function apiRouter(store: Store) {
   router.post('/projects/:projectId/agent', async (request, response) => {
     if (!store.canAccessProject(request.params.projectId, request.user!.id)) return response.status(403).json({ error: '没有项目访问权限。' })
     try {
-      const result = await askDocumentAgent(String(request.body?.source || ''), String(request.body?.message || ''))
+      const result = await askDocumentAgent(
+        String(request.body?.source || ''),
+        String(request.body?.message || ''),
+        String(request.body?.mode || 'auto')
+      )
       response.json(result)
     } catch (error) { response.status(503).json({ error: (error as Error).message }) }
   })
