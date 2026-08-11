@@ -68,6 +68,21 @@ class KnowledgeBaseTests(unittest.TestCase):
         self.assertNotIn(str(self.root), str(read))
         self.assertIn("整数规划", read["content"][0]["text"])
 
+    def test_indexes_python_and_matlab_reference_code(self) -> None:
+        (self.materials / "solve_transport.py").write_text(
+            "# 运输规划\nobjective = 'minimum transport cost'\n",
+            encoding="utf-8",
+        )
+        (self.materials / "heat_equation.m").write_text(
+            "% 热传导有限差分\ntemperature = zeros(10, 10);\n",
+            encoding="utf-8",
+        )
+        knowledge = KnowledgeBase(self.database, [self.materials])
+        summary = knowledge.reindex()
+        self.assertEqual(summary["indexed"], 2)
+        self.assertEqual(knowledge.search("transport cost")["results"][0]["name"], "solve_transport.py")
+        self.assertEqual(knowledge.search("热传导有限差分")["results"][0]["name"], "heat_equation.m")
+
     def test_pdf_search_keeps_page_location(self) -> None:
         pdf_path = self.materials / "robust.pdf"
         write_text_pdf(pdf_path, "robust optimization sensitivity analysis")

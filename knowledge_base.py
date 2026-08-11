@@ -13,16 +13,22 @@ from typing import Any, Iterator
 
 
 SUPPORTED_MATERIAL_EXTENSIONS = {
+    ".bib",
+    ".bst",
     ".csv",
+    ".cls",
     ".docx",
     ".json",
+    ".m",
     ".md",
     ".pdf",
+    ".py",
     ".tex",
     ".tsv",
     ".txt",
     ".xlsx",
 }
+TEXT_MATERIAL_EXTENSIONS = {".bib", ".bst", ".cls", ".json", ".m", ".md", ".py", ".tex", ".txt"}
 SENSITIVE_SPREADSHEET_NAME = re.compile(r"参赛信息|参赛队|报名|名单|通讯录|汇总", re.IGNORECASE)
 SENSITIVE_COLUMN_NAME = re.compile(
     r"姓名|学号|电话|手机|邮箱|email|身份证|证件号|住址|地址|微信|qq|指导教师|队员",
@@ -505,7 +511,7 @@ class KnowledgeBase:
             return self._extract_xlsx(path), 0
         if extension in {".csv", ".tsv"}:
             return self._extract_delimited(path), 0
-        if extension in {".txt", ".md", ".tex", ".json"}:
+        if extension in TEXT_MATERIAL_EXTENSIONS:
             return [("正文", self._read_text(path))], 0
         raise KnowledgeError(f"不支持的资料格式：{extension}")
 
