@@ -53,7 +53,7 @@ function startLocalAgent() {
     return
   }
   const frontend = workbenchUrl()
-  agentProcess = spawn(runtime.python, [runtime.server, '--host', '127.0.0.1', '--port', '8765', '--frontend-url', frontend], {
+  agentProcess = spawn(runtime.python, [runtime.server, '--host', '127.0.0.1', '--port', '8765', '--frontend-url', frontend, '--allowed-origin', 'https://qilintex.top'], {
     cwd: app.isPackaged ? join(process.resourcesPath, 'agent') : resolve(currentDir, '..', '..', '..'),
     env: {
       ...process.env,

@@ -31,7 +31,8 @@ const child = spawn(python.command, [
   ...python.prefix,
   resolve(repositoryRoot, 'server.py'),
   '--port', agentPort,
-  '--frontend-url', frontendUrl
+  '--frontend-url', frontendUrl,
+  '--allowed-origin', 'https://qilintex.top'
 ], {
   cwd: repositoryRoot,
   env: process.env,

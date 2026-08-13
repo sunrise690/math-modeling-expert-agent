@@ -31,9 +31,25 @@ if (-not (Test-Path -LiteralPath (Join-Path $venvPrefix "Lib\site-packages") -Pa
 }
 
 if (Test-Path -LiteralPath $stagingRoot) {
-  Remove-Item -LiteralPath $stagingRoot -Recurse -Force
+  $removed = $false
+  foreach ($attempt in 1..5) {
+    try {
+      Remove-Item -LiteralPath $stagingRoot -Recurse -Force -ErrorAction Stop
+      $removed = $true
+      break
+    } catch {
+      if ($attempt -eq 5) { throw }
+      Start-Sleep -Milliseconds (250 * $attempt)
+    }
+  }
+  if (-not $removed -or (Test-Path -LiteralPath $stagingRoot)) {
+    throw "Unable to clean desktop staging directory: $stagingRoot"
+  }
 }
 New-Item -ItemType Directory -Path $runtimeTarget, $agentTarget -Force | Out-Null
+if (-not (Test-Path -LiteralPath $runtimeTarget -PathType Container) -or -not (Test-Path -LiteralPath $agentTarget -PathType Container)) {
+  throw "Desktop staging directories were not created correctly."
+}
 
 function Copy-Tree([string]$Source, [string]$Target, [string[]]$ExtraArgs = @()) {
   New-Item -ItemType Directory -Path $Target -Force | Out-Null
@@ -56,6 +72,9 @@ Copy-Tree (Join-Path $venvPrefix "Scripts") (Join-Path $runtimeTarget "Scripts")
 
 Get-ChildItem -LiteralPath $repositoryRoot -File -Filter "*.py" | ForEach-Object {
   Copy-Item -LiteralPath $_.FullName -Destination $agentTarget -Force
+}
+if (-not (Test-Path -LiteralPath (Join-Path $agentTarget "server.py") -PathType Leaf)) {
+  throw "Local agent server.py is missing from desktop staging."
 }
 foreach ($directory in @("knowledge", "mcp_servers", "scripts", "skills")) {
   $source = Join-Path $repositoryRoot $directory

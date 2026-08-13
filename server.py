@@ -39,6 +39,7 @@ RUN_ARTIFACTS_PATH = re.compile(r"^/api/runs/([a-f0-9]{32})/artifacts$")
 ARTIFACT_PATH = re.compile(r"^/api/artifacts/([a-f0-9]{32})/([^/]+)$")
 UPLOAD_PATH = re.compile(r"^/api/uploads/([a-f0-9]{32})$")
 CODEX_LOGIN_PATH = re.compile(r"^/api/codex-login/([a-f0-9]{32})$")
+OFFICIAL_FRONTEND_ORIGINS = ("https://qilintex.top",)
 
 
 class AgentHTTPServer(ThreadingHTTPServer):
@@ -49,6 +50,7 @@ class AgentHTTPServer(ThreadingHTTPServer):
         address: tuple[str, int],
         manager: RunManager,
         frontend_url: str | None = None,
+        allowed_origins: tuple[str, ...] = OFFICIAL_FRONTEND_ORIGINS,
     ) -> None:
         super().__init__(address, Handler)
         self.manager = manager
@@ -56,9 +58,11 @@ class AgentHTTPServer(ThreadingHTTPServer):
         self.codex_login = CodexLoginManager()
         self.frontend_url = frontend_url
         self.frontend_origin = ""
+        self.frontend_origins = {normalize_frontend_origin(origin) for origin in allowed_origins}
         if frontend_url:
             parsed_frontend = urlparse(frontend_url)
             self.frontend_origin = f"{parsed_frontend.scheme}://{parsed_frontend.netloc}".casefold()
+            self.frontend_origins.add(self.frontend_origin)
 
     def server_close(self) -> None:
         self.codex_login.close()
@@ -523,7 +527,7 @@ class Handler(BaseHTTPRequestHandler):
         origin_parts = urlparse(origin)
         origin_value = f"{origin_parts.scheme}://{origin_parts.netloc}".casefold()
         same_loopback_origin = origin_parts.scheme in {"http", "https"} and origin_parts.netloc.casefold() == request_host.casefold()
-        trusted_frontend = bool(self.server.frontend_origin) and origin_value == self.server.frontend_origin
+        trusted_frontend = origin_value in self.server.frontend_origins
         if not same_loopback_origin and not trusted_frontend:
             raise ApiError(403, "仅允许本机页面或已配置的统一工作台访问")
 
@@ -548,11 +552,21 @@ def normalize_frontend_url(value: str | None) -> str | None:
     return value.strip().rstrip("/") + "/"
 
 
+def normalize_frontend_origin(value: str) -> str:
+    parsed = urlparse(value.strip())
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        raise ValueError("可信工作台来源必须是有效的 HTTP(S) Origin")
+    if parsed.username or parsed.password or parsed.query or parsed.fragment or parsed.path not in {"", "/"}:
+        raise ValueError("可信工作台来源只能包含协议、主机和端口")
+    return f"{parsed.scheme}://{parsed.netloc}".casefold()
+
+
 def create_server(
     host: str,
     port: int,
     database: Path | None = None,
     frontend_url: str | None = None,
+    allowed_origins: tuple[str, ...] = OFFICIAL_FRONTEND_ORIGINS,
 ) -> AgentHTTPServer:
     try:
         loopback = host.casefold() == "localhost" or ipaddress.ip_address(host).is_loopback
@@ -563,7 +577,7 @@ def create_server(
     database_path = portable_path(ROOT, str(database)) if database else agent_data_dir(ROOT) / "runs.db"
     store = RunStore(database_path)
     manager = RunManager(store, ROOT)
-    return AgentHTTPServer((host, port), manager, normalize_frontend_url(frontend_url))
+    return AgentHTTPServer((host, port), manager, normalize_frontend_url(frontend_url), allowed_origins)
 
 
 def parse_args() -> argparse.Namespace:
@@ -572,12 +586,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--database", type=Path)
     parser.add_argument("--frontend-url", help="统一工作台地址；访问后端首页时跳转到该地址")
+    parser.add_argument("--allowed-origin", action="append", default=[], help="额外允许访问本机 Agent 的工作台 Origin，可重复指定")
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
-    server = create_server(args.host, args.port, args.database, args.frontend_url)
+    allowed_origins = tuple(dict.fromkeys((*OFFICIAL_FRONTEND_ORIGINS, *args.allowed_origin)))
+    server = create_server(args.host, args.port, args.database, args.frontend_url, allowed_origins)
     print(f"Math modeling agent API: http://{args.host}:{args.port}")
     if server.frontend_url:
         print(f"Unified frontend: {server.frontend_url}")

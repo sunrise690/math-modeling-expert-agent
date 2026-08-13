@@ -11,7 +11,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from agent_backend import RunManager, RunStore
-from server import AgentHTTPServer, create_server, normalize_frontend_url
+from server import AgentHTTPServer, create_server, normalize_frontend_origin, normalize_frontend_url
 from runtime_paths import agent_data_dir
 
 
@@ -105,7 +105,7 @@ class ServerTests(unittest.TestCase):
         self.assertIn("activeCount", payload)
 
     def test_configured_workbench_origin_can_reach_loopback_runtime(self) -> None:
-        self.server.frontend_origin = "https://workbench.example"
+        self.server.frontend_origins.add("https://workbench.example")
         status, payload = self.request("/api/health", headers={"Origin": "https://workbench.example"})
         self.assertEqual(status, 200)
         self.assertTrue(payload["ok"])
@@ -121,6 +121,11 @@ class ServerTests(unittest.TestCase):
         with urllib.request.urlopen(request, timeout=10) as response:
             self.assertEqual(response.headers.get("Access-Control-Allow-Origin"), "https://workbench.example")
             self.assertEqual(response.headers.get("Access-Control-Allow-Private-Network"), "true")
+
+    def test_official_online_workbench_can_reach_loopback_runtime(self) -> None:
+        status, payload = self.request("/api/health", headers={"Origin": "https://qilintex.top"})
+        self.assertEqual(status, 200)
+        self.assertTrue(payload["ok"])
 
     def test_graphical_provider_config_saves_encrypted_secret_and_tests_codex(self) -> None:
         with patch("provider_config.codex_cli_status", return_value=CODEX_STATUS), patch(
@@ -201,6 +206,11 @@ class ServerTests(unittest.TestCase):
         for value in ("localhost:5173", "file:///tmp/app", "https://user:secret@example.com"):
             with self.subTest(value=value), self.assertRaises(ValueError):
                 normalize_frontend_url(value)
+
+        self.assertEqual(normalize_frontend_origin("https://QILINTEX.top/"), "https://qilintex.top")
+        for value in ("qilintex.top", "file:///tmp/app", "https://qilintex.top/path", "https://user:secret@qilintex.top"):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                normalize_frontend_origin(value)
 
     def test_agent_data_directory_supports_repository_relative_configuration(self) -> None:
         with patch.dict(os.environ, {"AGENT_DATA_DIR": "runtime/agent"}):

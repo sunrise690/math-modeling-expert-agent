@@ -1,7 +1,7 @@
 import { ChevronRight, Download, Monitor } from 'lucide-react'
 
-const SETUP_URL = 'https://updates.qilintex.top/Qilintex-Setup-0.1.1-x64.exe'
-const PORTABLE_URL = 'https://updates.qilintex.top/Qilintex-Portable-0.1.1-x64.exe'
+const SETUP_URL = 'https://updates.qilintex.top/Qilintex-Setup-0.1.2-x64.exe'
+const PORTABLE_URL = 'https://updates.qilintex.top/Qilintex-Portable-0.1.2-x64.exe'
 
 interface Props {
   onUseOnline: () => void

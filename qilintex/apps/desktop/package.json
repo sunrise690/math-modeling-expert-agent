@@ -1,7 +1,7 @@
 {
   "name": "@tonggao/desktop",
   "productName": "Qilintex",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "description": "数学建模、LaTeX 写作与多人协作工作台",
   "author": "sunrise690",

@@ -55,7 +55,7 @@ if sudo test -f "${CONFIG_ROOT}/qilintex.env" && [[ "${RESET_ENV:-0}" != "1" ]];
   set_env PUBLIC_COLLAB_URL "wss://${PUBLIC_HOST}/collab"
   set_env QQ_REDIRECT_URI "https://${PUBLIC_HOST}/auth/qq/callback"
   set_env WECHAT_REDIRECT_URI "https://${PUBLIC_HOST}/auth/wechat/callback"
-  set_env APP_LATEST_VERSION "${APP_LATEST_VERSION:-0.1.1}"
+  set_env APP_LATEST_VERSION "${APP_LATEST_VERSION:-0.1.2}"
 else
   TEAM_CODE="QT-$(openssl rand -hex 6)"
   SESSION_SECRET="$(openssl rand -hex 48)"
@@ -81,7 +81,7 @@ QQ_REDIRECT_URI=https://${PUBLIC_HOST}/auth/qq/callback
 WECHAT_APP_ID=
 WECHAT_APP_SECRET=
 WECHAT_REDIRECT_URI=https://${PUBLIC_HOST}/auth/wechat/callback
-APP_LATEST_VERSION=${APP_LATEST_VERSION:-0.1.1}
+APP_LATEST_VERSION=${APP_LATEST_VERSION:-0.1.2}
 TEX_ENGINE=latexmk
 TEX_LATEXMK_ENGINE=xelatex
 EOF
