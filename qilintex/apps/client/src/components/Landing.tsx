@@ -12,7 +12,7 @@ export function Landing({ onUseOnline }: Props) {
     <main className="product-entry">
       <div className="entry-welcome">
         <section className="entry-hero">
-          <img src="./app-icon.jpg" alt="" />
+          <img src="./app-icon.jpg" alt="Qilintex" />
           <div><h1>Qilintex</h1><p>数模 Agent 与 QilinTeX 协作工作台</p></div>
         </section>
 
@@ -34,8 +34,8 @@ export function Landing({ onUseOnline }: Props) {
 
         <section className="entry-details">
           <div><strong>本机运行</strong><span>模型登录、API 密钥和任务产物保留在用户电脑。</span></div>
-          <div><strong>团队门禁</strong><span>在线工作台与 Windows 应用使用同一团队账号。</span></div>
-          <div><strong>自动更新</strong><span>0.1.1 起支持应用内检查、下载并重启安装。</span></div>
+          <div><strong>团队账号</strong><span>在线工作台与 Windows 应用使用同一团队账号。</span></div>
+          <div><strong>自动更新</strong><span>Windows 应用支持检查更新、下载并重启安装。</span></div>
         </section>
       </div>
     </main>

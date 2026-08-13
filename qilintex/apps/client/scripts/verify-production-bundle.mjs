@@ -6,7 +6,16 @@ const distRoot = fileURLToPath(new URL('../dist/', import.meta.url))
 const forbiddenAddresses = ['http://localhost:4318', 'ws://localhost:4319']
 const requiredPublicAddresses = ['https://updates.qilintex.top/']
 const landingSource = await readFile(fileURLToPath(new URL('../src/components/Landing.tsx', import.meta.url)), 'utf8')
+const workbenchSourcePaths = [
+  '../src/App.tsx',
+  '../src/components/Workbench.tsx',
+  '../src/components/ApiSettings.tsx',
+  '../src/components/UpdateButton.tsx'
+]
+const workbenchSources = await Promise.all(workbenchSourcePaths.map((path) => readFile(fileURLToPath(new URL(path, import.meta.url)), 'utf8')))
 const forbiddenLandingShells = ['entry-titlebar', 'entry-activity', 'entry-sidebar', 'entry-tabs', 'entry-statusbar']
+const requiredLandingContent = ['在线使用', '下载应用', 'Qilintex-Setup-', 'Qilintex-Portable-']
+const forbiddenWorkbenchDownloads = ['/downloads', 'updates.qilintex.top', '下载应用', '下载 App', '下载安装包']
 
 async function filesUnder(directory) {
   const entries = await readdir(directory, { withFileTypes: true })
@@ -35,4 +44,17 @@ for (const className of forbiddenLandingShells) {
   if (landingSource.includes(className)) throw new Error(`公开入口不得包含无功能的编辑器外壳：${className}`)
 }
 
-console.log('生产前端已通过同源地址、正式在线/下载入口与纯净公开页检查')
+for (const content of requiredLandingContent) {
+  if (!landingSource.includes(content)) throw new Error(`公开入口缺少必要的在线/下载内容：${content}`)
+}
+
+for (const [index, source] of workbenchSources.entries()) {
+  const forbidden = forbiddenWorkbenchDownloads.find((content) => source.includes(content))
+  if (forbidden) throw new Error(`在线任务界面不得包含客户端导流：${forbidden}（来源 ${workbenchSourcePaths[index]}）`)
+}
+
+if (!workbenchSources.at(-1)?.includes('Capacitor.isNativePlatform()')) {
+  throw new Error('移动端更新入口必须由原生运行环境保护')
+}
+
+console.log('生产前端已通过同源地址、公开页双入口与在线任务界面无下载能力检查')

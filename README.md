@@ -14,9 +14,15 @@
 
 项目由两部分组成：根目录的 Python 数模 Agent 负责模型调用、资料检索、计算工具和证据门禁；`qilintex/` 提供唯一用户前端、多人协作、LaTeX 编辑以及 Windows/Web/移动端构建。二者共享同一个项目、成员、文件和 Agent 对话上下文。
 
+### 界面预览
+
+![Qilintex 公开入口：在线使用与下载应用](frontend-landing.png)
+
+<sub>公开产品入口（2026-08-13）：首屏只保留品牌、在线使用、下载应用和必要说明，不使用无功能的编辑器外壳。</sub>
+
 ![数模工作台纯在线界面：项目资源管理器、建模 Agent 流程与 QilinTeX 入口](frontend-desktop.png)
 
-<sub>当前纯在线界面（2026-08-13）：统一项目资源管理器、建模流程、QilinTeX 工作区入口与本机 Agent 状态，不展示客户端安装或下载入口。</sub>
+<sub>登录后的纯在线工作台（2026-08-13）：统一项目资源管理器、建模流程、QilinTeX 工作区入口与本机 Agent 状态，不展示客户端安装或下载入口。</sub>
 
 ## 最新进展
 
@@ -50,7 +56,7 @@
 
 ```text
 Python 单元/集成测试        162 passed
-Web/Server/Desktop 测试      23 passed
+Web/Server/Desktop 测试      25 passed
 TypeScript 类型检查          PASS
 生产构建                     PASS
 生产前端同源/纯在线检查      PASS
