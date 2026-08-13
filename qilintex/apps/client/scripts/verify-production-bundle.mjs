@@ -6,6 +6,7 @@ const distRoot = fileURLToPath(new URL('../dist/', import.meta.url))
 const forbiddenAddresses = ['http://localhost:4318', 'ws://localhost:4319']
 const requiredPublicAddresses = ['https://updates.qilintex.top/']
 const landingSource = await readFile(fileURLToPath(new URL('../src/components/Landing.tsx', import.meta.url)), 'utf8')
+const styleSource = await readFile(fileURLToPath(new URL('../src/styles.css', import.meta.url)), 'utf8')
 const workbenchSourcePaths = [
   '../src/App.tsx',
   '../src/components/Workbench.tsx',
@@ -15,6 +16,7 @@ const workbenchSourcePaths = [
 const workbenchSources = await Promise.all(workbenchSourcePaths.map((path) => readFile(fileURLToPath(new URL(path, import.meta.url)), 'utf8')))
 const forbiddenLandingShells = ['entry-titlebar', 'entry-activity', 'entry-sidebar', 'entry-tabs', 'entry-statusbar']
 const requiredLandingContent = ['在线使用', '下载应用', 'Qilintex-Setup-', 'Qilintex-Portable-']
+const requiredLandingStyle = ['--entry-bg: #181818', '--entry-surface: #1f1f1f', '--entry-accent: #0078d4', '--entry-radius: 10px', '--entry-radius-lg: 14px']
 const forbiddenWorkbenchDownloads = ['/downloads', 'updates.qilintex.top', '下载应用', '下载 App', '下载安装包']
 
 async function filesUnder(directory) {
@@ -46,6 +48,10 @@ for (const className of forbiddenLandingShells) {
 
 for (const content of requiredLandingContent) {
   if (!landingSource.includes(content)) throw new Error(`公开入口缺少必要的在线/下载内容：${content}`)
+}
+
+for (const token of requiredLandingStyle) {
+  if (!styleSource.includes(token)) throw new Error(`公开入口偏离深色小圆角视觉基线：${token}`)
 }
 
 for (const [index, source] of workbenchSources.entries()) {
