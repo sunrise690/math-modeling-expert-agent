@@ -1,7 +1,7 @@
 {
   "name": "@tonggao/desktop",
   "productName": "Qilintex",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "数学建模、LaTeX 写作与多人协作工作台",
   "author": "sunrise690",
@@ -56,6 +56,12 @@
     },
     "portable": {
       "artifactName": "Qilintex-Portable-${version}-${arch}.${ext}"
-    }
+    },
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "https://updates.qilintex.top/"
+      }
+    ]
   }
 }

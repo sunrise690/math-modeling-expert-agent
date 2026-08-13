@@ -4,7 +4,9 @@ import { fileURLToPath } from 'node:url'
 
 const distRoot = fileURLToPath(new URL('../dist/', import.meta.url))
 const forbiddenAddresses = ['http://localhost:4318', 'ws://localhost:4319']
-const forbiddenOnlineDownloadMarkers = ['/downloads/', '下载 Qilintex Windows App', '下载并打开桌面端', '下载 App']
+const requiredPublicAddresses = ['https://updates.qilintex.top/']
+const landingSource = await readFile(fileURLToPath(new URL('../src/components/Landing.tsx', import.meta.url)), 'utf8')
+const forbiddenLandingShells = ['entry-titlebar', 'entry-activity', 'entry-sidebar', 'entry-tabs', 'entry-statusbar']
 
 async function filesUnder(directory) {
   const entries = await readdir(directory, { withFileTypes: true })
@@ -22,10 +24,15 @@ for (const path of files.filter((item) => /\.(?:html|js|css|json|webmanifest)$/.
   if (forbidden) {
     throw new Error(`生产前端仍包含本机地址 ${forbidden}：${path}`)
   }
-  const downloadMarker = forbiddenOnlineDownloadMarkers.find((marker) => content.includes(marker))
-  if (downloadMarker) {
-    throw new Error(`生产前端仍包含在线下载入口 ${downloadMarker}：${path}`)
-  }
 }
 
-console.log('生产前端已通过同源地址与纯在线界面检查')
+const bundleText = (await Promise.all(files.filter((item) => /\.js$/.test(item)).map((path) => readFile(path, 'utf8')))).join('\n')
+for (const address of requiredPublicAddresses) {
+  if (!bundleText.includes(address)) throw new Error(`生产前端缺少正式地址 ${address}`)
+}
+
+for (const className of forbiddenLandingShells) {
+  if (landingSource.includes(className)) throw new Error(`公开入口不得包含无功能的编辑器外壳：${className}`)
+}
+
+console.log('生产前端已通过同源地址、正式在线/下载入口与纯净公开页检查')

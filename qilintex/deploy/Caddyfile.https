@@ -1,0 +1,46 @@
+__PUBLIC_HOST__ {
+  encode zstd gzip
+
+  handle_path /collab* {
+    reverse_proxy 127.0.0.1:4319
+  }
+
+  @downloads path /downloads /downloads/*
+  respond @downloads 404
+
+  @backend path /api/* /auth/* /health /updates/*
+  handle @backend {
+    reverse_proxy 127.0.0.1:4318
+  }
+
+  handle {
+    root * "__APP_ROOT__/apps/client/dist"
+    try_files {path} /index.html
+    file_server
+  }
+
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    X-Content-Type-Options nosniff
+    Referrer-Policy strict-origin-when-cross-origin
+    X-Frame-Options SAMEORIGIN
+  }
+}
+
+__WWW_HOST__ {
+  redir https://__PUBLIC_HOST__{uri} permanent
+}
+
+__UPDATE_HOST__ {
+  encode gzip
+  root * "__UPDATE_ROOT__"
+
+  @manifest path /latest.yml
+  header @manifest Cache-Control "no-cache, no-store, must-revalidate"
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    X-Content-Type-Options nosniff
+  }
+
+  file_server
+}

@@ -7,7 +7,8 @@ import { fileURLToPath } from 'node:url'
 import { parseDeepLink } from './protocol.mjs'
 
 const currentDir = fileURLToPath(new URL('.', import.meta.url))
-const DEFAULT_WORKBENCH_URL = 'http://62.234.109.41/'
+const DEFAULT_WORKBENCH_URL = 'https://qilintex.top/'
+const DEFAULT_UPDATE_URL = 'https://updates.qilintex.top/'
 const LOCAL_AGENT_URL = 'http://127.0.0.1:8765'
 const MAX_IPC_BODY_BYTES = 30 * 1024 * 1024
 const MAX_IPC_RESPONSE_BYTES = 110 * 1024 * 1024
@@ -195,7 +196,7 @@ ipcMain.handle('agent:request', async (_event, request) => {
 ipcMain.handle('updates:get-state', () => updateState)
 ipcMain.handle('updates:check', async () => {
   if (!app.isPackaged) return (updateState = { status: 'unsupported', message: '开发模式不检查更新。' })
-  if (process.env.UPDATE_URL) autoUpdater.setFeedURL({ provider: 'generic', url: process.env.UPDATE_URL })
+  autoUpdater.setFeedURL({ provider: 'generic', url: process.env.UPDATE_URL || DEFAULT_UPDATE_URL })
   await autoUpdater.checkForUpdates()
   return updateState
 })

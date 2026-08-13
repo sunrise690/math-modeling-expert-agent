@@ -15,7 +15,7 @@ $python = (Resolve-Path (Join-Path $qilintexRoot "release\win-unpacked\resources
 $server = (Resolve-Path (Join-Path $qilintexRoot "release\win-unpacked\resources\agent\server.py")).Path
 $stdout = Join-Path $smokeRoot "stdout.log"
 $stderr = Join-Path $smokeRoot "stderr.log"
-$process = Start-Process -FilePath $python -ArgumentList @($server, "--host", "127.0.0.1", "--port", [string]$Port, "--frontend-url", "http://62.234.109.41/") -WorkingDirectory (Split-Path $server -Parent) -WindowStyle Hidden -RedirectStandardOutput $stdout -RedirectStandardError $stderr -PassThru
+$process = Start-Process -FilePath $python -ArgumentList @($server, "--host", "127.0.0.1", "--port", [string]$Port, "--frontend-url", "https://qilintex.top/") -WorkingDirectory (Split-Path $server -Parent) -WindowStyle Hidden -RedirectStandardOutput $stdout -RedirectStandardError $stderr -PassThru
 try {
   $ready = $false
   for ($index = 0; $index -lt 40; $index += 1) {
