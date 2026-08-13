@@ -14,9 +14,9 @@
 
 项目由两部分组成：根目录的 Python 数模 Agent 负责模型调用、资料检索、计算工具和证据门禁；`qilintex/` 提供唯一用户前端、多人协作、LaTeX 编辑以及 Windows/Web/移动端构建。二者共享同一个项目、成员、文件和 Agent 对话上下文。
 
-![数模工作台最新版桌面界面：项目资源管理器、建模 Agent 流程与 QilinTeX 入口](frontend-desktop.png)
+![数模工作台纯在线界面：项目资源管理器、建模 Agent 流程与 QilinTeX 入口](frontend-desktop.png)
 
-<sub>当前前端截图（2026-08-13）：统一项目资源管理器、建模流程、QilinTeX 工作区入口与本机 Agent 状态。</sub>
+<sub>当前纯在线界面（2026-08-13）：统一项目资源管理器、建模流程、QilinTeX 工作区入口与本机 Agent 状态，不展示客户端安装或下载入口。</sub>
 
 ## 最新进展
 
@@ -25,6 +25,7 @@
 | 模块 | 当前状态 | 已落地内容 |
 |---|---|---|
 | 统一工作台 | 可运行 | “建模 Agent”与“QilinTeX”在同一 React 工作台内切换，共享项目文件、成员与对话上下文 |
+| 纯在线界面 | 可运行 | Web 端只保留项目、论文编辑与协作，不展示客户端安装包、下载浮条或桌面推广 |
 | 本机 Agent | 可运行 | Windows App 自动启动仅监听 `127.0.0.1` 的 Python 服务；源码安装可一键创建托管 Python 环境 |
 | 模型通道 | 可运行 | 支持 Codex Runtime、OpenAI Responses、DeepSeek、OpenAI 兼容接口和 Ollama；页面可保存与测试配置 |
 | 数模工作流 | 可运行 | 支持建模、整题交付、论文和质检四种模式；具备阶段状态、证据失效、质量评分和失败回滚机制 |
@@ -49,10 +50,10 @@
 
 ```text
 Python 单元/集成测试        162 passed
-Web/Server/Desktop 测试      21 passed
+Web/Server/Desktop 测试      23 passed
 TypeScript 类型检查          PASS
 生产构建                     PASS
-生产前端同源地址检查         PASS
+生产前端同源/纯在线检查      PASS
 ```
 
 复现命令：

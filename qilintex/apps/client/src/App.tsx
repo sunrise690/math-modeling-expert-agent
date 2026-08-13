@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { Download } from 'lucide-react'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 import { api, getAuthRealm, setAuthRealm, setToken } from './lib/api'
 import type { AuthPayload, User } from './lib/types'
@@ -45,11 +44,5 @@ export default function App() {
       ? <Login onAuthenticated={authenticated} />
       : <Workbench user={user} onUserChanged={setUser} onLogout={() => setUser(null)} />
 
-  return <>
-    {content}
-    {!window.desktop && <a className="app-download-rail" href="/downloads/Qilintex-Setup-0.1.0-x64.exe" aria-label="下载 Qilintex Windows App">
-      <Download size={17} />
-      <span><strong>下载 App</strong><small>本机 Codex 与 API</small></span>
-    </a>}
-  </>
+  return content
 }

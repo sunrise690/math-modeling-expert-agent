@@ -43,14 +43,6 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 
 .boot-screen { height: 100%; display: grid; place-content: center; justify-items: center; gap: 15px; background: var(--bg); }
 .boot-screen p { margin: 0; color: var(--muted); font-size: 11px; }
-.app-download-rail { position: fixed; z-index: 19; right: 0; top: 50%; width: 42px; min-height: 126px; padding: 12px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; overflow: hidden; border: 1px solid var(--line-strong); border-right: 0; border-radius: var(--radius-sm) 0 0 var(--radius-sm); color: #d8d8d8; background: #252526; box-shadow: -8px 0 22px rgba(0, 0, 0, .2); text-decoration: none; transform: translateY(-50%); transition: width 160ms var(--ease-out), background-color 100ms ease, border-color 100ms ease; }
-.app-download-rail > svg { flex: 0 0 auto; color: var(--accent); }
-.app-download-rail > span { width: 0; opacity: 0; white-space: nowrap; transition: width 160ms var(--ease-out), opacity 100ms ease; }
-.app-download-rail strong, .app-download-rail small { display: block; }
-.app-download-rail strong { font-size: 10px; }
-.app-download-rail small { margin-top: 4px; color: var(--muted); font-size: 8px; }
-.app-download-rail:hover, .app-download-rail:focus-visible { width: 156px; flex-direction: row; justify-content: flex-start; border-color: #5a5a5a; background: #2a2d2e; }
-.app-download-rail:hover > span, .app-download-rail:focus-visible > span { width: 96px; opacity: 1; }
 .brand { min-width: 0; display: flex; align-items: center; gap: 10px; color: var(--ink); font-size: 13px; font-weight: 700; letter-spacing: -.03em; }
 .brand-mark { width: 30px; height: 30px; display: block; flex: 0 0 auto; object-fit: cover; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--bg); }
 .brand-copy { min-width: 0; display: flex; flex-direction: column; line-height: 1.05; }

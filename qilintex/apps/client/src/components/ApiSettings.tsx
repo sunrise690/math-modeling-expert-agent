@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Check, Download, ExternalLink, KeyRound, LoaderCircle, LogIn, MonitorCog, PlugZap, X } from 'lucide-react'
+import { Check, ExternalLink, KeyRound, LoaderCircle, LogIn, MonitorCog, PlugZap, X } from 'lucide-react'
 import { api } from '../lib/api'
 import type { AgentConfig, AgentProviderOption, CodexLoginSession } from '../lib/types'
 
@@ -142,8 +142,7 @@ export function ApiSettings({ onClose, onSaved }: Props) {
         {!runtimeReady ? (
           <section className="local-runtime-empty">
             <MonitorCog size={28} />
-            <div><h3>需要本机运行器</h3><p>{status.text}</p><small>项目与协作仍在网页中；Codex、API 密钥、附件分析和 Agent 运行只在你的电脑上进行。</small></div>
-            <a className="compile-button" href="/downloads/Qilintex-Setup-0.1.0-x64.exe"><Download size={15} />下载并打开桌面端</a>
+            <div><h3>本机 Agent 未连接</h3><p>{status.text}</p><small>在线项目、论文编辑与协作不受影响；模型登录、密钥和本机计算不会转交给协作服务器。</small></div>
           </section>
         ) : (
           <>

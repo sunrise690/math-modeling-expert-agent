@@ -1,0 +1,56 @@
+import express, { type ErrorRequestHandler } from 'express'
+import cors from 'cors'
+import cookieParser from 'cookie-parser'
+import { authMiddleware, authRouter } from './auth.js'
+import { config } from './config.js'
+import { apiRouter } from './routes.js'
+import { Store } from './store.js'
+import { ProjectFileStore } from './project-files.js'
+
+export async function createApp(store = new Store(), projectFiles = new ProjectFileStore()) {
+  await store.init()
+
+  const app = express()
+  app.disable('x-powered-by')
+  if (process.env.NODE_ENV === 'production') app.set('trust proxy', 1)
+  app.use(cors({
+    origin: (origin, callback) => {
+      const loopbackDevelopment = process.env.NODE_ENV !== 'production' && Boolean(origin && /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin))
+      callback(null, !origin || config.clientUrls.includes(origin.replace(/\/$/, '')) || loopbackDevelopment)
+    },
+    credentials: true
+  }))
+  app.use(express.json({ limit: '1mb' }))
+  app.use(cookieParser())
+  app.use(authMiddleware(store))
+
+  app.get('/health', (_request, response) => response.json({
+    ok: true,
+    collaborationPort: config.collaborationPort,
+    onlineSurface: {
+      desktopDownloads: false,
+      localAgentRequired: true
+    }
+  }))
+  app.use('/downloads', (_request, response) => {
+    response.status(404).json({ error: '在线工作台不提供客户端安装包。' })
+  })
+  app.get('/updates/latest', (request, response) => {
+    const platform = request.query.platform === 'ios' ? 'ios' : 'android'
+    response.json({
+      version: config.updates.version,
+      releaseNotes: config.updates.releaseNotes,
+      storeUrl: platform === 'ios' ? config.updates.iosStoreUrl : config.updates.androidStoreUrl
+    })
+  })
+  app.use('/auth', authRouter(store))
+  app.use('/api', apiRouter(store, projectFiles))
+
+  const errorHandler: ErrorRequestHandler = (error, _request, response, _next) => {
+    console.error(error)
+    response.status(500).json({ error: error instanceof Error ? error.message : '服务端内部错误。' })
+  }
+  app.use(errorHandler)
+
+  return { app, store, projectFiles }
+}

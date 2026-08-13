@@ -5,6 +5,9 @@ http://__PUBLIC_HOST__ {
     reverse_proxy 127.0.0.1:4319
   }
 
+  @downloads path /downloads /downloads/*
+  respond @downloads 404
+
   @backend path /api/* /auth/* /health /updates/*
   handle @backend {
     reverse_proxy 127.0.0.1:4318
